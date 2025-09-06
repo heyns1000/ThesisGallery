@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, timestamp, integer, json, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, timestamp, integer, json, boolean, numeric, date } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -523,6 +523,122 @@ export const pulseGridLogs = pgTable("pulse_grid_logs", {
   createdAt: timestamp("created_at").defaultNow()
 });
 
+// Contact Management System for 11+ Million Records
+export const contacts = pgTable("contacts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  faaId: text("faa_id").unique().notNull(), // FAA™ Unique Reference System
+  source: text("source").notNull(), // Excel file source identifier
+  firstName: text("first_name"),
+  lastName: text("last_name"),
+  fullName: text("full_name"),
+  email: text("email"),
+  phone: text("phone"),
+  company: text("company"),
+  position: text("position"),
+  country: text("country"),
+  city: text("city"),
+  address: text("address"),
+  website: text("website"),
+  socialProfiles: json("social_profiles"), // LinkedIn, Twitter, etc.
+  industry: text("industry"),
+  tags: text("tags").array(), // Array of classification tags
+  leadScore: integer("lead_score").default(0),
+  status: text("status").default("active"), // active, inactive, unsubscribed, bounced
+  customFields: json("custom_fields"), // Flexible data for varied structures
+  lastContactDate: timestamp("last_contact_date"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Banimal E-Commerce System
+export const banimalProducts = pgTable("banimal_products", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  description: text("description"),
+  price: numeric("price", { precision: 10, scale: 2 }).notNull(),
+  currency: text("currency").default("ZAR"),
+  category: text("category").notNull(),
+  subcategory: text("subcategory"),
+  sku: text("sku").unique().notNull(),
+  inventory: integer("inventory").default(0),
+  images: json("images"), // Array of image URLs
+  variants: json("variants"), // Size, color, etc.
+  specifications: json("specifications"),
+  seoTitle: text("seo_title"),
+  seoDescription: text("seo_description"),
+  tags: text("tags").array(),
+  status: text("status").default("active"), // active, inactive, draft
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const banimalOrders = pgTable("banimal_orders", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  orderNumber: text("order_number").unique().notNull(),
+  faaCustomerId: text("faa_customer_id").notNull(),
+  customerEmail: text("customer_email").notNull(),
+  customerName: text("customer_name").notNull(),
+  customerPhone: text("customer_phone"),
+  shippingAddress: json("shipping_address").notNull(),
+  billingAddress: json("billing_address"),
+  items: json("items").notNull(), // Array of order items
+  subtotal: numeric("subtotal", { precision: 10, scale: 2 }).notNull(),
+  shippingCost: numeric("shipping_cost", { precision: 10, scale: 2 }).default("0"),
+  taxAmount: numeric("tax_amount", { precision: 10, scale: 2 }).default("0"),
+  discountAmount: numeric("discount_amount", { precision: 10, scale: 2 }).default("0"),
+  totalAmount: numeric("total_amount", { precision: 10, scale: 2 }).notNull(),
+  currency: text("currency").default("ZAR"),
+  paymentStatus: text("payment_status").default("pending"), // pending, paid, failed, refunded
+  orderStatus: text("order_status").default("pending"), // pending, processing, shipped, delivered, cancelled
+  trackingNumber: text("tracking_number"),
+  shippingProvider: text("shipping_provider"),
+  paymentMethod: text("payment_method"),
+  notes: text("notes"),
+  metadata: json("metadata"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const banimalCustomers = pgTable("banimal_customers", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  faaId: text("faa_id").unique().notNull(), // FAA™ Unique Reference System
+  email: text("email").unique().notNull(),
+  firstName: text("first_name"),
+  lastName: text("last_name"),
+  phone: text("phone"),
+  dateOfBirth: date("date_of_birth"),
+  addresses: json("addresses"), // Array of shipping addresses
+  loyaltyPoints: integer("loyalty_points").default(0),
+  totalSpent: numeric("total_spent", { precision: 10, scale: 2 }).default("0"),
+  orderCount: integer("order_count").default(0),
+  preferences: json("preferences"), // Shopping preferences, sizes, etc.
+  marketingOptIn: boolean("marketing_opt_in").default(false),
+  lastOrderDate: timestamp("last_order_date"),
+  customerSince: timestamp("customer_since").defaultNow().notNull(),
+  status: text("status").default("active"), // active, inactive, vip
+  metadata: json("metadata"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Data Processing and Import Tracking
+export const dataImports = pgTable("data_imports", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  fileName: text("file_name").notNull(),
+  fileSize: integer("file_size"),
+  totalRecords: integer("total_records"),
+  processedRecords: integer("processed_records").default(0),
+  successfulRecords: integer("successful_records").default(0),
+  failedRecords: integer("failed_records").default(0),
+  duplicateRecords: integer("duplicate_records").default(0),
+  status: text("status").default("pending"), // pending, processing, completed, failed
+  errors: json("errors"), // Array of error messages
+  summary: json("summary"), // Processing summary and statistics
+  startedAt: timestamp("started_at"),
+  completedAt: timestamp("completed_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -712,6 +828,124 @@ export type MiningCompliance = typeof miningCompliance.$inferSelect;
 
 export type InsertPulseGridLog = z.infer<typeof insertPulseGridLogSchema>;
 export type PulseGridLog = typeof pulseGridLogs.$inferSelect;
+
+// Contact Management Insert Schemas
+export const insertContactSchema = createInsertSchema(contacts).pick({
+  faaId: true,
+  source: true,
+  firstName: true,
+  lastName: true,
+  fullName: true,
+  email: true,
+  phone: true,
+  company: true,
+  position: true,
+  country: true,
+  city: true,
+  address: true,
+  website: true,
+  socialProfiles: true,
+  industry: true,
+  tags: true,
+  leadScore: true,
+  status: true,
+  customFields: true,
+  lastContactDate: true,
+});
+
+// Banimal E-Commerce Insert Schemas
+export const insertBanimalProductSchema = createInsertSchema(banimalProducts).pick({
+  name: true,
+  description: true,
+  price: true,
+  currency: true,
+  category: true,
+  subcategory: true,
+  sku: true,
+  inventory: true,
+  images: true,
+  variants: true,
+  specifications: true,
+  seoTitle: true,
+  seoDescription: true,
+  tags: true,
+  status: true,
+});
+
+export const insertBanimalOrderSchema = createInsertSchema(banimalOrders).pick({
+  orderNumber: true,
+  faaCustomerId: true,
+  customerEmail: true,
+  customerName: true,
+  customerPhone: true,
+  shippingAddress: true,
+  billingAddress: true,
+  items: true,
+  subtotal: true,
+  shippingCost: true,
+  taxAmount: true,
+  discountAmount: true,
+  totalAmount: true,
+  currency: true,
+  paymentStatus: true,
+  orderStatus: true,
+  trackingNumber: true,
+  shippingProvider: true,
+  paymentMethod: true,
+  notes: true,
+  metadata: true,
+});
+
+export const insertBanimalCustomerSchema = createInsertSchema(banimalCustomers).pick({
+  faaId: true,
+  email: true,
+  firstName: true,
+  lastName: true,
+  phone: true,
+  dateOfBirth: true,
+  addresses: true,
+  loyaltyPoints: true,
+  totalSpent: true,
+  orderCount: true,
+  preferences: true,
+  marketingOptIn: true,
+  lastOrderDate: true,
+  customerSince: true,
+  status: true,
+  metadata: true,
+});
+
+export const insertDataImportSchema = createInsertSchema(dataImports).pick({
+  fileName: true,
+  fileSize: true,
+  totalRecords: true,
+  processedRecords: true,
+  successfulRecords: true,
+  failedRecords: true,
+  duplicateRecords: true,
+  status: true,
+  errors: true,
+  summary: true,
+  startedAt: true,
+  completedAt: true,
+});
+
+// Contact Management Types
+export type InsertContact = z.infer<typeof insertContactSchema>;
+export type Contact = typeof contacts.$inferSelect;
+
+// Banimal E-Commerce Types
+export type InsertBanimalProduct = z.infer<typeof insertBanimalProductSchema>;
+export type BanimalProduct = typeof banimalProducts.$inferSelect;
+
+export type InsertBanimalOrder = z.infer<typeof insertBanimalOrderSchema>;
+export type BanimalOrder = typeof banimalOrders.$inferSelect;
+
+export type InsertBanimalCustomer = z.infer<typeof insertBanimalCustomerSchema>;
+export type BanimalCustomer = typeof banimalCustomers.$inferSelect;
+
+export type InsertDataImport = z.infer<typeof insertDataImportSchema>;
+export type DataImport = typeof dataImports.$inferSelect;
 
 // Team Management Types
 export type InsertTeamMember = z.infer<typeof insertTeamMemberSchema>;
