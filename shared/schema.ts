@@ -136,9 +136,79 @@ export const systemStats = pgTable("system_stats", {
   totalWildlifeNodes: integer("total_wildlife_nodes").default(0),
   totalAmericanStates: integer("total_american_states").default(0),
   totalGlobalOperations: integer("total_global_operations").default(0),
+  totalPayrollNodes: integer("total_payroll_nodes").default(0),
+  totalAiModules: integer("total_ai_modules").default(0),
   vaultMeshStatus: text("vault_mesh_status").default("active"),
   treatySyncStatus: text("treaty_sync_status").default("online"),
   lastUpdated: timestamp("last_updated").defaultNow().notNull(),
+});
+
+// Payroll System Tables
+export const payrollNodes = pgTable("payroll_nodes", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  nodeId: text("node_id").notNull().unique(),
+  companyName: text("company_name").notNull(),
+  contactEmail: text("contact_email").notNull(),
+  teamMembers: integer("team_members").notNull().default(0),
+  payrollType: text("payroll_type").notNull(), // monthly, weekly, contractor, hybrid
+  status: text("status").notNull().default("pending"), // pending, active, suspended
+  scrollId: text("scroll_id"),
+  vaultSyncEnabled: boolean("vault_sync_enabled").default(true),
+  lastPayslipGenerated: timestamp("last_payslip_generated"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow()
+});
+
+export const payrollEmployees = pgTable("payroll_employees", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  nodeId: text("node_id").notNull(),
+  employeeId: text("employee_id").notNull().unique(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  role: text("role").notNull(),
+  department: text("department").notNull(),
+  ctcAmount: integer("ctc_amount").notNull(), // in cents
+  payGrade: text("pay_grade").notNull(),
+  shiftPattern: text("shift_pattern").notNull(), // standard, flexible, remote
+  status: text("status").notNull().default("active"), // active, inactive, suspended
+  startDate: timestamp("start_date").notNull(),
+  lastShiftSync: timestamp("last_shift_sync"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow()
+});
+
+export const payrollAiModules = pgTable("payroll_ai_modules", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  moduleId: text("module_id").notNull().unique(),
+  name: text("name").notNull(),
+  description: text("description").notNull(),
+  status: text("status").notNull().default("active"), // active, scanning, monitoring, inactive
+  nodeId: text("node_id").notNull(),
+  lastExecution: timestamp("last_execution"),
+  executionCount: integer("execution_count").default(0),
+  anomaliesDetected: integer("anomalies_detected").default(0),
+  accuracy: integer("accuracy").default(0), // percentage
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow()
+});
+
+export const payrollShiftLogs = pgTable("payroll_shift_logs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  logId: text("log_id").notNull().unique(),
+  employeeId: text("employee_id").notNull(),
+  nodeId: text("node_id").notNull(),
+  shiftDate: timestamp("shift_date").notNull(),
+  clockIn: timestamp("clock_in"),
+  clockOut: timestamp("clock_out"),
+  totalHours: integer("total_hours"), // in minutes
+  expectedHours: integer("expected_hours"), // in minutes
+  driftDetected: boolean("drift_detected").default(false),
+  driftAmount: integer("drift_amount").default(0), // in minutes
+  status: text("status").notNull().default("completed"), // completed, anomaly, flagged
+  validatedBy: text("validated_by"), // AI module or human validator
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow()
 });
 
 // Insert schemas
@@ -237,6 +307,58 @@ export const insertGlobalOperationSchema = createInsertSchema(globalOperations).
   metadata: true,
 });
 
+export const insertPayrollNodeSchema = createInsertSchema(payrollNodes).pick({
+  nodeId: true,
+  companyName: true,
+  contactEmail: true,
+  teamMembers: true,
+  payrollType: true,
+  status: true,
+  scrollId: true,
+  vaultSyncEnabled: true,
+  notes: true,
+});
+
+export const insertPayrollEmployeeSchema = createInsertSchema(payrollEmployees).pick({
+  nodeId: true,
+  employeeId: true,
+  name: true,
+  email: true,
+  role: true,
+  department: true,
+  ctcAmount: true,
+  payGrade: true,
+  shiftPattern: true,
+  status: true,
+  startDate: true,
+});
+
+export const insertPayrollAiModuleSchema = createInsertSchema(payrollAiModules).pick({
+  moduleId: true,
+  name: true,
+  description: true,
+  status: true,
+  nodeId: true,
+  executionCount: true,
+  anomaliesDetected: true,
+  accuracy: true,
+});
+
+export const insertPayrollShiftLogSchema = createInsertSchema(payrollShiftLogs).pick({
+  logId: true,
+  employeeId: true,
+  nodeId: true,
+  shiftDate: true,
+  clockIn: true,
+  clockOut: true,
+  totalHours: true,
+  expectedHours: true,
+  driftDetected: true,
+  driftAmount: true,
+  status: true,
+  validatedBy: true,
+});
+
 // Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -267,5 +389,17 @@ export type AmericanState = typeof americanStates.$inferSelect;
 
 export type InsertGlobalOperation = z.infer<typeof insertGlobalOperationSchema>;
 export type GlobalOperation = typeof globalOperations.$inferSelect;
+
+export type InsertPayrollNode = z.infer<typeof insertPayrollNodeSchema>;
+export type PayrollNode = typeof payrollNodes.$inferSelect;
+
+export type InsertPayrollEmployee = z.infer<typeof insertPayrollEmployeeSchema>;
+export type PayrollEmployee = typeof payrollEmployees.$inferSelect;
+
+export type InsertPayrollAiModule = z.infer<typeof insertPayrollAiModuleSchema>;
+export type PayrollAiModule = typeof payrollAiModules.$inferSelect;
+
+export type InsertPayrollShiftLog = z.infer<typeof insertPayrollShiftLogSchema>;
+export type PayrollShiftLog = typeof payrollShiftLogs.$inferSelect;
 
 export type SystemStats = typeof systemStats.$inferSelect;
