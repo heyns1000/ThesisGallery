@@ -5,6 +5,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import { storage } from "./storage";
+import { EmailProcessor, type EmailParsingResult } from "./email-processor";
 import { 
   insertDocumentSchema,
   insertGallerySchema,
@@ -498,6 +499,81 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       res.status(500).json({ error: "Atom-Level Verification™ failed" });
+    }
+  });
+
+  // Email metadata processing for document verification
+  app.post("/api/documents/process-email", async (req, res) => {
+    try {
+      const { emailContent, title } = req.body;
+      
+      if (!emailContent) {
+        return res.status(400).json({ error: "Email content is required" });
+      }
+
+      // Process the email using the EmailProcessor
+      const emailResult: EmailParsingResult = EmailProcessor.parseEmailContent(emailContent);
+      const complianceReport = EmailProcessor.generateComplianceReport(emailResult);
+      const authenticity = EmailProcessor.verifyDocumentAuthenticity(emailResult);
+
+      // Create document record with email metadata
+      const document = await storage.createDocument({
+        title: title || emailResult.metadata.subject || "Email Document",
+        content: emailResult.content,
+        type: "email",
+        metadata: {
+          emailMetadata: emailResult.metadata,
+          verification: emailResult.verification,
+          authenticity: authenticity,
+          complianceReport: complianceReport,
+          processed: true
+        }
+      });
+
+      // Create compliance log
+      await storage.createComplianceLog({
+        type: "verification",
+        message: `Email document processed: ${document.title}`,
+        status: complianceReport.verificationStatus.toLowerCase(),
+        details: `Compliance Score: ${complianceReport.complianceScore}% | Atom-Level: ${complianceReport.atomLevelVerification ? 'VERIFIED' : 'PENDING'}`,
+        brandId: null
+      });
+
+      // Create processing queue item for email analysis
+      await storage.createProcessingQueueItem({
+        type: "document",
+        title: "Email metadata extraction",
+        description: `Processing email: "${emailResult.metadata.subject}"`,
+        progress: 100,
+        status: "completed",
+        metadata: {
+          documentId: document.id,
+          emailVerified: authenticity.authentic,
+          complianceScore: complianceReport.complianceScore
+        }
+      });
+
+      broadcast({ 
+        type: 'email_processed', 
+        data: { 
+          document, 
+          emailMetadata: emailResult.metadata,
+          verification: authenticity 
+        } 
+      });
+
+      res.json({
+        success: true,
+        document,
+        emailMetadata: emailResult.metadata,
+        verification: authenticity,
+        complianceReport,
+        message: `Email processed successfully with ${complianceReport.complianceScore}% compliance score`
+      });
+
+    } catch (error) {
+      console.error('Email processing error:', error);
+      res.status(500).json({ error: "Failed to process email" });
     }
   });
 
