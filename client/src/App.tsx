@@ -15,6 +15,8 @@ import GlobalView from "@/pages/global-view";
 import FruitfulAmerica from "@/pages/fruitful-america";
 import WildlifeDashboard from "@/pages/wildlife-dashboard";
 import VaultPayments from "@/pages/vault-payments";
+import PayrollDashboard from "@/pages/payroll-dashboard";
+import PayrollOnboarding from "@/pages/payroll-onboarding";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -31,6 +33,8 @@ function Router() {
       <Route path="/fruitful-america" component={FruitfulAmerica} />
       <Route path="/wildlife-dashboard" component={WildlifeDashboard} />
       <Route path="/vault-payments" component={VaultPayments} />
+      <Route path="/payroll-dashboard" component={PayrollDashboard} />
+      <Route path="/payroll-onboarding" component={PayrollOnboarding} />
       <Route component={NotFound} />
     </Switch>
   );
