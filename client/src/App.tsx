@@ -31,6 +31,8 @@ import AILogicDashboard from "@/pages/ai-logic-dashboard";
 import CodeNestPlatform from "@/pages/codenest-platform";
 import AdminPortal from "@/pages/admin-portal";
 import AdminAccessPortal from "@/pages/admin-access-portal";
+import PulseGridDashboard from "@/pages/pulse-grid-dashboard";
+import CrateDanceSmartGrid from "@/pages/crate-dance-smart-grid";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -63,6 +65,8 @@ function Router() {
       <Route path="/codenest-platform" component={CodeNestPlatform} />
       <Route path="/admin-portal" component={AdminPortal} />
       <Route path="/admin-access-portal" component={AdminAccessPortal} />
+      <Route path="/pulse-grid-dashboard" component={PulseGridDashboard} />
+      <Route path="/crate-dance-smart-grid" component={CrateDanceSmartGrid} />
       <Route component={NotFound} />
     </Switch>
   );

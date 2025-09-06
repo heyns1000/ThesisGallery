@@ -18,6 +18,8 @@ const navItems = [
   { href: "/education-dashboard", label: "🧸 Education Sector", icon: "fas fa-graduation-cap", id: "education-dashboard" },
   { href: "/ai-logic-dashboard", label: "🧠 AI & Logic Grid", icon: "fas fa-brain", id: "ai-logic-dashboard" },
   { href: "/admin-portal", label: "🦁 Admin Portal", icon: "fas fa-shield-alt", id: "admin-portal" },
+  { href: "/pulse-grid-dashboard", label: "🍇 PulseGrid Trading", icon: "fas fa-chart-line", id: "pulse-grid-dashboard" },
+  { href: "/crate-dance-smart-grid", label: "🧩 Crate Dance Grid", icon: "fas fa-cubes", id: "crate-dance-smart-grid" },
   { href: "/vault-payments", label: "💳 Vault Payments", icon: "fas fa-credit-card", id: "vault-payments" },
 ];
 
