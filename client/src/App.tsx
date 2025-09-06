@@ -43,6 +43,7 @@ import TeamOnboarding from "@/pages/team-onboarding";
 import ContactManagement from "@/pages/contact-management";
 import BanimalPlatform from "@/pages/banimal-platform";
 import SeedlingLanguageLearning from "@/pages/seedling-language-learning";
+import NotificationSettings from "@/pages/notification-settings";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -87,6 +88,7 @@ function Router() {
       <Route path="/contact-management" component={ContactManagement} />
       <Route path="/banimal-platform" component={BanimalPlatform} />
       <Route path="/seedling-language-learning" component={SeedlingLanguageLearning} />
+      <Route path="/notifications/settings" component={NotificationSettings} />
       <Route component={NotFound} />
     </Switch>
   );
