@@ -14,7 +14,20 @@ const miningPlatforms = [
     modules: ["Prime", "MinerLink", "VaultMesh"],
     stats: { fleets: 45, uptime: "99.7%", optimization: "+12%" },
     pricing: "From $38k/year",
-    color: "yellow"
+    color: "yellow",
+    link: "/autoborn-platform"
+  },
+  {
+    id: "minerva",
+    name: "🧠 Minerva™",
+    subtitle: "Geological Forecasting AI",
+    description: "FAA-certified geological AI engine for mineral yield and terrain safety forecasting",
+    status: "active",
+    modules: ["AI Forecasting", "Zone Analysis", "Export Scoring"],
+    stats: { territories: 3, forecasts: "9s loop", accuracy: "95%" },
+    pricing: "From $499/month",
+    color: "blue",
+    link: "/minerva-platform"
   },
   {
     id: "mineforge",
@@ -66,7 +79,8 @@ const getColorClasses = (color: string) => {
   const colors = {
     yellow: "border-yellow-500 bg-yellow-900/10 text-yellow-300",
     orange: "border-orange-500 bg-orange-900/10 text-orange-300",
-    green: "border-green-500 bg-green-900/10 text-green-300"
+    green: "border-green-500 bg-green-900/10 text-green-300",
+    blue: "border-blue-500 bg-blue-900/10 text-blue-300"
   };
   return colors[color as keyof typeof colors] || colors.yellow;
 };
@@ -126,6 +140,11 @@ export default function MiningDashboard() {
           <a href="#pulse" className="px-4 py-2 border border-orange-600 rounded hover:bg-orange-600 transition">
             📡 PulseGrid™
           </a>
+          <Link href="/heartbeat-dashboard">
+            <a className="px-4 py-2 border border-cyan-600 rounded hover:bg-cyan-600 transition">
+              🫀 Heartbeat
+            </a>
+          </Link>
         </div>
       </nav>
 
@@ -221,9 +240,17 @@ export default function MiningDashboard() {
 
                   <div className="border-t border-gray-700 pt-3 flex justify-between items-center">
                     <span className="text-sm font-semibold">{platform.pricing}</span>
-                    <Button size="sm" className="bg-orange-600 hover:bg-orange-500">
-                      Launch Platform
-                    </Button>
+                    {platform.link ? (
+                      <Link href={platform.link}>
+                        <Button size="sm" className="bg-orange-600 hover:bg-orange-500">
+                          Launch Platform
+                        </Button>
+                      </Link>
+                    ) : (
+                      <Button size="sm" className="bg-orange-600 hover:bg-orange-500">
+                        Launch Platform
+                      </Button>
+                    )}
                   </div>
                 </CardContent>
               </Card>

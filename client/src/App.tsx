@@ -19,6 +19,8 @@ import PayrollDashboard from "@/pages/payroll-dashboard";
 import PayrollOnboarding from "@/pages/payroll-onboarding";
 import MiningDashboard from "@/pages/mining-dashboard";
 import AutoBornPlatform from "@/pages/autoborn-platform";
+import MinervaplatForm from "@/pages/minerva-platform";
+import HeartbeatDashboard from "@/pages/heartbeat-dashboard";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -39,6 +41,8 @@ function Router() {
       <Route path="/payroll-onboarding" component={PayrollOnboarding} />
       <Route path="/mining-dashboard" component={MiningDashboard} />
       <Route path="/autoborn-platform" component={AutoBornPlatform} />
+      <Route path="/minerva-platform" component={MinervaplatForm} />
+      <Route path="/heartbeat-dashboard" component={HeartbeatDashboard} />
       <Route component={NotFound} />
     </Switch>
   );
