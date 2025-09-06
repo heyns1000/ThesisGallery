@@ -1,0 +1,160 @@
+;;
+;; Domain:     faa.zone.
+;; Exported:   2025-08-25 19:03:24
+;;
+;; This file is intended for use for informational and archival
+;; purposes ONLY and MUST be edited before use on a production
+;; DNS server.  In particular, you must:
+;;   -- update the SOA record with the correct authoritative name server
+;;   -- update the SOA record with the contact e-mail address information
+;;   -- update the NS record(s) with the authoritative name servers for this domain.
+;;
+;; For further information, please consult the BIND documentation
+;; located on the following website:
+;;
+;; http://www.isc.org/
+;;
+;; And RFC 1035:
+;;
+;; http://www.ietf.org/rfc/rfc1035.txt
+;;
+;; Please note that we do NOT offer technical support for any use
+;; of this zone data, the BIND name server, or any other third-party
+;; DNS software.
+;;
+;; Use at your own risk.
+;; SOA Record
+faa.zone	3600	IN	SOA	carlane.ns.cloudflare.com. dns.cloudflare.com. 2050781520 10000 2400 604800 3600
+
+;; NS Records
+faa.zone.	86400	IN	NS	carlane.ns.cloudflare.com.
+faa.zone.	86400	IN	NS	guss.ns.cloudflare.com.
+
+;; A Records
+portal.faa.zone.	1	IN	A	157.180.95.74 ; cf_tags=cf-proxied:false
+www.fruitful.crate.dance.faa.zone.	3600	IN	A	103.169.142.0 ; cf_tags=cf-proxied:false
+
+;; CNAME Records
+adele.faa.zone.	600	IN	CNAME	fcf866767e69bf6b.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+admin.faa.zone.	1	IN	CNAME	cname.vercel-dns.com. ; cf_tags=cf-proxied:false
+agriculture.seedwave.faa.zone.	600	IN	CNAME	9db9b91472e51d48.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+ai-logic.seedwave.faa.zone.	600	IN	CNAME	03bf939059b1e35b.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+api.vault.seedwave.faa.zone.	600	IN	CNAME	b84138845b835d61.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+banking.seedwave.faa.zone.	600	IN	CNAME	db752b3cf7b89d36.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+baobab.faa.zone.	1	IN	CNAME	heyns1000.github.io. ; cf_tags=cf-proxied:false
+careers.faa.zone.	600	IN	CNAME	dc3f1833876b0100.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+education-ip.seedwave.faa.zone.	600	IN	CNAME	977d055dde701bb4.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+faa.zone.	1	IN	CNAME	faa-zone-pages.pages.dev. ; cf_tags=cf-proxied:true
+footer.global.faa.zone.	600	IN	CNAME	002d72cf1c86d234.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+footer.global.repo.seedwave.faa.zone.	600	IN	CNAME	fa641034a7602a83.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+fruitful.crate.dance.faa.zone.	600	IN	CNAME	234e8e304be4d288.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+fruitful.faa.zone.	600	IN	CNAME	6e3864bf81fc8b49.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+fsf.seedwave.faa.zone.	600	IN	CNAME	9de90c5e101e5d44.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+housing.seedwave.faa.zone.	600	IN	CNAME	c9c547b1cf60d0ab.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+index.menu.seedwave.faa.zone.	600	IN	CNAME	b3e3c2426c6d5596.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+interns.seedwave.faa.zone.	600	IN	CNAME	81f2bb244d889238.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+justice.seedwave.faa.zone.	600	IN	CNAME	f24e210a5db9bae7.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+legal.faa.zone.	600	IN	CNAME	1224e6be4d504cb3.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+lesotho.faa.zone.	600	IN	CNAME	c969646ed428b16a.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+logistics.seedwave.faa.zone.	600	IN	CNAME	79b821effa9e03db.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+media-sonic.seedwave.faa.zone.	600	IN	CNAME	26b2deebe1a7024b.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+media.sonic.seedwave.faa.zone.	600	IN	CNAME	86b8f2906f3c392d.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+menu.seedwave.faa.zone.	600	IN	CNAME	92f1266b5f9da5f7.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+mining.seedwave.faa.zone.	600	IN	CNAME	1f11e16a70e38f97.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+noodle.juice.faa.zone.	600	IN	CNAME	76ee7db7e4e42415.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+nutrition.seedwave.faa.zone.	600	IN	CNAME	1a32bcad4d3cece2.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+omnigrid.faa.zone.	600	IN	CNAME	a69a314569d78661.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+payment.faa.zone.	600	IN	CNAME	47264430c1d5ba49.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+payroll.faa.zone.	600	IN	CNAME	fc7cd73fb35c8d3e.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+payroll-mining.seedwave.faa.zone.	600	IN	CNAME	b9378d0d2823cc90.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+quantum.seedwave.faa.zone.	600	IN	CNAME	4d3f90bf7d1edaeb.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+ritual.seedwave.faa.zone.	600	IN	CNAME	370d6da323fa9c0a.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+samfox.faa.zone.	3600	IN	CNAME	cname.vercel-dns.com. ; cf_tags=cf-proxied:false
+seedwave.faa.zone.	3600	IN	CNAME	cname.vercel-dns.com. ; cf_tags=cf-proxied:false
+shoshaloza.faa.zone.	600	IN	CNAME	938fa2d9d665ce8b.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+toynest.seedwave.faa.zone.	600	IN	CNAME	6fa0c0e6823a2f2e.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+trade.seedwave.faa.zone.	600	IN	CNAME	12cedb21b5f3565a.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+tripot.faa.zone.	600	IN	CNAME	75a2a8759c64184c.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+vault.faa.zone.	1	IN	CNAME	faa-zone-vault.pages.dev. ; cf_tags=cf-proxied:true
+vaultmesh.faa.zone.	3600	IN	CNAME	cname.vercel-dns.com. ; cf_tags=cf-proxied:false
+wildlife.seedwave.faa.zone.	600	IN	CNAME	5a0461b044671ce4.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+www.baobab.faa.zone.	1	IN	CNAME	heyns1000.github.io. ; cf_tags=cf-proxied:false
+www.faa.zone.	1	IN	CNAME	faa.zone. ; cf_tags=cf-proxied:true
+
+;; MX Records
+admin.faa.zone.	600	IN	MX	50 mx3.zoho.com.
+admin.faa.zone.	600	IN	MX	20 mx2.zoho.com.
+admin.faa.zone.	600	IN	MX	10 mx.zoho.com.
+faa.zone.	600	IN	MX	10 mx.zoho.com.
+faa.zone.	600	IN	MX	50 mx3.zoho.com.
+faa.zone.	600	IN	MX	20 mx2.zoho.com.
+seedwave.faa.zone.	600	IN	MX	20 mx2.zoho.com.
+seedwave.faa.zone.	600	IN	MX	50 mx3.zoho.com.
+seedwave.faa.zone.	600	IN	MX	10 mx.zoho.com.
+shoshaloza.faa.zone.	600	IN	MX	20 mx2.zoho.com.
+shoshaloza.faa.zone.	600	IN	MX	50 mx3.zoho.com.
+shoshaloza.faa.zone.	600	IN	MX	10 mx.zoho.com.
+tripot.faa.zone.	600	IN	MX	50 mx3.zoho.com.
+tripot.faa.zone.	600	IN	MX	20 mx2.zoho.com.
+tripot.faa.zone.	600	IN	MX	10 mx.zoho.com.
+
+;; TXT Records
+admin.faa.zone.	3600	IN	TXT	"v=spf1 include:zoho.com include:zohomail.com ~all"
+_dmarc.admin.faa.zone.	1	IN	TXT	"v=DMARC1; p=quarantine; rua=mailto:vault@faa.zone"
+_dmarc.faa.zone.	1	IN	TXT	"v=DMARC1; p=quarantine; rua=mailto:admin@faa.zone; pct=100"
+_dmarc.faa.zone.	1	IN	TXT	"v=spf1 ip4:204.141.42.0/24 ip4:136.143.190.0/23 ip4:8.38.64.0/22 ip4:8.38.32.0/22 include:zoho.eu ~all"
+faa.zone.	1	IN	TXT	"openai-domain-verification=dv-9nTaZYxDzeAIlPVQ65QP0wIJ"
+faa.zone.	1	IN	TXT	"v=spf1 include:zohomail.com ~all"
+fruitful.crate.dance.faa.zone.	3600	IN	TXT	"canva-domain-verify=821ff47a-5b52-467c-8752-d2f7fe3aa324"
+fruitful.crate.dance.faa.zone.	3600	IN	TXT	"canva-domain-verify=b33ed454-e02a-44b3-8e87-f20382ff318c"
+seedwave._domainkey.seedwave.faa.zone.	600	IN	TXT	"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCVk7UeMSekf31GuEBCnNE/UI3nEXNxCCAyWTtHgFDqJafVE6+l8mz3OCFevVKVHd80rDhAtzZSqhAScDTYJEc3HYAarLaE/PM/eNoEidXK4iwIF1V6kVm/IB5Gp6eYCrzoC5EO17z504upBDF8Bo1cBncu1pvyNk583oyl/PqfFQIDAQAB"
+seedwave.faa.zone.	3600	IN	TXT	"v=spf1 include:zohomail.com -all"
+shoshaloza._domainkey.shoshaloza.faa.zone.	600	IN	TXT	"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDSQoG3PbEvPyxmRWd2wOA8V73q5am2aKM4iGt1uzTEKBOBqOZTUVoY1F3dZuAcsLkcfBIVhI/0yND1TTUasQ2+ixhjWWG/o3Zsn6tnbAI3Vcvrg/f3rNrG5HUH4SzSkTPVcX+/wNcWguJVA2/+D9rUanfQs1/QDgE6yIpVivLoOQIDAQAB"
+shoshaloza.faa.zone.	3600	IN	TXT	"v=spf1 include:zohomail.com -all"
+tripot._domainkey.tripot.faa.zone.	600	IN	TXT	"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCdpwfL+luMD11epyJ+Z69cr+4S8JZri7I0BtKMKtttgq5kdyPLkzGG0MFlLHRILBMZ2snEhtKOwog2XosQPtIG3UrXLb94XGez5cwEg4r42eb9IME/aULBFCcrpY9xRrAP+bjzfmrzTHI0cM1S1qF5fcNP28tW1jxKeUBV4DO2zwIDAQAB"
+tripot.faa.zone.	3600	IN	TXT	"v=spf1 include:zohomail.com -all"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=adele.faa.zone,b538a4351f048dbb663e,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=nutrition.seedwave.faa.zone,277f72b3f4e096433dd7,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=wildlife.seedwave.faa.zone,aaafc84f5e69166594a2,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=payroll.faa.zone,2942d4c805ff5241bddd,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=lesotho.faa.zone,65ab867b7d03ee4b22d6,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=logistics.seedwave.faa.zone,37ea2b8b25a2397fbd41,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=justice.seedwave.faa.zone,f86c1843eea50e6a4e4e,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=payroll-mining.seedwave.faa.zone,62cc01faf32c1f2f3f44,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=footer.global.faa.zone,57e9c5b25e00c2f61ce3,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=education-ip.seedwave.faa.zone,e719704029117e379332,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=fruitful.crate.dance.faa.zone,57baec1c30d2d5033c75,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=shoshaloza.faa.zone,a2aa686ed7deb0be3be3,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=trade.seedwave.faa.zone,1bebeb0a75b0144be0cd,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=housing.seedwave.faa.zone,f8fe374516f7f82c8d25,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=api.vault.seedwave.faa.zone,c7927c4bd7fb9840744a,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=footer.global.repo.seedwave.faa.zone,b488c0fab16b818f955a,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=media-sonic.seedwave.faa.zone,7a0b00f8f7c07b0b1a76,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=interns.seedwave.faa.zone,a34cc8aa3a6733d46146,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=ritual.seedwave.faa.zone,095f305b198f80e35985,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=index.menu.seedwave.faa.zone,2a19e4ec0aafa7268e7a,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=quantum.seedwave.faa.zone,21a6712be65cfa9cc81e,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=menu.seedwave.faa.zone,e5d1feafa9201e21f9d2,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=toynest.seedwave.faa.zone,c27b9b41ec37d531492c,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=media.sonic.seedwave.faa.zone,ce8254872864ff2afe34,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=banking.seedwave.faa.zone,12979b56900aea90fa4f,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=fsf.seedwave.faa.zone,3f099dc1cb8744940359,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=agriculture.seedwave.faa.zone,4a96cab11c13809f9b50,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=mining.seedwave.faa.zone,da64514ff15cbf13166e,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=ai-logic.seedwave.faa.zone,3e58f87bb005a3acb918,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=tripot.faa.zone,ad57925312b4e651c778,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=noodle.juice.faa.zone,01a9625d648e7d79afa5,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=careers.faa.zone,9eb8d244b7a60987e5f8,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=payment.faa.zone,fc758bcd0fac45184dca,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=omnigrid.faa.zone,99a38f926130efa9cf55,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=legal.faa.zone,0818a22b773b4ffa07c1,dc"
+_vercel.faa.zone.	600	IN	TXT	"vc-domain-verify=fruitful.faa.zone,a55ad9405b0490d433d6,dc"
+_vercel.faa.zone.	3600	IN	TXT	"vc-domain-verify=vaultmesh.faa.zone,d29b70bc83e8a74440a9,dc"
+_vercel.faa.zone.	3600	IN	TXT	"vc-domain-verify=samfox.faa.zone,b2bccace53c7fc900fc5,dc"
+_vercel.faa.zone.	3600	IN	TXT	"vc-domain-verify=seedwave.faa.zone,7a1ba4ff6fb0b87eec7a,dc"
+_vercel.faa.zone.	3600	IN	TXT	"vc-domain-verify=faa.zone,13d3c9ba0a0ff4dc53ce,dc"
+zmail._domainkey.faa.zone.	1	IN	TXT	"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCKu9KIgTk1q00I6J4DIVVtdHE/VyiVH5KJe8enrCgcZMAM6IqSLrMZZjXvVPWzM6vKaxjiTKw/Fhl0JlfDugxwlZS0Y+FJbr4WEc1LbiMJO99KIl2dUpaLVzO5ChbwFmM734698lF4hn87jfeXNwn6kVziqqh4glu9Kbya4evtZwQIDAQAB"
+zmail._domainkey.faa.zone.	600	IN	TXT	"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCKu9KIgTk1q00I6J4DIIVVtdHE/VyiVH5KJe8enrCgcZMAM6lqSLrMZ7jXvVPWzM6vKaxjiTKw/FhI0JIfDugxwlZS0Y+FJbr4WEc1biMJO99KI2dUpaLVzO5ChbwFmM734698IF4hh87jfeXNwn6kVziqqh4glu9Kbya4evtZwQIDAQAB"
+zoho._domainkey.admin.faa.zone.	600	IN	TXT	"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCNCQs0Oeh5hsMFVHUBvJd16UBmnnPLBNFjJ6mbm2uxFAecD+I5pS6bohsn7GjGNuqPCsNgLOwS8jrb20HgUXTDQJa3QuiDAe3x/Q3zNlop0o/33fksuLlqMLlJDkOxEibPsnx4gOne3ciYZEEUWb39Ppb7SlL4yGOBnUxrQ36hNQIDAQAB"
+zoho._domainkey.admin.faa.zone.	1	IN	TXT	"Paste DKIM value from Zoho admin panel"
+zoho._domainkey.faa.zone.	1	IN	TXT	"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDC0Hp4tqrLSgz3Y4NWItXlLO1TDwOApdJDTfwJAjXYmggd66h4mUyMV/KXXumv5uWO+CtpsmhudUifZ+NKJ6t5ntkUjISC1H2ziUf9TOMfW2JW3sHB/44gvp8DuU6e9kk3Ff52WgjEGAxIDi2cM5MVKlJOfxRyjj2S8lgOawmg+wIDAQAB"
