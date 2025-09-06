@@ -22,6 +22,7 @@ const navItems = [
   { href: "/crate-dance-smart-grid", label: "🧩 Crate Dance Grid", icon: "fas fa-cubes", id: "crate-dance-smart-grid" },
   { href: "/crate-dance-africa", label: "🎭 Crate Dance™ Africa", icon: "fas fa-music", id: "crate-dance-africa" },
   { href: "/playing-with-the-seed", label: "🌱 Playing with the Seed", icon: "fas fa-seedling", id: "playing-with-the-seed" },
+  { href: "/seedling-language-learning", label: "💬 Seedling Languages", icon: "fas fa-heart", id: "seedling-language-learning" },
   { href: "/vault-payments", label: "💳 Vault Payments", icon: "fas fa-credit-card", id: "vault-payments" },
   { href: "/team-onboarding", label: "👥 Team Onboarding", icon: "fas fa-user-plus", id: "team-onboarding" },
   { href: "/contact-management", label: "📧 Contact Management", icon: "fas fa-address-book", id: "contact-management" },

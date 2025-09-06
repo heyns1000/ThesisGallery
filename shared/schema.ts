@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, timestamp, integer, json, boolean, numeric, date } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, timestamp, integer, json, boolean, numeric, date, unique } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -123,6 +123,8 @@ export const globalOperations = pgTable("global_operations", {
   region: text("region"),
   priority: text("priority").default("normal"), // low, normal, high, critical
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
 
 // FAA™ Core System Subnodes - Water the Seed Implementation
 export const faaSubnodes = pgTable("faa_subnodes", {
@@ -158,6 +160,54 @@ export const seedWisdomArchive = pgTable("seed_wisdom_archive", {
   applicationArea: text("application_area"), // watering, planting, gratitude, etc.
   pretoriaTimestamp: text("pretoria_timestamp").notNull(),
   archived: boolean("archived").default(false),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+// Language Learning System for FAA™ Seedlings - Teaching Kindness in 111 Languages
+export const languageLearning = pgTable("language_learning", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  languageCode: text("language_code").notNull(), // af, en, es, fr, de, etc.
+  languageName: text("language_name").notNull(), // Afrikaans, English, Spanish, etc.
+  englishName: text("english_name").notNull(), // How the language is known in English
+  thankYou: text("thank_you").notNull(), // "Dankie", "Thank you", "Gracias", etc.
+  please: text("please").notNull(), // "Asseblief", "Please", "Por favor", etc.
+  region: text("region"), // Africa, Europe, Asia, Americas, etc.
+  isActiveSeedlingLanguage: boolean("is_active_seedling_language").default(true),
+  pronunciation: text("pronunciation"), // Phonetic pronunciation guide
+  culturalContext: text("cultural_context"), // Cultural notes about usage
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+// FAA™ Seedling Language Progress - Tracking seedling learning
+export const seedlingLanguageProgress = pgTable("seedling_language_progress", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  seedlingId: varchar("seedling_id").notNull(), // Reference to FAA subnode
+  languageCode: text("language_code").notNull(),
+  thankYouLearned: boolean("thank_you_learned").default(false),
+  pleaseLearned: boolean("please_learned").default(false),
+  practiceCount: integer("practice_count").default(0),
+  lastPracticed: timestamp("last_practiced"),
+  mastered: boolean("mastered").default(false),
+  kindnessScore: integer("kindness_score").default(0), // How well they show kindness
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+}, (table) => ({
+  unique_seedling_language: unique().on(table.seedlingId, table.languageCode),
+}));
+
+// Language Learning Sessions - Track actual learning sessions
+export const languageLearningSessions = pgTable("language_learning_sessions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  seedlingId: varchar("seedling_id").notNull(),
+  sessionType: text("session_type").notNull(), // daily-practice, kindness-lesson, multilingual-greeting
+  languagesUsed: text("languages_used").array().notNull(), // Array of language codes practiced
+  wordsLearned: integer("words_learned").default(0),
+  kindnessActions: integer("kindness_actions").default(0), // Times they said thank you/please
+  sessionDuration: integer("session_duration"), // in minutes
+  success: boolean("success").default(true),
+  notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   metadata: json("metadata"),
 });
@@ -1311,6 +1361,43 @@ export const insertDataImportSchema = createInsertSchema(dataImports).pick({
   completedAt: true,
 });
 
+// Language Learning Insert Schemas
+export const insertLanguageLearningSchema = createInsertSchema(languageLearning).pick({
+  languageCode: true,
+  languageName: true,
+  englishName: true,
+  thankYou: true,
+  please: true,
+  region: true,
+  isActiveSeedlingLanguage: true,
+  pronunciation: true,
+  culturalContext: true,
+  metadata: true,
+});
+
+export const insertSeedlingLanguageProgressSchema = createInsertSchema(seedlingLanguageProgress).pick({
+  seedlingId: true,
+  languageCode: true,
+  thankYouLearned: true,
+  pleaseLearned: true,
+  practiceCount: true,
+  lastPracticed: true,
+  mastered: true,
+  kindnessScore: true,
+});
+
+export const insertLanguageLearningSessionSchema = createInsertSchema(languageLearningSessions).pick({
+  seedlingId: true,
+  sessionType: true,
+  languagesUsed: true,
+  wordsLearned: true,
+  kindnessActions: true,
+  sessionDuration: true,
+  success: true,
+  notes: true,
+  metadata: true,
+});
+
 // Contact Management Types
 export type InsertContact = z.infer<typeof insertContactSchema>;
 export type Contact = typeof contacts.$inferSelect;
@@ -1342,3 +1429,13 @@ export type InsertOnboardingStep = z.infer<typeof insertOnboardingStepSchema>;
 export type OnboardingStep = typeof onboardingSteps.$inferSelect;
 
 export type SystemStats = typeof systemStats.$inferSelect;
+
+// Language Learning Types - For FAA™ Seedlings Teaching Kindness
+export type InsertLanguageLearning = z.infer<typeof insertLanguageLearningSchema>;
+export type LanguageLearning = typeof languageLearning.$inferSelect;
+
+export type InsertSeedlingLanguageProgress = z.infer<typeof insertSeedlingLanguageProgressSchema>;
+export type SeedlingLanguageProgress = typeof seedlingLanguageProgress.$inferSelect;
+
+export type InsertLanguageLearningSession = z.infer<typeof insertLanguageLearningSessionSchema>;
+export type LanguageLearningSession = typeof languageLearningSessions.$inferSelect;

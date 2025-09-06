@@ -21,10 +21,14 @@ import {
   insertDataImportSchema,
   insertBanimalProductSchema,
   insertBanimalOrderSchema,
-  insertBanimalCustomerSchema
+  insertBanimalCustomerSchema,
+  insertLanguageLearningSchema,
+  insertSeedlingLanguageProgressSchema,
+  insertLanguageLearningSessionSchema
 } from "@shared/schema";
 import { ContactProcessingAI, BanimalChatbot, CurrencyAI, HolidayAI, generateFaaReference } from "./ai-services";
 import { GeminiContactProcessor, GeminiBanimalChatbot, GeminiProductAI, GeminiMarketingAI } from "./gemini-ai";
+import { languageLearningService } from "./language-learning-service";
 
 // Configure multer for file uploads
 const upload = multer({
@@ -1245,6 +1249,157 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   }
+
+  // Language Learning API Routes for FAA™ Seedlings
+  
+  // Initialize language learning system with 111 languages
+  app.post("/api/language-learning/initialize", async (req, res) => {
+    try {
+      await languageLearningService.initializeLanguages();
+      res.json({ 
+        success: true, 
+        message: "Language learning system initialized with 111 kindness languages" 
+      });
+    } catch (error) {
+      res.status(500).json({ 
+        error: "Failed to initialize language learning system",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // Get all active languages for seedling learning
+  app.get("/api/language-learning/languages", async (req, res) => {
+    try {
+      const languages = await languageLearningService.getActiveLanguages();
+      res.json(languages);
+    } catch (error) {
+      res.status(500).json({ 
+        error: "Failed to fetch languages",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // Get specific language details
+  app.get("/api/language-learning/languages/:languageCode", async (req, res) => {
+    try {
+      const { languageCode } = req.params;
+      const language = await languageLearningService.getLanguageDetails(languageCode);
+      
+      if (!language) {
+        return res.status(404).json({ error: "Language not found" });
+      }
+      
+      res.json(language);
+    } catch (error) {
+      res.status(500).json({ 
+        error: "Failed to fetch language details",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // Update seedling language progress
+  app.post("/api/language-learning/progress", async (req, res) => {
+    try {
+      const validatedData = insertSeedlingLanguageProgressSchema.parse(req.body);
+      await languageLearningService.updateSeedlingProgress(
+        validatedData.seedlingId,
+        validatedData.languageCode,
+        {
+          thankYouLearned: validatedData.thankYouLearned,
+          pleaseLearned: validatedData.pleaseLearned,
+          practiceCount: validatedData.practiceCount,
+          kindnessScore: validatedData.kindnessScore
+        }
+      );
+      
+      res.json({ 
+        success: true, 
+        message: `Progress updated for seedling ${validatedData.seedlingId}` 
+      });
+    } catch (error) {
+      res.status(400).json({ 
+        error: "Failed to update progress",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // Create language learning session
+  app.post("/api/language-learning/sessions", async (req, res) => {
+    try {
+      const validatedData = insertLanguageLearningSessionSchema.parse(req.body);
+      await languageLearningService.createLearningSession(validatedData);
+      
+      res.json({ 
+        success: true, 
+        message: "Learning session created successfully" 
+      });
+    } catch (error) {
+      res.status(400).json({ 
+        error: "Failed to create learning session",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // Get seedling language statistics
+  app.get("/api/language-learning/seedlings/:seedlingId/stats", async (req, res) => {
+    try {
+      const { seedlingId } = req.params;
+      const stats = await languageLearningService.getSeedlingLanguageStats(seedlingId);
+      res.json(stats);
+    } catch (error) {
+      res.status(500).json({ 
+        error: "Failed to fetch seedling stats",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // Daily kindness practice for seedlings
+  app.post("/api/language-learning/daily-practice", async (req, res) => {
+    try {
+      const { seedlingId, selectedLanguages } = req.body;
+      
+      if (!seedlingId) {
+        return res.status(400).json({ error: "seedlingId is required" });
+      }
+      
+      const result = await languageLearningService.dailyKindnessPractice(
+        seedlingId, 
+        selectedLanguages || []
+      );
+      
+      broadcast({ 
+        type: 'seedling_practice_completed', 
+        data: { seedlingId, ...result } 
+      });
+      
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ 
+        error: "Failed to complete daily practice",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // Get seedling's language learning progress
+  app.get("/api/language-learning/seedlings/:seedlingId/progress", async (req, res) => {
+    try {
+      const { seedlingId } = req.params;
+      const stats = await languageLearningService.getSeedlingLanguageStats(seedlingId);
+      res.json(stats.languageProgress);
+    } catch (error) {
+      res.status(500).json({ 
+        error: "Failed to fetch seedling progress",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
 
   return httpServer;
 }
