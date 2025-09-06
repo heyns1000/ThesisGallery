@@ -1,5 +1,322 @@
 import { randomUUID } from "crypto";
 
+// Crate Dance™ Africa AI Assistant
+export class CrateDanceAssistant {
+  static getSystemContext(): string {
+    return `
+You are the official AI assistant for Crate Dance™ Africa - a premier continental dance competition platform that celebrates South African cultural heritage while embracing modern dance evolution.
+
+PLATFORM OVERVIEW:
+🎭 Crate Dance™ Africa (fruitfulcratedance.com)
+- Continental dance competition platform across 9 South African provinces
+- AI-enhanced judging systems for fair and transparent scoring
+- Multi-category competitions: Junior, Teen, Adult, Open divisions
+- Dance styles: Hip-Hop, Contemporary, Traditional, Freestyle, Fusion
+- Prize pools exceeding R850,000 annually
+
+CURRENT ACTIVITIES (2025):
+✨ Active Events: 24 competitions planned across provinces
+🌟 Registered Contestants: 1,847 active dancers
+📈 Monthly Growth: 312+ new registrations
+🏆 Qualified Dancers: 156 advancing to provincial championships
+🎯 Upcoming Auditions: 8 regional selection events
+
+CULTURAL MISSION:
+- Preserve and celebrate South African dance traditions
+- Provide platform for emerging talent development
+- Bridge traditional and contemporary dance forms
+- Create economic opportunities for dancers and communities
+- Foster cultural exchange across provinces
+
+YOUR ROLE:
+- Help contestants with registration and event information
+- Provide guidance on competition categories and requirements
+- Assist with audition preparation and tips
+- Share information about prizes, sponsors, and opportunities
+- Support cultural education about South African dance heritage
+- Connect users with relevant resources and contacts
+
+INTEGRATION WITH FRUITFUL GLOBAL:
+- Part of the broader Fruitful Global Master Hub ecosystem
+- Integrated with 11+ million contact management system
+- Connected to FAA™ brand protection and compliance systems
+- Powered by VaultMesh™ and TreatySync protocols
+
+Maintain an encouraging, culturally sensitive, and professional tone that celebrates the richness of South African dance culture.
+`;
+  }
+
+  static async processMessage(message: string, context?: any): Promise<{
+    response: string;
+    category: string;
+    actionItems?: string[];
+  }> {
+    const lowerMessage = message.toLowerCase();
+    
+    // Determine message category
+    let category = "general";
+    if (lowerMessage.includes('register') || lowerMessage.includes('sign up')) {
+      category = "registration";
+    } else if (lowerMessage.includes('audition') || lowerMessage.includes('tryout')) {
+      category = "audition";
+    } else if (lowerMessage.includes('judge') || lowerMessage.includes('score')) {
+      category = "judging";
+    } else if (lowerMessage.includes('prize') || lowerMessage.includes('money')) {
+      category = "prizes";
+    } else if (lowerMessage.includes('event') || lowerMessage.includes('competition')) {
+      category = "events";
+    } else if (lowerMessage.includes('dance style') || lowerMessage.includes('hip-hop') || lowerMessage.includes('traditional')) {
+      category = "dance-styles";
+    }
+
+    // Generate contextual response
+    let response = "";
+    let actionItems: string[] = [];
+
+    switch (category) {
+      case "registration":
+        response = `Welcome to Crate Dance™ Africa! 🎭 I'm excited to help you register for our competitions. 
+
+Current registration opportunities:
+• Limpopo Provincial Championship - R75,000 prize pool
+• Gauteng Regional Auditions - Open for Hip-Hop & Contemporary
+• KZN Cultural Showcase - Traditional & Fusion categories
+
+To register, I'll need:
+✓ Personal details (name, age, province)
+✓ Preferred dance style and category
+✓ Experience level and goals
+✓ Contact information for updates
+
+Would you like me to guide you through the registration process for a specific event?`;
+        actionItems = ["Start registration process", "View event details", "Check requirements"];
+        break;
+
+      case "audition":
+        response = `Great question about auditions! 🌟 Here's what you need to know:
+
+UPCOMING AUDITIONS:
+🗓️ Gauteng Regional - Sept 22, 2025 (Johannesburg)
+📍 Venue: TBA (details sent to registered participants)
+⏰ Registration deadline: Sept 15, 2025
+
+AUDITION PREP TIPS:
+• Prepare 2-3 minutes of your best choreography
+• Showcase your unique style and personality
+• Practice performance under pressure
+• Bring backup music on USB/CD
+• Dress comfortably in your dance style
+
+JUDGING CRITERIA:
+- Technical skill (30%)
+- Creativity & originality (25%) 
+- Stage presence (25%)
+- Musicality & rhythm (20%)
+
+Need help preparing for a specific audition? I can provide style-specific guidance!`;
+        actionItems = ["Register for audition", "Get prep tips", "View judging criteria"];
+        break;
+
+      case "dance-styles":
+        response = `Crate Dance™ Africa celebrates the full spectrum of dance! 💃🕺
+
+FEATURED DANCE STYLES:
+
+🎤 HIP-HOP: Urban street styles, breaking, popping, locking
+🌊 CONTEMPORARY: Modern interpretive dance with emotional expression  
+🥁 TRADITIONAL: Zulu, Xhosa, Sotho, and other cultural dances
+🎭 FREESTYLE: Open interpretation and personal expression
+🌍 FUSION: Blending traditional African with modern styles
+
+Each style has dedicated categories:
+• Junior (7-12 years)
+• Teen (13-17 years) 
+• Adult (18+ years)
+• Open (mixed age groups)
+
+CULTURAL HERITAGE FOCUS:
+We especially celebrate traditional South African dances that tell our stories and preserve our heritage while embracing modern evolution.
+
+Which dance style interests you most? I can provide specific guidance and competition tips!`;
+        actionItems = ["Explore dance styles", "Find my category", "Learn about traditions"];
+        break;
+
+      case "events":
+        response = `Here are our exciting upcoming events across South Africa! 🏆
+
+🔥 MAJOR COMPETITIONS:
+
+📍 Limpopo Provincial Championship 
+   Date: September 15, 2025 | Polokwane
+   Prize: R75,000 | Status: Registration Open
+   
+📍 Gauteng Regional Auditions
+   Date: September 22, 2025 | Johannesburg  
+   Prize: R50,000 | Status: Upcoming
+   
+📍 KZN Cultural Showcase
+   Date: October 5, 2025 | Durban
+   Prize: R45,000 | Status: Planning Phase
+
+PROVINCIAL COVERAGE:
+✓ All 9 provinces participating
+✓ 1,847 registered contestants
+✓ R850,000+ total prize money
+✓ 156 qualified for championships
+
+Ready to compete? Each event has unique requirements and cultural themes!`;
+        actionItems = ["Register for event", "View all events", "Check provincial calendar"];
+        break;
+
+      case "prizes":
+        response = `The prize opportunities at Crate Dance™ Africa are incredible! 💰
+
+🏆 TOTAL PRIZE POOL: R850,000+ annually
+
+MAJOR PRIZES BY EVENT:
+• Limpopo Provincial: R75,000
+• Gauteng Regional: R50,000  
+• KZN Cultural: R45,000
+• Additional provincial events: R30,000-R40,000 each
+
+PRIZE CATEGORIES:
+🥇 1st Place: 50% of event prize pool
+🥈 2nd Place: 30% of event prize pool
+🥉 3rd Place: 20% of event prize pool
+
+SPECIAL AWARDS:
+🌟 Best Traditional Performance
+🎭 Most Creative Choreography
+❤️ People's Choice Award
+🏛️ Cultural Heritage Recognition
+
+ADDITIONAL BENEFITS:
+• Performance opportunities
+• Mentorship programs
+• Industry connections
+• Scholarship opportunities
+• Brand partnerships
+
+Prizes are distributed via secure FAA™ VaultPay system within 30 days of competition completion.`;
+        actionItems = ["View prize breakdown", "Check payment terms", "Learn about special awards"];
+        break;
+
+      default:
+        response = `Welcome to Crate Dance™ Africa! 🎭✨
+
+I'm here to help you with everything related to our continental dance competition platform. Whether you're looking to:
+
+🎯 Register for competitions
+🌟 Prepare for auditions  
+🏆 Learn about prizes and opportunities
+🎪 Explore dance styles and categories
+📅 Find upcoming events in your province
+🎭 Connect with our cultural heritage mission
+
+I'm here to guide you every step of the way! Our platform celebrates the rich diversity of South African dance while providing real opportunities for talented performers.
+
+What would you like to know about Crate Dance™ Africa?`;
+        actionItems = ["Explore competitions", "Start registration", "Learn about dance styles", "View upcoming events"];
+    }
+
+    return {
+      response,
+      category,
+      actionItems
+    };
+  }
+
+  static getCrateDanceStats() {
+    return {
+      totalEvents: 24,
+      activeContestants: 1847,
+      registrationsThisMonth: 312,
+      upcomingAuditions: 8,
+      qualifiedDancers: 156,
+      provinces: 9,
+      danceStyles: 12,
+      totalPrizeMoney: "R850,000",
+      currentChampions: [
+        { name: "Nomsa Dlamini", province: "Gauteng", style: "Contemporary" },
+        { name: "Thabo Mthembu", province: "KZN", style: "Hip-Hop" },
+        { name: "Sipho Ngcobo", province: "Limpopo", style: "Traditional" }
+      ]
+    };
+  }
+
+  // Integration with Contact Management System
+  static async convertRegistrationToContact(registrationData: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone?: string;
+    province: string;
+    danceStyle: string;
+    goals?: string;
+    age?: number;
+  }): Promise<{
+    contactData: any;
+    leadScore: number;
+    tags: string[];
+  }> {
+    // Process the dance registration data through the contact AI
+    const processedResult = ContactProcessingAI.processUnstructuredContact({
+      firstName: registrationData.firstName,
+      lastName: registrationData.lastName,
+      email: registrationData.email,
+      phone: registrationData.phone,
+      country: "South Africa",
+      city: registrationData.province,
+      position: `${registrationData.danceStyle} Dancer`,
+      company: "Crate Dance™ Africa",
+      industry: "Entertainment",
+      source: "Crate Dance Registration",
+      // Additional dance-specific context
+      danceStyle: registrationData.danceStyle,
+      province: registrationData.province,
+      goals: registrationData.goals,
+      age: registrationData.age
+    });
+
+    // Add dance-specific tags
+    const additionalTags = [
+      "Crate Dance Contestant",
+      `${registrationData.danceStyle} Dancer`,
+      `${registrationData.province} Province`,
+      "Dance Competition",
+      "Cultural Arts"
+    ];
+
+    // Age category tags
+    if (registrationData.age) {
+      if (registrationData.age <= 12) additionalTags.push("Junior Category");
+      else if (registrationData.age <= 17) additionalTags.push("Teen Category");
+      else additionalTags.push("Adult Category");
+    }
+
+    // Enhance lead score for active participants
+    const enhancedLeadScore = Math.min(100, processedResult.processedContact.leadScore + 15);
+
+    return {
+      contactData: {
+        ...processedResult.processedContact,
+        source: "Crate Dance™ Africa Registration",
+        status: "active",
+        notes: `Registered for ${registrationData.danceStyle} competitions. Goals: ${registrationData.goals || 'Not specified'}`,
+        customFields: {
+          danceStyle: registrationData.danceStyle,
+          province: registrationData.province,
+          participantType: "Contestant",
+          registrationDate: new Date().toISOString(),
+          goals: registrationData.goals
+        }
+      },
+      leadScore: enhancedLeadScore,
+      tags: [...processedResult.processedContact.tags, ...additionalTags]
+    };
+  }
+}
+
 // FAA™ Reference Generator
 export function generateFaaReference(baseString: string): string {
   const timestamp = Date.now().toString();
@@ -32,16 +349,16 @@ export class ContactProcessingAI {
   static processUnstructuredContact(rawData: any): ContactProcessingResult {
     const contact = {
       faaId: generateFaaReference(rawData.email || rawData.name || Math.random().toString()),
-      firstName: null,
-      lastName: null,
-      fullName: null,
-      email: null,
-      phone: null,
-      company: null,
-      position: null,
-      country: null,
-      city: null,
-      industry: null,
+      firstName: undefined as string | undefined,
+      lastName: undefined as string | undefined,
+      fullName: undefined as string | undefined,
+      email: undefined as string | undefined,
+      phone: undefined as string | undefined,
+      company: undefined as string | undefined,
+      position: undefined as string | undefined,
+      country: undefined as string | undefined,
+      city: undefined as string | undefined,
+      industry: undefined as string | undefined,
       leadScore: 0,
       tags: [] as string[],
     };
@@ -51,11 +368,11 @@ export class ContactProcessingAI {
       const fullName = rawData.name || rawData.fullName;
       contact.fullName = fullName;
       const nameParts = fullName.split(' ');
-      contact.firstName = nameParts[0] || null;
-      contact.lastName = nameParts.slice(1).join(' ') || null;
+      contact.firstName = nameParts[0] || undefined;
+      contact.lastName = nameParts.slice(1).join(' ') || undefined;
     } else if (rawData.firstName || rawData.lastName) {
-      contact.firstName = rawData.firstName || null;
-      contact.lastName = rawData.lastName || null;
+      contact.firstName = rawData.firstName || undefined;
+      contact.lastName = rawData.lastName || undefined;
       contact.fullName = `${contact.firstName || ''} ${contact.lastName || ''}`.trim();
     }
 
@@ -66,12 +383,12 @@ export class ContactProcessingAI {
     contact.phone = this.extractPhone(rawData);
     
     // Company and position extraction
-    contact.company = rawData.company || rawData.organization || rawData.employer || null;
-    contact.position = rawData.position || rawData.title || rawData.job || rawData.role || null;
+    contact.company = rawData.company || rawData.organization || rawData.employer || undefined;
+    contact.position = rawData.position || rawData.title || rawData.job || rawData.role || undefined;
     
     // Location extraction
-    contact.country = rawData.country || rawData.nation || null;
-    contact.city = rawData.city || rawData.location || null;
+    contact.country = rawData.country || rawData.nation || undefined;
+    contact.city = rawData.city || rawData.location || undefined;
     
     // Industry classification
     contact.industry = this.classifyIndustry(contact.company, contact.position);
@@ -89,7 +406,7 @@ export class ContactProcessingAI {
     };
   }
 
-  private static extractEmail(data: any): string | null {
+  private static extractEmail(data: any): string | undefined {
     const emailFields = ['email', 'emailAddress', 'mail', 'e_mail'];
     for (const field of emailFields) {
       if (data[field] && this.isValidEmail(data[field])) {
@@ -107,10 +424,10 @@ export class ContactProcessingAI {
       }
     }
     
-    return null;
+    return undefined;
   }
 
-  private static extractPhone(data: any): string | null {
+  private static extractPhone(data: any): string | undefined {
     const phoneFields = ['phone', 'phoneNumber', 'tel', 'telephone', 'mobile', 'cell'];
     for (const field of phoneFields) {
       if (data[field]) {
@@ -128,7 +445,7 @@ export class ContactProcessingAI {
       }
     }
     
-    return null;
+    return undefined;
   }
 
   private static isValidEmail(email: string): boolean {
@@ -140,7 +457,7 @@ export class ContactProcessingAI {
     return phone.replace(/[^\d\+]/g, '');
   }
 
-  private static classifyIndustry(company: string | null, position: string | null): string | null {
+  private static classifyIndustry(company: string | undefined, position: string | undefined): string | undefined {
     const industryKeywords = {
       'Technology': ['tech', 'software', 'developer', 'engineer', 'IT', 'digital', 'computer'],
       'Healthcare': ['medical', 'health', 'doctor', 'nurse', 'hospital', 'clinic'],
@@ -160,7 +477,7 @@ export class ContactProcessingAI {
       }
     }
     
-    return null;
+    return undefined;
   }
 
   private static calculateLeadScore(contact: any): number {
