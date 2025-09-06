@@ -17,6 +17,8 @@ import WildlifeDashboard from "@/pages/wildlife-dashboard";
 import VaultPayments from "@/pages/vault-payments";
 import PayrollDashboard from "@/pages/payroll-dashboard";
 import PayrollOnboarding from "@/pages/payroll-onboarding";
+import MiningDashboard from "@/pages/mining-dashboard";
+import AutoBornPlatform from "@/pages/autoborn-platform";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -35,6 +37,8 @@ function Router() {
       <Route path="/vault-payments" component={VaultPayments} />
       <Route path="/payroll-dashboard" component={PayrollDashboard} />
       <Route path="/payroll-onboarding" component={PayrollOnboarding} />
+      <Route path="/mining-dashboard" component={MiningDashboard} />
+      <Route path="/autoborn-platform" component={AutoBornPlatform} />
       <Route component={NotFound} />
     </Switch>
   );

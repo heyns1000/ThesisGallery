@@ -138,8 +138,11 @@ export const systemStats = pgTable("system_stats", {
   totalGlobalOperations: integer("total_global_operations").default(0),
   totalPayrollNodes: integer("total_payroll_nodes").default(0),
   totalAiModules: integer("total_ai_modules").default(0),
+  totalMiningNodes: integer("total_mining_nodes").default(0),
+  totalMiningPlatforms: integer("total_mining_platforms").default(0),
   vaultMeshStatus: text("vault_mesh_status").default("active"),
   treatySyncStatus: text("treaty_sync_status").default("online"),
+  pulseGridStatus: text("pulse_grid_status").default("9s-sync"),
   lastUpdated: timestamp("last_updated").defaultNow().notNull(),
 });
 
@@ -359,6 +362,89 @@ export const insertPayrollShiftLogSchema = createInsertSchema(payrollShiftLogs).
   validatedBy: true,
 });
 
+// Mining System Tables
+export const miningPlatforms = pgTable("mining_platforms", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  platformId: text("platform_id").notNull().unique(),
+  name: text("name").notNull(),
+  subtitle: text("subtitle").notNull(),
+  description: text("description").notNull(),
+  status: text("status").notNull().default("active"), // active, maintenance, offline
+  platformType: text("platform_type").notNull(), // autoborn, mineforge, orexcel, digium, mineralvision
+  modules: text("modules").array().notNull(),
+  pricing: text("pricing").notNull(),
+  region: text("region").notNull(),
+  vaultChainEnabled: boolean("vault_chain_enabled").default(true),
+  pulseGridSync: boolean("pulse_grid_sync").default(true),
+  glupCompliance: boolean("glup_compliance").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow()
+});
+
+export const miningNodes = pgTable("mining_nodes", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  nodeId: text("node_id").notNull().unique(),
+  platformId: text("platform_id").notNull(),
+  name: text("name").notNull(),
+  nodeType: text("node_type").notNull(), // scroll, sync-grid, vault-mesh, pulse-node
+  status: text("status").notNull().default("active"), // active, syncing, offline, maintenance
+  region: text("region").notNull(),
+  licenseFee: text("license_fee"),
+  monthlyFee: text("monthly_fee"),
+  royaltyRate: text("royalty_rate"),
+  vaultId: text("vault_id"),
+  countdown: integer("countdown").default(0),
+  baseValue: integer("base_value").default(0),
+  lastSync: timestamp("last_sync"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow()
+});
+
+export const miningOperations = pgTable("mining_operations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  operationId: text("operation_id").notNull().unique(),
+  platformId: text("platform_id").notNull(),
+  operationType: text("operation_type").notNull(), // extraction, validation, compliance, sync
+  title: text("title").notNull(),
+  description: text("description"),
+  status: text("status").notNull().default("pending"), // pending, active, completed, failed
+  priority: text("priority").default("normal"), // low, normal, high, critical
+  progress: integer("progress").default(0),
+  startTime: timestamp("start_time"),
+  endTime: timestamp("end_time"),
+  metadata: json("metadata"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow()
+});
+
+export const miningCompliance = pgTable("mining_compliance", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  complianceId: text("compliance_id").notNull().unique(),
+  platformId: text("platform_id").notNull(),
+  nodeId: text("node_id"),
+  complianceType: text("compliance_type").notNull(), // glup, esg, vault-chain, treaty-mesh
+  status: text("status").notNull().default("compliant"), // compliant, warning, violation, pending
+  message: text("message").notNull(),
+  details: text("details"),
+  severity: text("severity").default("info"), // info, warning, error, critical
+  resolvedAt: timestamp("resolved_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+  metadata: json("metadata")
+});
+
+export const pulseGridLogs = pgTable("pulse_grid_logs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  logId: text("log_id").notNull().unique(),
+  platformId: text("platform_id").notNull(),
+  nodeId: text("node_id").notNull(),
+  pulseType: text("pulse_type").notNull(), // sync, heartbeat, data-feed, alert
+  pulseData: json("pulse_data").notNull(),
+  syncInterval: integer("sync_interval").default(9), // seconds
+  status: text("status").notNull().default("success"), // success, warning, error
+  latency: integer("latency"), // milliseconds
+  createdAt: timestamp("created_at").defaultNow()
+});
+
 // Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -401,5 +487,89 @@ export type PayrollAiModule = typeof payrollAiModules.$inferSelect;
 
 export type InsertPayrollShiftLog = z.infer<typeof insertPayrollShiftLogSchema>;
 export type PayrollShiftLog = typeof payrollShiftLogs.$inferSelect;
+
+// Mining System Insert Schemas
+export const insertMiningPlatformSchema = createInsertSchema(miningPlatforms).pick({
+  platformId: true,
+  name: true,
+  subtitle: true,
+  description: true,
+  status: true,
+  platformType: true,
+  modules: true,
+  pricing: true,
+  region: true,
+  vaultChainEnabled: true,
+  pulseGridSync: true,
+  glupCompliance: true,
+});
+
+export const insertMiningNodeSchema = createInsertSchema(miningNodes).pick({
+  nodeId: true,
+  platformId: true,
+  name: true,
+  nodeType: true,
+  status: true,
+  region: true,
+  licenseFee: true,
+  monthlyFee: true,
+  royaltyRate: true,
+  vaultId: true,
+  countdown: true,
+  baseValue: true,
+});
+
+export const insertMiningOperationSchema = createInsertSchema(miningOperations).pick({
+  operationId: true,
+  platformId: true,
+  operationType: true,
+  title: true,
+  description: true,
+  status: true,
+  priority: true,
+  progress: true,
+  startTime: true,
+  endTime: true,
+  metadata: true,
+});
+
+export const insertMiningComplianceSchema = createInsertSchema(miningCompliance).pick({
+  complianceId: true,
+  platformId: true,
+  nodeId: true,
+  complianceType: true,
+  status: true,
+  message: true,
+  details: true,
+  severity: true,
+  metadata: true,
+});
+
+export const insertPulseGridLogSchema = createInsertSchema(pulseGridLogs).pick({
+  logId: true,
+  platformId: true,
+  nodeId: true,
+  pulseType: true,
+  pulseData: true,
+  syncInterval: true,
+  status: true,
+  latency: true,
+});
+
+// Mining System Types
+export type InsertMiningPlatform = z.infer<typeof insertMiningPlatformSchema>;
+export type MiningPlatform = typeof miningPlatforms.$inferSelect;
+
+export type InsertMiningNode = z.infer<typeof insertMiningNodeSchema>;
+export type MiningNode = typeof miningNodes.$inferSelect;
+
+export type InsertMiningOperation = z.infer<typeof insertMiningOperationSchema>;
+export type MiningOperation = typeof miningOperations.$inferSelect;
+
+export type InsertMiningCompliance = z.infer<typeof insertMiningComplianceSchema>;
+export type MiningCompliance = typeof miningCompliance.$inferSelect;
+
+export type InsertPulseGridLog = z.infer<typeof insertPulseGridLogSchema>;
+export type PulseGridLog = typeof pulseGridLogs.$inferSelect;
 
 export type SystemStats = typeof systemStats.$inferSelect;
