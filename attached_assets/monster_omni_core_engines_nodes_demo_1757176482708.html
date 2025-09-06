@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAA.zone™ Live Demo Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Chart.js for graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* Base Styles - Apple inspired cleanliness with vibrant accents */
+        :root {
+            --text-color-light: #1d1d1f;
+            --text-color-dark: #f5f5f7;
+            --bg-color-light: #f5f5f7;
+            --bg-color-dark: #1a1a1c; /* Overall dark background for header/footer in dark mode */
+            --card-bg-light: #ffffff;
+            --card-bg-dark: #2a2a2e; /* Darker card background for header/footer in dark mode */
+            --border-color-light: #e8e8ed;
+            --border-color-dark: #3a3a3e;
+            --primary-color: #0071e3; /* Apple Blue - fallback for core UI elements */
+            --secondary-color: #30d158; /* Apple Green - fallback */
+            --tertiary-color: #ff3b30; /* Vibrant Red for specific accents */
+            --muted-text-light: #6e6e73;
+            --muted-text-dark: #a0a0a5;
+
+            /* Page-specific theme colors (Yellow dark theme, matching Core Abilities) */
+            --page-theme-accent-color: #facc15; /* Yellow 500 - for main headings, icons, strong highlights */
+            --page-theme-text-light: #fcd34d; /* Yellow 300 - light text on dark bg */
+            --page-theme-text-muted: #eab308; /* Yellow 600 - muted text on dark bg */
+            --page-theme-background: #0a0a0a; /* Very dark gray, almost black for main section */
+            --page-card-background: #1a1a1c; /* Slightly lighter dark for cards within section */
+            --page-border-color: #2e2e2e; /* Darker border for elements within the dark section */
+            --progress-bar-bg: #3b3b42; /* Dark background for progress bars */
+            --progress-fill-color: var(--page-theme-accent-color);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+
+        /* Default Light/Dark Mode for overall page (header/footer) */
+        .light-mode {
+            background-color: var(--bg-color-light);
+            color: var(--text-color-light);
+        }
+
+        .dark-mode {
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-dark);
+        }
+
+        /* Header / Nav Styling remains consistent with parent theme */
+        .main-header {
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color-light);
+            box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        .dark-mode .main-header {
+            background-color: var(--card-bg-dark);
+            border-bottom-color: var(--border-color-dark);
+            box-shadow: 0 1px 0 rgba(0,0,0,0.2);
+        }
+        .header-content { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        .logo-group { display: flex; align-items: center; gap: 10px; color: var(--text-color-light); transition: color 0.3s ease; }
+        .dark-mode .logo-group { color: var(--text-color-dark); }
+        .logo-group .logo-link { text-decoration: none; color: inherit; display: flex; align-items: center; gap: 5px; }
+        .logo-fruitful { color: var(--primary-color); font-size: 1.6rem; font-weight: 800; }
+        .logo-faa { color: var(--primary-color); font-weight: 800; font-size: 1rem; }
+        .logo-buildnest { color: var(--secondary-color); font-weight: 800; font-size: 1rem; }
+        .main-nav { display: flex; align-items: center; gap: 30px; }
+        .nav-list { display: flex; list-style: none; margin: 0; padding: 0; gap: 25px; }
+        .nav-list a { text-decoration: none; color: var(--muted-text-light); font-weight: 500; font-size: 0.95rem; transition: color 0.3s ease; }
+        .nav-list a:hover { color: var(--primary-color); }
+        .dark-mode .nav-list a { color: var(--muted-text-dark); }
+        .dark-mode .nav-list a:hover { color: var(--primary-color); }
+        .nav-actions { display: flex; align-items: center; gap: 15px; }
+        .cta-button { display: inline-block; padding: 10px 20px; background-color: var(--primary-color); color: white; text-decoration: none; border-radius: 25px; font-weight: 600; font-size: 0.9rem; transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .cta-button:hover { background-color: #0066cc; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .hamburger-menu { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-color-light); transition: color 0.3s ease; }
+        .dark-mode .hamburger-menu { color: var(--text-color-dark); }
+        .pulse-grid-noodle-rope { display: flex; align-items: center; height: 2px; width: 250px; background-color: var(--muted-text-light); border-radius: 1px; position: relative; margin: 0 40px; opacity: 0.7; }
+        .dark-mode .pulse-grid-noodle-rope { background-color: var(--muted-text-dark); }
+        .noodle-dot { position: absolute; width: 8px; height: 8px; background-color: var(--primary-color); border-radius: 50%; transform: translate(-50%, -50%); top: 50%; animation: pulse 3s infinite ease-in-out; }
+        .noodle-dot.dot-stepdad { width: 10px; height: 10px; background-color: var(--secondary-color); }
+        .noodle-dot.dot-1 { left: 0%; animation-delay: 0s; } .noodle-dot.dot-2 { left: 20%; animation-delay: 0.5s; } .noodle-dot.dot-3 { left: 40%; animation-delay: 1s; } .noodle-dot.dot-stepdad { left: 60%; animation-delay: 1.5s; } .noodle-dot.dot-4 { left: 80%; animation-delay: 2s; } .noodle-dot.dot-5 { left: 100%; animation-delay: 2.5s; }
+        @keyframes pulse { 0% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; } 50% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; } }
+
+
+        /* Demo Dashboard Layout */
+        .demo-dashboard-main {
+            padding: 40px 20px;
+            background-color: var(--page-theme-background);
+            color: var(--page-theme-text-light);
+            min-height: calc(100vh - 120px); /* Adjust based on header/footer height */
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .dashboard-section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            color: var(--page-theme-accent-color);
+            margin-bottom: 40px;
+        }
+
+        .dashboard-card {
+            background-color: var(--page-card-background);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+            border: 1px solid var(--page-border-color);
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* Demo Controls and Operations Log */
+        #demo-controls-panel {
+            background-color: var(--page-card-background);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid var(--page-border-color);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+            margin-bottom: 40px;
+            text-align: left;
+        }
+        #demo-controls-panel label {
+            color: var(--page-theme-text-muted);
+            font-weight: 500;
+            margin-bottom: 5px;
+            display: block;
+        }
+        #demo-controls-panel select {
+            background-color: #000000;
+            border: 1px solid var(--page-border-color);
+            color: var(--page-theme-text-light);
+            border-radius: 6px;
+            padding: 8px 12px;
+            width: 100%;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%23facc15%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%20011.414%201.414l-4%204a1%201%2001-1.414%200l-4-4a1%201%20010-1.414z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 0.7em top 50%;
+            background-size: 0.8em auto;
+        }
+        #demo-controls-panel select:focus {
+            border-color: var(--page-theme-accent-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(250, 200, 20, 0.3);
+        }
+
+        .generate-demo-button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+        .generate-demo-button:hover {
+            background-color: #0066cc;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+        .generate-demo-button:disabled {
+            background-color: #333;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+            opacity: 0.6;
+        }
+
+        /* Operations Log Styling */
+        .operations-log-console { /* Renamed for clarity, applies to all logs */
+            background-color: #000000; /* Pure black for the log background */
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            height: 250px;
+            overflow-y: auto;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            font-size: 0.85rem;
+            color: #00ff00; /* Green text for "console" feel */
+            white-space: pre-wrap; /* Preserve whitespace and wrap */
+            text-align: left;
+            box-shadow: inset 0 0 10px rgba(0,255,0,0.2);
+            flex-grow: 1; /* Allows it to take available space */
+        }
+        .operations-log-console span.log-timestamp { color: #888; margin-right: 10px; }
+        .operations-log-console span.log-message-info { color: #00e0ff; /* Cyan for info messages */ }
+        .operations-log-console span.log-message-success { color: #30d158; /* Apple green for success */ }
+        .operations-log-console span.log-message-warning { color: #facc15; /* Yellow for warnings */ }
+        .operations-log-console span.log-message-error { color: #ff3b30; /* Red for errors */ }
+        .operations-log-console span.engine-name { font-weight: bold; color: var(--page-theme-accent-color); /* Yellow accent for engine names */ }
+
+        /* KPI Cards */
+        .kpi-card {
+            background-color: var(--page-card-background);
+            border: 1px solid var(--page-border-color);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .kpi-card .kpi-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--page-theme-accent-color);
+            margin-bottom: 5px;
+            transition: color 0.3s ease;
+        }
+        .kpi-card .kpi-label {
+            font-size: 0.9rem;
+            color: var(--page-theme-text-muted);
+        }
+
+        /* Chart specific container styling to constrain height */
+        .chart-container {
+            position: relative;
+            height: 280px; /* Smaller height for dashboard context */
+            width: 100%;
+            background-color: #000000; /* Pure black for chart canvas background */
+            border: 1px solid var(--page-border-color);
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+        .chart-container canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        /* Individual Node Cards */
+        .node-card {
+            background-color: var(--page-card-background);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--page-border-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: opacity 0.5s ease, transform 0.2s ease, box-shadow 0.2s ease; /* For dimming and active effects */
+        }
+        .node-card.active {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(250, 200, 20, 0.4); /* Accent color glow */
+        }
+        .node-card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--page-theme-accent-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .node-card p {
+            font-size: 0.9rem;
+            color: var(--page-theme-text-muted);
+            flex-grow: 1; /* Pushes content down */
+        }
+        .node-card .metrics-line {
+            font-size: 0.85rem;
+            color: var(--page-theme-text-light);
+            font-weight: 500;
+        }
+        .node-card .node-status {
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background-color: rgba(255,255,255,0.1);
+            color: var(--page-theme-text-light);
+            text-align: center;
+        }
+
+        /* Progress Bar (Mock) */
+        .progress-bar-container {
+            width: 100%;
+            background-color: var(--progress-bar-bg);
+            border-radius: 5px;
+            height: 8px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background-color: var(--progress-fill-color);
+            border-radius: 5px;
+            transition: width 0.15s ease-out; /* Smoother animation for filling */
+        }
+
+        /* Metadata Table */
+        .metadata-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .metadata-table th, .metadata-table td {
+            border: 1px solid var(--page-border-color);
+            padding: 12px;
+            text-align: left;
+            font-size: 0.95rem;
+            color: var(--page-theme-text-muted);
+        }
+        .metadata-table thead {
+            background-color: #451a03; /* Amber 950 */
+            color: var(--page-theme-text-light);
+            font-weight: 600;
+        }
+        .metadata-table tbody tr:nth-child(odd) { background-color: var(--page-card-background); }
+        .metadata-table tbody tr:nth-child(even) { background-color: #000000; }
+        .metadata-table td:first-child { font-weight: 500; color: var(--page-theme-accent-color); }
+        .metadata-table pre {
+            background-color: #000000;
+            color: #d1d5db;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            font-size: 0.85rem;
+            border: 1px solid #333;
+        }
+
+        /* CTA button */
+        .demo-cta-button {
+            display: inline-block;
+            background-color: var(--page-theme-accent-color);
+            color: #1a1a1c;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(250, 200, 20, 0.4);
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .demo-cta-button:hover {
+            background-color: #fbbf24;
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(250, 200, 20, 0.6);
+        }
+        .demo-cta-button:disabled {
+            background-color: #554a00;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+            opacity: 0.7;
+        }
+
+
+        /* Footer */
+        .main-footer {
+            background-color: var(--card-bg-light);
+            border-top: 1px solid var(--border-color-light);
+            padding: 40px 0;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .dark-mode .main-footer {
+            background-color: var(--card-bg-dark);
+            border-top-color: var(--border-color-dark);
+        }
+        .footer-content { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 30px; }
+        .footer-brand { flex: 1 1 300px; }
+        .footer-brand .logo { margin-bottom: 15px; }
+        .copyright { font-size: 0.8rem; color: var(--muted-text-light); line-height: 1.4; transition: color 0.3s ease; }
+        .dark-mode .copyright { color: var(--muted-text-dark); }
+        .footer-links { display: flex; flex: 2 1 500px; justify-content: space-around; flex-wrap: wrap; gap: 20px; }
+        .footer-column { flex: 1 1 150px; }
+        .footer-column h4 { font-size: 1rem; font-weight: 600; margin-bottom: 15px; color: var(--text-color-light); transition: color 0.3s ease; }
+        .dark-mode .footer-column h4 { color: var(--text-color-dark); }
+        .footer-column ul { list-style: none; padding: 0; margin: 0; }
+        .footer-column a { text-decoration: none; font-size: 0.9rem; color: var(--muted-text-light); margin-bottom: 8px; display: block; transition: color 0.3s ease; }
+        .footer-column a:hover { color: var(--primary-color); }
+        .dark-mode .footer-column a { color: var(--muted-text-dark); }
+        .dark-mode .footer-column a:hover { color: var(--primary-color); }
+
+        @media (max-width: 768px) {
+            .main-header { flex-direction: column; padding-bottom: 10px; align-items: flex-start; }
+            .header-content { flex-direction: column; align-items: flex-start; }
+            .logo-group { margin-bottom: 15px; }
+            .logo-group .logo-link { gap: 5px; }
+            .logo-fruitful { font-size: 1.4rem; }
+            .pulse-grid-noodle-rope { display: none; }
+            .main-nav { display: none; flex-direction: column; position: static; width: 100%; background-color: var(--card-bg-light); border-top: 1px solid var(--border-color-light); padding: 10px 0; box-shadow: none; }
+            .dark-mode .main-nav { background-color: var(--card-bg-dark); border-top-color: var(--border-color-dark); }
+            .main-nav.active { display: flex; }
+            .nav-list { flex-direction: column; text-align: center; width: 100%; gap: 10px; }
+            .nav-list li { width: 100%; }
+            .nav-list a { display: block; padding: 8px 0; }
+            .nav-actions { flex-direction: column; gap: 10px; width: 100%; padding-top: 10px; border-top: 1px solid var(--border-color-light); margin-top: 10px; }
+            .dark-mode .nav-actions { border-top-color: var(--border-color-dark); }
+            .nav-actions .cta-button { width: calc(100% - 40px); margin: 0 20px; text-align: center; }
+            .hamburger-menu { display: block; position: absolute; top: 15px; right: 20px; z-index: 1001; }
+            .dashboard-section-title { font-size: 2rem; }
+            .footer-content { flex-direction: column; text-align: center; }
+            .footer-brand, .footer-links { flex: 1 1 100%; }
+            .footer-column { flex: 1 1 100%; margin-bottom: 20px; }
+            .footer-column h4 { margin-bottom: 10px; }
+            .footer-column ul { text-align: center; }
+            .footer-column a { display: inline-block; margin: 0 10px 8px; }
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <header class="main-header">
+        <div class="container header-content">
+            <div class="logo-group">
+                <a href="omnigrid.html" class="logo-link">
+                    <span class="logo-fruitful">Fruitful™</span>
+                </a>
+                <button class="hamburger-menu" aria-label="Toggle navigation">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <div class="pulse-grid-noodle-rope">
+                <span class="noodle-dot dot-1"></span>
+                <span class="noodle-dot dot-2"></span>
+                <span class="noodle-dot dot-3"></span>
+                <span class="noodle-dot dot-stepdad"></span>
+                <span class="noodle-dot dot-4"></span>
+                <span class="noodle-dot dot-5"></span>
+            </div>
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li><a href="omnigrid.html#overview">Overview</a></li>
+                    <li><a href="omnigrid.html#pulsetrade">PulseTrade</a></li>
+                    <li><a href="omnigrid.html#vaultmesh">VaultMesh</a></li>
+                    <li><a href="terminal-index.html">Terminals</a></li>
+                    <li><a href="omnigrid.html#admin-portal-section">Admin Panel</a></li>
+                    <li><a href="omnigrid.html#about">About</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <button id="themeToggle" class="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 py-2 px-3 rounded-full text-sm font-semibold transition duration-300 ease-in-out">
+                        <i class="fas fa-moon hidden dark:inline-block"></i>
+                        <i class="fas fa-sun inline-block dark:hidden"></i>
+                    </button>
+                    <a href="omnigrid.html#cta" class="cta-button nav-cta">Get Started</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="demo-dashboard-main">
+        <div class="container">
+            <h1 class="dashboard-section-title">FAA.zone™ Live Trial Dashboard</h1>
+            <p class="text-xl text-page-theme-text-muted text-center mb-8 max-w-3xl mx-auto">
+                Configure your scenario to experience the real-time power of our Atom-Level Engines. See how each node streamlines operations, enhances security, and drives tangible business outcomes.
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+                <div id="demo-controls-panel" class="lg:col-span-1">
+                    <h2 class="text-2xl font-bold mb-6 text-center">Configure Your Demo Scenario</h2>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div>
+                            <label for="industrySector" class="text-sm">Industry Sector:</label>
+                            <select id="industrySector" class="mt-1 block w-full">
+                                <option value="Finance">Finance</option>
+                                <option value="Logistics">Logistics</option>
+                                <option value="Healthcare">Healthcare</option>
+                                <option value="Retail">Retail</option>
+                                <option value="Manufacturing">Manufacturing</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="dataVolume" class="text-sm">Data Volume Scale:</label>
+                            <select id="dataVolume" class="mt-1 block w-full">
+                                <option value="Small">Small (Tens of GB)</option>
+                                <option value="Medium">Medium (Hundreds of GB)</option>
+                                <option value="Large">Large (Terabytes)</option>
+                                <option value="Massive">Massive (Petabytes+)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="networkTopology" class="text-sm">Network Topology:</label>
+                            <select id="networkTopology" class="mt-1 block w-full">
+                                <option value="Local">Local (Single Region)</option>
+                                <option value="Regional">Regional (Multiple Regions)</option>
+                                <option value="Global">Global (Cross-Continental)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="securityPosture" class="text-sm">Security Posture:</label>
+                            <select id="securityPosture" class="mt-1 block w-full">
+                                <option value="Standard">Standard</option>
+                                <option value="Elevated">Elevated Threat</option>
+                                <option value="Hostile">Hostile Environment</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <label class="text-sm block font-medium mb-2 text-page-theme-text-muted">Emphasize Core Abilities:</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <label class="inline-flex items-center text-page-theme-text-muted"><input type="checkbox" class="form-checkbox h-4 w-4 text-page-theme-accent-color" value="Corethink" checked><span class="ml-2">Corethink™</span></label>
+                            <label class="inline-flex items-center text-page-theme-text-muted"><input type="checkbox" class="form-checkbox h-4 w-4 text-page-theme-accent-color" value="TruthWeight" checked><span class="ml-2">TruthWeight™</span></label>
+                            <label class="inline-flex items-center text-page-theme-text-muted"><input type="checkbox" class="form-checkbox h-4 w-4 text-page-theme-accent-color" value="EchoSynth" checked><span class="ml-2">EchoSynth™</span></label>
+                            <label class="inline-flex items-center text-page-theme-text-muted"><input type="checkbox" class="form-checkbox h-4 w-4 text-page-theme-accent-color" value="AutoSigil" checked><span class="ml-2">AutoSigil™</span></label>
+                            <label class="inline-flex items-center text-page-theme-text-muted"><input type="checkbox" class="form-checkbox h-4 w-4 text-page-theme-accent-color" value="PulseIndex" checked><span class="ml-2">PulseIndex™</span></label>
+                            <label class="inline-flex items-center text-page-theme-text-muted"><input type="checkbox" class="form-checkbox h-4 w-4 text-page-theme-accent-color" value="OmniTrace" checked><span class="ml-2">OmniTrace™</span></label>
+                            <label class="inline-flex items-center text-page-theme-text-muted"><input type="checkbox" class="form-checkbox h-4 w-4 text-page-theme-accent-color" value="LiftHalo" checked><span class="ml-2">LiftHalo™</span></label>
+                            <label class="inline-flex items-center text-page-theme-text-muted"><input type="checkbox" class="form-checkbox h-4 w-4 text-page-theme-accent-color" value="MirrorLoop" checked><span class="ml-2">MirrorLoop™</span></label>
+                            <label class="inline-flex items-center text-page-theme-text-muted"><input type="checkbox" class="form-checkbox h-4 w-4 text-page-theme-accent-color" value="FireRatio" checked><span class="ml-2">FireRatio™</span></label>
+                        </div>
+                    </div>
+                    <button id="generateDemoBtn" class="generate-demo-button mt-8 w-full">
+                        <i class="fas fa-play-circle mr-2"></i> Generate Live Demo
+                    </button>
+                    <div id="demoStatusMessage" class="mt-4 text-center text-page-theme-accent-color text-sm hidden">
+                        Simulating results...
+                    </div>
+                </div>
+
+                <div id="operationsLog" class="operations-log-console lg:col-span-2 hidden">
+                    <span class="log-timestamp">[START]</span> <span class="log-message-info">Initializing FAA.zone™ Demo Dashboard. Please configure and generate a scenario.</span><br>
+                </div>
+            </div>
+
+            <h2 class="dashboard-section-title text-center mt-12">Overall Scenario Performance: <span id="currentScenarioText" class="text-page-theme-accent-color">--</span></h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
+                <div class="kpi-card">
+                    <div class="kpi-value"><span id="kpi-total-processed">0</span> GB</div>
+                    <div class="kpi-label">Data Processed</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value"><span id="kpi-avg-latency">0</span> ms</div>
+                    <div class="kpi-label">Avg. Network Latency</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value"><span id="kpi-security-events">0</span></div>
+                    <div class="kpi-label">Security Events Mitigated</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value"><span id="kpi-efficiency-gain">0</span>%</div>
+                    <div class="kpi-label">Operational Efficiency Gain</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+                <div class="dashboard-card">
+                    <h3 class="text-xl font-bold mb-4 text-page-theme-accent-color text-center">📈 Performance Index Trend</h3>
+                    <div class="chart-container">
+                        <canvas id="overallPerformanceChart"></canvas>
+                    </div>
+                </div>
+                <div class="dashboard-card">
+                    <h3 class="text-xl font-bold mb-4 text-page-theme-accent-color text-center">🔒 Security & Integrity Score</h3>
+                    <div class="chart-container">
+                        <canvas id="securityIntegrityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabbed Content for Detailed Demo Sections -->
+            <div class="w-full mt-16">
+                <div class="flex border-b border-page-border-color">
+                    <button class="px-6 py-3 text-lg font-semibold border-b-2 border-transparent text-page-theme-text-muted hover:text-page-theme-accent-color hover:border-page-theme-accent-color transition-colors duration-200"
+                            onclick="showDemoTab('coreEnginesTab', this)" id="defaultOpenTab">Core Engines Impact</button>
+                    <button class="px-6 py-3 text-lg font-semibold border-b-2 border-transparent text-page-theme-text-muted hover:text-page-theme-accent-color hover:border-page-theme-accent-color transition-colors duration-200"
+                            onclick="showDemoTab('financialImpactTab', this)">Financial Impact (Simulated)</button>
+                    <button class="px-6 py-3 text-lg font-semibold border-b-2 border-transparent text-page-theme-text-muted hover:text-page-theme-accent-color hover:border-page-theme-accent-color transition-colors duration-200"
+                            onclick="showDemoTab('dataGovernanceTab', this)">Data Governance & Audit (Simulated)</button>
+                </div>
+
+                <!-- Core Engines Tab Content -->
+                <div id="coreEnginesTab" class="demo-tab-content pt-8">
+                    <h2 class="dashboard-section-title">Atom-Level Engines: Operational Impact</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Corethink -->
+                        <div class="node-card" id="card-Corethink">
+                            <h3>🧠 Corethink™</h3>
+                            <p>Accelerates decision-making with real-time cognitive processing by analyzing complex data streams instantly.</p>
+                            <div class="metrics-line"><strong>Latency Reduced:</strong> <span id="corethinkResult">--%</span></div>
+                            <div class="metrics-line"><strong>Decisions/Sec:</strong> <span id="corethinkMetrics">--k</span></div>
+                            <div class="progress-bar-container"><div class="progress-bar-fill" id="corethinkProgressBar"></div></div>
+                            <div class="node-status" id="corethinkStatus">Idle</div>
+                        </div>
+                        <!-- TruthWeight -->
+                        <div class="node-card" id="card-TruthWeight">
+                            <h3>⚖️ TruthWeight™</h3>
+                            <p>Ensures absolute data integrity by evaluating veracity and assigning trust scores to information streams.</p>
+                            <div class="metrics-line"><strong>Veracity Score:</strong> <span id="truthweightResult">--%</span></div>
+                            <div class="metrics-line"><strong>False Positives:</strong> <span id="truthweightMetrics">--%</span></div>
+                            <div class="progress-bar-container"><div class="progress-bar-fill" id="truthweightProgressBar"></div></div>
+                            <div class="node-status" id="truthweightStatus">Idle</div>
+                        </div>
+                        <!-- EchoSynth -->
+                        <div class="node-card" id="card-EchoSynth">
+                            <h3>🔊 EchoSynth™</h3>
+                            <p>Facilitates dynamic and resonant communication pathways, ensuring signal clarity and reach across networks.</p>
+                            <div class="metrics-line"><strong>Fidelity Improved:</strong> <span id="echosynthResult">--%</span></div>
+                            <div class="metrics-line"><strong>Packet Loss:</strong> <span id="echosynthMetrics">--%</span></div>
+                            <div class="progress-bar-container"><div class="progress-bar-fill" id="echosynthProgressBar"></div></div>
+                            <div class="node-status" id="echosynthStatus">Idle</div>
+                        </div>
+                        <!-- AutoSigil -->
+                        <div class="node-card" id="card-AutoSigil">
+                            <h3>✍️ AutoSigil™</h3>
+                            <p>Automates the generation and application of unique digital signatures for content and transactions securely.</p>
+                            <div class="metrics-line"><strong>Verification Time Cut:</strong> <span id="autosigilResult">--%</span></div>
+                            <div class="metrics-line"><strong>Auth Overhead:</strong> <span id="autosigilMetrics">--ms</span></div>
+                            <div class="progress-bar-container"><div class="progress-bar-fill" id="autosigilProgressBar"></div></div>
+                            <div class="node-status" id="autosigilStatus">Idle</div>
+                        </div>
+                        <!-- PulseIndex -->
+                        <div class="node-card" id="card-PulseIndex">
+                            <h3>📊 PulseIndex™</h3>
+                            <p>Maintains real-time operational awareness through high-frequency indexing of all network components.</p>
+                            <div class="metrics-line"><strong>Visibility Boosted:</strong> <span id="pulseindexResult">--%</span></div>
+                            <div class="metrics-line"><strong>Index Refresh:</strong> <span id="pulseindexMetrics">--ms</span></div>
+                            <div class="progress-bar-container"><div class="progress-bar-fill" id="pulseindexProgressBar"></div></div>
+                            <div class="node-status" id="pulseindexStatus">Idle</div>
+                        </div>
+                        <!-- OmniTrace -->
+                        <div class="node-card" id="card-OmniTrace">
+                            <h3>🌐 OmniTrace™</h3>
+                            <p>Provides comprehensive, multi-dimensional traceability for all data and asset movements across the grid.</p>
+                            <div class="metrics-line"><strong>Transparency:</strong> <span id="omnitraceResult">--%</span></div>
+                            <div class="metrics-line"><strong>Trace Depth:</strong> <span id="omnitraceMetrics">-- layers</span></div>
+                            <div class="progress-bar-container"><div class="progress-bar-fill" id="omnitraceProgressBar"></div></div>
+                            <div class="node-status" id="omnitraceStatus">Idle</div>
+                        </div>
+                        <!-- LiftHalo -->
+                        <div class="node-card" id="card-LiftHalo">
+                            <h3>⬆️ LiftHalo™</h3>
+                            <p>Optimizes network resource allocation and elevates performance for critical operations.</p>
+                            <div class="metrics-line"><strong>Task Acceleration:</strong> <span id="lifthaloResult">--%</span></div>
+                            <div class="metrics-line"><strong>Resource Idle:</strong> <span id="lifthaloMetrics">--%</span></div>
+                            <div class="progress-bar-container"><div class="progress-bar-fill" id="lifthaloProgressBar"></div></div>
+                            <div class="node-status" id="lifthaloStatus">Idle</div>
+                        </div>
+                        <!-- MirrorLoop -->
+                        <div class="node-card" id="card-MirrorLoop">
+                            <h3>🔄 MirrorLoop™</h3>
+                            <p>Enables redundant and self-healing data replication across distributed nodes for business continuity.</p>
+                            <div class="metrics-line"><strong>Recovery Time:</strong> <span id="mirrorloopResult">--</span></div>
+                            <div class="metrics-line"><strong>RPO:</strong> <span id="mirrorloopMetrics">--</span></div>
+                            <div class="progress-bar-container"><div class="progress-bar-fill" id="mirrorloopProgressBar"></div></div>
+                            <div class="node-status" id="mirrorloopStatus">Idle</div>
+                        </div>
+                        <!-- FireRatio -->
+                        <div class="node-card" id="card-FireRatio">
+                            <h3>🔥 FireRatio™</h3>
+                            <p>Dynamically manages network bandwidth and congestion for smooth data flow and superior experience.</p>
+                            <div class="metrics-line"><strong>Congestion Reduced:</strong> <span id="fireratioResult">--%</span></div>
+                            <div class="metrics-line"><strong>Avg. Latency:</strong> <span id="fireratioMetrics">--ms</span></div>
+                            <div class="progress-bar-container"><div class="progress-bar-fill" id="fireratioProgressBar"></div></div>
+                            <div class="node-status" id="fireratioStatus">Idle</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Financial Impact Tab Content -->
+                <div id="financialImpactTab" class="demo-tab-content pt-8 hidden">
+                    <h2 class="dashboard-section-title">Financial Impact: Simulated ROI</h2>
+                    <p class="text-center text-page-theme-text-muted mb-8 max-w-3xl mx-auto">
+                        See how Atom-Level Engines translate into tangible financial benefits for your selected industry and scenario.
+                    </p>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="dashboard-card">
+                            <h3 class="text-xl font-bold mb-4 text-page-theme-accent-color text-center">💰 Projected Revenue Growth</h3>
+                            <div class="chart-container">
+                                <canvas id="revenueGrowthChart"></canvas>
+                            </div>
+                            <p class="text-center text-page-theme-text-muted text-sm mt-2">Annualized growth due to operational efficiencies and enhanced trust.</p>
+                        </div>
+                        <div class="dashboard-card">
+                            <h3 class="text-xl font-bold mb-4 text-page-theme-accent-color text-center">📉 Operational Cost Reduction</h3>
+                            <div class="chart-container">
+                                <canvas id="costReductionChart"></canvas>
+                            </div>
+                            <p class="text-center text-page-theme-text-muted text-sm mt-2">Savings from reduced errors, manual processes, and optimized resource use.</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+                        <div class="kpi-card">
+                            <div class="kpi-value"><span id="kpi-roi">0</span>%</div>
+                            <div class="kpi-label">Simulated ROI</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-value">$<span id="kpi-cost-savings">0</span>M</div>
+                            <div class="kpi-label">Annual Cost Savings</div>
+                        </div>
+                    </div>
+                    <div class="dashboard-card mt-8">
+                        <h3 class="text-xl font-bold mb-4 text-page-theme-accent-color text-center">Financial Operations Log</h3>
+                        <div id="financialOperationsLog" class="operations-log-console">
+                            <!-- Simulated financial log entries will appear here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Governance & Audit Tab Content -->
+                <div id="dataGovernanceTab" class="demo-tab-content pt-8 hidden">
+                    <h2 class="dashboard-section-title">Data Governance & Audit: Immutability & Compliance</h2>
+                    <p class="text-center text-page-theme-text-muted mb-8 max-w-3xl mx-auto">
+                        Experience the robust security and transparent auditability provided by FAA.zone™ for mission-critical data.
+                    </p>
+                    <div class="dashboard-card">
+                        <h3 class="text-xl font-bold mb-4 text-page-theme-accent-color text-center">📊 Audit Trail Events & Integrity Checks</h3>
+                        <div class="chart-container">
+                            <canvas id="auditIntegrityChart"></canvas>
+                        </div>
+                        <p class="text-center text-page-theme-text-muted text-sm mt-2">Verification points and integrity checks over time.</p>
+                        </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+                        <div class="kpi-card">
+                            <div class="kpi-value"><span id="kpi-compliance-score">0</span>/100</div>
+                            <div class="kpi-label">Compliance Index</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-value"><span id="kpi-trace-depth">0</span> Layers</div>
+                            <div class="kpi-label">Average Trace Depth</div>
+                        </div>
+                    </div>
+                    <div class="dashboard-card mt-8">
+                        <h3 class="text-xl font-bold mb-4 text-page-theme-accent-color text-center">Recent Audit Log (Simulated)</h3>
+                        <div id="dataGovernanceLog" class="operations-log-console">
+                            <!-- Simulated log entries will appear here -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <h2 class="dashboard-section-title mt-16">Demo Configuration Metadata: Trial Parameters</h2>
+            <p class="text-center text-page-theme-text-muted mb-8 max-w-3xl mx-auto">
+                This metadata schema defines the parameters of your current live simulation. It showcases the granular control and transparency over your FAA.zone™ environment.
+            </p>
+            <table class="metadata-table max-w-4xl mx-auto">
+                <thead>
+                    <tr>
+                        <th>Field Name</th>
+                        <th>Data Type</th>
+                        <th>Description</th>
+                        <th>Current Value</th>
+                        <th>Usage Context</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>demoInstanceID</code></td><td>UUID (String)</td><td>Unique identifier for this specific demo instance.</td><td><code id="meta-demoInstanceID">"generating..."</code></td><td>For tracking and support reference.</td></tr>
+                    <tr><td><code>industrySector</code></td><td>String (Enum)</td><td>Simulated industry vertical.</td><td><span id="meta-industrySector">--</span></td><td>Shapes relevant data sets and performance metrics.</td></tr>
+                    <tr><td><code>activeFeatures</code></td><td>Array of Strings</td><td>Core Abilities actively emphasized in this demo.</td><td><span id="meta-featureFocus">--</span></td><td>Highlights specific engine impacts.</td></tr>
+                    <tr><td><code>dataVolumeScale</code></td><td>String (Enum)</td><td>Scale of data processed in simulation.</td><td><span id="meta-dataVolumeScale">--</span></td><td>Influences simulated throughput and latency.</td></tr>
+                    <tr><td><code>networkTopology</code></td><td>String (Enum)</td><td>Simulated network complexity.</td><td><span id="meta-networkTopology">--</span></td><td>Affects simulated latency and synchronization challenges.</td></tr>
+                    <tr><td><code>securityPosture</code></td><td>String (Enum)</td><td>Simulated security threat level.</td><td><span id="meta-securityPosture">--</span></td><td>Triggers relevant security engine responses.</td></tr>
+                    <tr><td><code>trialExpiration</code></td><td>ISO 8601 (String)</td><td>Date when this demo instance will expire.</td><td><span id="meta-expirationTimestamp">--</span></td><td>Automated demo cleanup.</td></tr>
+                </tbody>
+            </table>
+            <p class="mt-6 text-page-theme-text-muted text-center">
+                <strong>Raw Configuration Request (JSON Payload):</strong>
+            </p>
+            <pre class="max-w-4xl mx-auto"><code id="demoPayloadJson">{...}</code></pre>
+
+            <div class="text-center mt-16">
+                <h2 class="dashboard-section-title">Ready to Transform Your Operations?</h2>
+                <p class="text-xl text-page-theme-text-muted mb-10 max-w-3xl mx-auto">
+                    This live demo is just a glimpse. Unlock the full power of FAA.zone™ for your enterprise.
+                </p>
+                <a href="omnigrid.html#cta" class="demo-cta-button">
+                    Upgrade to Full Plan <i class="fas fa-arrow-circle-right ml-2"></i>
+                </a>
+                <p class="text-page-theme-text-muted text-sm mt-4">Or <a href="#" class="text-page-theme-accent-color hover:underline">Contact Sales for a Custom Solution</a></p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <div class="logo">
+                    <span class="logo-faa">FAA.zone™</span> / <span class="logo-buildnest">BuildNest™</span>
+                </div>
+                <p class="copyright">&copy; 2025 FAA™ Treaty System™. All Rights Reserved. Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>BuildNest™</h4>
+                    <ul>
+                        <li><a href="omnigrid.html#overview">Features</a></li>
+                        <li><a href="omnigrid.html#vaultmesh">Use Cases</a></li>
+                        <li><a href="omnigrid.html#cta">Pricing</a></li>
+                        <li><a href="omnigrid.html#terminals">Modules</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>FAA.zone™</h4>
+                    <ul>
+                        <li><a href="#">About FAA Systems™</a></li>
+                        <li><a href="omnigrid.html#overview">Omni Grid™</a></li>
+                        <li><a href="#">Baobab Archive™</a></li>
+                        <li><a href="#">Compliance</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="#">Contact Support</a></li>
+                        <li><a href="#">Partner Program</a></li>
+                        <li><a href="#">Developer API</a></li>
+                        <li><a href="#">Legal & Privacy</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- Global Gemini API Key ---
+        const GEMINI_API_KEY = "AIzaSyBGSDZATtITv5iIoB3rgKHBpWx9MrufxXE";
+        console.log("Gemini API Key loaded:", GEMINI_API_KEY);
+
+        let overallPerformanceChart;
+        let securityIntegrityChart;
+        let revenueGrowthChart;
+        let costReductionChart;
+        let auditIntegrityChart;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const mainNav = document.querySelector('.main-nav');
+            const hamburgerMenu = document.querySelector('.hamburger-menu');
+            const body = document.body;
+            const themeToggle = document.getElementById('themeToggle');
+
+            const generateDemoBtn = document.getElementById('generateDemoBtn');
+            const demoStatusMessage = document.getElementById('demoStatusMessage');
+            const simulatedResultsSection = document.getElementById('simulatedResults');
+            const currentScenarioText = document.getElementById('currentScenarioText');
+            const operationsLog = document.getElementById('operationsLog'); // Global Operations Log Console
+            const financialOperationsLog = document.getElementById('financialOperationsLog'); // Financial Operations Log Console
+            const dataGovernanceLog = document.getElementById('dataGovernanceLog'); // Data Governance Operations Log Console
+
+
+            // KPI elements
+            const kpiTotalProcessed = document.getElementById('kpi-total-processed');
+            const kpiAvgLatency = document.getElementById('kpi-avg-latency');
+            const kpiSecurityEvents = document.getElementById('kpi-security-events');
+            const kpiEfficiencyGain = document.getElementById('kpi-efficiency-gain');
+            const kpiROI = document.getElementById('kpi-roi');
+            const kpiCostSavings = document.getElementById('kpi-cost-savings');
+            const kpiComplianceScore = document.getElementById('kpi-compliance-score');
+            const kpiTraceDepth = document.getElementById('kpi-trace-depth');
+
+
+            // Configuration controls
+            const industrySectorSelect = document.getElementById('industrySector');
+            const dataVolumeSelect = document.getElementById('dataVolume');
+            const networkTopologySelect = document.getElementById('networkTopology');
+            const securityPostureSelect = document.getElementById('securityPosture');
+            const emphasizeAbilitiesCheckboxes = document.querySelectorAll('#demo-controls-panel input[type="checkbox"]');
+
+
+            // Individual Core Ability result spans
+            const corethinkResult = document.getElementById('corethinkResult');
+            const truthweightResult = document.getElementById('truthweightResult');
+            const echosynthResult = document.getElementById('echosynthResult');
+            const autosigilResult = document.getElementById('autosigilResult');
+            const pulseindexResult = document.getElementById('pulseindexResult');
+            const omnitraceResult = document.getElementById('omnitraceResult');
+            const lifthaloResult = document.getElementById('lifthaloResult');
+            const mirrorloopResult = document.getElementById('mirrorloopResult');
+            const fireratioResult = document.getElementById('fireratioResult');
+
+            // Individual Core Ability metric spans
+            const corethinkMetrics = document.getElementById('corethinkMetrics');
+            const truthweightMetrics = document.getElementById('truthweightMetrics');
+            const echosynthMetrics = document.getElementById('echosynthMetrics');
+            const autosigilMetrics = document.getElementById('autosigilMetrics');
+            const pulseindexMetrics = document.getElementById('pulseindexMetrics');
+            const omnitraceMetrics = document.getElementById('omnitraceMetrics');
+            const lifthaloMetrics = document.getElementById('lifthaloMetrics');
+            const mirrorloopMetrics = document.getElementById('mirrorloopMetrics');
+            const fireratioMetrics = document.getElementById('fireratioMetrics');
+
+            // Individual Core Ability Status spans
+            const corethinkStatus = document.getElementById('corethinkStatus');
+            const truthweightStatus = document.getElementById('truthweightStatus');
+            const echosynthStatus = document.getElementById('echosynthStatus');
+            const autosigilStatus = document.getElementById('autosigilStatus');
+            const pulseindexStatus = document.getElementById('pulseindexStatus');
+            const omnitraceStatus = document.getElementById('omnitraceStatus');
+            const lifthaloStatus = document.getElementById('lifthaloStatus');
+            const mirrorloopStatus = document.getElementById('mirrorloopStatus');
+            const fireratioStatus = document.getElementById('fireratioStatus');
+
+            // Individual Core Ability progress bars
+            const corethinkProgressBar = document.getElementById('corethinkProgressBar');
+            const truthweightProgressBar = document.getElementById('truthweightProgressBar');
+            const echosynthProgressBar = document.getElementById('echosynthProgressBar');
+            const autosigilProgressBar = document.getElementById('autosigilProgressBar');
+            const pulseindexProgressBar = document.getElementById('pulseindexProgressBar');
+            const omnitraceProgressBar = document.getElementById('omnitraceProgressBar');
+            const lifthaloProgressBar = document.getElementById('lifthaloProgressBar');
+            const mirrorloopProgressBar = document.getElementById('mirrorloopProgressBar');
+            const fireratioProgressBar = document.getElementById('fireratioProgressBar');
+
+
+            // Metadata table elements
+            const metaDemoInstanceID = document.getElementById('meta-demoInstanceID');
+            const metaIndustrySector = document.getElementById('meta-industrySector');
+            const metaFeatureFocus = document.getElementById('meta-featureFocus');
+            const metaDataVolumeScale = document.getElementById('meta-dataVolumeScale');
+            const metaNetworkTopology = document.getElementById('meta-networkTopology');
+            const metaSecurityPosture = document.getElementById('meta-securityPosture');
+            const metaExpirationTimestamp = document.getElementById('meta-expirationTimestamp');
+            const demoPayloadJson = document.getElementById('demoPayloadJson');
+
+
+            // --- Helper to update progress bars ---
+            const updateProgressBar = (element, percentage) => {
+                if (element) {
+                    element.style.width = `${percentage}%`;
+                }
+            };
+
+            // --- Log to Operations Console ---
+            // Renamed to `logGlobalOperation` for clarity, as there are now multiple logs
+            const logGlobalOperation = (message, type = 'info', engine = null) => {
+                const timestamp = new Date().toLocaleTimeString('en-US', { hour12: false });
+                let logEntry = `<span class="log-timestamp">[${timestamp}]</span> `;
+                if (engine) {
+                    logEntry += `<span class="engine-name">${engine}:</span> `;
+                }
+                logEntry += `<span class="log-message-${type}">${message}</span>`;
+                operationsLog.innerHTML += logEntry + '<br>';
+                operationsLog.scrollTop = operationsLog.scrollHeight; // Auto-scroll to bottom
+            };
+
+            // New: Log to contextual logs
+            const logContextualOperation = (logElement, message, type = 'info') => {
+                const timestamp = new Date().toLocaleTimeString('en-US', { hour12: false });
+                const logEntry = `<span class="log-timestamp">[${timestamp}]</span> <span class="log-message-${type}">${message}</span>`;
+                if (logElement) { // Added null check for safety
+                    logElement.innerHTML += logEntry + '<br>';
+                    logElement.scrollTop = logElement.scrollHeight;
+                }
+            };
+
+            // --- Update individual ability status ---
+            const updateAbilityStatus = (abilityName, statusText, statusType = 'light') => {
+                const statusSpan = document.getElementById(`${abilityName}Status`);
+                if (statusSpan) {
+                    statusSpan.textContent = statusText;
+                    statusSpan.className = 'node-status'; // Reset classes
+                    if (statusType === 'light') statusSpan.classList.add('text-page-theme-text-light');
+                    else if (statusType === 'accent') statusSpan.classList.add('text-page-theme-accent-color');
+                    else if (statusType === 'error') statusSpan.classList.add('text-red-500');
+                    else if (statusType === 'success') statusSpan.classList.add('text-green-500');
+                }
+            };
+
+
+            // --- Initialize Charts ---
+            const initCharts = () => {
+                if (overallPerformanceChart) overallPerformanceChart.destroy();
+                if (securityIntegrityChart) securityIntegrityChart.destroy();
+                if (revenueGrowthChart) revenueGrowthChart.destroy();
+                if (costReductionChart) costReductionChart.destroy();
+                if (auditIntegrityChart) auditIntegrityChart.destroy();
+
+                const commonChartOptions = {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, ticks: { color: 'var(--page-theme-text-muted)' }, grid: { color: 'var(--page-border-color)' } },
+                        x: { ticks: { color: 'var(--page-theme-text-muted)' }, grid: { color: 'var(--page-border-color)' } }
+                    },
+                    plugins: { legend: { display: true, labels: { color: 'var(--page-theme-text-light)' } } }
+                };
+
+                // Overall Performance Chart
+                const overallCtx = document.getElementById('overallPerformanceChart').getContext('2d');
+                overallPerformanceChart = new Chart(overallCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Initial', 'Current'],
+                        datasets: [{
+                            label: 'Performance Index (Normalized)',
+                            data: [50, 50],
+                            borderColor: 'var(--page-theme-accent-color)',
+                            backgroundColor: 'rgba(250, 200, 20, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                            pointBackgroundColor: 'var(--page-theme-accent-color)',
+                            pointBorderColor: 'var(--page-card-background)',
+                            pointRadius: 5,
+                            pointHoverRadius: 7
+                        }]
+                    },
+                    options: commonChartOptions
+                });
+
+                // Security & Integrity Chart
+                const securityCtx = document.getElementById('securityIntegrityChart').getContext('2d');
+                securityIntegrityChart = new Chart(securityCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Initial', 'Current'],
+                        datasets: [{
+                            label: 'Security & Integrity Score (%)',
+                            data: [80, 80],
+                            backgroundColor: ['#6366f1', 'var(--page-theme-accent-color)'],
+                            borderColor: ['#4f46e5', '#eab308'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: commonChartOptions
+                });
+
+                // Financial Impact Charts
+                const revenueCtx = document.getElementById('revenueGrowthChart').getContext('2d');
+                revenueGrowthChart = new Chart(revenueCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Year 0', 'Year 1', 'Year 2', 'Year 3'],
+                        datasets: [{
+                            label: 'Projected Annual Revenue Growth (%)',
+                            data: [0, 5, 10, 15], // Base values
+                            borderColor: '#30d158', /* Apple Green */
+                            backgroundColor: 'rgba(48, 209, 88, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                            pointBackgroundColor: '#30d158',
+                            pointBorderColor: 'var(--page-card-background)'
+                        }]
+                    },
+                    options: commonChartOptions
+                });
+
+                const costCtx = document.getElementById('costReductionChart').getContext('2d');
+                costReductionChart = new Chart(costCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Initial', 'Post-Deployment'],
+                        datasets: [{
+                            label: 'Operational Cost Reduction (%)',
+                            data: [0, 10], // Base values
+                            backgroundColor: ['#ff3b30', '#00e0ff'], /* Red for initial, Cyan for reduction */
+                            borderColor: ['#cc2e2e', '#00b3cc'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: commonChartOptions
+                });
+
+                // Data Governance & Audit Chart
+                const auditCtx = document.getElementById('auditIntegrityChart').getContext('2d');
+                auditIntegrityChart = new Chart(auditCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                        datasets: [
+                            {
+                                label: 'Integrity Checks Performed',
+                                data: [100, 120, 150, 180, 200, 220],
+                                borderColor: '#00e0ff',
+                                fill: false,
+                                tension: 0.3,
+                                pointBackgroundColor: '#00e0ff'
+                            },
+                            {
+                                label: 'Security Events Logged',
+                                data: [10, 8, 5, 7, 3, 2],
+                                borderColor: '#ff3b30',
+                                fill: false,
+                                tension: 0.3,
+                                pointBackgroundColor: '#ff3b30'
+                            }
+                        ]
+                    },
+                    options: commonChartOptions
+                });
+            };
+
+            // --- Tab Switching Logic ---
+            window.showDemoTab = (tabId, element) => {
+                // Hide all tab contents
+                document.querySelectorAll('.demo-tab-content').forEach(tab => {
+                    tab.classList.add('hidden');
+                });
+
+                // Deactivate all buttons
+                document.querySelectorAll('.flex.border-b button').forEach(btn => {
+                    btn.classList.remove('border-page-theme-accent-color', 'text-page-theme-accent-color');
+                    btn.classList.add('border-transparent', 'text-page-theme-text-muted');
+                });
+
+                // Show the selected tab content
+                document.getElementById(tabId).classList.remove('hidden');
+
+                // Activate the clicked button
+                element.classList.add('border-page-theme-accent-color', 'text-page-theme-accent-color');
+                element.classList.remove('border-transparent', 'text-page-theme-text-muted');
+            };
+
+
+            // --- Core Logic for Simulating Demo Results ---
+            const simulateDemoResults = async () => {
+                operationsLog.innerHTML = ''; // Clear global logs
+                financialOperationsLog.innerHTML = ''; // Clear financial logs
+                dataGovernanceLog.innerHTML = ''; // Clear data governance logs
+
+                operationsLog.classList.remove('hidden'); // Show global log console
+
+                // Hide results section initially and dim cards
+                // simulatedResultsSection.classList.add('hidden'); // We now always show the tabbed content
+                document.querySelectorAll('.node-card').forEach(card => {
+                    card.style.opacity = '0.4';
+                    card.classList.remove('active'); // Remove active class
+                });
+
+                // Reset all ability statuses and progress bars
+                const allAbilityNames = ['Corethink', 'TruthWeight', 'EchoSynth', 'AutoSigil', 'PulseIndex', 'OmniTrace', 'LiftHalo', 'MirrorLoop', 'FireRatio'];
+                allAbilityNames.forEach(name => {
+                    updateAbilityStatus(name, 'Idle', 'light');
+                    updateProgressBar(document.getElementById(`${name}ProgressBar`), 0);
+                });
+
+                // Reset KPI values
+                kpiTotalProcessed.textContent = '0';
+                kpiAvgLatency.textContent = '0';
+                kpiSecurityEvents.textContent = '0';
+                kpiEfficiencyGain.textContent = '0';
+                kpiROI.textContent = '0';
+                kpiCostSavings.textContent = '0';
+                kpiComplianceScore.textContent = '0';
+                kpiTraceDepth.textContent = '0';
+
+
+                logGlobalOperation('Initializing FAA.zone™ Atom-Level Demo Dashboard...', 'info');
+                await new Promise(r => setTimeout(r, 500));
+                logGlobalOperation('Establishing secure connection to simulated data streams for trial scenario...', 'info');
+                await new Promise(r => setTimeout(r, 700));
+
+                const industry = industrySectorSelect.value;
+                const dataVolume = dataVolumeSelect.value;
+                const network = networkTopologySelect.value;
+                const security = securityPostureSelect.value;
+                const emphasizedAbilities = Array.from(emphasizeAbilitiesCheckboxes)
+                                                .filter(checkbox => checkbox.checked)
+                                                .map(checkbox => checkbox.value);
+
+                logGlobalOperation(`Configuring scenario: Industry - <span class="log-message-info">${industry}</span>, Data Volume - <span class="log-message-info">${dataVolume}</span>, Network - <span class="log-message-info">${network}</span>, Security - <span class="log-message-info">${security}</span>.`, 'info');
+                await new Promise(r => setTimeout(r, 1000));
+                logGlobalOperation(`Initiating data ingestion and initial system audit for ${industry} sector...`, 'info');
+                await new Promise(r => setTimeout(r, 800));
+
+
+                let currentOverallPerf = 50;
+                let currentSecurityScore = 80;
+                let totalProcessedVal = 0;
+                let avgLatencyVal = 0;
+                let securityEventsVal = 0;
+                let efficiencyGainVal = 0;
+                // Financial and Audit KPIs will be updated directly by simulateAbilityProcess or at the end based on cumulative impact
+
+
+                // Update charts with initial values immediately
+                overallPerformanceChart.data.datasets[0].data = [50, 50];
+                overallPerformanceChart.update();
+                securityIntegrityChart.data.datasets[0].data = [80, 80];
+                securityIntegrityChart.update();
+                // These charts will be populated with more dynamic values by simulateAbilityProcess
+                revenueGrowthChart.data.datasets[0].data = [0, 0, 0, 0];
+                revenueGrowthChart.update();
+                costReductionChart.data.datasets[0].data = [0, 0];
+                costReductionChart.update();
+                auditIntegrityChart.data.datasets[0].data = [0, 0, 0, 0, 0, 0];
+                auditIntegrityChart.data.datasets[1].data = [0, 0, 0, 0, 0, 0];
+                auditIntegrityChart.update();
+
+
+                // --- Simulate each Core Ability's operation and impact ---
+                const simulateAbilityProcess = async (name, delay) => {
+                    const nodeCard = document.getElementById(`card-${name}`);
+                    const progressBar = document.getElementById(`${name}ProgressBar`);
+                    const resultSpan = document.getElementById(`${name}Result`);
+                    const metricsSpan = document.getElementById(`${name}Metrics`);
+
+                    return new Promise(resolve => {
+                        setTimeout(async () => {
+                            let result, metrics;
+                            let perfBonus = 0;
+                            let secBonus = 0;
+                            let actionMessageGlobal = ""; // Message for global log
+                            let outcomeMessageGlobal = ""; // Message for global log
+                            let actionMessageFinancial = null; // Message for financial log
+                            let outcomeMessageFinancial = null;
+                            let actionMessageDataGov = null; // Message for data governance log
+                            let outcomeMessageDataGov = null;
+
+                            updateAbilityStatus(name, 'Processing...', 'accent');
+                            if (nodeCard) { // Ensure nodeCard is not null
+                                nodeCard.classList.add('active'); // Add active class to node card
+                            }
+
+                            // Start progress bar animation
+                            let progress = 0;
+                            const progressInterval = setInterval(() => {
+                                progress += 10;
+                                if (progress <= 100) {
+                                    updateProgressBar(progressBar, progress);
+                                } else {
+                                    clearInterval(progressInterval);
+                                }
+                            }, delay / 10); // Update 10 times during delay
+
+
+                            // Emphasize effect multiplier
+                            const emphasisFactor = emphasizedAbilities.includes(name) ? 1.5 : 1.0;
+
+                            // Simulate outcomes based on scenario and emphasis
+                            switch (name) {
+                                case 'Corethink':
+                                    actionMessageGlobal = `Corethink™ initiating real-time cognitive analysis on incoming ${industry} data to detect critical patterns and optimize strategy.`;
+                                    result = (70 + (dataVolume === 'Massive' ? -10 : 0) + (emphasisFactor * 15) + Math.random() * 5).toFixed(0);
+                                    metrics = `Avg. decisions/sec: ${Math.max(10, 50 + (dataVolume === 'Massive' ? -20 : 0) + (emphasisFactor * 30)).toFixed(0)}k`;
+                                    perfBonus = emphasizedAbilities.includes(name) ? 8 : 3;
+                                    outcomeMessageGlobal = `Corethink™ insights delivered. Decision latency reduced by ${result}%. Operational decisions per second increased.`;
+                                    efficiencyGainVal += (emphasizedAbilities.includes(name) ? 10 : 3);
+                                    actionMessageFinancial = `Corethink™ analyzing ${industry} financial transaction data for optimal investment strategies and fraud detection.`;
+                                    outcomeMessageFinancial = `Corethink™ identified high-value trends, projecting ${parseFloat(result)/5}% revenue increase due to faster insights.`;
+                                    break;
+                                case 'TruthWeight':
+                                    actionMessageGlobal = `TruthWeight™ commencing data veracity validation for ${industry} streams. Identifying and quarantining untrusted information.`;
+                                    result = (99.0 + (security === 'Hostile' ? -0.5 : 0) + (emphasisFactor * 0.8) + Math.random() * 0.1).toFixed(2);
+                                    metrics = `False positives: ${Math.max(0.01, 0.5 - (security === 'Hostile' ? 0.3 : 0) - (emphasisFactor * 0.4) + Math.random() * 0.1).toFixed(2)}%`;
+                                    secBonus = 7 * emphasisFactor;
+                                    outcomeMessageGlobal = `TruthWeight™ affirmed data integrity. Veracity score: ${result}%, fraudulent data quarantined.`;
+                                    securityEventsVal += (emphasizedAbilities.includes(name) ? 50 : 10);
+                                    actionMessageDataGov = `TruthWeight™ verifying integrity of ${industry} audit logs. Cross-referencing immutable records against compliance standards.`;
+                                    outcomeMessageDataGov = `TruthWeight™ validated data integrity for ${industry} records. False positives reduced to ${metrics}.`;
+                                    break;
+                                case 'EchoSynth':
+                                    actionMessageGlobal = `EchoSynth™ optimizing communication pathways across a ${network} network for crystal-clear signal transmission.`;
+                                    result = (75 + (network === 'Global' ? -10 : 0) + (emphasisFactor * 15) + Math.random() * 5).toFixed(0);
+                                    metrics = `Packet loss: ${Math.max(0.1, 2.0 + (network === 'Global' ? 1.0 : 0) - (emphasisFactor * 1.5) + Math.random() * 0.5).toFixed(1)}%`;
+                                    perfBonus = 6 * emphasisFactor;
+                                    outcomeMessageGlobal = `EchoSynth™ signal fidelity improved by ${result}%. Packet loss minimized for seamless operations.`;
+                                    avgLatencyVal += (emphasizedAbilities.includes(name) ? -20 : -5);
+                                    actionMessageFinancial = `EchoSynth™ ensuring ultra-low latency communication for global ${industry} trading platforms.`;
+                                    outcomeMessageFinancial = `EchoSynth™ real-time data flow achieved. Transaction execution speed increased for financial operations.`;
+                                    break;
+                                case 'AutoSigil':
+                                    actionMessageGlobal = `AutoSigil™ automating secure digital signatures for all ${industry} transactions, ensuring non-repudiation and compliance.`;
+                                    result = (85 + (dataVolume === 'Large' ? -5 : 0) + (emphasisFactor * 10) + Math.random() * 5).toFixed(0);
+                                    metrics = `Auth overhead: ${Math.max(20, 150 - (emphasisFactor * 100) + Math.random() * 20).toFixed(0)}ms`;
+                                    secBonus = 5 * emphasisFactor;
+                                    outcomeMessageGlobal = `AutoSigil™ secure signatures applied. Document verification time cut by ${result}%. Compliance records updated.`;
+                                    efficiencyGainVal += (emphasizedAbilities.includes(name) ? 8 : 2);
+                                    actionMessageDataGov = `AutoSigil™ automating compliance checks for digital contracts. Applying immutable timestamps.`;
+                                    outcomeMessageDataGov = `AutoSigil™ boosted compliance score to ${Math.min(100, 90 + emphasisFactor*5)}% due to automated legal binding.`;
+                                    break;
+                                case 'PulseIndex':
+                                    actionMessageGlobal = `PulseIndex™ performing high-frequency indexing of all ${network} network components for real-time operational awareness.`;
+                                    result = (90 + (network === 'Global' ? -5 : 0) + (emphasisFactor * 7) + Math.random() * 3).toFixed(0);
+                                    metrics = `Index refresh: ${Math.max(10, 100 - (emphasisFactor * 80) + Math.random() * 10).toFixed(0)}ms`;
+                                    perfBonus = 4 * emphasisFactor;
+                                    outcomeMessageGlobal = `PulseIndex™ network visibility boosted by ${result}%. Immediate overview of system health achieved.`;
+                                    totalProcessedVal += (emphasizedAbilities.includes(name) ? 1000 : 200);
+                                    actionMessageFinancial = `PulseIndex™ indexing high-volume ${industry} market data for instant trend analysis.`;
+                                    outcomeMessageFinancial = `PulseIndex™ accelerated market trend insights. Data correlation speed improved.`;
+                                    break;
+                                case 'OmniTrace':
+                                    actionMessageGlobal = `OmniTrace™ establishing multi-dimensional traceability for all ${dataVolume} data and asset movements, creating an immutable history.`;
+                                    result = (98 + (security === 'Hostile' ? -2 : 0) + (emphasisFactor * 2) + Math.random() * 1).toFixed(0);
+                                    metrics = `Trace depth: ${Math.max(1, 5 + (dataVolume === 'Massive' ? 2 : 0) + (emphasisFactor * 5)).toFixed(0)} layers`;
+                                    secBonus = 6 * emphasisFactor;
+                                    outcomeMessageGlobal = `OmniTrace™ supply chain transparency at ${result}%. Unalterable history verified. Audit trail recorded.`;
+                                    securityEventsVal += (emphasizedAbilities.includes(name) ? 30 : 5);
+                                    traceDepthVal += (emphasizedAbilities.includes(name) ? 5 : 1);
+                                    actionMessageDataGov = `OmniTrace™ tracing origin and lineage of sensitive ${industry} datasets for regulatory audit.`;
+                                    outcomeMessageDataGov = `OmniTrace™ confirmed full data lineage. Compliance audit efficiency increased by ${parseFloat(result)/2}%.`;
+                                    break;
+                                case 'LiftHalo':
+                                    actionMessageGlobal = `LiftHalo™ optimizing resource allocation for critical ${industry} operations, intelligently distributing computational power.`;
+                                    result = (25 + (dataVolume === 'Massive' ? -5 : 0) + (emphasisFactor * 15) + Math.random() * 5).toFixed(0);
+                                    metrics = `Resource idle: ${Math.max(5, 50 - (emphasisFactor * 30) + Math.random() * 10).toFixed(0)}%`;
+                                    perfBonus = 7 * emphasisFactor;
+                                    logOutcomeGlobal = `LiftHalo™ critical task acceleration of ${result}%. Maximized operational throughput achieved for ${industry} tasks.`;
+                                    efficiencyGainVal += (emphasizedAbilities.includes(name) ? 12 : 4);
+                                    actionMessageFinancial = `LiftHalo™ allocating compute resources to high-priority financial modeling and reporting.`;
+                                    outcomeMessageFinancial = `LiftHalo™ improved financial forecasting speed, achieving ${parseFloat(result)/3}% faster model execution.`;
+                                    break;
+                                case 'MirrorLoop':
+                                    actionMessageGlobal = `MirrorLoop™ initiating self-healing data replication across distributed nodes for guaranteed business continuity.`;
+                                    result = (emphasizedAbilities.includes(name) ? (Math.random() < 0.8 ? 'sub-seconds' : 'seconds') : (Math.random() < 0.5 ? 'seconds' : 'minutes'));
+                                    metrics = (emphasizedAbilities.includes(name) ? (Math.random() < 0.8 ? 'RPO: 0' : 'RPO: 1') : 'RPO: 5-10 min');
+                                    secBonus = 4 * emphasisFactor;
+                                    outcomeMessageGlobal = `MirrorLoop™ data recovery time reduced to ${result}. Uninterrupted operations ensured, even under ${security} conditions.`;
+                                    securityEventsVal += (emphasizedAbilities.includes(name) ? 20 : 5);
+                                    actionMessageDataGov = `MirrorLoop™ performing geo-redundant data replication for disaster recovery drills.`;
+                                    outcomeMessageDataGov = `MirrorLoop™ guaranteed data availability. RTO of ${result} achieved for critical ${industry} systems.`;
+                                    break;
+                                case 'FireRatio':
+                                    actionMessageGlobal = `FireRatio™ dynamically managing network bandwidth for optimal data flow across the ${network} topology.`;
+                                    result = (55 + (network === 'Global' ? -10 : 0) + (emphasisFactor * 20) + Math.random() * 5).toFixed(0);
+                                    metrics = `Avg. latency: ${Math.max(20, 150 - (emphasisFactor * 100) + Math.random() * 30).toFixed(0)}ms`;
+                                    perfBonus = 9 * emphasisFactor;
+                                    logOutcomeGlobal = `FireRatio™ network congestion reduced by ${result}%. Superior user experience and reliable data transfer achieved.`;
+                                    avgLatencyVal += (emphasizedAbilities.includes(name) ? -30 : -10);
+                                    actionMessageFinancial = `FireRatio™ optimizing network throughput for high-frequency trading data and large financial report transfers.`;
+                                    outcomeMessageFinancial = `FireRatio™ increased financial data transfer speeds by ${result}%. Reduced operational costs due to network efficiency.`;
+                                    break;
+                            }
+
+                            // Update individual card with results and metrics
+                            if (resultSpan) resultSpan.textContent = result + (name !== 'MirrorLoop' ? '%' : '');
+                            if (metricsSpan) metricsSpan.textContent = metrics;
+                            updateAbilityStatus(name, 'Optimal', 'success');
+                            if (nodeCard) {
+                                nodeCard.classList.remove('active'); // Remove active class after completion
+                            }
+
+                            // Log to global operations console
+                            logGlobalOperation(actionMessageGlobal, 'info', name);
+                            await new Promise(r => setTimeout(r, 100)); // Small pause
+                            logGlobalOperation(outcomeMessageGlobal, 'success', name);
+                            await new Promise(r => setTimeout(r, 200)); // Small pause
+
+                            // Log to contextual consoles if messages exist
+                            if (actionMessageFinancial && financialOperationsLog) {
+                                logContextualOperation(financialOperationsLog, actionMessageFinancial, 'info');
+                                await new Promise(r => setTimeout(r, 100));
+                                logContextualOperation(financialOperationsLog, outcomeMessageFinancial, 'success');
+                            }
+                            if (actionMessageDataGov && dataGovernanceLog) {
+                                logContextualOperation(dataGovernanceLog, actionMessageDataGov, 'info');
+                                await new Promise(r => setTimeout(r, 100));
+                                logContextualOperation(dataGovernanceLog, outcomeMessageDataGov, 'success');
+                            }
+
+                            resolve();
+                        }, delay);
+                    });
+                };
+
+                const simulationSequence = [
+                    { name: 'Corethink', delay: 700 },
+                    { name: 'TruthWeight', delay: 900 },
+                    { name: 'EchoSynth', delay: 800 },
+                    { name: 'AutoSigil', delay: 750 },
+                    { name: 'PulseIndex', delay: 950 },
+                    { name: 'OmniTrace', delay: 1000 },
+                    { name: 'LiftHalo', delay: 850 },
+                    { name: 'MirrorLoop', delay: 1100 },
+                    { name: 'FireRatio', delay: 900 },
+                ];
+
+                logGlobalOperation('Initiating Atom-Level Engine sequence for real-time impact demonstration...', 'info');
+                await new Promise(r => setTimeout(r, 500));
+
+                for (const step of simulationSequence) {
+                    await simulateAbilityProcess(step.name, step.delay);
+                    await new Promise(r => setTimeout(r, 200)); // Small pause between nodes
+                }
+
+                logGlobalOperation('All Atom-Level Engines have completed their operations for this scenario.', 'info');
+                await new Promise(r => setTimeout(r, 500));
+
+                // Final chart updates for a stable end state (can be re-calculated or sum of changes)
+                currentOverallPerf = Math.min(100, currentOverallPerf + (emphasizedAbilities.length > 0 ? 15 : 5) + (dataVolume === 'Massive' ? 5 : 0) + (network === 'Global' ? 5 : 0));
+                currentSecurityScore = Math.min(100, currentSecurityScore + (emphasizedAbilities.length > 0 ? 10 : 3) + (security === 'Hostile' ? -5 : 0));
+
+                overallPerformanceChart.data.datasets[0].data[1] = currentOverallPerf;
+                overallPerformanceChart.update();
+                securityIntegrityChart.data.datasets[0].data[1] = currentSecurityScore;
+                securityIntegrityChart.update();
+
+                // Calculate final KPIs and update
+                kpiTotalProcessed.textContent = (2000 + (dataVolume === 'Massive' ? 5000 : 1000) + (emphasizedAbilities.includes('PulseIndex') ? 1500 : 0)).toLocaleString();
+                kpiAvgLatency.textContent = (Math.max(30, 150 - (emphasizedAbilities.includes('EchoSynth') && emphasizedAbilities.includes('FireRatio') ? 100 : 30) - (network === 'Global' ? 20 : 0))).toFixed(0);
+                kpiSecurityEvents.textContent = (50 + (emphasizedAbilities.includes('TruthWeight') || emphasizedAbilities.includes('OmniTrace') ? 100 : 20)).toLocaleString();
+                kpiEfficiencyGain.textContent = (15 + (emphasizedAbilities.includes('Corethink') || emphasizedAbilities.includes('LiftHalo') ? 20 : 5)).toFixed(0);
+
+                // Simulate financial and audit specific KPIs
+                revenueGrowthVal = (5 + (emphasizedAbilities.includes('Corethink') || emphasizedAbilities.includes('LiftHalo') ? 10 : 0) + (dataVolume === 'Large' ? 5 : 0) + (Math.random() * 5)).toFixed(1);
+                costReductionVal = (10 + (emphasizedAbilities.includes('AutoSigil') || emphasizedAbilities.includes('FireRatio') ? 10 : 0) + (dataVolume === 'Large' ? 5 : 0) + (Math.random() * 5)).toFixed(1);
+                roiVal = (50 + parseFloat(revenueGrowthVal) * 2 + parseFloat(costReductionVal) * 3).toFixed(0);
+                complianceVal = (80 + (emphasizedAbilities.includes('TruthWeight') || emphasizedAbilities.includes('OmniTrace') ? 15 : 0) + (security === 'Hostile' ? -5 : 0) + (Math.random() * 5)).toFixed(0);
+                traceDepthVal = (5 + (emphasizedAbilities.includes('OmniTrace') ? 5 : 0) + (dataVolume === 'Massive' ? 2 : 0)).toFixed(0);
+
+                kpiROI.textContent = roiVal;
+                kpiCostSavings.textContent = (parseFloat(costReductionVal) * 0.1).toFixed(1); // Mock millions
+                kpiComplianceScore.textContent = Math.min(100, complianceVal);
+                kpiTraceDepth.textContent = traceDepthVal;
+
+                // Update Financial and Audit Charts
+                revenueGrowthChart.data.datasets[0].data = [0, parseFloat(revenueGrowthVal)/2, parseFloat(revenueGrowthVal)*0.8, parseFloat(revenueGrowthVal)];
+                revenueGrowthChart.update();
+                costReductionChart.data.datasets[0].data = [0, parseFloat(costReductionVal)];
+                costReductionChart.update();
+                auditIntegrityChart.data.datasets[0].data = [ // Integrity Checks
+                    100 + (emphasizedAbilities.includes('TruthWeight') ? 50 : 0),
+                    120 + (emphasizedAbilities.includes('TruthWeight') ? 60 : 0),
+                    150 + (emphasizedAbilities.includes('TruthWeight') ? 70 : 0),
+                    180 + (emphasizedAbilities.includes('TruthWeight') ? 80 : 0),
+                    200 + (emphasizedAbilities.includes('TruthWeight') ? 90 : 0),
+                    220 + (emphasizedAbilities.includes('TruthWeight') ? 100 : 0)
+                ];
+                auditIntegrityChart.data.datasets[1].data = [ // Security Events Logged
+                    Math.max(0, 10 - (emphasizedAbilities.includes('OmniTrace') ? 5 : 0) - (security === 'Hostile' ? -5 : 0)),
+                    Math.max(0, 8 - (emphasizedAbilities.includes('OmniTrace') ? 4 : 0) - (security === 'Hostile' ? -4 : 0)),
+                    Math.max(0, 5 - (emphasizedAbilities.includes('OmniTrace') ? 3 : 0) - (security === 'Hostile' ? -3 : 0)),
+                    Math.max(0, 7 - (emphasizedAbilities.includes('OmniTrace') ? 4 : 0) - (security === 'Hostile' ? -4 : 0)),
+                    Math.max(0, 3 - (emphasizedAbilities.includes('OmniTrace') ? 2 : 0) - (security === 'Hostile' ? -2 : 0)),
+                    Math.max(0, 2 - (emphasizedAbilities.includes('OmniTrace') ? 1 : 0) - (security === 'Hostile' ? -1 : 0))
+                ];
+                auditIntegrityChart.update();
+
+
+                // Update Metadata table
+                metaDemoInstanceID.textContent = `demo-${crypto.randomUUID().substring(0,8)}`;
+                metaIndustrySector.textContent = industry;
+                metaFeatureFocus.textContent = emphasizedAbilities.length > 0 ? JSON.stringify(emphasizedAbilities) : "[]";
+                metaDataVolumeScale.textContent = dataVolume;
+                metaNetworkTopology.textContent = network;
+                metaSecurityPosture.textContent = security;
+                const expirationDate = new Date();
+                expirationDate.setDate(expirationDate.getDate() + 7); // Demo expires in 7 days
+                metaExpirationTimestamp.textContent = expirationDate.toISOString().split('T')[0] + 'Z';
+
+                const currentPayload = {
+                    demoInstanceID: metaDemoInstanceID.textContent,
+                    industrySector: industry,
+                    featureFocus: emphasizedAbilities,
+                    dataVolumeScale: dataVolume,
+                    networkTopology: network,
+                    securityPosture: security,
+                    outputFormat: "InteractiveDashboard",
+                    requestTimestamp: new Date().toISOString().split('.')[0] + 'Z',
+                    simulatedResults: {
+                        overallPerformance: overallPerformanceChart.data.datasets[0].data[1],
+                        securityScore: securityIntegrityChart.data.datasets[0].data[1],
+                        kpis: {
+                            totalProcessed: kpiTotalProcessed.textContent,
+                            avgLatency: kpiAvgLatency.textContent,
+                            securityEvents: kpiSecurityEvents.textContent,
+                            efficiencyGain: kpiEfficiencyGain.textContent,
+                            roi: kpiROI.textContent,
+                            costSavings: kpiCostSavings.textContent,
+                            complianceScore: kpiComplianceScore.textContent,
+                            traceDepth: kpiTraceDepth.textContent,
+                        },
+                        nodeImpacts: {
+                            Corethink: { result: corethinkResult.textContent, metrics: corethinkMetrics.textContent },
+                            TruthWeight: { result: truthweightResult.textContent, metrics: truthweightMetrics.textContent },
+                            EchoSynth: { result: echosynthResult.textContent, metrics: echosynthMetrics.textContent },
+                            AutoSigil: { result: autosigilResult.textContent, metrics: autosigilMetrics.textContent },
+                            PulseIndex: { result: pulseindexResult.textContent, metrics: pulseindexMetrics.textContent },
+                            OmniTrace: { result: omnitraceResult.textContent, metrics: omnitraceMetrics.textContent },
+                            LiftHalo: { result: lifthaloResult.textContent, metrics: lifthaloMetrics.textContent },
+                            MirrorLoop: { result: mirrorloopResult.textContent, metrics: mirrorloopMetrics.textContent },
+                            FireRatio: { result: fireratioResult.textContent, metrics: fireratioMetrics.textContent },
+                        }
+                    }
+                };
+                demoPayloadJson.textContent = JSON.stringify(currentPayload, null, 2);
+
+                simulatedResultsSection.classList.remove('hidden');
+                currentScenarioText.textContent = `${industry} - ${dataVolume} Data Volume - ${network} Network`;
+
+                // Scroll to results
+                simulatedResultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                // Dim/undim cards based on emphasis
+                document.querySelectorAll('.node-card').forEach(card => {
+                    const abilityName = card.id.replace('card-', '');
+                    if (emphasizedAbilities.length > 0 && !emphasizedAbilities.includes(abilityName)) {
+                        card.style.opacity = '0.4';
+                    } else {
+                        card.style.opacity = '1';
+                    }
+                });
+
+                logGlobalOperation('Demo simulation complete. Your personalized dashboard results are ready.', 'success');
+            };
+
+            // --- Event Listener for Generate Demo Button ---
+            generateDemoBtn.addEventListener('click', () => {
+                generateDemoBtn.disabled = true;
+                demoStatusMessage.classList.remove('hidden');
+                demoStatusMessage.textContent = "Simulating results, please wait...";
+
+                // Reset progress bars before new simulation
+                document.querySelectorAll('.progress-bar-fill').forEach(bar => updateProgressBar(bar, 0));
+
+
+                initCharts(); // Re-initialize charts for fresh start
+                simulateDemoResults();
+
+                generateDemoBtn.disabled = false;
+            });
+
+            // Initial setup when page loads
+            initCharts();
+            // Default all checkboxes to checked for global demo
+            emphasizeAbilitiesCheckboxes.forEach(checkbox => {
+                checkbox.checked = true;
+            });
+            simulateDemoResults(); // Run initial simulation on page load
+            document.getElementById('defaultOpenTab').click(); // Open the first tab by default
+        });
+    </script>
+</body>
+</html>
