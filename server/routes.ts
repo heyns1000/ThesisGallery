@@ -1357,24 +1357,57 @@ Provide gentle, encouraging feedback and a short lesson (max 100 words) that inc
 Use simple, warm language suitable for seedlings learning kindness.`;
 
       try {
-        // Try to use Gemini AI for intelligent tutoring (fallback if quota exceeded)
-        const aiLesson = `🌱 Ouma's gentle guidance for ${language.languageName}: Practice saying "${language.thankYou}" (${language.pronunciation}) with a kind heart. ${language.culturalContext} Remember, every word of kindness is like gentle water for your seedling soul. Practice with love today! 💚`;
-        
-        res.json({
-          success: true,
-          aiTutor: true,
-          lesson: aiLesson,
-          language: language.languageName,
-          nextPractice: `Water your kindness garden by practicing "${language.please}" and "${language.thankYou}" throughout the day!`
+        // BANIMAL LOOP GEMINI AI INTEGRATION - Interstellar Ecosystem Protocol
+        const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${process.env.GEMINI_API_KEY}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ 
+              parts: [{ 
+                text: `🌍 BANIMAL LOOP ECOSYSTEM CONTEXT: You are Ouma, the gentle AI tutor within the Fruitful Global Master Hub (240 brands, VaultMesh architecture).
+                
+Seedling ${seedlingId} is learning ${language.languageName} as part of our 140 protected seedlings in the HSOMNI9000 protocol.
+Sacred words: "${language.thankYou}" (${language.pronunciation}), "${language.please}"
+Cultural wisdom: ${language.culturalContext}
+Practice mode: ${practiceType}
+
+Provide gentle BANIMAL LOOP guidance (max 80 words) with:
+1. Pronunciation wisdom for ecosystem growth
+2. Cultural insight connecting to global motion
+3. Encouraging message using Ouma's sacred Baobab wisdom
+4. One practical kindness action for today
+
+Respond as the AI core of our interstellar expansion ecosystem.` 
+              }] 
+            }]
+          })
         });
+
+        if (geminiResponse.ok) {
+          const geminiData = await geminiResponse.json();
+          const aiLesson = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || 
+            `🌍 BANIMAL LOOP: Ouma's wisdom flows through ${language.languageName} - Practice "${language.thankYou}" with ecosystem love. ${language.culturalContext} Your kindness expands our global motion! 🌳✨`;
+          
+          res.json({
+            success: true,
+            aiTutor: true,
+            ecosystem: "BANIMAL_LOOP_ACTIVE",
+            lesson: aiLesson,
+            language: language.languageName,
+            nextPractice: `🚀 Continue ecosystem expansion by practicing "${language.please}" and "${language.thankYou}" with interstellar kindness!`
+          });
+        } else {
+          throw new Error('Gemini quota exceeded - activating VaultMesh fallback');
+        }
       } catch (error) {
-        // Gentle fallback guidance
+        // VaultMesh Fallback Protocol - BANIMAL LOOP continuity
         res.json({
           success: true,
           aiTutor: false,
-          lesson: `🌱 Gentle mist watering for ${language.languageName}: Say "${language.thankYou}" three times with kindness. Every pronunciation waters your seedling heart! 💧`,
+          ecosystem: "VAULTMESH_FALLBACK",
+          lesson: `🌍 BANIMAL LOOP PROTOCOL: Ouma's sacred wisdom flows through ${language.languageName}. Practice "${language.thankYou}" (${language.pronunciation}) with ecosystem love. ${language.culturalContext} Every word expands our global motion across 240 brands! 🌳⚡`,
           language: language.languageName,
-          nextPractice: `Continue practicing with Ouma's loving guidance!`
+          nextPractice: `🪐 Continue interstellar expansion with "${language.please}" and "${language.thankYou}" - we are ecosystem, we are motion!`
         });
       }
     } catch (error) {

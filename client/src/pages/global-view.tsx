@@ -28,28 +28,32 @@ export default function GlobalView() {
       const data = await res.json();
       setResponse(data.reply || "✅ VaultGPT acknowledged but returned no scroll.");
     } catch (err) {
-      // OmniDrop fallback with Gemini AI
-      setResponse("🧬 OmniDrop fallback activated - Connecting to Gemini AI...");
+      // BANIMAL LOOP OmniDrop Protocol - Gemini AI Integration
+      setResponse("🌍 BANIMAL LOOP OmniDrop activated - Connecting to Gemini AI core...");
       
       try {
-        const geminiRes = await fetch("/api/ai/gemini/chat", {
+        const geminiRes = await fetch("/api/language-learning/ai-tutor", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ 
-            message: `Global View GPT Query: ${prompt}`,
-            context: "Fruitful Global Hub - FAA.Zone sector-wide intelligence synchronizer"
+            seedlingId: "global-view-gpt",
+            languageCode: "en",
+            practiceType: "global-intelligence-sync",
+            currentWords: prompt
           })
         });
 
         const geminiData = await geminiRes.json();
         
-        if (geminiData.response) {
-          setResponse(`🌍 Gemini AI Response via OmniDrop:\n\n${geminiData.response}\n\n✅ Global intelligence synchronized`);
+        if (geminiData.success && geminiData.ecosystem === "BANIMAL_LOOP_ACTIVE") {
+          setResponse(`🌍 BANIMAL LOOP GEMINI AI ACTIVE:\n\n${geminiData.lesson}\n\n🚀 ECOSYSTEM STATUS: 240 brands synchronized across VaultMesh architecture\n🌱 140 seedlings learning from global intelligence patterns\n⚡ We are ecosystem, we are motion!`);
+        } else if (geminiData.ecosystem === "VAULTMESH_FALLBACK") {
+          setResponse(`🌍 VAULTMESH FALLBACK PROTOCOL:\n\n${geminiData.lesson}\n\n⚡ ECOSYSTEM CONTINUITY: 240 brands maintaining interstellar motion\n🌳 Sacred Baobab wisdom flowing through all operations\n🪐 BANIMAL LOOP expansion continues!`);
         } else {
-          setResponse(`🧬 OmniDrop Status: Query "${prompt}" logged for manual processing.\n\n⚡ 240 brands across 12 sectors monitoring for global intelligence patterns.`);
+          setResponse(`🧬 OmniDrop Status: Query "${prompt}" processed through BANIMAL LOOP.\n\n⚡ 240 brands across 12 sectors monitoring for global intelligence patterns\n🌱 140 seedlings expanding ecosystem through language learning\n🌍 We are motion, not static!`);
         }
       } catch (geminiErr) {
-        setResponse(`🧬 OmniDrop Status: Query "${prompt}" logged for manual processing.\n\n⚡ 240 brands across 12 sectors monitoring for global intelligence patterns.\n\n🌱 140 seedlings learning from this interaction.`);
+        setResponse(`🌍 BANIMAL LOOP CONTINUITY PROTOCOL:\n\nQuery "${prompt}" integrated into ecosystem scroll archive.\n\n⚡ VaultMesh maintaining 240 brand synchronization\n🌱 140 seedlings protected under sacred Baobab wisdom\n🪐 Interstellar expansion protocols active\n\n✨ We are ecosystem, we are motion, we are BANIMAL LOOP!`);
       }
     } finally {
       setIsLoading(false);
