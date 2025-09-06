@@ -106,6 +106,11 @@ export default function PayrollDashboard() {
                 🛰 Sovereign Grid
               </Button>
             </Link>
+            <Link href="/advanced-payroll-dashboard">
+              <Button className="bg-orange-600 hover:bg-orange-500" data-testid="button-advanced-dashboard">
+                📊 Advanced Dashboard
+              </Button>
+            </Link>
             <Link href="/global-view">
               <Button className="bg-purple-600 hover:bg-purple-500" data-testid="button-global-view">
                 🌍 Global View
