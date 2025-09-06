@@ -29,6 +29,7 @@ import {
 import { ContactProcessingAI, BanimalChatbot, CurrencyAI, HolidayAI, generateFaaReference } from "./ai-services";
 import { GeminiContactProcessor, GeminiBanimalChatbot, GeminiProductAI, GeminiMarketingAI } from "./gemini-ai";
 import { languageLearningService } from "./language-learning-service";
+import { firebaseAdmin } from "./firebase-admin";
 
 // Configure multer for file uploads
 const upload = multer({
@@ -1398,6 +1399,312 @@ export async function registerRoutes(app: Express): Promise<Server> {
         error: "Failed to fetch seedling progress",
         details: error instanceof Error ? error.message : "Unknown error"
       });
+    }
+  });
+
+  // Firebase Push Notification API Routes
+  
+  // Register FCM token for push notifications
+  app.post("/api/notifications/register-token", async (req, res) => {
+    try {
+      const { token, userAgent, timestamp } = req.body;
+      
+      if (!token) {
+        return res.status(400).json({ error: "FCM token is required" });
+      }
+
+      // Validate token
+      const isValid = await firebaseAdmin.validateToken(token);
+      if (!isValid) {
+        return res.status(400).json({ error: "Invalid FCM token" });
+      }
+
+      // Store token in storage (you would implement this in storage.ts)
+      // For now, we'll just log it
+      console.log('FCM Token registered:', { token, userAgent, timestamp });
+      
+      // Subscribe to default topics
+      await firebaseAdmin.subscribeToTopic([token], 'all_users');
+      await firebaseAdmin.subscribeToTopic([token], 'ecosystem_users');
+      
+      res.json({ 
+        success: true, 
+        message: "FCM token registered successfully",
+        subscriptions: ['all_users', 'ecosystem_users']
+      });
+    } catch (error) {
+      console.error('Token registration error:', error);
+      res.status(500).json({ error: "Failed to register FCM token" });
+    }
+  });
+
+  // Unregister FCM token
+  app.post("/api/notifications/unregister-token", async (req, res) => {
+    try {
+      const { token } = req.body;
+      
+      if (!token) {
+        return res.status(400).json({ error: "FCM token is required" });
+      }
+
+      // Unsubscribe from all topics
+      await firebaseAdmin.unsubscribeFromTopic([token], 'all_users');
+      await firebaseAdmin.unsubscribeFromTopic([token], 'ecosystem_users');
+      await firebaseAdmin.unsubscribeFromTopic([token], 'seedling_learners');
+      await firebaseAdmin.unsubscribeFromTopic([token], 'banimal_customers');
+      
+      console.log('FCM Token unregistered:', token);
+      
+      res.json({ 
+        success: true, 
+        message: "FCM token unregistered successfully" 
+      });
+    } catch (error) {
+      console.error('Token unregistration error:', error);
+      res.status(500).json({ error: "Failed to unregister FCM token" });
+    }
+  });
+
+  // Send personalized push notification
+  app.post("/api/notifications/send-personalized", async (req, res) => {
+    try {
+      const { title, body, targetUsers, data } = req.body;
+      
+      if (!title || !body) {
+        return res.status(400).json({ error: "Title and body are required" });
+      }
+
+      const payload = {
+        title,
+        body,
+        icon: '/icon-192.png',
+        badge: '/badge-72.png',
+        clickAction: '/',
+        data: {
+          ...data,
+          type: 'personalized',
+          sent_at: new Date().toISOString()
+        }
+      };
+
+      let result;
+      if (targetUsers && targetUsers.length > 0) {
+        // Send to specific tokens
+        result = await firebaseAdmin.sendToMultipleDevices(targetUsers, payload);
+      } else {
+        // Send to all users topic
+        result = await firebaseAdmin.sendToTopic('all_users', payload);
+      }
+
+      res.json({ 
+        success: true, 
+        message: "Personalized notification sent successfully",
+        result 
+      });
+    } catch (error) {
+      console.error('Personalized notification error:', error);
+      res.status(500).json({ error: "Failed to send personalized notification" });
+    }
+  });
+
+  // Send push permission reminder
+  app.post("/api/notifications/permission-reminder", async (req, res) => {
+    try {
+      const { userToken, userName } = req.body;
+      
+      if (!userToken) {
+        return res.status(400).json({ error: "User token is required" });
+      }
+
+      const success = await firebaseAdmin.sendPermissionReminder(userToken, userName);
+      
+      if (success) {
+        res.json({ 
+          success: true, 
+          message: "Permission reminder sent successfully" 
+        });
+      } else {
+        res.status(500).json({ error: "Failed to send permission reminder" });
+      }
+    } catch (error) {
+      console.error('Permission reminder error:', error);
+      res.status(500).json({ error: "Failed to send permission reminder" });
+    }
+  });
+
+  // Send abandoned cart notification
+  app.post("/api/notifications/abandoned-cart", async (req, res) => {
+    try {
+      const { userToken, cartData } = req.body;
+      
+      if (!userToken || !cartData) {
+        return res.status(400).json({ error: "User token and cart data are required" });
+      }
+
+      const success = await firebaseAdmin.sendAbandonedCartNotification(userToken, cartData);
+      
+      if (success) {
+        res.json({ 
+          success: true, 
+          message: "Abandoned cart notification sent successfully" 
+        });
+      } else {
+        res.status(500).json({ error: "Failed to send abandoned cart notification" });
+      }
+    } catch (error) {
+      console.error('Abandoned cart notification error:', error);
+      res.status(500).json({ error: "Failed to send abandoned cart notification" });
+    }
+  });
+
+  // Send seedling milestone notification
+  app.post("/api/notifications/seedling-milestone", async (req, res) => {
+    try {
+      const { tokens, seedlingData } = req.body;
+      
+      if (!tokens || !seedlingData) {
+        return res.status(400).json({ error: "Tokens and seedling data are required" });
+      }
+
+      const result = await firebaseAdmin.sendSeedlingMilestoneNotification(tokens, seedlingData);
+      
+      res.json({ 
+        success: true, 
+        message: "Seedling milestone notification sent successfully",
+        result 
+      });
+    } catch (error) {
+      console.error('Seedling milestone notification error:', error);
+      res.status(500).json({ error: "Failed to send seedling milestone notification" });
+    }
+  });
+
+  // Subscribe user to notification topics
+  app.post("/api/notifications/subscribe-topic", async (req, res) => {
+    try {
+      const { tokens, topic } = req.body;
+      
+      if (!tokens || !topic) {
+        return res.status(400).json({ error: "Tokens and topic are required" });
+      }
+
+      const tokensArray = Array.isArray(tokens) ? tokens : [tokens];
+      const success = await firebaseAdmin.subscribeToTopic(tokensArray, topic);
+      
+      if (success) {
+        res.json({ 
+          success: true, 
+          message: `Successfully subscribed to topic: ${topic}` 
+        });
+      } else {
+        res.status(500).json({ error: "Failed to subscribe to topic" });
+      }
+    } catch (error) {
+      console.error('Topic subscription error:', error);
+      res.status(500).json({ error: "Failed to subscribe to topic" });
+    }
+  });
+
+  // Unsubscribe user from notification topics
+  app.post("/api/notifications/unsubscribe-topic", async (req, res) => {
+    try {
+      const { tokens, topic } = req.body;
+      
+      if (!tokens || !topic) {
+        return res.status(400).json({ error: "Tokens and topic are required" });
+      }
+
+      const tokensArray = Array.isArray(tokens) ? tokens : [tokens];
+      const success = await firebaseAdmin.unsubscribeFromTopic(tokensArray, topic);
+      
+      if (success) {
+        res.json({ 
+          success: true, 
+          message: `Successfully unsubscribed from topic: ${topic}` 
+        });
+      } else {
+        res.status(500).json({ error: "Failed to unsubscribe from topic" });
+      }
+    } catch (error) {
+      console.error('Topic unsubscription error:', error);
+      res.status(500).json({ error: "Failed to unsubscribe from topic" });
+    }
+  });
+
+  // Get notification analytics
+  app.get("/api/analytics/notifications", async (req, res) => {
+    try {
+      // This would fetch from your analytics storage
+      // For now, return mock data
+      const analytics = {
+        totalSent: 1250,
+        totalDelivered: 1180,
+        totalClicked: 340,
+        totalDismissed: 520,
+        deliveryRate: 94.4,
+        clickRate: 28.8,
+        dismissalRate: 44.1,
+        topPerformingTypes: [
+          { type: 'seedling_milestone', clickRate: 45.2 },
+          { type: 'abandoned_cart', clickRate: 32.1 },
+          { type: 'personalized', clickRate: 28.5 }
+        ],
+        recentNotifications: [
+          {
+            id: '1',
+            type: 'seedling_milestone',
+            title: 'Seedling Achievement!',
+            sentAt: new Date().toISOString(),
+            delivered: 95,
+            clicked: 42
+          }
+        ]
+      };
+      
+      res.json(analytics);
+    } catch (error) {
+      console.error('Notification analytics error:', error);
+      res.status(500).json({ error: "Failed to fetch notification analytics" });
+    }
+  });
+
+  // Track notification interaction
+  app.post("/api/analytics/notification-interaction", async (req, res) => {
+    try {
+      const { notificationId, action, timestamp } = req.body;
+      
+      if (!notificationId || !action) {
+        return res.status(400).json({ error: "Notification ID and action are required" });
+      }
+
+      // Log the interaction (you would store this in your analytics system)
+      console.log('Notification interaction tracked:', { notificationId, action, timestamp });
+      
+      res.json({ 
+        success: true, 
+        message: "Notification interaction tracked successfully" 
+      });
+    } catch (error) {
+      console.error('Notification interaction tracking error:', error);
+      res.status(500).json({ error: "Failed to track notification interaction" });
+    }
+  });
+
+  // Track notification dismissal
+  app.post("/api/analytics/notification-dismissed", async (req, res) => {
+    try {
+      const { notificationId, timestamp, action } = req.body;
+      
+      // Log the dismissal
+      console.log('Notification dismissed:', { notificationId, timestamp, action });
+      
+      res.json({ 
+        success: true, 
+        message: "Notification dismissal tracked successfully" 
+      });
+    } catch (error) {
+      console.error('Notification dismissal tracking error:', error);
+      res.status(500).json({ error: "Failed to track notification dismissal" });
     }
   });
 
