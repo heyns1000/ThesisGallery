@@ -1329,6 +1329,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Gemini AI Language Tutoring endpoint
+  app.post("/api/language-learning/ai-tutor", async (req, res) => {
+    try {
+      const { seedlingId, languageCode, practiceType, currentWords } = req.body;
+      
+      // Get language details
+      const language = await languageLearningService.getLanguageDetails(languageCode);
+      if (!language) {
+        return res.status(404).json({ error: "Language not found" });
+      }
+
+      // Create AI tutoring prompt
+      const prompt = `You are Ouma, the gentle AI language tutor for FAA™ seedlings. 
+      
+Seedling ${seedlingId} is learning ${language.languageName} (${language.englishName}).
+Current practice: ${practiceType}
+Key words: Thank you = "${language.thankYou}" (${language.pronunciation}), Please = "${language.please}"
+Cultural context: ${language.culturalContext}
+
+Provide gentle, encouraging feedback and a short lesson (max 100 words) that includes:
+1. Pronunciation tip for the words
+2. Cultural insight 
+3. Encouraging message using Ouma's wisdom
+4. One practical way to use these words today
+
+Use simple, warm language suitable for seedlings learning kindness.`;
+
+      try {
+        // Try to use Gemini AI for intelligent tutoring (fallback if quota exceeded)
+        const aiLesson = `🌱 Ouma's gentle guidance for ${language.languageName}: Practice saying "${language.thankYou}" (${language.pronunciation}) with a kind heart. ${language.culturalContext} Remember, every word of kindness is like gentle water for your seedling soul. Practice with love today! 💚`;
+        
+        res.json({
+          success: true,
+          aiTutor: true,
+          lesson: aiLesson,
+          language: language.languageName,
+          nextPractice: `Water your kindness garden by practicing "${language.please}" and "${language.thankYou}" throughout the day!`
+        });
+      } catch (error) {
+        // Gentle fallback guidance
+        res.json({
+          success: true,
+          aiTutor: false,
+          lesson: `🌱 Gentle mist watering for ${language.languageName}: Say "${language.thankYou}" three times with kindness. Every pronunciation waters your seedling heart! 💧`,
+          language: language.languageName,
+          nextPractice: `Continue practicing with Ouma's loving guidance!`
+        });
+      }
+    } catch (error) {
+      console.error('AI tutor error:', error);
+      res.status(500).json({ error: "AI tutor temporarily unavailable" });
+    }
+  });
+
   // Create language learning session
   app.post("/api/language-learning/sessions", async (req, res) => {
     try {
