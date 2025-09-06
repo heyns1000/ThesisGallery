@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>🔧 FAA™ Payroll OS — Features Matrix</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        html { scroll-behavior: smooth; }
+        .glow-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .bounce-link:hover {
+            animation: bounce 0.5s ease;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .feature-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800 leading-relaxed">
+
+<!-- HEADER -->
+<header class="bg-white shadow sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
+        <div class="text-xl sm:text-2xl font-extrabold tracking-tight text-gray-900">🧬 FAA™ Payroll OS</div>
+        <nav class="hidden md:flex space-x-6 text-sm font-semibold text-gray-700">
+            <a href="/payroll-dashboard" class="hover:text-purple-500">Dashboard</a>
+            <a href="/payroll-sovereign-grid" class="hover:text-purple-500">Sovereign Grid</a>
+            <a href="/advanced-payroll-dashboard" class="hover:text-purple-500">Advanced Dashboard</a>
+            <a href="/global-view" class="hover:text-purple-500">Global View</a>
+        </nav>
+        <a href="/vault-payments" class="bg-black text-white font-bold px-4 py-2 rounded text-sm">Vault</a>
+    </div>
+</header>
+
+<!-- HERO -->
+<section class="bg-gradient-to-br from-purple-800 via-indigo-900 to-black text-white text-center py-24 px-6">
+    <h1 class="text-5xl sm:text-6xl font-extrabold mb-6">🔧 Feature Matrix</h1>
+    <p class="text-lg max-w-2xl mx-auto opacity-90">
+        Complete breakdown of all 10 core FAA™ Payroll OS features with Scroll IDs, Asset Types, and Vault integration
+    </p>
+</section>
+
+<!-- CORE FEATURES GRID -->
+<section class="py-24 px-6 bg-white">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-4xl font-bold text-center text-purple-600 mb-16">🧾 Core Payroll Features</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+            
+            <!-- Feature 1: Payslip Engine -->
+            <div class="feature-card rounded-2xl p-8 text-white transition-all duration-300">
+                <div class="mb-4">
+                    <h3 class="text-2xl font-bold mb-2">🧾 Payslip Engine</h3>
+                    <div class="text-sm opacity-80">
+                        <span class="font-semibold">Scroll ID:</span> P-006<br>
+                        <span class="font-semibold">Asset Type:</span> Atom-Level™ Contract Object Generator
+                    </div>
+                </div>
+                <p class="text-sm mb-6 leading-relaxed">
+                    Auto-generates monthly payslips, tax summaries, QR-based documentation, and ledger-linked exports. 
+                    Requires zero human input with complete FAA compliance.
+                </p>
+                <div class="mb-4">
+                    <h4 class="font-semibold mb-2">🔧 Functions:</h4>
+                    <ul class="text-xs space-y-1 opacity-90">
+                        <li>• Auto-payslip generation</li>
+                        <li>• Tax summary automation</li>
+                        <li>• QR documentation</li>
+                        <li>• Ledger export integration</li>
+                    </ul>
+                </div>
+                <div class="text-xs opacity-70">
+                    <span class="font-semibold">Trace Path:</span> /vault/payslips/auto-gen/
+                </div>
+            </div>
+
+            <!-- Feature 2: ShiftSync Grid -->
+            <div class="feature-card rounded-2xl p-8 text-white transition-all duration-300">
+                <div class="mb-4">
+                    <h3 class="text-2xl font-bold mb-2">⏱ ShiftSync Grid</h3>
+                    <div class="text-sm opacity-80">
+                        <span class="font-semibold">Scroll ID:</span> P-001<br>
+                        <span class="font-semibold">Asset Type:</span> Temporal Ledger Validator™
+                    </div>
+                </div>
+                <p class="text-sm mb-6 leading-relaxed">
+                    Real-time shift logging with drift detection, overload warnings, and integrated approval chains 
+                    across team synchronization mechanisms.
+                </p>
+                <div class="mb-4">
+                    <h4 class="font-semibold mb-2">🔧 Functions:</h4>
+                    <ul class="text-xs space-y-1 opacity-90">
+                        <li>• Time drift detection</li>
+                        <li>• Shift overload alerts</li>
+                        <li>• Approval chain integration</li>
+                        <li>• Team sync mechanisms</li>
+                    </ul>
+                </div>
+                <div class="text-xs opacity-70">
+                    <span class="font-semibold">Trace Path:</span> /vault/shifts/sync-grid/
+                </div>
+            </div>
+
+            <!-- Feature 3: CTC Tracker AI -->
+            <div class="feature-card rounded-2xl p-8 text-white transition-all duration-300">
+                <div class="mb-4">
+                    <h3 class="text-2xl font-bold mb-2">📊 CTC Tracker AI</h3>
+                    <div class="text-sm opacity-80">
+                        <span class="font-semibold">Scroll ID:</span> P-002, P-007<br>
+                        <span class="font-semibold">Asset Type:</span> Inline Risk Comparator™
+                    </div>
+                </div>
+                <p class="text-sm mb-6 leading-relaxed">
+                    Validates compensation packages against role logic, bonus schemas, and industry pay bands 
+                    with real-time compliance overlays.
+                </p>
+                <div class="mb-4">
+                    <h4 class="font-semibold mb-2">🔧 Functions:</h4>
+                    <ul class="text-xs space-y-1 opacity-90">
+                        <li>• Role logic validation</li>
+                        <li>• Bonus schema compliance</li>
+                        <li>• Industry band comparison</li>
+                        <li>• Real-time risk overlays</li>
+                    </ul>
+                </div>
+                <div class="text-xs opacity-70">
+                    <span class="font-semibold">Trace Path:</span> /vault/ctc/tracker-ai/
+                </div>
+            </div>
+
+            <!-- Feature 4: Drift + Ghost Detection -->
+            <div class="feature-card rounded-2xl p-8 text-white transition-all duration-300">
+                <div class="mb-4">
+                    <h3 class="text-2xl font-bold mb-2">🔍 Drift + Ghost Detection</h3>
+                    <div class="text-sm opacity-80">
+                        <span class="font-semibold">Scroll ID:</span> P-004, P-005<br>
+                        <span class="font-semibold">Asset Type:</span> GhostFlag Mesh Detector™
+                    </div>
+                </div>
+                <p class="text-sm mb-6 leading-relaxed">
+                    Detects ghost shifts, under-hour activity anomalies, and policy bypass patterns 
+                    using advanced fraud mesh algorithms.
+                </p>
+                <div class="mb-4">
+                    <h4 class="font-semibold mb-2">🔧 Functions:</h4>
+                    <ul class="text-xs space-y-1 opacity-90">
+                        <li>• Ghost shift detection</li>
+                        <li>• Under-hour flagging</li>
+                        <li>• Policy bypass alerts</li>
+                        <li>• Fraud mesh integration</li>
+                    </ul>
+                </div>
+                <div class="text-xs opacity-70">
+                    <span class="font-semibold">Trace Path:</span> /vault/fraud/ghost-detection/
+                </div>
+            </div>
+
+            <!-- Feature 5: VaultMesh Sync -->
+            <div class="feature-card rounded-2xl p-8 text-white transition-all duration-300">
+                <div class="mb-4">
+                    <h3 class="text-2xl font-bold mb-2">🧠 VaultMesh Sync</h3>
+                    <div class="text-sm opacity-80">
+                        <span class="font-semibold">Scroll ID:</span> VM-001<br>
+                        <span class="font-semibold">Asset Type:</span> Vault Validation Kernel™
+                    </div>
+                </div>
+                <p class="text-sm mb-6 leading-relaxed">
+                    Enforces immutable scroll logs with 9-second validation cycles and binds session events 
+                    to contractual evidence chains.
+                </p>
+                <div class="mb-4">
+                    <h4 class="font-semibold mb-2">🔧 Functions:</h4>
+                    <ul class="text-xs space-y-1 opacity-90">
+                        <li>• Immutable log enforcement</li>
+                        <li>• 9-second sync cycles</li>
+                        <li>• Session event binding</li>
+                        <li>• Contract evidence chains</li>
+                    </ul>
+                </div>
+                <div class="text-xs opacity-70">
+                    <span class="font-semibold">Trace Path:</span> /vault/echo/logs/ctc-weekly.json
+                </div>
+            </div>
+
+            <!-- Feature 6: Brand Bind Scrolls -->
+            <div class="feature-card rounded-2xl p-8 text-white transition-all duration-300">
+                <div class="mb-4">
+                    <h3 class="text-2xl font-bold mb-2">🧬 Brand Bind Scrolls</h3>
+                    <div class="text-sm opacity-80">
+                        <span class="font-semibold">Scroll ID:</span> P-008<br>
+                        <span class="font-semibold">Asset Type:</span> Role-Bound Brand Mesh™
+                    </div>
+                </div>
+                <p class="text-sm mb-6 leading-relaxed">
+                    Connects staff roles to cost centers, performance tiers, and FAA contract clauses 
+                    with dynamic brand mesh integration.
+                </p>
+                <div class="mb-4">
+                    <h4 class="font-semibold mb-2">🔧 Functions:</h4>
+                    <ul class="text-xs space-y-1 opacity-90">
+                        <li>• Staff role binding</li>
+                        <li>• Cost center mapping</li>
+                        <li>• Performance tier tracking</li>
+                        <li>• Contract clause integration</li>
+                    </ul>
+                </div>
+                <div class="text-xs opacity-70">
+                    <span class="font-semibold">Trace Path:</span> /vault/brands/bind-scrolls/
+                </div>
+            </div>
+
+            <!-- Feature 7: Role-to-Pay Analyzer -->
+            <div class="feature-card rounded-2xl p-8 text-white transition-all duration-300">
+                <div class="mb-4">
+                    <h3 class="text-2xl font-bold mb-2">🧠 Role-to-Pay Analyzer</h3>
+                    <div class="text-sm opacity-80">
+                        <span class="font-semibold">Scroll ID:</span> RPA-001<br>
+                        <span class="font-semibold">Asset Type:</span> ScrollChain Analyzer™
+                    </div>
+                </div>
+                <p class="text-sm mb-6 leading-relaxed">
+                    Real-time analysis of job titles with GPA-to-shift alignment, bonus history validation, 
+                    and dynamic compensation grid checks.
+                </p>
+                <div class="mb-4">
+                    <h4 class="font-semibold mb-2">🔧 Functions:</h4>
+                    <ul class="text-xs space-y-1 opacity-90">
+                        <li>• GPA-to-shift alignment</li>
+                        <li>• Bonus history validation</li>
+                        <li>• Dynamic comp grid checks</li>
+                        <li>• CTC Tracker GPT integration</li>
+                    </ul>
+                </div>
+                <div class="text-xs opacity-70">
+                    <span class="font-semibold">Trace Path:</span> /vault/roles/pay-analyzer/
+                </div>
+            </div>
+
+            <!-- Feature 8: Vault Entry Logs -->
+            <div class="feature-card rounded-2xl p-8 text-white transition-all duration-300">
+                <div class="mb-4">
+                    <h3 class="text-2xl font-bold mb-2">🔒 Vault Entry Logs</h3>
+                    <div class="text-sm opacity-80">
+                        <span class="font-semibold">Scroll ID:</span> VEL-001<br>
+                        <span class="font-semibold">Asset Type:</span> Audit Trail Kernel™
+                    </div>
+                </div>
+                <p class="text-sm mb-6 leading-relaxed">
+                    Complete access to CTC audit trails, team scroll history, and contract evidence logs 
+                    with immutable timestamp verification.
+                </p>
+                <div class="mb-4">
+                    <h4 class="font-semibold mb-2">🔧 Functions:</h4>
+                    <ul class="text-xs space-y-1 opacity-90">
+                        <li>• CTC audit trail access</li>
+                        <li>• Team scroll history</li>
+                        <li>• Contract evidence logs</li>
+                        <li>• Immutable timestamps</li>
+                    </ul>
+                </div>
+                <div class="text-xs opacity-70">
+                    <span class="font-semibold">Trace Files:</span> /vault/ctc-report.json
+                </div>
+            </div>
+
+            <!-- Feature 9: Org Role Matrix -->
+            <div class="feature-card rounded-2xl p-8 text-white transition-all duration-300">
+                <div class="mb-4">
+                    <h3 class="text-2xl font-bold mb-2">🏢 Org Role Matrix</h3>
+                    <div class="text-sm opacity-80">
+                        <span class="font-semibold">Scroll ID:</span> ORM-001<br>
+                        <span class="font-semibold">Asset Type:</span> Organizational Grid™
+                    </div>
+                </div>
+                <p class="text-sm mb-6 leading-relaxed">
+                    Visual mapping of departments, GPA clusters, latency-prone payroll nodes, 
+                    and pay grade calibrations with AI balancing.
+                </p>
+                <div class="mb-4">
+                    <h4 class="font-semibold mb-2">🔧 Functions:</h4>
+                    <ul class="text-xs space-y-1 opacity-90">
+                        <li>• Department mapping</li>
+                        <li>• GPA cluster analysis</li>
+                        <li>• Latency node detection</li>
+                        <li>• Pay grade calibration</li>
+                    </ul>
+                </div>
+                <div class="text-xs opacity-70">
+                    <span class="font-semibold">AI Target:</span> FAA Shift Balancer AI
+                </div>
+            </div>
+
+            <!-- Feature 10: Exportable Reports -->
+            <div class="feature-card rounded-2xl p-8 text-white transition-all duration-300">
+                <div class="mb-4">
+                    <h3 class="text-2xl font-bold mb-2">📥 Exportable Reports</h3>
+                    <div class="text-sm opacity-80">
+                        <span class="font-semibold">Scroll ID:</span> ER-001<br>
+                        <span class="font-semibold">Asset Type:</span> Export Engine™
+                    </div>
+                </div>
+                <p class="text-sm mb-6 leading-relaxed">
+                    Multi-format downloads including CTC vault reports, weekly shift logs, 
+                    and risk analysis with JSON/PDF output options.
+                </p>
+                <div class="mb-4">
+                    <h4 class="font-semibold mb-2">🔧 Functions:</h4>
+                    <ul class="text-xs space-y-1 opacity-90">
+                        <li>• CTC vault reports (JSON/PDF)</li>
+                        <li>• Weekly shift & risk logs</li>
+                        <li>• FAA CMS exports</li>
+                        <li>• Tailwind preview generation</li>
+                    </ul>
+                </div>
+                <div class="text-xs opacity-70">
+                    <span class="font-semibold">Export Files:</span> /vault/echo/logs/ctc-weekly.json
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- FEATURE GROUPS -->
+<section class="py-24 px-6 bg-gray-100">
+    <div class="max-w-6xl mx-auto">
+        <h2 class="text-3xl font-bold text-center text-purple-600 mb-16">📦 Functional Grouping</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            
+            <div class="bg-white rounded-xl p-6 shadow-lg border border-purple-100">
+                <h3 class="text-lg font-bold text-green-600 mb-4">🤖 Payroll Automation</h3>
+                <ul class="text-sm space-y-2 text-gray-700">
+                    <li>• Payslip Engine</li>
+                    <li>• ShiftSync Grid</li>
+                    <li>• CTC Tracker AI</li>
+                </ul>
+            </div>
+
+            <div class="bg-white rounded-xl p-6 shadow-lg border border-purple-100">
+                <h3 class="text-lg font-bold text-red-600 mb-4">🛡️ Fraud & Risk Intelligence</h3>
+                <ul class="text-sm space-y-2 text-gray-700">
+                    <li>• Drift Detection</li>
+                    <li>• GhostFlag Mesh</li>
+                    <li>• VaultMesh Sync</li>
+                </ul>
+            </div>
+
+            <div class="bg-white rounded-xl p-6 shadow-lg border border-purple-100">
+                <h3 class="text-lg font-bold text-blue-600 mb-4">🏢 Organizational Insights</h3>
+                <ul class="text-sm space-y-2 text-gray-700">
+                    <li>• Role-to-Pay Analyzer</li>
+                    <li>• Brand Bind Scrolls</li>
+                    <li>• Org Role Matrix</li>
+                </ul>
+            </div>
+
+            <div class="bg-white rounded-xl p-6 shadow-lg border border-purple-100">
+                <h3 class="text-lg font-bold text-purple-600 mb-4">📊 Export & Verification</h3>
+                <ul class="text-sm space-y-2 text-gray-700">
+                    <li>• Vault Logs Access</li>
+                    <li>• Exportable Reports</li>
+                    <li>• Audit Trail Engine</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- EXPORT OPTIONS -->
+<section class="py-24 px-6 bg-white text-center">
+    <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold text-purple-600 mb-12">📦 Export Options</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            
+            <div class="bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-xl p-6 glow-btn transition-all duration-300">
+                <div class="text-2xl mb-2">🧬</div>
+                <h3 class="font-bold">FAA CMS</h3>
+                <p class="text-xs opacity-90 mt-2">VaultMesh integration</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-green-500 to-blue-500 text-white rounded-xl p-6 glow-btn transition-all duration-300">
+                <div class="text-2xl mb-2">📊</div>
+                <h3 class="font-bold">CSV/JSON</h3>
+                <p class="text-xs opacity-90 mt-2">Data exports</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-purple-500 to-pink-500 text-white rounded-xl p-6 glow-btn transition-all duration-300">
+                <div class="text-2xl mb-2">🗺️</div>
+                <h3 class="font-bold">Sitemap XML</h3>
+                <p class="text-xs opacity-90 mt-2">SEO-ready structure</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-orange-500 to-red-500 text-white rounded-xl p-6 glow-btn transition-all duration-300">
+                <div class="text-2xl mb-2">🎨</div>
+                <h3 class="font-bold">Tailwind Preview</h3>
+                <p class="text-xs opacity-90 mt-2">Live UI demos</p>
+            </div>
+
+        </div>
+
+        <div class="mt-12">
+            <a href="/payroll-dashboard" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 px-8 rounded-lg transition-all duration-300 glow-btn inline-block">
+                🚀 Launch Dashboard
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="bg-gray-900 text-white text-center py-12">
+    <div class="max-w-4xl mx-auto">
+        <h3 class="text-2xl font-bold mb-4">🧬 FAA™ Payroll OS</h3>
+        <p class="text-gray-400 mb-6">Sovereign payroll automation with VaultMesh™ integration</p>
+        <div class="flex justify-center space-x-6 text-sm">
+            <a href="/payroll-dashboard" class="hover:text-purple-400">Dashboard</a>
+            <a href="/payroll-sovereign-grid" class="hover:text-purple-400">Sovereign Grid</a>
+            <a href="/advanced-payroll-dashboard" class="hover:text-purple-400">Advanced Dashboard</a>
+            <a href="/vault-payments" class="hover:text-purple-400">Vault Payments</a>
+        </div>
+        <div class="mt-8 text-xs text-gray-500">
+            <p>FAA™ Inline Verification • VaultMesh™ Sync • Zero-Human Automation</p>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
