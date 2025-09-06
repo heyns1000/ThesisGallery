@@ -1,0 +1,208 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(222, 84%, 4%);
+  --foreground: hsl(210, 40%, 98%);
+  --card: hsl(222, 84%, 5%);
+  --card-foreground: hsl(210, 40%, 98%);
+  --popover: hsl(222, 84%, 5%);
+  --popover-foreground: hsl(210, 40%, 98%);
+  --primary: hsl(239, 84%, 67%);
+  --primary-foreground: hsl(0, 0%, 98%);
+  --secondary: hsl(215, 32%, 27%);
+  --secondary-foreground: hsl(210, 40%, 98%);
+  --muted: hsl(215, 32%, 15%);
+  --muted-foreground: hsl(217, 32%, 65%);
+  --accent: hsl(84, 81%, 44%);
+  --accent-foreground: hsl(222, 84%, 4%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(210, 40%, 98%);
+  --border: hsl(215, 32%, 27%);
+  --input: hsl(215, 32%, 27%);
+  --ring: hsl(239, 84%, 67%);
+  --chart-1: hsl(239, 84%, 67%);
+  --chart-2: hsl(159, 100%, 36%);
+  --chart-3: hsl(42, 93%, 56%);
+  --chart-4: hsl(147, 79%, 42%);
+  --chart-5: hsl(341, 75%, 51%);
+  --sidebar: hsl(222, 84%, 5%);
+  --sidebar-foreground: hsl(210, 40%, 98%);
+  --sidebar-primary: hsl(239, 84%, 67%);
+  --sidebar-primary-foreground: hsl(0, 0%, 98%);
+  --sidebar-accent: hsl(84, 81%, 44%);
+  --sidebar-accent-foreground: hsl(222, 84%, 4%);
+  --sidebar-border: hsl(215, 32%, 27%);
+  --sidebar-ring: hsl(239, 84%, 67%);
+  --font-sans: Inter, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: Menlo, monospace;
+  --radius: 0.75rem;
+  --shadow-2xs: 0px 2px 0px 0px hsl(239, 84%, 67%, 0.00);
+  --shadow-xs: 0px 2px 0px 0px hsl(239, 84%, 67%, 0.00);
+  --shadow-sm: 0px 2px 0px 0px hsl(239, 84%, 67%, 0.00), 0px 1px 2px -1px hsl(239, 84%, 67%, 0.00);
+  --shadow: 0px 2px 0px 0px hsl(239, 84%, 67%, 0.00), 0px 1px 2px -1px hsl(239, 84%, 67%, 0.00);
+  --shadow-md: 0px 2px 0px 0px hsl(239, 84%, 67%, 0.00), 0px 2px 4px -1px hsl(239, 84%, 67%, 0.00);
+  --shadow-lg: 0px 2px 0px 0px hsl(239, 84%, 67%, 0.00), 0px 4px 6px -1px hsl(239, 84%, 67%, 0.00);
+  --shadow-xl: 0px 2px 0px 0px hsl(239, 84%, 67%, 0.00), 0px 8px 10px -1px hsl(239, 84%, 67%, 0.00);
+  --shadow-2xl: 0px 2px 0px 0px hsl(239, 84%, 67%, 0.00);
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+}
+
+.dark {
+  --background: hsl(222, 84%, 4%);
+  --foreground: hsl(210, 40%, 98%);
+  --card: hsl(222, 84%, 5%);
+  --card-foreground: hsl(210, 40%, 98%);
+  --popover: hsl(222, 84%, 5%);
+  --popover-foreground: hsl(210, 40%, 98%);
+  --primary: hsl(239, 84%, 67%);
+  --primary-foreground: hsl(0, 0%, 98%);
+  --secondary: hsl(215, 32%, 27%);
+  --secondary-foreground: hsl(210, 40%, 98%);
+  --muted: hsl(215, 32%, 15%);
+  --muted-foreground: hsl(217, 32%, 65%);
+  --accent: hsl(84, 81%, 44%);
+  --accent-foreground: hsl(222, 84%, 4%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(210, 40%, 98%);
+  --border: hsl(215, 32%, 27%);
+  --input: hsl(215, 32%, 27%);
+  --ring: hsl(239, 84%, 67%);
+  --chart-1: hsl(239, 84%, 67%);
+  --chart-2: hsl(159, 100%, 36%);
+  --chart-3: hsl(42, 93%, 56%);
+  --chart-4: hsl(147, 79%, 42%);
+  --chart-5: hsl(341, 75%, 51%);
+  --sidebar: hsl(222, 84%, 5%);
+  --sidebar-foreground: hsl(210, 40%, 98%);
+  --sidebar-primary: hsl(239, 84%, 67%);
+  --sidebar-primary-foreground: hsl(0, 0%, 98%);
+  --sidebar-accent: hsl(84, 81%, 44%);
+  --sidebar-accent-foreground: hsl(222, 84%, 4%);
+  --sidebar-border: hsl(215, 32%, 27%);
+  --sidebar-ring: hsl(239, 84%, 67%);
+  --font-sans: Inter, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: Menlo, monospace;
+  --radius: 0.75rem;
+  --shadow-2xs: 0px 2px 0px 0px hsl(239, 84%, 67%, 0.00);
+  --shadow-xs: 0px 2px 0px 0px hsl(239, 84%, 67%, 0.00);
+  --shadow-sm: 0px 2px 0px 0px hsl(239, 84%, 67%, 0.00), 0px 1px 2px -1px hsl(239, 84%, 67%, 0.00);
+  --shadow: 0px 2px 0px 0px hsl(239, 84%, 67%, 0.00), 0px 1px 2px -1px hsl(239, 84%, 67%, 0.00);
+  --shadow-md: 0px 2px 0px 0px hsl(239, 84%, 67%, 0.00), 0px 2px 4px -1px hsl(239, 84%, 67%, 0.00);
+  --shadow-lg: 0px 2px 0px 0px hsl(239, 84%, 67%, 0.00), 0px 4px 6px -1px hsl(239, 84%, 67%, 0.00);
+  --shadow-xl: 0px 2px 0px 0px hsl(239, 84%, 67%, 0.00), 0px 8px 10px -1px hsl(239, 84%, 67%, 0.00);
+  --shadow-2xl: 0px 2px 0px 0px hsl(239, 84%, 67%, 0.00);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    background: linear-gradient(135deg, hsl(222, 84%, 4%) 0%, hsl(215, 32%, 15%) 100%);
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  .gradient-border {
+    background: linear-gradient(90deg, hsl(239, 84%, 67%), hsl(84, 81%, 44%));
+    padding: 2px;
+    border-radius: var(--radius);
+  }
+
+  .gradient-border-inner {
+    background: hsl(222, 84%, 5%);
+    border-radius: calc(var(--radius) - 2px);
+  }
+
+  .glow-effect {
+    box-shadow: 0 0 20px hsla(239, 84%, 67%, 0.3);
+    transition: box-shadow 0.3s ease;
+  }
+
+  .glow-effect:hover {
+    box-shadow: 0 0 30px hsla(239, 84%, 67%, 0.5);
+  }
+
+  .chat-bubble {
+    animation: slideIn 0.3s ease-out;
+  }
+
+  .document-preview {
+    background: linear-gradient(145deg, hsl(222, 84%, 5%) 0%, hsl(215, 32%, 18%) 100%);
+    border: 1px solid hsl(215, 32%, 27%);
+  }
+
+  .status-indicator {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .status-indicator::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, hsla(84, 81%, 44%, 0.4), transparent);
+    animation: shimmer 2s infinite;
+  }
+
+  .brand-card {
+    background: radial-gradient(circle at top right, hsl(222, 84%, 8%), hsl(222, 84%, 4%));
+    border: 1px solid hsl(215, 32%, 27%);
+    transition: all 0.3s ease;
+  }
+
+  .brand-card:hover {
+    transform: translateY(-2px);
+    border-color: hsl(239, 84%, 67%);
+  }
+}
+
+@layer utilities {
+  .line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+  }
+
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
