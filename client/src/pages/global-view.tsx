@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function GlobalView() {
   const [prompt, setPrompt] = useState("");
-  const [response, setResponse] = useState("⚡️ Global View interface initialized...");
+  const [response, setResponse] = useState("🌍 Global View GPT ACTIVATED\n\n✅ VaultBridge connection established\n✅ FAA.Zone sync protocols online\n✅ Sector-wide intelligence ready\n✅ OmniDrop fallback systems armed\n\n> Ready to receive global sync commands...");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSendPrompt = async () => {
