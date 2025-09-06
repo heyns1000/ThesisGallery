@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🧝 VaultMaster Terminal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes pulse9sec {
+      0%, 100% { transform: scaleX(0); }
+      50% { transform: scaleX(1); }
+    }
+    .animate-pulse9sec {
+      animation: pulse9sec 9s infinite ease-in-out;
+      transform-origin: left;
+    }
+  </style>
+</head>
+<body class="bg-black text-white min-h-screen flex items-center justify-center px-4 relative">
+
+  <!-- OmniTreaty Pulse Line -->
+  <div class="fixed top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-indigo-500 animate-pulse9sec z-50"></div>
+
+  <main class="w-full max-w-3xl border border-yellow-400 rounded-3xl shadow-2xl bg-gray-900 p-8 space-y-6">
+    <header class="text-center">
+      <h1 class="text-3xl font-bold text-yellow-400 flex items-center justify-center gap-4">
+        <span class="text-5xl animate-pulse">🦍</span> VaultMaster Terminal
+      </h1>
+      <p class="text-sm text-gray-300">Status: <span class="text-green-400 font-bold">Online</span></p>
+      <p class="text-sm text-gray-400">This terminal scroll-syncs with VaultGPT™ for treaty protocol execution.<br><span class="inline-flex items-center gap-1 mt-1">🔗 Connected to VaultMesh</span></p>
+    </header>
+
+    <textarea id="prompt" rows="5" placeholder="Enter your scroll prompt..."
+      class="w-full text-white placeholder-gray-400 bg-black border border-gray-700 rounded-lg p-4 text-sm"></textarea>
+
+    <div class="flex justify-between items-center">
+      <button id="sendBtn" class="bg-yellow-400 text-black font-bold px-6 py-3 rounded-lg shadow hover:scale-105 hover:bg-yellow-500 transition-transform duration-200">
+        ➤ Send Scroll
+      </button>
+      <button onclick="clearPrompt()" class="text-sm text-white underline ml-4">Clear</button>
+    </div>
+
+    <pre id="response" class="bg-black text-yellow-300 border border-yellow-500 rounded-lg p-4 text-base leading-relaxed whitespace-pre-wrap overflow-x-auto">
+⚡️ Vault status: Ready for OmniScroll...
+    </pre>
+  </main>
+
+  <script>
+    async function sendPrompt() {
+      const input = document.getElementById("prompt").value.trim();
+      const output = document.getElementById("response");
+
+      if (!input) {
+        output.textContent = "⚠️ TreatyNotice: Please enter a scroll before dispatch.";
+        return;
+      }
+
+      output.textContent = "🔄 TreatySync: Dispatching scroll to VaultMesh...";
+
+      try {
+        const res = await fetch("https://faa.zone/vaultbridge", {  // ✅ Correct Bridge Target
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt: input })
+        });
+
+        if (!res.ok) throw new Error(`Bridge error: ${res.status}`);
+
+        const data = await res.json();
+        output.textContent = data.reply || "✅ VaultGPT acknowledged scroll but no content was returned.";
+      } catch (err) {
+        output.textContent = `❌ Connection failure.\n\n🧼 OmniDrop fallback initiated:\n"${input}"`;
+      }
+    }
+
+    function clearPrompt() {
+      document.getElementById("prompt").value = "";
+      document.getElementById("response").textContent = "⚡️ Vault status: Cleared. Ready for next scroll.";
+    }
+
+    document.getElementById("sendBtn").addEventListener("click", sendPrompt);
+  </script>
+</body>
+</html>

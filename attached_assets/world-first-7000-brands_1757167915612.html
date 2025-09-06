@@ -1,0 +1,2040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>🍇FAA.Zone🍇 — 🍇Pulse Dashboard🍇</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+
+  <style>
+    html { scroll-behavior: smooth; }
+    .glow-btn:hover {
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 4px 15px rgba(255,255,255,0.3);
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 tracking-tight">
+
+<!-- HEADER -->
+<header class="bg-white shadow p-6 flex justify-between items-center">
+  <div>
+    <h1 class="text-3xl font-extrabold text-indigo-700">🍇 Fruitful™ Master Pulse Dashboard</h1>
+    <p class="text-sm text-gray-500">VaultMesh Actuarial Grid · Real-Time Scroll Activity</p>
+  </div>
+  <div class="flex gap-3 text-sm">
+    <a href="faa-owner.html" class="px-4 py-2 bg-blue-500 text-white rounded glow-btn">🧑‍✈️ FAA Owner</a>
+    <a href="faa-hardware.html" class="px-4 py-2 bg-gray-600 text-white rounded glow-btn">🖥️ Hardware Access</a>
+    <a href="faa-distributor.html" class="px-4 py-2 bg-green-500 text-white rounded glow-btn">🤝 Distributor Panel</a>
+  </div>
+</header>
+
+<!-- TOP NAVIGATION -->
+<nav class="bg-gray-100 flex gap-6 px-6 py-3 text-sm overflow-x-auto whitespace-nowrap">
+  <a href="quick-view.html" class="text-indigo-700 font-semibold hover:-translate-y-1 hover:scale-105 transition">🏁 Quick View (Current)</a>
+  <a href="pulse-monitor.html" class="hover:text-indigo-600 hover:-translate-y-1 hover:scale-105 transition">📡 Signal Sync</a>
+  <a href="node-status.html" class="hover:text-indigo-600 hover:-translate-y-1 hover:scale-105 transition">🧩 Node Index</a>
+  <a href="sector-grid.html" class="hover:text-indigo-600 hover:-translate-y-1 hover:scale-105 transition">🏙️ Sector Grid</a>
+  <a href="licensing.html" class="hover:text-indigo-600 hover:-translate-y-1 hover:scale-105 transition">🔐 License Ledger</a>
+  <a href="clause-index.html" class="hover:text-indigo-600 hover:-translate-y-1 hover:scale-105 transition">📜 FAA Clauses</a>
+  <a href="scrollmap.html" class="hover:text-indigo-600 hover:-translate-y-1 hover:scale-105 transition">🗺️ ScrollMap</a>
+  <a href="ecosystem.html" class="hover:text-green-600 font-semibold hover:-translate-y-1 hover:scale-105 transition">🌿 Ecosystem Mesh</a>
+  <a href="brandmetrics.html" class="hover:text-indigo-600 hover:-translate-y-1 hover:scale-105 transition">🔍 Brand Metrics</a>
+  <a href="scroll-layers.html" class="hover:text-indigo-600 hover:-translate-y-1 hover:scale-105 transition">🧬 Scroll Layers</a>
+  <a href="grid-index.html" class="hover:text-indigo-600 hover:-translate-y-1 hover:scale-105 transition">📊 Grid Index</a>
+  <a href="node-packs.html" class="hover:text-indigo-600 hover:-translate-y-1 hover:scale-105 transition">📁 Node Packs</a>
+  <a href="audit-tracker.html" class="hover:text-indigo-600 hover:-translate-y-1 hover:scale-105 transition">📈 Audit Tracker</a>
+  <a href="signal-zones.html" class="hover:text-indigo-600 hover:-translate-y-1 hover:scale-105 transition">🛰️ Signal Zones</a>
+  <a href="ecosync-logs.html" class="hover:text-indigo-600 hover:-translate-y-1 hover:scale-105 transition">📥 Ecosync Logs</a>
+</nav>
+
+  <!-- SECTOR GRID NAVIGATION -->
+<nav class="bg-white border-b px-6 py-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-8 gap-4 text-sm">
+  <a href="#" onclick="showSectorPanel('embedded-agriculture-snapshot')" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block hover:-translate-y-1 hover:scale-105 transition">
+    🌱 Agriculture & Biotech
+  </a>
+  <a href="#" onclick="showSectorPanel('embedded-fsf-snapshot')" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block hover:-translate-y-1 hover:scale-105 transition">🥦 Food, Soil & Farming</a>
+<a href="#" onclick="showSectorPanel('embedded-banking-snapshot')" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block hover:-translate-y-1 hover:scale-105 transition">
+  🏦 Banking & Finance
+</a>
+  <a href="#" onclick="showSectorPanel('embedded-creative-snapshot')" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block hover:-translate-y-1 hover:scale-105 transition">🖋️ Creative Tech</a>
+  <a href="#" onclick="showSectorPanel('embedded-logistics-snapshot')" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block hover:-translate-y-1 hover:scale-105 transition">📦 Logistics & Packaging</a>
+  <a href="#" onclick="showSectorPanel('embedded-education-snapshot')" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block hover:-translate-y-1 hover:scale-105 transition">📚 Education & IP</a>
+  <a href="#" onclick="showSectorPanel('embedded-fashion-snapshot')" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block hover:-translate-y-1 hover:scale-105 transition">✂ Fashion & Identity</a>
+  <a href="#" onclick="showSectorPanel('embedded-gaming-snapshot')" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block hover:-translate-y-1 hover:scale-105 transition">🎮 Gaming & Simulation</a>
+    <a href="#" onclick="showSectorPanel('embedded-health-snapshot')" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block hover:-translate-y-1 hover:scale-105 transition">
+  🧠 Health & Hygiene
+</a>
+  <a href="#" onclick="showSectorPanel('embedded-housing-snapshot')" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block hover:-translate-y-1 hover:scale-105 transition">🏗️ Housing & Infrastructure</a>
+  <a href="#" onclick="showSectorPanel('embedded-justice-snapshot')" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block hover:-translate-y-1 hover:scale-105 transition">⚖ Justice & Ethics</a>
+  <a href="#" onclick="showSectorPanel('embedded-knowledge-snapshot')" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block hover:-translate-y-1 hover:scale-105 transition">🧠 Knowledge & Archives</a>
+  <a href="#" onclick="showSectorPanel('embedded-micromesh-snapshot')" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block hover:-translate-y-1 hover:scale-105 transition">☰ Micro-Mesh Logistics</a>
+  <a href="#" onclick="showSectorPanel('embedded-media-snapshot')" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block hover:-translate-y-1 hover:scale-105 transition">🎬 Motion, Media & Sonic</a>
+  <a href="#" onclick="showSectorPanel('embedded-nutrition-snapshot')" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block hover:-translate-y-1 hover:scale-105 transition">✿ Nutrition & Food Chain</a>
+  <a href="#" onclick="showSectorPanel('embedded-ailogic-snapshot')" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block hover:-translate-y-1 hover:scale-105 transition">
+  🧠 AI, Logic & Grid Systems
+</a>
+  <a href="#" onclick="showSectorPanel('embedded-packaging-snapshot')" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block hover:-translate-y-1 hover:scale-105 transition">📦 Packaging & Materials</a>
+  <a href="#" onclick="showSectorPanel('embedded-quantum-snapshot')" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block hover:-translate-y-1 hover:scale-105 transition">✴️ Quantum Protocols</a>
+  <a href="#" onclick="showSectorPanel('embedded-ritual-snapshot')" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block hover:-translate-y-1 hover:scale-105 transition">☯ Ritual & Culture</a>
+  <a href="#" onclick="showSectorPanel('embedded-saas-snapshot')" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block hover:-translate-y-1 hover:scale-105 transition">🔑 SaaS & Licensing</a>
+  <a href="#" onclick="showSectorPanel('embedded-trade-snapshot')" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block hover:-translate-y-1 hover:scale-105 transition">🧺 Trade Systems</a>
+  <a href="#" onclick="showSectorPanel('embedded-utilities-snapshot')" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block hover:-translate-y-1 hover:scale-105 transition">🔋 Utilities & Energy</a>
+  <a href="#" onclick="showSectorPanel('embedded-voice-snapshot')" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block hover:-translate-y-1 hover:scale-105 transition">🎙️ Voice & Audio</a>
+  <a href="#" onclick="showSectorPanel('embedded-webless-snapshot')" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block hover:-translate-y-1 hover:scale-105 transition">📡 Webless Tech & Nodes</a>
+  <a href="#" onclick="showSectorPanel('embedded-nft-snapshot')" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block hover:-translate-y-1 hover:scale-105 transition">🔁 NFT & Ownership</a>
+   <a href="#" onclick="showSectorPanel('embedded-education-snapshot')" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block hover:-translate-y-1 hover:scale-105 transition">
+  🎓 Education & Youth Sector
+</a>
+  <a href="#" onclick="showSectorPanel('embedded-zerowaste-snapshot')" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block hover:-translate-y-1 hover:scale-105 transition">♻️ Zero Waste</a>
+</nav>
+
+<!-- Embedded Agri Panel -->
+<div id="embedded-agriculture-snapshot" class="hidden bg-white p-6 mt-10 rounded shadow">
+  <div class="text-2xl font-bold text-green-800 mb-4">
+    🌾 FAA™ Agriculture Core Brand Dashboard (84 Brands)
+  </div>
+  <div id="agri-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+  <div class="p-6" id="agri-snapshots"></div>
+</div>
+
+<!-- Embedded FSF Sector Panel -->
+<div id="embedded-fsf-snapshot" class="hidden bg-white p-6 mt-10 rounded shadow">
+  <div class="text-2xl font-bold text-green-700 mb-4">
+    🥦 FAA™ Food, Soil & Farming Brand Dashboard (83 Brands)
+  </div>
+  <div id="fsf-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+  <div class="p-6" id="fsf-snapshots"></div>
+</div>
+
+<!-- Embedded Banking Sector Panel -->
+<div id="embedded-banking-snapshot" class="hidden bg-white p-6 mt-10 rounded shadow">
+  <div class="text-2xl font-bold text-indigo-800 mb-4">
+    🏦 FAA™ Banking & Finance Dashboard
+  </div>
+  <div id="banking-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+  <div class="p-6" id="banking-snapshots"></div>
+</div>
+
+
+<!-- 🖋️ Creative -->
+<div id="embedded-creative-snapshot" class="hidden bg-white p-6 mt-10 rounded shadow">
+  <div class="text-2xl font-bold text-purple-800 mb-4">🖋️ FAA™ Creative Tech Dashboard</div>
+  <div id="creative-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+  <div class="p-6" id="creative-snapshots"></div>
+</div>
+
+<!-- 📦 Logistics -->
+<div id="embedded-logistics-snapshot" class="hidden bg-white p-6 mt-10 rounded shadow">
+  <div class="text-2xl font-bold text-yellow-700 mb-4">📦 FAA™ Logistics & Packaging Dashboard</div>
+  <div id="logistics-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+  <div class="p-6" id="logistics-snapshots"></div>
+</div>
+
+  <!-- Embedded Education Sector Panel -->
+<div id="embedded-education-snapshot" class="hidden bg-white p-6 mt-10 rounded shadow">
+  <div class="text-2xl font-bold text-green-700 mb-4">
+    🎓 FAA™ Education & Youth Brand Dashboard (66 Brands)
+  </div>
+  <div id="education-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+  <div class="p-6" id="education-snapshots"></div>
+</div>
+
+<!-- ✂ Fashion -->
+<div id="embedded-fashion-snapshot" class="hidden bg-white p-6 mt-10 rounded shadow">
+  <div class="text-2xl font-bold text-pink-700 mb-4">✂ FAA™ Fashion & Identity Dashboard</div>
+  <div id="fashion-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+  <div class="p-6" id="fashion-snapshots"></div>
+</div>
+
+<!-- 🎮 Gaming -->
+<div id="embedded-gaming-snapshot" class="hidden bg-white p-6 mt-10 rounded shadow">
+  <div class="text-2xl font-bold text-indigo-700 mb-4">🎮 FAA™ Gaming & Simulation Dashboard</div>
+  <div id="gaming-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+  <div class="p-6" id="gaming-snapshots"></div>
+</div>
+
+ <!-- Embedded Health & Hygiene Sector Panel -->
+<div id="embedded-health-snapshot" class="hidden bg-white p-6 mt-10 rounded shadow">
+  <div class="text-2xl font-bold text-gray-700 mb-4">
+    🧠 FAA™ Health & Hygiene Core Brand Dashboard (93 Brands)
+  </div>
+  <div id="health-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+  <div class="p-6" id="health-snapshots"></div>
+</div>
+
+
+<!-- 🏗️ Housing -->
+<div id="embedded-housing-snapshot" class="hidden bg-white p-6 mt-10 rounded shadow">
+  <div class="text-2xl font-bold text-blue-800 mb-4">🏗️ FAA™ Housing & Infrastructure Dashboard</div>
+  <div id="housing-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+  <div class="p-6" id="housing-snapshots"></div>
+</div>
+
+<!-- ⚖ Justice -->
+<div id="embedded-justice-snapshot" class="hidden bg-white p-6 mt-10 rounded shadow">
+  <div class="text-2xl font-bold text-gray-700 mb-4">⚖ FAA™ Justice & Ethics Dashboard</div>
+  <div id="justice-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+  <div class="p-6" id="justice-snapshots"></div>
+</div>
+
+<!-- Embedded AI Logic Snapshot Panel -->
+<div id="embedded-ailogic-snapshot" class="bg-white p-6 mt-10 rounded shadow">
+  <div class="text-2xl font-bold text-indigo-800 mb-4">
+    🧠 FAA™ AI, Logic & Grid Dashboard
+  </div>
+  <div id="ailogic-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+  <div class="p-6" id="ailogic-snapshots"></div>
+</div>
+
+
+
+
+  <!-- 🧠 Knowledge -->
+<div id="embedded-knowledge-snapshot" class="hidden bg-white p-6 mt-10 rounded shadow">
+  <div class="text-2xl font-bold text-blue-700 mb-4">🧠 FAA™ Knowledge & Archives Dashboard</div>
+  <div id="knowledge-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+  <div class="p-6" id="knowledge-snapshots"></div>
+</div>
+
+<!-- ☰ Micro-Mesh -->
+<div id="embedded-micromesh-snapshot" class="hidden bg-white p-6 mt-10 rounded shadow">
+  <div class="text-2xl font-bold text-yellow-800 mb-4">☰ FAA™ Micro-Mesh Logistics Dashboard</div>
+  <div id="micromesh-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+  <div class="p-6" id="micromesh-snapshots"></div>
+</div>
+
+<!-- 🎬 Media -->
+<div id="embedded-media-snapshot" class="hidden bg-white p-6 mt-10 rounded shadow">
+  <div class="text-2xl font-bold text-gray-700 mb-4">🎬 FAA™ Motion, Media & Sonic Dashboard</div>
+  <div id="media-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+  <div class="p-6" id="media-snapshots"></div>
+</div>
+
+<!-- ✿ Nutrition -->
+<div id="embedded-nutrition-snapshot" class="hidden bg-white p-6 mt-10 rounded shadow">
+  <div class="text-2xl font-bold text-green-800 mb-4">✿ FAA™ Nutrition & Food Chain Dashboard</div>
+  <div id="nutrition-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+  <div class="p-6" id="nutrition-snapshots"></div>
+</div>
+
+<!-- 📦 Packaging -->
+<div id="embedded-packaging-snapshot" class="hidden bg-white p-6 mt-10 rounded shadow">
+  <div class="text-2xl font-bold text-yellow-600 mb-4">📦 FAA™ Packaging & Materials Dashboard</div>
+  <div id="packaging-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+  <div class="p-6" id="packaging-snapshots"></div>
+</div>
+
+<!-- ✴️ Quantum -->
+<div id="embedded-quantum-snapshot" class="hidden bg-white p-6 mt-10 rounded shadow">
+  <div class="text-2xl font-bold text-purple-700 mb-4">✴️ FAA™ Quantum Protocols Dashboard</div>
+  <div id="quantum-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+  <div class="p-6" id="quantum-snapshots"></div>
+</div>
+
+<!-- ☯ Ritual -->
+<div id="embedded-ritual-snapshot" class="hidden bg-white p-6 mt-10 rounded shadow">
+  <div class="text-2xl font-bold text-gray-800 mb-4">☯ FAA™ Ritual & Culture Dashboard</div>
+  <div id="ritual-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+  <div class="p-6" id="ritual-snapshots"></div>
+</div>
+
+<!-- 🔑 SaaS -->
+<div id="embedded-saas-snapshot" class="hidden bg-white p-6 mt-10 rounded shadow">
+  <div class="text-2xl font-bold text-blue-700 mb-4">🔑 FAA™ SaaS & Licensing Dashboard</div>
+  <div id="saas-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+  <div class="p-6" id="saas-snapshots"></div>
+</div>
+
+<!-- 🧺 Trade -->
+<div id="embedded-trade-snapshot" class="hidden bg-white p-6 mt-10 rounded shadow">
+  <div class="text-2xl font-bold text-orange-700 mb-4">🧺 FAA™ Trade Systems Dashboard</div>
+  <div id="trade-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+  <div class="p-6" id="trade-snapshots"></div>
+</div>
+
+<!-- 🔋 Utilities -->
+<div id="embedded-utilities-snapshot" class="hidden bg-white p-6 mt-10 rounded shadow">
+  <div class="text-2xl font-bold text-yellow-800 mb-4">🔋 FAA™ Utilities & Energy Dashboard</div>
+  <div id="utilities-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+  <div class="p-6" id="utilities-snapshots"></div>
+</div>
+
+<!-- 🎙️ Voice -->
+<div id="embedded-voice-snapshot" class="hidden bg-white p-6 mt-10 rounded shadow">
+  <div class="text-2xl font-bold text-indigo-600 mb-4">🎙️ FAA™ Voice & Audio Dashboard</div>
+  <div id="voice-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+  <div class="p-6" id="voice-snapshots"></div>
+</div>
+
+<!-- 📡 Webless -->
+<div id="embedded-webless-snapshot" class="hidden bg-white p-6 mt-10 rounded shadow">
+  <div class="text-2xl font-bold text-gray-700 mb-4">📡 FAA™ Webless Tech & Nodes Dashboard</div>
+  <div id="webless-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+  <div class="p-6" id="webless-snapshots"></div>
+</div>
+
+<!-- 🔁 NFT -->
+<div id="embedded-nft-snapshot" class="hidden bg-white p-6 mt-10 rounded shadow">
+  <div class="text-2xl font-bold text-pink-600 mb-4">🔁 FAA™ NFT & Ownership Dashboard</div>
+  <div id="nft-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+  <div class="p-6" id="nft-snapshots"></div>
+</div>
+
+   <!-- Embedded Education Sector Panel -->
+<div id="embedded-education-snapshot" class="hidden bg-white p-6 mt-10 rounded shadow">
+  <div class="text-2xl font-bold text-green-700 mb-4">
+    🎓 FAA™ Education & Youth Brand Dashboard (66 Brands)
+  </div>
+  <div id="education-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+  <div class="p-6" id="education-snapshots"></div>
+</div>
+  
+<!-- ♻️ Zero Waste -->
+<div id="embedded-zerowaste-snapshot" class="hidden bg-white p-6 mt-10 rounded shadow">
+  <div class="text-2xl font-bold text-lime-700 mb-4">♻️ FAA™ Zero Waste Dashboard</div>
+  <div id="zerowaste-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+  <div class="p-6" id="zerowaste-snapshots"></div>
+</div>
+
+<!-- 📉 FAA Scroll Pulse Monitor -->
+<section class="w-full px-6 py-8">
+  <div class="bg-white p-6 rounded shadow">
+    <h2 class="text-xl font-bold text-gray-700">📉 FAA Scroll Pulse Monitor</h2>
+    <p class="text-sm text-gray-500 mb-4">Dynamic scroll sync across sectors in real-time.</p>
+    <div class="h-96">
+      <canvas id="pulseChart" class="w-full h-full"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- CHART.JS + LUXON ADAPTER (Module CDN Setup) -->
+<script type="module">
+  import Chart from 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.esm.js';
+  import 'https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js';
+  import 'https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const ctx = document.getElementById('pulseChart')?.getContext('2d');
+    if (!ctx) return;
+
+    const generateData = () => {
+      const now = Date.now();
+      return Array.from({ length: 10 }, (_, i) => ({
+        x: new Date(now - (9 - i) * 1000),
+        y: 80 + Math.random() * 20
+      }));
+    };
+
+    const chartData = {
+      datasets: [{
+        label: 'Pulse Index',
+        data: generateData(),
+        backgroundColor: 'rgba(99, 102, 241, 0.2)',
+        borderColor: 'rgb(99, 102, 241)',
+        borderWidth: 2,
+        tension: 0.4,
+        pointRadius: 0
+      }]
+    };
+
+    const pulseChart = new Chart(ctx, {
+      type: 'line',
+      data: chartData,
+      options: {
+        responsive: true,
+        animation: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: {
+            type: 'time',
+            time: { tooltipFormat: 'HH:mm:ss', unit: 'second' },
+            ticks: { display: false }
+          },
+          y: {
+            min: 60,
+            max: 120,
+            ticks: { stepSize: 10 }
+          }
+        }
+      }
+    });
+
+    setInterval(() => {
+      chartData.datasets[0].data = generateData();
+      pulseChart.update();
+    }, 3000);
+  });
+</script>
+
+
+
+
+  <!-- METRICS SECTION -->
+<section class="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-7 gap-6 px-6 py-8">
+  <a href="node-activity.html" class="bg-white p-5 rounded shadow text-center hover:bg-yellow-50 transition-transform hover:-translate-y-1 hover:scale-105">
+    <h3 class="text-md font-bold text-gray-700">🧠 Active Nodes</h3>
+    <p>12,934</p>
+  </a>
+  <a href="license-grid.html" class="bg-white p-5 rounded shadow text-center hover:bg-yellow-50 transition-transform hover:-translate-y-1 hover:scale-105">
+    <h3 class="text-md font-bold text-gray-700">🔐 Licenses Active</h3>
+    <p>3,288</p>
+  </a>
+  <a href="vault-deployments.html" class="bg-white p-5 rounded shadow text-center hover:bg-yellow-50 transition-transform hover:-translate-y-1 hover:scale-105">
+    <h3 class="text-md font-bold text-gray-700">💾 Vault Deployments</h3>
+    <p>654 Vaults</p>
+  </a>
+  <a href="ecosync-logs.html" class="bg-white p-5 rounded shadow text-center hover:bg-yellow-50 transition-transform hover:-translate-y-1 hover:scale-105">
+    <h3 class="text-md font-bold text-gray-700">📥 Sync Logs</h3>
+    <p>204,111 entries</p>
+  </a>
+  <a href="audit-tracker.html" class="bg-white p-5 rounded shadow text-center hover:bg-yellow-50 transition-transform hover:-translate-y-1 hover:scale-105">
+    <h3 class="text-md font-bold text-gray-700">📈 Audits Running</h3>
+    <p>47 scans</p>
+  </a>
+  <a href="signal-zones.html" class="bg-white p-5 rounded shadow text-center hover:bg-yellow-50 transition-transform hover:-translate-y-1 hover:scale-105">
+    <h3 class="text-md font-bold text-gray-700">🛰️ Signal Zones</h3>
+    <p>21 sectors</p>
+  </a>
+  <a href="grid-index.html" class="bg-white p-5 rounded shadow text-center hover:bg-yellow-50 transition-transform hover:-translate-y-1 hover:scale-105">
+    <h3 class="text-md font-bold text-gray-700">📊 Scroll Grid Index</h3>
+    <p>986 clusters</p>
+  </a>
+</section>
+
+<!-- UNIVERSAL PANEL TOGGLER SCRIPT -->
+<script>
+  function showSectorPanel(panelId) {
+    // Hide all sector and embedded panels
+    document.querySelectorAll('[id^="sector-"], [id^="embedded-"]').forEach(el => el.classList.add('hidden'));
+    document.querySelectorAll('.brand-snapshot').forEach(el => el.classList.add('hidden'));
+
+    const el = document.getElementById(panelId);
+    if (el) {
+      el.classList.remove('hidden');
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      console.warn('[FAA] Panel not found:', panelId);
+    }
+  }
+
+  function toggleSnapshot(id) {
+    document.querySelectorAll('.brand-snapshot').forEach(el => el.classList.add('hidden'));
+    const active = document.getElementById(id);
+    if (active) active.classList.remove('hidden');
+  }
+</script>
+
+<!-- FOOTER -->
+<footer class="text-center text-xs text-gray-400 mt-16 py-6 border-t">
+  FAA.Zone ScrollGrid · PulseTrade Certified · TreatyMesh Validated
+</footer>
+
+ <script>
+document.addEventListener('DOMContentLoaded', () => {
+const bankingBrands = [
+  'FinGrid','TradeAmp','LoopPay','TaxNova','VaultMaster','Gridwise','CrateDance','CashGlyph','Foresync','OmniRank',
+  'ZenoBank','CruxSpend','PulseHive','WireVault','BitTrust','MeshCredit','NovaScore','ZentryPay','FlowDrift','AlphaClearing',
+  'LumenBank','DeltaCustody','FractalFund','TorusFinance','VectorMint','RapidTally','FathomBank','KiteYield','BondRhythm','EchoTrust',
+  'QuantArk','NodeCapital','VeritasPay','TrustCage','CoreLedge','SkyFin','MintFuse','OrbitBank','HashVault','MicroDelta',
+  'AnchorPrime','FleetGrid','ZoomLedge','BeaconBank','CrateTeller','NumenYield','SparkScore','MetaBank','AetherTrust','TrueCustody',
+  'NeutronMint','SiloCash','JetReconcile','PulseClearing','SyncTeller','TangentBank','NovaLedger','GlideBank','TraceFin','RootBank',
+  'BankSingularity','PillarTrust','AxonFin','MonetGrid','LayerBank','VergePay','StackCash','CrownBank','PrismScore','HaloMint',
+  'CentraClear','TrustForge','OmniBank','NanoPay','LatticeScore','NobleCredit','ChainBank','PulseMint','BridgeLedger','ChronoBank',
+  'UnityFin','GridTrust','SparkVault','LucidBank','RiverMint','FlightClearing','NetTeller','PeakCustody','FlarePay','DarkBank',
+  'OriginTrust','ShardLedger','IndexPay','AltimeterFin','EchoClearing','FrameCustody','ZenithGrid','AtomScore','CoreMeta','CruxFin',
+  'PulseMatrix','BalanceGrid','GoldMint','ClearStack','QuantumBank','ScriptScore','SyncVault','FolioTrust','HyperFin','ToneLedger',
+  'IndexGrid','LineBank','CoreAlpha','LogicPay','NodeYield','RatioMint','LockLedger','PrimeGrid','TrustAmp','FundLattice',
+  'CreditHelix','AuraVault','DataBank','RingMint','GlyphTrust','NebulaBank','ZenScore','LoopTrust','AxialFin','OmniLoop',
+  'AlphaPulse','NexusBank','VaultHelix','ScriptTeller','TallyCore','FuseMint'
+];
+
+const bankingSubNodes = [
+  'Ledger Mesh','Arbitrage Core','Token Router','Tax Engine','Vault Lock','Compliance Matrix','Logistics Fin','Currency Glyph','Forecast Engine','Signal Tracker',
+  'Zeno Mesh','Crux Bridge','Hive Monitor','Wire Reconciler','Bit Locker','Credit Splice','Score Vector','Zentry Core','Drift Trace','Alpha Ledger',
+  'Lumen Pulse','Delta Secure','Fractal Trace','Torus Signal','Mint Bridge','Tally Stream','Bank Depth','Kite Path','Bond Engine','Echo Stack',
+  'Ark Model','Node Gate','Veritas Sync','Cage Mapper','Core Trace','Sky Sweep','Mint Grid','Orbit Channel','Hash Clear','Micro Chain',
+  'Anchor Lock','Fleet Sync','Zoom Channel','Beacon Path','Crate Vault','Numen Index','Spark Flow','Meta Signal','Aether Drift','Custody Map',
+  'Neutron Signal','Cash Stream','Jet Grid','Pulse Map','Sync Grid','Tangent Vector','Nova Route','Glide Core','Trace Engine','Root Node',
+  'Bank Shift','Pillar Core','Axon Thread','Monet Route','Layer Core','Verge Node','Stack Tally','Crown Core','Prism Gate','Halo Grid',
+  'Clearance Vector','Forge Sync','Bank Mesh','Nano Token','Lattice Path','Noble Curve','Chain Vector','Mint Grid','Bridge Path','Chrono Index',
+  'Unity Sync','Trust Matrix','Vault Score','Lucid Gate','Mint Route','Flight Signal','Teller Index','Custody Trace','Flare Lock','Dark Stream',
+  'Origin Pulse','Shard Bank','Pay Score','Altimeter Path','Clearing Core','Frame Lock','Zenith Route','Score Helix','Meta Stack','Crux Trace',
+  'Pulse Engine','Balance Tally','Gold Trace','Stack Mesh','Quantum Sync','Script Pulse','Vault Stack','Trust Model','Hyper Lock','Tone Gate',
+  'Grid Index','Line Mesh','Alpha Signal','Logic Gate','Yield Route','Ratio Core','Ledger Path','Prime Helix','Amp Signal','Lattice Node',
+  'Credit Curve','Vault Pulse','Data Mesh','Ring Gate','Glyph Stack','Bank Channel','Zen Gate','Loop Vault','Axial Index','Loop Stack',
+  'Pulse Vector','Bank Curve','Helix Gate','Teller Pulse','Tally Signal','Mint Vault'
+];
+
+  const grid = document.getElementById('banking-grid');
+  const snapContainer = document.getElementById('banking-snapshots');
+
+  if (!grid || !snapContainer) {
+    console.error('❌ Missing banking-grid or banking-snapshots element');
+    return;
+  }
+
+  bankingBrands.forEach((brand, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'bg-white brand-button px-2 py-1 text-sm rounded shadow transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-blue-100 hover:text-blue-800 font-semibold cursor-pointer';
+    btn.innerHTML = `${brand}<sup>™</sup>`;
+    btn.onclick = () => toggleSnapshot(`bank-snap-${i}`);
+    grid.appendChild(btn);
+
+    const snap = document.createElement('div');
+    snap.id = `bank-snap-${i}`;
+    snap.className = 'brand-snapshot hidden mt-6';
+    snap.innerHTML = `
+      <div class='text-xl font-semibold mb-2'>${brand}<sup>™</sup> Snapshot</div>
+      <ul class='bg-white border rounded p-4 shadow text-sm list-disc list-inside space-y-1'>
+        <li>🔹 ${bankingSubNodes[i] || 'Snapshot Node'}</li>
+      </ul>
+    `;
+    snapContainer.appendChild(snap);
+  });
+
+  function toggleSnapshot(id) {
+    document.querySelectorAll('.brand-snapshot').forEach(el => el.classList.add('hidden'));
+    const active = document.getElementById(id);
+    if (active) active.classList.remove('hidden');
+  }
+});
+</script>
+<!-- 🟢 AGRICULTURE BRANDS -->
+<script>
+const agriBrands = [
+
+  'CropLink','SoilPulse','RootYield','AquaFarm','AgriMesh','GrowNode','GrainCast','SoilBank','CropID','AgriVault',
+  'PulseHarvest','MarketSoil','DroneFarm','RuralOps','SeedGrid','FarmChain','AgriScore','SoilNet','CropDoc','TerraVault',
+  'AgriID','SproutFlow','GrainSafe','FieldSync','AgriDepot','DroneCrop','CropTrace','PulseSoil','SeedRoot','RuralFlow',
+  'MarketGrow','AgriRank','SoilLogic','AgriSync','NutrientGrid','FieldCast','CropSource','YieldStack','FarmPulse','SoilTech',
+  'GreenTrace','CropVault','AgriCast','TerraPulse','SoilTrace','PulseAg','GrowVault','FieldNet','DroneSoil','SoilGrid',
+  'HarvestLoop','RuralMesh','FarmFlag','AgriFlow','SoilVault','FieldProof','DroneTrace','MarketRoots','NutrientPath','CropPulse',
+  'AgriPulse','EcoSeed','AgriMetrics','DroneGrid','GreenNode','RootVault','FieldToken','AgriPlan','SoilYield','SeedVault',
+  'MarketLink','CropFlow','RuralCast','AgriSyncPro','SoilLine','EcoAgri','HarvestNode','TerraSoil','CropMesh','AgriSignal',
+  'RuralVault','PulseGrow','MarketSoilX','AgriOmni'
+];
+
+const agriSubNodes = [
+  ['CropLink ID™', 'CropLink Vault™', 'CropLink Field™', 'CropLink Yield™'],
+  ['SoilPulse Trace™', 'SoilPulse Data™', 'SoilPulse Alert™'],
+  ['RootYield Base™', 'RootYield Chain™', 'RootYield X™'],
+  ['AquaFarm Sync™', 'AquaFarm Logi™', 'AquaFarm Vault™'],
+  ['AgriMesh Route™', 'AgriMesh Pulse™', 'AgriMesh View™'],
+  ['GrowNode Basic™', 'GrowNode Trade™', 'GrowNode Vault™'],
+  ['GrainCast Forecast™', 'GrainCast Scroll™'],
+  ['SoilBank Ledger™', 'SoilBank Pay™'],
+  ['CropID Scanner™', 'CropID Trust™'],
+  ['AgriVault Lock™', 'AgriVault Chain™', 'AgriVault Seed™'],
+  ['PulseHarvest Sync™', 'PulseHarvest Drop™', 'PulseHarvest Vault™'],
+  ['MarketSoil Rate™', 'MarketSoil Feed™', 'MarketSoil UI™'],
+  ['DroneFarm View™', 'DroneFarm Grid™', 'DroneFarm Trace™'],
+  ['RuralOps Node™', 'RuralOps Pulse™', 'RuralOps Chain™'],
+  ['SeedGrid Vault™', 'SeedGrid Scan™', 'SeedGrid Growth™'],
+  ['FarmChain Link™', 'FarmChain Claim™', 'FarmChain Credit™'],
+  ['AgriScore Index™', 'AgriScore Node™'],
+  ['SoilNet Base™', 'SoilNet UI™'],
+  ['CropDoc Scan™', 'CropDoc Aid™'],
+  ['TerraVault Ledger™', 'TerraVault View™', 'TerraVault Chain™'],
+  ['AgriID Chain™', 'AgriID Badge™', 'AgriID Verify™'],
+  ['SproutFlow Loop™', 'SproutFlow Track™'],
+  ['GrainSafe Lock™', 'GrainSafe Audit™'],
+  ['FieldSync Signal™', 'FieldSync Grid™'],
+  ['AgriDepot Map™', 'AgriDepot Sync™', 'AgriDepot Drop™'],
+  ['DroneCrop Watch™', 'DroneCrop Sync™'],
+  ['CropTrace Root™', 'CropTrace Link™'],
+  ['PulseSoil Core™', 'PulseSoil Signal™'],
+  ['SeedRoot Tag™', 'SeedRoot Layer™'],
+  ['RuralFlow Map™', 'RuralFlow Loop™', 'RuralFlow Chain™'],
+  ['MarketGrow Pulse™', 'MarketGrow Cast™', 'MarketGrow Deals™'],
+  ['AgriRank Score™', 'AgriRank Matrix™'],
+  ['SoilLogic Grid™', 'SoilLogic Forecast™'],
+  ['AgriSync UI™', 'AgriSync Chain™'],
+  ['NutrientGrid Base™', 'NutrientGrid Flux™'],
+  ['FieldCast Audio™', 'FieldCast Relay™'],
+  ['CropSource Ledger™', 'CropSource ID™'],
+  ['YieldStack UI™', 'YieldStack Payout™', 'YieldStack Index™'],
+  ['FarmPulse Loop™', 'FarmPulse Mesh™'],
+  ['SoilTech DNA™', 'SoilTech Live™'],
+  ['GreenTrace Chain™', 'GreenTrace Pulse™'],
+  ['CropVault Lock™', 'CropVault Ledger™', 'CropVault Cert™'],
+  ['AgriCast Signal™', 'AgriCast Feed™'],
+  ['TerraPulse Soil™', 'TerraPulse Vault™'],
+  ['SoilTrace ID™', 'SoilTrace Certify™'],
+  ['PulseAg Loop™', 'PulseAg Node™'],
+  ['GrowVault Root™', 'GrowVault Share™'],
+  ['FieldNet Mesh™', 'FieldNet Ping™'],
+  ['DroneSoil View™', 'DroneSoil Trace™'],
+  ['SoilGrid X™', 'SoilGrid Key™', 'SoilGrid Base™'],
+  ['HarvestLoop Yield™', 'HarvestLoop Stack™'],
+  ['RuralMesh Net™', 'RuralMesh Pulse™'],
+  ['FarmFlag Cert™', 'FarmFlag Signal™'],
+  ['AgriFlow Path™', 'AgriFlow Ledger™'],
+  ['SoilVault Lock™', 'SoilVault View™'],
+  ['FieldProof Claim™', 'FieldProof Relay™'],
+  ['DroneTrace Tag™', 'DroneTrace Vault™'],
+  ['MarketRoots X™', 'MarketRoots Grid™'],
+  ['NutrientPath Map™', 'NutrientPath Scan™'],
+  ['CropPulse Signal™', 'CropPulse Ledger™'],
+  ['AgriPulse Loop™', 'AgriPulse Ledger™'],
+  ['EcoSeed Vault™', 'EcoSeed Sync™'],
+  ['AgriMetrics Signal™', 'AgriMetrics Vault™'],
+  ['DroneGrid Node™', 'DroneGrid View™'],
+  ['GreenNode Base™', 'GreenNode Relay™'],
+  ['RootVault Claim™', 'RootVault Transfer™'],
+  ['FieldToken ID™', 'FieldToken Pay™'],
+  ['AgriPlan Builder™', 'AgriPlan Node™'],
+  ['SoilYield Track™', 'SoilYield Pulse™'],
+  ['SeedVault ID™', 'SeedVault Ledger™'],
+  ['MarketLink Chain™', 'MarketLink Signal™'],
+  ['CropFlow Sync™', 'CropFlow Vault™'],
+  ['RuralCast Net™', 'RuralCast Pulse™'],
+  ['AgriSyncPro UI™', 'AgriSyncPro Lock™'],
+  ['SoilLine Scan™', 'SoilLine Pulse™'],
+  ['EcoAgri Cert™', 'EcoAgri Grid™'],
+  ['HarvestNode Chain™', 'HarvestNode Log™'],
+  ['TerraSoil View™', 'TerraSoil DNA™'],
+  ['CropMesh Grid™', 'CropMesh Flow™'],
+  ['AgriSignal Node™', 'AgriSignal Loop™'],
+  ['RuralVault Lock™', 'RuralVault Cert™'],
+  ['PulseGrow Timer™', 'PulseGrow Sync™'],
+  ['MarketSoilX Index™', 'MarketSoilX Ledger™'],
+  ['AgriOmni Node™', 'AgriOmni Relay™']
+];
+
+// 🔧 DOM Injection Script
+document.addEventListener('DOMContentLoaded', () => {
+  const grid = document.getElementById('agri-grid');
+  const snapContainer = document.getElementById('agri-snapshots');
+
+  if (!grid || !snapContainer || !Array.isArray(agriBrands) || !Array.isArray(agriSubNodes)) {
+    console.warn('[Agri Grid] Required DOM elements or data missing.');
+    return;
+  }
+
+  agriBrands.forEach((brand, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'bg-white brand-button px-2 py-1 text-sm rounded shadow transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-green-100 hover:text-green-800 font-semibold cursor-pointer';
+    btn.innerHTML = `${brand}<sup>™</sup>`;
+    btn.onclick = () => toggleSnapshot(`agri-snap-${i}`);
+    grid.appendChild(btn);
+
+    const subList = agriSubNodes[i].map(n => `<li>🔹 ${n}</li>`).join('');
+    const snap = document.createElement('div');
+    snap.id = `agri-snap-${i}`;
+    snap.className = 'brand-snapshot hidden mt-6';
+    snap.innerHTML = `
+      <div class='text-xl font-semibold mb-2'>${brand}<sup>™</sup> Snapshot</div>
+      <ul class='bg-white border rounded p-4 shadow text-sm list-disc list-inside space-y-1'>
+        ${subList}
+      </ul>`;
+    snapContainer.appendChild(snap);
+  });
+});
+</script>
+
+
+
+<script>
+  const creativeBrands = [
+    'MediaGrid', 'StudioPath', 'SoundReel', 'EditFrame', 'MotionKit',
+    'GhostTrace', 'TalentMap', 'SignalVerse', 'ScrollPlay', 'FXStream'
+  ];
+
+  const creativeSubNodes = [
+    ['SceneLink™', 'FXLayer™', 'ClipVault™'],
+    ['StudioSync™', 'StagePulse™', 'RenderMesh™'],
+    ['AudioTrace™', 'VoiceVault™', 'WaveLoop™'],
+    ['CutChain™', 'TimelineScroll™', 'FXSnap™'],
+    ['VectorNode™', 'AnimCast™', 'ScrollFX™'],
+    ['TraceBlock™', 'ScreenShield™', 'CloneLock™'],
+    ['LedgerID™', 'Royaltix™', 'PayoutTag™'],
+    ['FreqCast™', 'GridWave™', 'AudioMesh™'],
+    ['PlayNode™', 'FrameTrigger™', 'RenderSync™'],
+    ['FXRender™', 'ScrollVision™', 'LoopFrame™']
+  ];
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const grid = document.getElementById('creative-grid');
+    const snapContainer = document.getElementById('creative-snapshots');
+
+    if (!grid || !snapContainer) return;
+
+    creativeBrands.forEach((brand, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'bg-white brand-button px-2 py-1 text-sm rounded shadow transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-purple-100 hover:text-purple-800 font-semibold cursor-pointer';
+      btn.innerHTML = `${brand}<sup>™</sup>`;
+      btn.onclick = () => toggleSnapshot(`creative-snap-${i}`);
+      grid.appendChild(btn);
+
+      const subList = creativeSubNodes[i].map(n => `<li>🔹 ${n}</li>`).join('');
+      const snap = document.createElement('div');
+      snap.id = `creative-snap-${i}`;
+      snap.className = 'brand-snapshot hidden mt-6';
+      snap.innerHTML = `
+        <div class='text-xl font-semibold mb-2'>${brand}<sup>™</sup> Snapshot</div>
+        <ul class='bg-white border rounded p-4 shadow text-sm list-disc list-inside space-y-1'>
+          ${subList}
+        </ul>`;
+      snapContainer.appendChild(snap);
+    });
+  });
+</script>
+
+  
+<script>
+const logisticsBrands = [
+  'CrateLogic', 'PackChain', 'SortFleet', 'RouteMesh', 'LogiStack', 'DeliveryX', 'CargoVault', 'PalletPath', 'LabelFlow', 'DropLoop',
+  'ScrollRoute', 'ShipLedger', 'FreightCore', 'PackSphere', 'GridDrop', 'AutoTrack', 'ChainWrap', 'BinLogicX', 'PouchNode', 'ColdFleet',
+  'TrackStack', 'NodeRoute', 'PackOS', 'ZipCrate', 'TagLogic', 'ScrollTruck', 'FlowVault', 'SortStack', 'DockGrid', 'RollFleet',
+  'VendSort', 'GridCrate', 'LogiLift', 'CrateX', 'QuickLabel', 'DropLedger', 'FleetTrace', 'BoxSync', 'ChainGate', 'ColdRoute',
+  'PalletCore', 'FreightLine', 'PackSignal', 'ChainVault', 'CrateThread', 'ForkYield', 'DockLogic', 'LoadCast', 'TrayTrack', 'ScrollDrop',
+  'LoopXpress', 'PackSyncPro', 'VendorWrap', 'CrateLedger', 'BoxNodeX', 'AutoRoute', 'VaultBin', 'LabelTrack', 'PathLock', 'DispatchLoop',
+  'ChainPulse', 'FastTag', 'VendorFleet', 'ParcelSync', 'SmartCrate', 'AutoLabel', 'FreightGrid', 'DockFlow', 'CrateBox', 'ColdTrack',
+  'SecureMesh', 'LoopDispatch', 'AutoLift', 'ClaimBoard', 'ParcelChain', 'LabelMesh', 'BoxSignal', 'LoadFrame', 'VaultRoute', 'DockYield',
+  'CrateSecure', 'LabelFlowX', 'DockMaster', 'PackNet', 'RouteGuard', 'BinLogicPro', 'ColdChainX', 'AutoPack', 'ShipTrack', 'LoadManager',
+  'CrateManager', 'LabelSecure', 'DockFlowX', 'PackMaster', 'RouteManager', 'BinSecure', 'ColdManager', 'AutoLabelX', 'ShipManager', 'LoadSecure',
+  'CrateSecure', 'LabelFlowX', 'DockMaster', 'PackNet', 'RouteGuard', 'BinLogicPro', 'ColdChainX', 'AutoPack', 'ShipTrack', 'LoadManager',
+  'CrateManager'
+];
+
+const logisticsSubNodes = [
+  ['BoxNode™', 'CrateMap™', 'PackSync™', 'CrateSync™'],
+  ['VendorPack™', 'LabelTrace™', 'ShipGrid™', 'ScrollWrap™'],
+  ['SortPulse™', 'BinLogic™', 'FleetTrack™', 'ScrollSort™'],
+  ['NodeMap™', 'GeoSignal™', 'DropLink™', 'RouteFlow™'],
+  ['ScrollStack™', 'YieldSync™', 'PayoutRoute™', 'StackNode™'],
+  ['LastMile™', 'ScanDrop™', 'AgentTrack™', 'QuickChain™'],
+  ['VaultLink™', 'WeightTag™', 'CargoScan™', 'CargoClaim™'],
+  ['PathFinder™', 'RackTrace™', 'GridStore™', 'LoadMark™'],
+  ['PrintNode™', 'ScrollCode™', 'InkRoute™', 'LabelSync™'],
+  ['LoopID™', 'VendorDrop™', 'TimeGate™', 'LoopConfirm™'],
+  ['ChainStep™', 'ScanRoute™', 'RouteTrace™', 'FinalMile™'],
+  ['ManifestScroll™', 'LogiProof™', 'ShipCert™', 'DockNode™'],
+  ['FreightID™', 'CrateStamp™', 'CargoPulse™', 'StackSync™'],
+  ['SphereNode™', 'PackLoop™', 'SupplyCircle™', 'HubRelay™'],
+  ['DropTrace™', 'DropID™', 'GridYield™', 'NodeFlow™'],
+  ['GPSClaim™', 'RouteLog™', 'TrackPulse™', 'AutoLink™'],
+  ['WrapNode™', 'TieGlyph™', 'SealMark™', 'ScanProof™'],
+  ['LogicChip™', 'BinSync™', 'ScrollSnap™', 'BinWave™'],
+  ['PouchTag™', 'ScrollStick™', 'PackPush™', 'MicroWrap™'],
+  ['ChillRoute™', 'IceLedger™', 'ColdDrop™', 'VaultIce™'],
+  ['SignalTag', 'ScrollFleet', 'DockSync', 'TrackMap'],
+  ['HopLink', 'NodeShift', 'MeshGrid', 'RouteCert'],
+  ['ScrollOS', 'RouteWrap', 'ForkNode', 'PalletLogic'],
+  ['AutoFold', 'SpeedTag', 'CrateDrop', 'ZipSeal'],
+  ['ScrollTag', 'GeoTrack', 'TagFrame', 'AutoCert'],
+  ['ScrollDriver', 'YieldScan', 'CargoBoard', 'DockLink'],
+  ['VaultID', 'ScrollStream', 'BoxYield', 'FlowMap'],
+  ['BinRank', 'BinPulse', 'FastCrate', 'LogicDrop'],
+  ['DockFrame', 'PermitTrack', 'ScrollAccess', 'GateID'],
+  ['WheelNode', 'PalletSync', 'LoadProof', 'ScrollAxle'],
+  ['VendorSort', 'BoxPush', 'AutoTray', 'YieldLoop'],
+  ['CrateNode', 'GridWrap', 'VaultStack', 'ScrollRoute'],
+  ['LiftID', 'FreightPulse', 'ForkSync', 'LogiTag'],
+  ['CrateTrack', 'SmartLock', 'LabelLink', 'ScrollMap'],
+  ['ScanCode', 'SmartPrint', 'RouteLabel', 'LabelCast'],
+  ['LedgerPath', 'DropFlow', 'VaultDrop', 'QuickClaim'],
+  ['TruckPulse', 'ScrollRide', 'AutoPath', 'CrateEcho'],
+  ['ScrollSync', 'BoxFrame', 'ClaimID', 'TagSnap'],
+  ['GateLog', 'DockPush', 'YieldGate', 'EntryPulse'],
+  ['FreezePoint', 'ScanChill', 'ColdMesh', 'ChillPath'],
+  ['CoreLift', 'PalletID', 'PackForce', 'VaultRack'],
+  ['LineTrack', 'StackChain', 'DockGrid', 'RouteNode'],
+  ['SignalDrop', 'YieldBeacon', 'PackNode', 'PathSync'],
+  ['ClaimLink', 'ScrollCert', 'LockDrop', 'AssetTag'],
+  ['CrateLink', 'ThreadMark', 'GridLoop', 'FastTag'],
+  ['ForkView', 'YieldNode', 'RouteTrek', 'PalletWave'],
+  ['DockTag', 'GridScan', 'ZonePath', 'DockAccess'],
+  ['LoadSync', 'CrateWatch', 'NodePing', 'AutoConfirm'],
+  ['TrayID', 'PulseLift', 'VendorCrate', 'SyncScan'],
+  ['AutoYield', 'ScrollLift', 'DropFlag', 'TagNode'],
+  ['LoopSync', 'VendorPush', 'ScrollLoop', 'DropNext'],
+  ['ProTrack', 'QuickCrate', 'YieldStamp', 'CoreLoop'],
+  ['WrapID', 'VendorPath', 'SecureDrop', 'LabelGate'],
+  ['CrateLock', 'LedgerPath', 'PackTrace', 'AutoCert'],
+  ['NodeFlow', 'ClaimLock', 'ScanYield', 'FrameTag'],
+  ['AutoJump', 'PathCalc', 'GridRelay', 'VendorMap'],
+  ['BinTag', 'SecureBin', 'VaultSignal', 'TraceStore'],
+  ['TrackMark', 'LabelPath', 'QRDrop', 'LabelFlow'],
+  ['SecurePath', 'ScrollFence', 'LockGate', 'PathProof'],
+  ['LoopID', 'DispatchSync', 'TagRelease', 'VendorTrack'],
+  ['PulseLink', 'FlowTrack', 'CrateAlert', 'LockSync'],
+  ['TagFire', 'IDScan', 'QRClaim', 'RouteAlert'],
+  ['FleetMap', 'ScanRoute', 'YieldClaim', 'ChainAccess'],
+  ['SyncBox', 'DropScan', 'AutoLabel', 'ParcelID'],
+  ['SmartClaim', 'CrateGrid', 'LockTrack', 'RFIDNode'],
+  ['LabelSnap', 'PrintFlow', 'AutoScan', 'ConfirmPrint'],
+  ['GridPath', 'LoadBoard', 'VaultTag', 'ShipClaim'],
+  ['DockSignal', 'AccessNode', 'LabelCheck', 'LoadLink'],
+  ['BoxSync', 'SmartTag', 'FrameDrop', 'PalletLink'],
+  ['ChillLoop', 'IceNode', 'VaultChill', 'ScrollCold'],
+  ['MeshID', 'PathSecure', 'GateTrace', 'NodeFence'],
+  ['VendorLoop', 'DropTick', 'AutoYield', 'QRConfirm'],
+  ['LiftSync', 'TrayPush', 'ForkLoop', 'WeightGate'],
+  ['BoardCert', 'VendorPush', 'ScrollAttach', 'ProofLine'],
+  ['ChainTrack', 'QuickDrop', 'VendorClaim', 'FastLock'],
+  ['MeshLink', 'TagGrid', 'LabelView', 'ClaimLink'],
+  ['BoxAlert', 'SignalPulse', 'FrameCheck', 'DropYield'],
+  ['LoadDetect', 'CrateSignal', 'DropCheck', 'ScanLine'],
+  ['RouteClaim', 'SignalSync', 'LockMap', 'PathMark'],
+  ['DockCrate', 'YieldNode', 'SignalTrack', 'ClaimPulse'],
+  ['SecureTag', 'LockCrate', 'VaultProof', 'ChainLock'],
+  ['FlowTag', 'LabelSync', 'ScanRoute', 'PrintID'],
+  ['MasterDock', 'DockTrack', 'LoadSync', 'AccessNode'],
+  ['NetCrate', 'PackSync', 'NodeLink', 'ChainFlow'],
+  ['GuardRoute', 'PathSecure', 'SignalLock', 'TrackID'],
+  ['ProBin', 'LogicSync', 'BinTrack', 'NodeProof'],
+  ['ChillTrack', 'ColdSync', 'FreezeNode', 'IceFlow'],
+  ['PackAuto', 'SyncLabel', 'AutoCrate', 'FlowNode'],
+  ['TrackShip', 'ShipSync', 'RouteNode', 'DockFlow'],
+  ['ManageLoad', 'LoadTrack', 'SyncCrate', 'NodeLink'],
+  ['ManageCrate', 'CrateSync', 'VaultTrack', 'LockNode']
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+  const grid = document.getElementById('logistics-grid');
+  const snapContainer = document.getElementById('logistics-snapshots');
+
+  if (!grid || !snapContainer || !Array.isArray(logisticsBrands) || !Array.isArray(logisticsSubNodes)) {
+    console.warn('[Logistics Grid] Missing DOM elements or data arrays.');
+    return;
+  }
+
+  logisticsBrands.forEach((brand, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'bg-white brand-button px-2 py-1 text-sm rounded shadow transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-yellow-100 hover:text-yellow-800 font-semibold cursor-pointer';
+    btn.innerHTML = `${brand}<sup>™</sup>`;
+    btn.onclick = () => toggleSnapshot(`logistics-snap-${i}`);
+    grid.appendChild(btn);
+
+    const subList = logisticsSubNodes[i].map(n => `<li>🔹 ${n}</li>`).join('');
+    const snap = document.createElement('div');
+    snap.id = `logistics-snap-${i}`;
+    snap.className = 'brand-snapshot hidden mt-6';
+    snap.innerHTML = `
+      <div class='text-xl font-semibold mb-2'>${brand}<sup>™</sup> Snapshot</div>
+      <ul class='bg-white border rounded p-4 shadow text-sm list-disc list-inside space-y-1'>
+        ${subList}
+      </ul>`;
+    snapContainer.appendChild(snap);
+  });
+});
+</script>
+
+
+  <script>
+  const fsfBrands = [
+    'AgriCore', 'SoilHealth', 'FarmFresh', 'CropCircle', 'HarvestHub', 'TerraNova', 'GreenSprout', 'AgroLife',
+    'BioFarm', 'EcoHarvest', 'SeedLink', 'SoilSmart', 'FarmWise', 'CropGuard', 'HarvestEase', 'TerraGrow',
+    'GreenField', 'AgroTech', 'BioYield', 'EcoFarm', 'AgriPulse', 'BioCrop', 'FarmLink', 'SoilGuard', 'GreenHarvest',
+    'TerraFarm', 'SeedSmart', 'CropCare', 'HarvestPro', 'SoilSense', 'FarmVision', 'AgroTech', 'BioSoil',
+    'CropTrack', 'HarvestLink', 'SoilLab', 'FarmManage', 'AgriData', 'BioGrow', 'EcoFarm', 'CropMesh', 'SeedRoot',
+    'SoilVault', 'PlantCast', 'YieldNode', 'FarmBeacon', 'BioSprout', 'SoilTrace', 'HarvestCore', 'PlantLink',
+    'TerraLoop', 'SoilPulse', 'GreenPatch', 'FarmSync', 'RootMesh', 'BioCluster', 'SproutIndex', 'MoistureMap',
+    'EcoZone', 'CropRelay', 'FarmCloud', 'SoilFrame', 'HarvestPing', 'CropCode', 'AgroNode', 'SeedNest', 'TraceFarm',
+    'SproutChain', 'SoilStack', 'AgriPanel', 'RootClaim', 'MoistureNode', 'CrateFarm', 'PlantPing', 'AgroLoop',
+    'CropGrid', 'VendorSprout', 'BioPing', 'EcoFarmGrid', 'TerraCode', 'HarvestVault', 'CropBinder', 'SoilCertify'
+  ];
+
+
+const fsfSubNodes = [
+  ['SoilSync','CropTrack','FarmLink','HarvestNet'],
+  ['BioBoost','NutrientFlow','EarthGuard','RootMax'],
+  ['OrganicGrow','PureHarvest','GreenCycle','EcoFarm'],
+  ['YieldMap','PlantPulse','GrowthScan','FieldSense'],
+  ['GrainGate','ProducePath','MarketLink','FarmFlow'],
+  ['LandRevive','SoilBalance','EcoTill','AgroRenew'],
+  ['SeedStart','PlantBoost','GrowTrack','EcoRoot'],
+  ['FarmVital','CropCare','SoilSense','HarvestEase'],
+  ['EcoGrow','NaturalYield','SoilPure','PlantHealth'],
+  ['GreenField','CropCycle','SoilNurture','FarmSustain'],
+  ['GerminatePro','PlantConnect','GrowNet','RootLink'],
+  ['NutrientTrack','EarthMonitor','SoilScan','FertilEase'],
+  ['AgriPlan','CropManage','FieldGuide','HarvestLogic'],
+  ['PestShield','DiseaseControl','PlantProtect','YieldSecure'],
+  ['GrainFlow','ProduceEase','MarketAccess','FarmSimplify'],
+  ['LandEnrich','SoilEnhance','EcoFert','AgroBoost'],
+  ['SeedSelect','PlantOptimize','GrowManage','EcoCultivate'],
+  ['FarmInnovate','CropTech','SoilAdvance','HarvestTech'],
+  ['EcoProduce','NaturalHarvest','SoilRich','PlantGain'],
+  ['GreenCultivate','CropSustain','SoilCare','FarmEco'],
+  ['SoilMonitor','CropSensor','FieldData','HarvestAlert'],
+  ['OrganicSeed','PlantHealth','GrowthTrack','EcoYield'],
+  ['AgriConnect','FieldNet','CropShare','HarvestSync'],
+  ['NutrientShield','ErosionControl','pHBalance','RootProtect'],
+  ['EcoCrop','SustainableYield','BioFertilizer','FarmSustain'],
+  ['LandOptimize','SoilEnhance','CropBoost','AgroManage'],
+  ['GerminationTrack','PlantMap','GrowthPredict','YieldForecast'],
+  ['PestMonitor','DiseaseAlert','PlantHealthCheck','YieldSecure'],
+  ['GrainQuality','ProduceSorting','MarketAccess','FarmLogistics'],
+  ['MoistureDetect','NutrientMap','SoilProfile','FertilityIndex'],
+  ['SatelliteImagery','CropAnalysis','FieldMapping','YieldEstimation'],
+  ['PrecisionFarming','SmartIrrigation','DroneSurvey','DataAnalytics'],
+  ['MicrobeEnhance','OrganicMatter','SoilRegen','EcoBalance'],
+  ['PlantGrowthMonitor','FieldProgress','HarvestTimeline','YieldReport'],
+  ['SupplyChainConnect','ProduceTrace','MarketIntegration','FarmNetwork'],
+  ['pHTesting','NutrientAnalysis','SoilSampling','FertilityReport'],
+  ['TaskScheduler','ResourceAllocation','LaborTracking','EquipmentMonitor'],
+  ['CropRecords','FieldHistory','YieldAnalytics','FarmReports'],
+  ['OrganicInputs','PlantNutrition','GrowthEnhancer','EcoSolutions'],
+  ['SustainablePractices','RenewableEnergy','WasteManagement','Biodiversity'],
+  ['FieldNet','SoilGrid','YieldLink','NodeTrace'],
+  ['GermCode','SeedID','RootLink','GrowthStart'],
+  ['VaultSoil','SampleSecure','LabLink','ResultSync'],
+  ['GrowthSignal','WeatherFeed','PlantAlert','FieldNotify'],
+  ['NodePath','HarvestTrace','ScrollYield','CropGrid'],
+  ['ZonePing','CropAlert','SignalYield','TraceLight'],
+  ['EcoSeed','VitalTrace','GreenMap','GrowStream'],
+  ['SampleLink','DataStream','FertilMap','FieldTest'],
+  ['HarvestPing','VendorClaim','YieldPoint','CrateDrop'],
+  ['PlantID','CrossNode','ZoneSync','QRRoot'],
+  ['AgriCycle','SoilWave','CropSync','EcoChain'],
+  ['PulseCheck','GrowthWave','DepthTrace','FieldFlow'],
+  ['ZoneGrid','OrganicNode','FarmSquare','PlantDrop'],
+  ['SyncPoint','CropMerge','LandSplit','VendorMesh'],
+  ['NodeSeed','GridSprout','PathFert','MicroPulse'],
+  ['CropGroup','FieldChain','VendorLoop','YieldRing'],
+  ['ZoneScan','PlantGrid','GrowthMeter','SeedSync'],
+  ['AquaNode','RootHumidity','DepthScan','FieldAqua'],
+  ['GreenClaim','NaturalPath','FarmMesh','ZoneCert'],
+  ['YieldSync','VendorCast','CrateSend','RouteField'],
+  ['ScrollFarm','VendorPanel','YieldDash','FieldUpload'],
+  ['FrameID','EarthLine','GridSoil','TestPath'],
+  ['PingGrid','DropYield','ClaimNode','AlertField'],
+  ['BarcodeRoot','GrowthTag','ScrollField','LabelGrow'],
+  ['LandID','CropNode','FieldLink','SoilRoute'],
+  ['NestCode','SproutDrop','GrowthLog','FarmBase'],
+  ['FarmScan','VendorLink','HarvestLedger','ScrollProof'],
+  ['ChainGrow','YieldLink','NodeDrop','EcoSprout'],
+  ['StackClaim','DepthScan','FertilRow','SoilVault'],
+  ['PanelSync','ScrollDash','CropView','VendorControl'],
+  ['ClaimTrace','RootID','VendorStamp','FieldLock'],
+  ['HydrateLink','DepthSync','MoistPulse','NodeRain'],
+  ['CrateLedger','DropPanel','MarketNode','VendorCrate'],
+  ['AlertRoot','ScanGrow','PlantTrace','PingField'],
+  ['LoopClaim','SoilCycle','FarmMesh','GrowthPath'],
+  ['GridYield','MapTrack','HarvestView','CropLink'],
+  ['VendorID','FarmStart','ClaimMap','SproutVault'],
+  ['MicroScan','HealthAlert','GrowthWatch','RootPath'],
+  ['EcoPlot','FarmJoin','GreenPanel','ZoneMesh'],
+  ['SoilDNA','SeedLog','CropCodeX','ScanTag'],
+  ['VaultDrop','CrateClaim','PayoutLock','FieldSecure'],
+  ['BinderLoop','VendorTrace','ScrollTag','FarmCode'],
+  ['TestLog','ResultPath','QRProof','SoilPass']
+];
+
+
+function toggleSnapshot(id) {
+  document.querySelectorAll('.brand-snapshot').forEach(el => el.classList.add('hidden'));
+  const active = document.getElementById(id);
+  if (active) active.classList.remove('hidden');
+}
+
+// ✅ Food, Soil & Farming Brand Renderer
+function renderFSFSection() {
+  const grid = document.getElementById('fsf-grid');
+  const snapContainer = document.getElementById('fsf-snapshots');
+
+  if (!grid || !snapContainer || !Array.isArray(fsfBrands) || !Array.isArray(fsfSubNodes)) {
+    console.warn('[FSF Grid] Missing DOM elements or data arrays.');
+    return;
+  }
+
+  if (fsfBrands.length !== fsfSubNodes.length) {
+    console.warn(`[FSF Grid] Mismatched lengths: fsfBrands (${fsfBrands.length}) vs fsfSubNodes (${fsfSubNodes.length})`);
+    return;
+  }
+
+  fsfBrands.forEach((brand, i) => {
+    // Render brand button
+    const btn = document.createElement('button');
+    btn.className = 'bg-white brand-button px-2 py-1 text-sm rounded shadow transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-green-100 hover:text-green-800 font-semibold cursor-pointer';
+    btn.innerHTML = `${brand}<sup>™</sup>`;
+    btn.onclick = () => toggleSnapshot(`fsf-snap-${i}`);
+    grid.appendChild(btn);
+
+    // Render brand snapshot
+    const subList = (fsfSubNodes[i] || []).map(n => `<li>🔹 ${n}</li>`).join('');
+    const snap = document.createElement('div');
+    snap.id = `fsf-snap-${i}`;
+    snap.className = 'brand-snapshot hidden mt-6';
+    snap.innerHTML = `
+      <div class='text-xl font-semibold mb-2'>${brand}<sup>™</sup> Snapshot</div>
+      <ul class='bg-white border rounded p-4 shadow text-sm list-disc list-inside space-y-1'>
+        ${subList}
+      </ul>`;
+    snapContainer.appendChild(snap);
+  });
+}
+
+// ✅ Run it on DOM ready
+document.addEventListener('DOMContentLoaded', renderFSFSection);
+</script>
+
+
+  <script>
+const educationBrands = [
+  'EduNest', 'FormFlex', 'ScrollBooks', 'MindLift', 'GridClass', 'YouthSignal', 'TalentNest', 'PeerPath', 'ScrollGrade', 'LearnMesh',
+  'EduChain', 'SkillCast', 'YouthForge', 'QuizNet', 'ScrollLabs', 'LearnFlag', 'ScholarMesh', 'VaultEdu', 'YouthSphere', 'EduGlow',
+  'LearnBloom', 'MentorLoop', 'YouthID', 'ScrollQuiz', 'PupilChain', 'IdeaGrid', 'VaultLearn', 'SkillNest', 'ClassFlow', 'CertifyCast',
+  'PathMentor', 'IdeaNest', 'SchoolVault', 'LearnSignal', 'GridBadge', 'ScrollCraft', 'MindBoard', 'ClassEcho', 'VaultPupil', 'YouthSignal',
+  'TeachStack', 'StudyCast', 'RoleGrid', 'LearnFrame', 'PulseAcademy', 'GradeSync', 'TeachCircle', 'CampusNet', 'StudyBoard', 'ScrollPath',
+  'LearnQuest', 'EduNestPro', 'LoopStudy', 'GradeForge', 'IdeaLink', 'TeachTrack', 'VaultClass', 'BadgeMesh', 'EduCast', 'YouthGrid',
+  'LearnProof', 'PathCoach', 'TalentID', 'OmniPupil', 'SchoolChain', 'GradeVault'
+];
+
+const educationSubNodes = [
+  ['LearnNode', 'ScrollSeed', 'CampusID', 'MentorLink', 'PathClaim'],
+  ['SkillWrap', 'GradeSync', 'CourseMap', 'IDTrack', 'PupilMesh'],
+  ['ChapterFlow', 'StoryTag', 'QuizLink', 'YieldRead', 'TextClaim'],
+  ['BoostTrack', 'LearnSignal', 'LevelUp', 'FocusPath', 'VaultPace'],
+  ['ClassNode', 'TeachSync', 'VaultBoard', 'EduAlert', 'NodeAttend'],
+  ['SignalDrop', 'SkillPing', 'PeerMesh', 'RoleAssign', 'TrackEcho'],
+  ['TalentVault', 'ClaimCoach', 'RoleTree', 'PayoutPath', 'CertifyNode'],
+  ['PeerMap', 'ConnectNode', 'SkillVote', 'PathSync', 'LearnOrbit'],
+  ['GradeID', 'TestVault', 'YieldCredit', 'ExamSync', 'ResultNode'],
+  ['MeshID', 'ModuleLink', 'ClassSync', 'ProgressTag', 'LoopNode'],
+  ['CourseLink', 'CreditVault', 'CertDrop', 'LearnKey', 'ScrollLedger'],
+  ['CastNode', 'MentorPing', 'PeerEcho', 'PayoutRank', 'TalentDrop'],
+  ['ForgePath', 'BuildMesh', 'IdeaClaim', 'LearnFoundry', 'PeerLoop'],
+  ['QuizTrigger', 'TestField', 'GradeWave', 'RecallGrid', 'PassSync'],
+  ['LabNode', 'ProjectClaim', 'IdeaTrace', 'SkillXP', 'ModuleYield'],
+  ['FlagRaise', 'SchoolLink', 'RegionTrack', 'PupilEcho', 'ClaimNode'],
+  ['MeshTrack', 'GradeRelay', 'ScrollDegree', 'LearnVault', 'StudyPulse'],
+  ['IDVault', 'CertChain', 'TranscriptGrid', 'SecureLearn', 'DegreeDrop'],
+  ['CircleCast', 'ClassLink', 'ScrollTribe', 'GroupEcho', 'PeerRing'],
+  ['SignalLight', 'LearnPulse', 'BrainSync', 'FlashGrade', 'EnlightNode'],
+  ['BloomNode', 'GrowthTrack', 'SkillSeed', 'EduSprout', 'PeerSoil'],
+  ['LoopConnect', 'WisdomPath', 'MentorVault', 'ScrollPing', 'TeachBond'],
+  ['IDSync', 'LearnerNode', 'ProofTag', 'IdentityScroll', 'JoinClass'],
+  ['QuizNode', 'AnswerTag', 'TimerMesh', 'ScoreClaim', 'ReviewPulse'],
+  ['PupilBlock', 'TaskNode', 'LedgerPath', 'EduEcho', 'LearnLock'],
+  ['IdeaDrop', 'GridThink', 'SparkVault', 'PeerPush', 'ThoughtClaim'],
+  ['SecureScroll', 'GradeLock', 'ChainTest', 'RecordMesh', 'PayoutGrade'],
+  ['NestGrow', 'RoleTree', 'PeerRoot', 'MentorNode', 'CertPulse'],
+  ['FlowSync', 'ClassRoute', 'PeerGroup', 'ScrollRing', 'LessonCast'],
+  ['CastAward', 'NodeBadge', 'VaultProof', 'ScrollCredit', 'ChainEarn'],
+  ['MentorMap', 'GrowthLink', 'TrailNode', 'ScrollCoach', 'PeerTrace'],
+  ['NestPath', 'SparkClaim', 'ScrollTree', 'PupilEcho', 'ThoughtPulse'],
+  ['VaultGate', 'IDBoard', 'RosterDrop', 'GridEnroll', 'SecureClass'],
+  ['SignalNode', 'BrainPing', 'LessonTrack', 'EduCast', 'PathAlert'],
+  ['BadgeSync', 'PathAward', 'TagNode', 'CreditDrop', 'CertLock'],
+  ['CraftScroll', 'YieldPath', 'PeerSkill', 'VaultMaker', 'ProjectPulse'],
+  ['BoardTag', 'ClassSignal', 'IdeaPost', 'TaskDrop', 'VoteMark'],
+  ['EchoNode', 'SyncMesh', 'StudentCast', 'AlertPing', 'ScrollPlay'],
+  ['PupilID', 'SecureClaim', 'GradeVault', 'TrackNode', 'CertTrigger'],
+  ['PeerAlert', 'LoopClaim', 'ScrollWave', 'VoiceDrop', 'IDMesh'],
+  ['StackLink', 'LessonPulse', 'GradeBeam', 'TrackNode', 'PeerPath'],
+  ['StudyStream', 'PeerJoin', 'QuizSignal', 'ReviewGrid', 'ClassLink'],
+  ['RoleMap', 'ClaimSync', 'PeerTree', 'IdentityPath', 'TagTrack'],
+  ['FrameNode', 'LessonTrace', 'PupilMesh', 'CastDrop', 'ScoreProof'],
+  ['AcademyPing', 'PeerLight', 'FocusPath', 'VaultLearn', 'BadgeSync'],
+  ['GradeLink', 'ResultEcho', 'TestMesh', 'PassTrack', 'VaultSheet'],
+  ['CircleCast', 'MentorPulse', 'ScrollBeam', 'IdeaClaim', 'PeerRing'],
+  ['CampusID', 'GroupPath', 'ScrollZone', 'PeerAlert', 'ConnectMesh'],
+  ['StudyNode', 'NoteTrace', 'ProjectGrid', 'SyncClaim', 'ViewRank'],
+  ['PathLink', 'VaultCredit', 'PeerYield', 'LessonGrid', 'ClassSync'],
+  ['QuestNode', 'MapTrack', 'StudyGoal', 'ProgressPath', 'PeerSignal'],
+  ['NestID', 'PathPulse', 'MentorNode', 'VaultGrade', 'PupilClaim'],
+  ['StudyLoop', 'GridSync', 'QuizWave', 'PeerCast', 'ReviewTrack'],
+  ['ForgeNode', 'GradeRing', 'ResultPush', 'CertPath', 'LearnLine'],
+  ['SparkLine', 'LoopLink', 'IdeaDrop', 'MentorPing', 'ClassTrace'],
+  ['ClassFlow', 'InstructorNode', 'FeedbackGrid', 'PeerScore', 'PathEcho'],
+  ['SecureNode', 'RosterClaim', 'EnrollTrack', 'PeerMap', 'ClassKey'],
+  ['BadgeID', 'VaultLink', 'ScrollProof', 'AwardBeam', 'PayoutPing'],
+  ['CoursePing', 'ClassSignal', 'LectureDrop', 'QuizRelay', 'PeerPush'],
+  ['MeshLearn', 'PeerTrace', 'StudyJoin', 'PupilMark', 'LessonSync'],
+  ['ProofID', 'CourseClaim', 'ScrollCert', 'VaultDrop', 'GradeLoop'],
+  ['CoachNode', 'RolePath', 'ScrollEcho', 'StudyChain', 'CertPush'],
+  ['TalentClaim', 'VaultPass', 'SkillMap', 'IDScroll', 'LearnLock'],
+  ['OmniLearn', 'ScrollLoop', 'ViewNode', 'ClassCast', 'IDTrack'],
+  ['LedgerLearn', 'BlockEnroll', 'VaultBoard', 'PeerPath', 'ClassFlow'],
+  ['VaultClaim', 'CreditPing', 'ScoreSheet', 'SecureDrop', 'LedgerTrack']
+];
+
+function renderEducationSection() {
+  const grid = document.getElementById('education-grid');
+  const snapContainer = document.getElementById('education-snapshots');
+
+  if (!grid || !snapContainer || !Array.isArray(educationBrands) || !Array.isArray(educationSubNodes)) {
+    console.warn('[Education Grid] Missing DOM elements or data arrays.');
+    return;
+  }
+
+  if (educationBrands.length !== educationSubNodes.length) {
+    console.warn(`[Education Grid] Mismatched lengths: ${educationBrands.length} vs ${educationSubNodes.length}`);
+    return;
+  }
+
+  educationBrands.forEach((brand, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'bg-white brand-button px-2 py-1 text-sm rounded shadow transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-green-100 hover:text-green-800 font-semibold cursor-pointer';
+    btn.innerHTML = `${brand}<sup>™</sup>`;
+    btn.onclick = () => toggleSnapshot(`edu-snap-${i}`);
+    grid.appendChild(btn);
+
+    const subList = (educationSubNodes[i] || []).map(n => `<li>🔹 ${n}</li>`).join('');
+    const snap = document.createElement('div');
+    snap.id = `edu-snap-${i}`;
+    snap.className = 'brand-snapshot hidden mt-6';
+    snap.innerHTML = `
+      <div class='text-xl font-semibold mb-2'>${brand}<sup>™</sup> Snapshot</div>
+      <ul class='bg-white border rounded p-4 shadow text-sm list-disc list-inside space-y-1'>
+        ${subList}
+      </ul>`;
+    snapContainer.appendChild(snap);
+  });
+}
+
+// ✅ Trigger renderer after DOM is loaded
+document.addEventListener('DOMContentLoaded', renderEducationSection);
+</script>
+
+
+  <script>
+const weblessBrands = [
+  'OmniQR', 'MeshSync', 'VaultBeacon', 'TapClaim', 'ScrollKey', 'AirLoop', 'DotGrid', 'VaultTouch', 'PouchCast', 'YieldTrace',
+  'TapSync', 'TouchProof', 'MeshKey', 'QRPad', 'DotPulse', 'FlashNode', 'ScrollFuse', 'PassiveYield', 'QRClaimMesh', 'VaultTouchPro',
+  'AirDropVault', 'MeshTrigger', 'ZeroLink', 'PaperID', 'SignalFrame', 'TapMesh', 'TagBeacon', 'ScrollTouch', 'ClaimPatch', 'LightGrid',
+  'VaultPrint', 'OmniTag', 'ScanToken', 'PassiveKey', 'VaultCast', 'ScrollNodeX', 'FrameSync', 'QRPath', 'DotLogic', 'BeaconMesh',
+  'NFCVault', 'LightPulse', 'ScrollRelay', 'OfflineYield', 'DotClaim', 'ZeroMesh', 'CastLink', 'FrameYield', 'MeshProof', 'PaperVault',
+  'SyncPulse', 'PassiveCast', 'TriggerDrop', 'SignalTag', 'GridID', 'ScrollPing', 'NFCDrop', 'VaultEcho', 'PassiveSync', 'QRBeam',
+  'NFCTrace', 'ScrollMark', 'LightDrop', 'MeshStamp', 'OmniTouch', 'AirPrint', 'FlashID', 'CastMesh', 'QRNode', 'PulseRoute',
+  'DropCast', 'ClaimPrint', 'VaultTag', 'QRFuse', 'TapVault', 'PrintSync', 'TraceCast', 'PassiveRoute', 'CastProof', 'AirPath',
+  'QRMesh', 'ScrollZero', 'TagSync', 'GridTouch', 'LightTrace', 'PassiveVault', 'EchoGrid', 'CastToken', 'TraceNode', 'NFCGrid',
+  'ProofCast', 'SignalDrop', 'TouchFlow', 'TagNode', 'YieldPath', 'ScanMark', 'BeamNode', 'DotClaimPro', 'QRTrigger', 'TouchNodeX',
+  'TraceQR', 'PaperMesh', 'ZeroID'
+];
+
+const weblessSubNodes = [
+  ['QRNode', 'YieldPing', 'ClaimGrid', 'ScanFlow', 'RouteToken'],
+  ['NodeJoin', 'MeshPulse', 'ConnectGrid', 'DropRoute', 'SignalFlow'],
+  ['FlashNode', 'SecurePing', 'LightPath', 'VaultCast', 'NodePing'],
+  ['NFCTrigger', 'ScrollTap', 'NodePush', 'PayoutTouch', 'QRClaim'],
+  ['KeyNode', 'UnlockTrack', 'AccessVault', 'PeerPass', 'SecureDrop'],
+  ['LoopCast', 'AirPing', 'PassiveTrack', 'QRWave', 'SignalBoard'],
+  ['DotNode', 'MeshPrint', 'InkLink', 'FormSync', 'TagPulse'],
+  ['TouchID', 'QRAccess', 'ScrollPulse', 'FieldTrigger', 'NodeProof'],
+  ['DeviceDrop', 'LoopTouch', 'PulseSend', 'AirLabel', 'AssetBeam'],
+  ['QRDrop', 'PathYield', 'SignalToken', 'ScanLock', 'LoopClaim'],
+  ['ScrollNode', 'QRConnect', 'TouchBeam', 'PeerSync', 'PathTrigger'],
+  ['ProofLink', 'TagScan', 'YieldPath', 'ScrollTouch', 'DataNode'],
+  ['MeshCode', 'AccessRoute', 'NodeTrace', 'LockDrop', 'AirJoin'],
+  ['GridTouch', 'SignalDrop', 'TagFrame', 'VaultClick', 'QRPush'],
+  ['PulseWave', 'FrameDrop', 'DotYield', 'ScrollEcho', 'ProofPad'],
+  ['NodePing', 'LightPath', 'QRSync', 'PassiveDrop', 'AirGrid'],
+  ['FuseNode', 'TouchLoop', 'NFCTrace', 'QRJoin', 'DeviceCast'],
+  ['PassiveNode', 'QRTrace', 'ScrollMark', 'AirSync', 'RouteKey'],
+  ['ClaimGrid', 'MeshLock', 'TouchYield', 'TagTrace', 'NodeTap'],
+  ['SecureTap', 'NodeCast', 'ProofScroll', 'QRBeam', 'LinkMesh'],
+  ['AirTag', 'YieldNode', 'VaultSend', 'QRTrigger', 'TapClaim'],
+  ['TriggerNode', 'PassiveSync', 'TouchCast', 'LinkClaim', 'ScrollDrop'],
+  ['QRNodeZero', 'OfflineConnect', 'ScrollTrack', 'VaultLoop', 'MeshYield'],
+  ['QRPrint', 'ScrollForm', 'NodeMark', 'ScanVault', 'OfflineYield'],
+  ['LightID', 'SignalTrace', 'NodeGrid', 'ScrollFlash', 'MeshPath'],
+  ['TouchGrid', 'PassiveYield', 'ScrollTouch', 'NFCMap', 'VaultDrop'],
+  ['TagNode', 'FlashPath', 'YieldLink', 'TouchMark', 'NodePush'],
+  ['SecureTouch', 'PeerDrop', 'NFCVault', 'QRSignal', 'CastTrace'],
+  ['ScrollPatch', 'TagClaim', 'QRLink', 'ProofMark', 'PassiveTrace'],
+  ['FlashNode', 'TouchEcho', 'SignalCast', 'LightDrop', 'MeshJoin'],
+  ['QRLayout', 'SecureForm', 'TouchScan', 'VaultCopy', 'MeshIndex'],
+  ['TagPath', 'TouchNode', 'ClaimGrid', 'DotJoin', 'VaultID'],
+  ['TokenNode', 'ScanPath', 'YieldDot', 'QRMesh', 'ProofCast'],
+  ['KeyNode', 'NFCYield', 'QRSync', 'DropToken', 'TraceLoop'],
+  ['CastSignal', 'LinkNode', 'ScrollSync', 'ProofDrop', 'BeamClaim'],
+  ['NodePulse', 'TrackEcho', 'TouchID', 'QRLog', 'PassiveMap'],
+  ['FrameID', 'SyncNode', 'VaultPath', 'QRTrigger', 'CastMark'],
+  ['GridTrace', 'DropClaim', 'QRIndex', 'ProofNode', 'VaultSync'],
+  ['DotMap', 'ScrollPulse', 'YieldClaim', 'MeshCode', 'NFCGrid'],
+  ['BeaconTrack', 'NodeLight', 'FlashYield', 'SecureDrop', 'TagCast'],
+  ['TapSecure', 'ScrollID', 'CastProof', 'DropPath', 'NFCGrid'],
+  ['SignalNode', 'FlashCast', 'QRWave', 'DropTrigger', 'MeshVault'],
+  ['QRRelay', 'TokenPath', 'BeamNode', 'ScanCast', 'PassiveDrop'],
+  ['ClaimMark', 'VaultGrid', 'MeshTrack', 'PaperTag', 'SignalBeam'],
+  ['TagRoute', 'ScrollDot', 'QRTrack', 'VaultPulse', 'NodeID'],
+  ['NodeZero', 'MeshDrop', 'QRClaim', 'ProofRoute', 'PassivePath'],
+  ['TouchEcho', 'ScrollMark', 'NFCNode', 'VaultSync', 'ClaimPulse'],
+  ['GridPrint', 'ScrollProof', 'PassiveLine', 'DropCast', 'YieldQR'],
+  ['ClaimMesh', 'SecureQR', 'SignalTrack', 'PeerVault', 'DotCast'],
+  ['VaultTag', 'QRMark', 'ScrollPath', 'SignalDrop', 'CastClaim'],
+  ['QRJoin', 'NodeTrack', 'SignalNode', 'VaultBeam', 'ProofFlow'],
+  ['CastPing', 'NodeLink', 'YieldPath', 'DropSignal', 'NFCProof'],
+  ['BeamYield', 'TapNode', 'QRClaim', 'DropSync', 'SignalPush'],
+  ['TagEcho', 'SignalCast', 'QRNode', 'VaultPath', 'ClaimLight'],
+  ['ScrollGrid', 'TokenTouch', 'SyncTrace', 'DropMesh', 'CastMark'],
+  ['PingGrid', 'MeshEcho', 'PassiveTap', 'VaultDrop', 'QRFlash'],
+  ['TouchNode', 'QRClaim', 'DropTrack', 'SecureLoop', 'MeshPath'],
+  ['SignalEcho', 'ProofScan', 'ScrollPush', 'DropClaim', 'NFCVault'],
+  ['PassiveGrid', 'NodeLink', 'TapClaim', 'QRJoin', 'SignalChain'],
+  ['BeamTrigger', 'NodeClaim', 'TouchCast', 'VaultMap', 'SignalDrop'],
+  ['TagProof', 'QRTrack', 'TapCast', 'VaultEcho', 'SignalGrid'],
+  ['ScrollTag', 'TracePath', 'QRSync', 'NodeDrop', 'YieldLine'],
+  ['SignalPush', 'QRGlow', 'TouchFlash', 'VaultCast', 'DropNode'],
+  ['DotClaim', 'PrintID', 'VaultStamp', 'TagRoute', 'SecureMesh'],
+  ['TouchGrid', 'VaultPath', 'NFCNode', 'QRClaim', 'EchoBeam'],
+  ['ScrollForm', 'InkNode', 'NFCLink', 'DotDrop', 'PassiveTag'],
+  ['FlashNode', 'LightPing', 'QRTrack', 'NFCScan', 'ProofBeam'],
+  ['MeshEcho', 'NodeJoin', 'QRLoop', 'TouchProof', 'VaultDrop'],
+  ['QRMark', 'TokenID', 'PathScan', 'ScrollEcho', 'MeshSync'],
+  ['SignalPath', 'TouchYield', 'ScrollPulse', 'QRLine', 'NFCNode'],
+  ['DropEcho', 'MeshPing', 'QRTouch', 'ScrollFlash', 'PassiveTrace'],
+  ['FormYield', 'NodeScan', 'PaperToken', 'VaultID', 'TagCast'],
+  ['QRLink', 'ScrollRoute', 'NodeClaim', 'SignalMap', 'SecureDrop'],
+  ['FusePath', 'ScanBeam', 'VaultRoute', 'QRNode', 'TouchCast'],
+  ['NFCTrack', 'ClaimProof', 'TapLink', 'VaultEcho', 'NodeDrop'],
+  ['SyncMark', 'InkDrop', 'VaultTrack', 'TagProof', 'PassivePath'],
+  ['QRSignal', 'TagPing', 'VaultDrop', 'TouchID', 'SecureCast'],
+  ['MeshClaim', 'QRTrack', 'NodePath', 'TouchBeam', 'VaultSync'],
+  ['SignalClaim', 'NodeEcho', 'QRSync', 'VaultID', 'PassiveDrop'],
+  ['AirNode', 'VaultMark', 'SignalPing', 'NFCTrace', 'MeshDrop'],
+  ['QRJoin', 'VaultGrid', 'PathNode', 'ScanRoute', 'SignalCast'],
+  ['ZeroClaim', 'NodeDrop', 'QRTag', 'VaultLoop', 'PassiveKey'],
+  ['TagLoop', 'VaultNode', 'QRPath', 'TouchTrace', 'BeamClaim'],
+  ['GridClaim', 'PathDrop', 'ScrollSignal', 'NFCVault', 'QRLink'],
+  ['FlashScan', 'QRMark', 'VaultBeam', 'NodeDrop', 'AirClaim'],
+  ['SecureDrop', 'VaultPing', 'QRPath', 'NFCMap', 'TagLoop'],
+  ['EchoNode', 'QRTrack', 'PassiveSync', 'VaultCast', 'MeshPulse'],
+  ['TokenLink', 'ScrollPush', 'QRBeam', 'NodeVault', 'SignalProof'],
+  ['QRLine', 'MeshTouch', 'VaultNode', 'TapTrack', 'ProofClaim'],
+  ['GridTap', 'ScrollNode', 'TouchPath', 'VaultClaim', 'QRTag'],
+  ['CastEcho', 'QRClaim', 'PassiveTrace', 'SignalLink', 'DropTrack'],
+  ['QRDrop', 'TouchClaim', 'VaultPath', 'NodeBeam', 'ScrollMark'],
+  ['FlowLink', 'QRYield', 'VaultTrace', 'SignalDrop', 'MeshID'],
+  ['TagPing', 'VaultEcho', 'MeshClaim', 'QRTouch', 'NFCYield'],
+  ['YieldQR', 'ScrollTag', 'VaultClaim', 'PassiveRoute', 'SignalGrid'],
+  ['ScanNode', 'QRDrop', 'VaultPath', 'ClaimLoop', 'TagProof'],
+  ['BeamTrack', 'ScrollClaim', 'TouchEcho', 'VaultPing', 'QRFlow'],
+  ['DotTag', 'VaultPush', 'ScrollMark', 'QRTrigger', 'MeshPath'],
+  ['TriggerNode', 'ScrollRoute', 'VaultBeam', 'QRLink', 'SignalEcho'],
+  ['XNode', 'QRClaim', 'SignalPath', 'VaultTrack', 'PassiveTouch'],
+  ['QRProof', 'VaultDrop', 'ScrollNode', 'PassiveClaim', 'NodeLink'],
+  ['MeshPrint', 'ScrollTrack', 'QRDrop', 'SignalGrid', 'VaultMap'],
+  ['IDVault', 'ScrollMark', 'PassiveToken', 'QRJoin', 'AirPath']
+];
+
+  
+function renderWeblessSection() {
+  const grid = document.getElementById('webless-grid');
+  const snapContainer = document.getElementById('webless-snapshots');
+
+  if (!grid || !snapContainer || weblessBrands.length !== weblessSubNodes.length) {
+    console.warn('[Webless Grid] DOM elements missing or array mismatch');
+    return;
+  }
+
+  weblessBrands.forEach((brand, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'bg-white brand-button px-2 py-1 text-sm rounded shadow transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-indigo-100 hover:text-indigo-800 font-semibold cursor-pointer';
+    btn.innerHTML = `${brand}<sup>™</sup>`;
+    btn.onclick = () => toggleSnapshot(`webless-snap-${i}`);
+    grid.appendChild(btn);
+
+    const subList = weblessSubNodes[i].map(n => `<li>🔹 ${n}</li>`).join('');
+    const snap = document.createElement('div');
+    snap.id = `webless-snap-${i}`;
+    snap.className = 'brand-snapshot hidden mt-6';
+    snap.innerHTML = `
+      <div class='text-xl font-semibold mb-2'>${brand}<sup>™</sup> Snapshot</div>
+      <ul class='bg-white border rounded p-4 shadow text-sm list-disc list-inside space-y-1'>
+        ${subList}
+      </ul>`;
+    snapContainer.appendChild(snap);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', renderWeblessSection);
+</script>
+
+
+<script>
+  const healthBrands = [
+    'MedVault', 'CleanCast', 'ScrollHealth', 'Hygienix', 'CareNode',
+    'VaultSan', 'TrackMeds', 'SteriMesh', 'MedLoop', 'PulseClean',
+    'HealthDrop', 'SanitiPath', 'VaultMeds', 'BioPulse', 'NurseFlow',
+    'AirHealth', 'ScanCare', 'PathogenTrace', 'CareYield', 'SoapGrid',
+    'MedTrace', 'SteriLoop', 'BioScan', 'CareLink', 'VaultWell',
+    'DoseSync', 'SanityTrack', 'CleanPulse', 'NurseGrid', 'ScanHealth',
+    'PureFlow', 'MedCert', 'SteriPack', 'AlertCare', 'VaultNurse',
+    'TrackVitals', 'HygieneCast', 'PatientSync', 'MedFuse', 'CleanChain',
+    'SoapNode', 'ScanDose', 'CareCast', 'HealthPing', 'PatientPath',
+    'PureVault', 'MedDrop', 'SanitiLoop', 'AlertDose', 'CleanLine',
+    'VaultVitals', 'MaskTrack', 'CarePrint', 'SteriBoard', 'NurseYield',
+    'BioTrack', 'VaultWellness', 'TouchClean', 'MedEcho', 'PatientCert',
+    'MedLogix', 'ScanSan', 'NurseCast', 'TouchScan', 'DoseVault',
+    'PathClean', 'SanitiID', 'RecordGrid', 'PureCare', 'MedClaim',
+    'QRVitals', 'HygieneNode', 'SoapDrop', 'NurseVault', 'BioClaim',
+    'ScanWell', 'SprayTrack', 'CarePath', 'VaultScript', 'PatientLink',
+    'SteriCheck', 'HealthCast', 'DoseLink', 'TouchProof', 'RecordVault',
+    'MedPortal', 'AlertVault', 'ClaimDose', 'CleanForm', 'ScanProof',
+    'NurseSignal', 'MedPathway', 'WellnessTrack'
+  ];
+
+  const healthSubNodes = [
+    ['ScanID', 'PatientDrop', 'RecordLink', 'VaultCare'],
+    ['SanitizeGrid', 'QRLabel', 'TouchLock', 'DropZone'],
+    ['ScrollID', 'TreatmentTrack', 'CareClaim', 'HealthEcho'],
+    ['WashCycle', 'QRNode', 'DisinfectLink', 'VaultTag'],
+    ['PatientSync', 'PayoutCare', 'NodeClaim', 'AlertScan'],
+    ['CleanTrace', 'HygieneCert', 'QRGrid', 'SecureDrop'],
+    ['DoseTrack', 'QRScript', 'VaultDrug', 'AlertLink'],
+    ['MeshDrop', 'CleanEcho', 'QRTrack', 'SteriNode'],
+    ['HealthPath', 'PatientCast', 'QRClaim', 'VaultID'],
+    ['PulseSync', 'ScanLink', 'SanitaryTag', 'VaultLock'],
+    ['DropPoint', 'TrackDose', 'QRTrace', 'MedNode'],
+    ['PathNode', 'CleanSync', 'HygieneRoute', 'QRClaim'],
+    ['MedID', 'TrackPill', 'DropChart', 'AlertLoop'],
+    ['QRNode', 'ScanVitals', 'VaultRecord', 'HealthPing'],
+    ['ShiftTrack', 'AlertGrid', 'VaultChart', 'PeerLink'],
+    ['VentFlow', 'PurifyNode', 'AirTrack', 'CleanEcho'],
+    ['CareID', 'QRChart', 'PatientGrid', 'RecordVault'],
+    ['PathNode', 'TraceMap', 'AlertDrop', 'VaultScan'],
+    ['PayoutClaim', 'CareNode', 'VaultPay', 'ScrollCert'],
+    ['WashSync', 'DispenserLink', 'QRNode', 'VaultDrop'],
+    ['TraceNode', 'QRMap', 'PatientPing', 'RecordFlow'],
+    ['LoopClean', 'VaultNode', 'DisinfectClaim', 'ScanPulse'],
+    ['BioNode', 'TestTrace', 'VaultLink', 'QRResult'],
+    ['PatientNode', 'ClaimGrid', 'ScrollAlert', 'VaultCare'],
+    ['WellnessID', 'QRPath', 'DropNode', 'HealthYield'],
+    ['QRTrack', 'PillGrid', 'TimerClaim', 'VaultDose'],
+    ['HygieneNode', 'ScanTouch', 'VaultDrop', 'QRLoop'],
+    ['CleanLink', 'QRSignal', 'VaultMesh', 'PathDrop'],
+    ['NurseID', 'RosterFlow', 'AlertRoute', 'CareTag'],
+    ['ScanLoop', 'QRVitals', 'VaultDrop', 'RecordTag'],
+    ['WaterPath', 'CleanYield', 'VaultPipe', 'QRDrop'],
+    ['CertID', 'RecordNode', 'QRVerify', 'ScrollCare'],
+    ['QRWrap', 'VaultClean', 'ScanShield', 'DropKit'],
+    ['SignalAlert', 'PatientLoop', 'QRNotify', 'VaultTrack'],
+    ['NurseClaim', 'QRPanel', 'NodeTag', 'ShiftProof'],
+    ['VitalID', 'ScanPulse', 'VaultTrack', 'QRClaim'],
+    ['QRPush', 'CleanNode', 'VaultDrop', 'SprayTrace'],
+    ['ScrollTrack', 'VaultChart', 'QRPath', 'IDNode'],
+    ['VaultJoin', 'QRClaim', 'ScrollDose', 'PatientLink'],
+    ['QRLoop', 'VaultMark', 'HygieneFlow', 'ScanProof'],
+    ['FoamClaim', 'VaultDispenser', 'QRWash', 'CleanTag'],
+    ['DoseTrace', 'QRScript', 'VaultTrigger', 'LabelNode'],
+    ['SignalDrop', 'QRAlert', 'NurseRoute', 'VaultLink'],
+    ['PingNode', 'QRVital', 'VaultTrack', 'AlertBeam'],
+    ['QRRoute', 'MedID', 'VaultDrop', 'CareSync'],
+    ['VaultFlow', 'QRDispenser', 'HygieneLog', 'ScanEcho'],
+    ['DropForm', 'ClaimScript', 'QRLoop', 'VaultNode'],
+    ['LoopClean', 'SprayNode', 'VaultClaim', 'HygieneGrid'],
+    ['QRSignal', 'VaultNotify', 'ScheduleClaim', 'DosePing'],
+    ['LinePath', 'QRCheck', 'VaultFlow', 'ScanProof'],
+    ['PulseID', 'ScanNode', 'QRTrack', 'VitalsClaim'],
+    ['QRWear', 'CleanFit', 'VaultSync', 'HygienePing'],
+    ['PrintLabel', 'QRScan', 'DropVault', 'CleanNode'],
+    ['BoardRoute', 'HygieneLink', 'VaultMap', 'QRPath'],
+    ['PayoutNode', 'VaultCert', 'NurseFlow', 'QRSignal'],
+    ['BioScan', 'QRProof', 'VaultClaim', 'PatientEcho'],
+    ['ScrollCare', 'QRDrop', 'MedMesh', 'RecordSync'],
+    ['QRScan', 'VaultTouch', 'HygieneLock', 'SignalNode'],
+    ['EchoID', 'VaultPanel', 'QRPing', 'RecordPath'],
+    ['ScrollCert', 'QRAccess', 'VaultLedger', 'ClaimLink'],
+    ['TrackVault', 'QRPanel', 'PatientTag', 'SyncChart'],
+    ['HygieneScan', 'QRRead', 'VaultIndex', 'CleanFlow'],
+    ['CastPath', 'QRBoard', 'CarePulse', 'VaultShift'],
+    ['ScanNode', 'TouchRead', 'VaultMark', 'QRTag'],
+    ['VaultClaim', 'QRDose', 'TimerPath', 'MedLabel'],
+    ['ScrollRoute', 'QRScan', 'VaultTrack', 'PathEcho'],
+    ['QRBadge', 'VaultName', 'ClaimID', 'CleanCheck'],
+    ['RecordLoop', 'VaultEntry', 'QRNode', 'ScanBook'],
+    ['QRFlow', 'SanitizePath', 'CareTouch', 'VaultSync'],
+    ['VaultSheet', 'QRProof', 'ScrollClaim', 'SignalTrack'],
+    ['VitalsTag', 'QRTrack', 'VaultPulse', 'HealthNode'],
+    ['CleanLabel', 'ScanEcho', 'VaultDrop', 'TagID'],
+    ['SoapPing', 'QRTrigger', 'DispenserLog', 'VaultTrack'],
+    ['VaultRoster', 'NurseTrack', 'ShiftID', 'QRLog'],
+    ['BioTrack', 'VaultCert', 'QRForm', 'DNAPath'],
+    ['QRClaim', 'ScrollDrop', 'VaultCare', 'CheckPulse'],
+    ['SprayNode', 'VaultStream', 'QRPath', 'HygieneFlow'],
+    ['QRTag', 'NurseRoute', 'VaultChart', 'ShiftEcho'],
+    ['ScriptID', 'QRConfirm', 'MedDrop', 'ClaimProof'],
+    ['QRBoard', 'VaultJoin', 'CarePass', 'RecordTrack'],
+    ['CheckPulse', 'VaultClean', 'QRNode', 'HygieneCert'],
+    ['CastAlert', 'QRSignal', 'NodeDrop', 'VaultClaim'],
+    ['QRLabel', 'VaultID', 'TrackMed', 'ScrollProof'],
+    ['VaultLink', 'CleanTrace', 'ScanNode', 'QRDrop'],
+    ['FilePath', 'QRPatient', 'VaultScan', 'ArchiveNode'],
+    ['QRGate', 'VaultOpen', 'PatientCert', 'NodePass'],
+    ['SignalPing', 'VaultEcho', 'ScanNotify', 'QRPath'],
+    ['DoseNode', 'VaultRoute', 'LabelScan', 'QRClaim'],
+    ['QRPanel', 'VaultPath', 'PrintTag', 'DisinfectProof'],
+    ['VaultDrop', 'QRNode', 'CertID', 'PulseRecord'],
+    ['SignalNode', 'QRChart', 'VaultEcho', 'RosterClaim'],
+    ['QRLog', 'PatientPath', 'ScrollLink', 'VaultMark'],
+    ['TrackChart', 'VaultPulse', 'QRNode', 'LoopScan']
+  ];
+
+
+  function renderHealthSection() {
+  const grid = document.getElementById('health-grid');
+  const snapContainer = document.getElementById('health-snapshots');
+
+  if (!grid || !snapContainer || healthBrands.length !== healthSubNodes.length) {
+    console.warn('[Health Grid] DOM elements missing or array mismatch');
+    return;
+  }
+
+  healthBrands.forEach((brand, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'bg-white brand-button px-2 py-1 text-sm rounded shadow transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-green-100 hover:text-green-800 font-semibold cursor-pointer';
+    btn.innerHTML = `${brand}<sup>™</sup>`;
+    btn.onclick = () => toggleSnapshot(`health-snap-${i}`);
+    grid.appendChild(btn);
+
+    const subList = healthSubNodes[i].map(n => `<li>🔹 ${n}</li>`).join('');
+    const snap = document.createElement('div');
+    snap.id = `health-snap-${i}`;
+    snap.className = 'brand-snapshot hidden mt-6';
+    snap.innerHTML = `
+      <div class='text-xl font-semibold mb-2'>${brand}<sup>™</sup> Snapshot</div>
+      <ul class='bg-white border rounded p-4 shadow text-sm list-disc list-inside space-y-1'>
+        ${subList}
+      </ul>`;
+    snapContainer.appendChild(snap);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', renderHealthSection);
+</script>
+
+
+  <script>
+  const housingBrands = [
+    'BuildNest', 'InfraGrid', 'CivicPath', 'VaultFrame', 'ArchiLoop', 'ScrollPlot', 'UrbanTrace', 'BuildChain', 'PlotMesh', 'LandClaim',
+    'CementDrop', 'CivicVault', 'StructFlow', 'QRBuild', 'RoadMapX', 'SiteTrace', 'CivicPlan', 'VaultRoof', 'PlotCast', 'TileYield',
+    'ScanPermit', 'BuildTrack', 'CementVault', 'GridScan', 'SiteVault', 'PermitGrid', 'CivicPrint', 'RoofMesh', 'ScrollYard', 'PlotLink',
+    'GeoClaim', 'PermitCast', 'BuildYield', 'CivicEcho', 'ArchiVault', 'ScrollPlan', 'ZoningBoard', 'SiteSnap', 'BuildBeam', 'InfraLoop',
+    'CivicSync', 'HousingVault', 'LandNodeX', 'ClaimBoard', 'UrbanMap', 'BuildNet', 'CivicGrid', 'FormPanel', 'YieldPermit', 'StructMark',
+    'PlanCast', 'HousingID', 'CementCast', 'TileProof', 'GridYield', 'ArchPlan', 'PlotSync', 'CivicDrop', 'ZonePath', 'ClaimGrid',
+    'TileVault', 'StructID', 'CivicYield', 'BuildCert', 'PlanNode', 'ScrollBuild', 'ZoneVault', 'GridPermit', 'TileCast', 'YieldCivic',
+    'HousingLoop', 'BuildMark', 'FrameGrid', 'CivicTag', 'UrbanYield', 'ArchiID', 'PermitPath', 'StructCast', 'TileFlow', 'ClaimNode',
+    'BuildEcho', 'CivicMesh', 'ZoningNode', 'ScrollRoof', 'LandCast', 'GeoPermit', 'YieldBuild', 'UrbanPanel', 'PlanTrace', 'CivicProof',
+    'FrameYield'
+  ];
+
+  const housingSubNodes = [
+    ['PlotVault', 'GridPermit', 'ScrollClaim', 'LandNode'],
+    ['QRPipe', 'SignalTrace', 'VaultZone', 'NodeLayout'],
+    ['PermitID', 'RoutePlan', 'VaultForm', 'ZoningMesh'],
+    ['FrameDrop', 'BuildQR', 'ClaimSync', 'SiteNode'],
+    ['DesignTrace', 'VaultDraw', 'BlueprintNode', 'CivicCast'],
+    ['QRClaim', 'VaultMap', 'LandTrack', 'NodePing'],
+    ['StreetPlan', 'VaultRoad', 'SignalGrid', 'SurveyNode'],
+    ['QRBuild', 'SiteVault', 'ContractorLink', 'NodePermit'],
+    ['MeshTag', 'VaultCoord', 'ZoningNode', 'ClaimForm'],
+    ['ParcelGrid', 'PlotPath', 'VaultTag', 'ClaimNode'],
+    ['QRPour', 'NodeTrack', 'VaultMix', 'BatchSignal'],
+    ['RegisterPath', 'ZoningClaim', 'QRDrop', 'CivicNode'],
+    ['FrameSignal', 'VaultBeam', 'NodeGrid', 'BuildSync'],
+    ['BuildNode', 'ScrollTrace', 'VaultCheck', 'PermitQR'],
+    ['QRRoute', 'VaultPath', 'PavingNode', 'InfraClaim'],
+    ['QRZone', 'ClaimNode', 'VaultFlag', 'SurveyGrid'],
+    ['GridNode', 'CouncilDrop', 'QRZoning', 'VaultSheet'],
+    ['RooftopPing', 'BuildEcho', 'QRPanel', 'TileDrop'],
+    ['PlotSignal', 'VaultDrop', 'LandNode', 'QRClaim'],
+    ['TileGrid', 'VaultTrack', 'QRPlace', 'PatternNode'],
+    ['QRPermit', 'VaultForm', 'ZoneProof', 'ClaimSync'],
+    ['ProgressScan', 'QRPlan', 'VaultStage', 'NodeEcho'],
+    ['MixNode', 'VaultDrop', 'PourClaim', 'TagBatch'],
+    ['QRSurvey', 'VaultMap', 'GeoTrack', 'NodeClaim'],
+    ['QRCode', 'SiteTrack', 'VaultBuild', 'PermitSync'],
+    ['PermitNode', 'QRClaim', 'ZoningPing', 'VaultLink'],
+    ['BlueprintDrop', 'VaultForm', 'DesignTrack', 'QRScan'],
+    ['TileClaim', 'VaultPitch', 'QRShingle', 'LayoutNode'],
+    ['YardMap', 'VaultPlace', 'GridNode', 'QRFence'],
+    ['QRMap', 'VaultConnect', 'GridPath', 'ClaimRoute'],
+    ['VaultPlot', 'QRCoords', 'LandMesh', 'ScanMark'],
+    ['ClaimEcho', 'VaultPermit', 'QRBoard', 'RouteNode'],
+    ['PayoutNode', 'StageClaim', 'VaultCycle', 'QRProgress'],
+    ['CivicNode', 'QRDrop', 'PlanLink', 'VaultLedger'],
+    ['VaultDraft', 'ScanFloor', 'QRRender', 'NodeTrace'],
+    ['GridLine', 'QRClaim', 'VaultSheet', 'PermitTrace'],
+    ['MapNode', 'QRCheck', 'VaultProof', 'ZoneRoute'],
+    ['NodePing', 'QRMap', 'VaultBuild', 'LandTag'],
+    ['QRSpan', 'VaultFrame', 'ReinforceTrack', 'NodeSet'],
+    ['InfraSignal', 'VaultRing', 'QRFlow', 'SiteNode'],
+    ['SyncNode', 'QRForm', 'CouncilClaim', 'VaultPath'],
+    ['TitleDrop', 'QRZone', 'VaultProof', 'ClaimKey'],
+    ['GeoRoute', 'VaultClaim', 'QRTrack', 'ScanField'],
+    ['QRDesk', 'PermitFlow', 'VaultConfirm', 'GridEcho'],
+    ['MapTrace', 'VaultPlan', 'SurveyQR', 'BuildPath'],
+    ['NetNode', 'QRPermit', 'VaultJoin', 'PathStage'],
+    ['GridPass', 'ZoningPing', 'VaultLink', 'CouncilTrace'],
+    ['QRForm', 'PermitMark', 'VaultEntry', 'ScanLine'],
+    ['ClaimPing', 'VaultProof', 'QRYield', 'GridSync'],
+    ['QRBeam', 'FrameLink', 'VaultPath', 'NodeGrid'],
+    ['CastNode', 'QRDrop', 'VaultSync', 'BlueLine'],
+    ['HouseTag', 'VaultLabel', 'QRTrack', 'ClaimFlow'],
+    ['MixForm', 'QRNode', 'VaultDrop', 'YieldClaim'],
+    ['TileMap', 'QRGrid', 'VaultShingle', 'NodePin'],
+    ['YieldNode', 'QRTrack', 'VaultSync', 'PermitPath'],
+    ['ArchiFlow', 'VaultClaim', 'QRNode', 'BlueprintTrack'],
+    ['LandMesh', 'QRPing', 'VaultMap', 'TagEcho'],
+    ['ClaimVault', 'QRBoard', 'SyncTag', 'NodeSubmit'],
+    ['ZoneNode', 'QRRoute', 'VaultLock', 'GridTag'],
+    ['GridLock', 'VaultCheck', 'QRNode', 'SiteClaim'],
+    ['QRSet', 'VaultGrid', 'PatternScan', 'ShingleClaim'],
+    ['IDTag', 'VaultNode', 'QRProof', 'BuildTrack'],
+    ['YieldCert', 'VaultPayout', 'GridTag', 'QRSplit'],
+    ['CertifyNode', 'QRPermit', 'VaultSync', 'ScanProof'],
+    ['NodeMap', 'VaultBoard', 'QRTrace', 'ZoneClaim'],
+    ['ScrollForm', 'QRDrop', 'VaultLine', 'PanelNode'],
+    ['VaultProof', 'QRZone', 'ClaimRoute', 'MapTrace'],
+    ['PermitTrack', 'QRClaim', 'VaultDesk', 'PlanID'],
+    ['TileEcho', 'QRLayer', 'VaultDrop', 'PatternID'],
+    ['CouncilID', 'QRClaim', 'VaultShare', 'SyncNode'],
+    ['LoopPath', 'VaultPing', 'ClaimSync', 'QRPermit'],
+    ['QRTag', 'MarkNode', 'VaultCert', 'ZoneDrop'],
+    ['FrameDrop', 'VaultNode', 'QRBeam', 'SetClaim'],
+    ['TagClaim', 'VaultEcho', 'QRCouncil', 'FormNode'],
+    ['CityPlan', 'QRBuild', 'VaultMetric', 'ScanNode'],
+    ['IDDrop', 'QRSketch', 'VaultLog', 'PlanTrace'],
+    ['PermitFlow', 'QRForm', 'VaultLine', 'ZoneCert'],
+    ['CastGrid', 'QRForm', 'VaultSteel', 'EchoNode'],
+    ['FlowPattern', 'QRDrop', 'VaultTile', 'MeshClaim'],
+    ['QRClaim', 'VaultZone', 'LockPath', 'MapTrack'],
+    ['EchoNode', 'QRPermit', 'VaultWave', 'SyncLine'],
+    ['MeshTrace', 'QRDrop', 'VaultMap', 'TagNode'],
+    ['QRZone', 'VaultTrace', 'RegionMap', 'ScanEcho'],
+    ['RoofTag', 'VaultPanel', 'QRClaim', 'TileLine'],
+    ['CastNode', 'QRDrop', 'VaultAnchor', 'ClaimPing'],
+    ['GeoScan', 'QRField', 'VaultPermit', 'TagNode'],
+    ['QRTrack', 'VaultFlow', 'BuildCredit', 'PayoutLink'],
+    ['PanelForm', 'QRDrop', 'VaultPing', 'GridNode'],
+    ['TraceClaim', 'VaultNode', 'QRCycle', 'ScrollMap'],
+    ['CertGrid', 'VaultZoning', 'QRBoard', 'CouncilLink'],
+    ['QRFrame', 'VaultEcho', 'PayoutNode', 'StructLoop']
+  ];
+
+  function renderHousingSection() {
+    const grid = document.getElementById('housing-grid');
+    const snapContainer = document.getElementById('housing-snapshots');
+
+    if (!grid || !snapContainer || housingBrands.length !== housingSubNodes.length) {
+      console.warn('[Housing Grid] DOM elements missing or array mismatch');
+      return;
+    }
+
+    housingBrands.forEach((brand, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'bg-white brand-button px-2 py-1 text-sm rounded shadow transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-yellow-100 hover:text-yellow-800 font-semibold cursor-pointer';
+      btn.innerHTML = `${brand}<sup>™</sup>`;
+      btn.onclick = () => toggleSnapshot(`housing-snap-${i}`);
+      grid.appendChild(btn);
+
+      const subList = housingSubNodes[i].map(n => `<li>🔹 ${n}</li>`).join('');
+      const snap = document.createElement('div');
+      snap.id = `housing-snap-${i}`;
+      snap.className = 'brand-snapshot hidden mt-6';
+      snap.innerHTML = `
+        <div class='text-xl font-semibold mb-2'>${brand}<sup>™</sup> Snapshot</div>
+        <ul class='bg-white border rounded p-4 shadow text-sm list-disc list-inside space-y-1'>
+          ${subList}
+        </ul>`;
+      snapContainer.appendChild(snap);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', renderHousingSection);
+</script>
+
+
+  <script>
+const mediaBrands = [
+  'FrameCast', 'SonicGrid', 'EditMesh', 'PulseMedia', 'VaultVision', 'ScrollSound', 'RenderCast', 'VoiceLoop', 'AudioDrop', 'MediaMesh',
+  'VisualClaim', 'SoundCert', 'SyncLoop', 'MotionID', 'MediaRelay', 'BeatCast', 'RenderVault', 'VoiceProof', 'ScenePulse', 'SoundNest',
+  'MediaGrid', 'Audiomark', 'EditClaim', 'SonicVault', 'MotionMap', 'TrackLine', 'SceneLink', 'LoopMix', 'AudioFlag', 'EchoNode',
+  'VisualVault', 'AudioMesh', 'RenderDrop', 'SoundCast', 'ClipTrace', 'AudioClaim', 'PulseVault', 'MotionCert', 'SoundPath', 'StreamNode',
+  'MediaID', 'SonicProof', 'AudioTag', 'SceneGrid', 'EchoVault', 'ClipNode', 'BeatProof', 'SoundBoard', 'MediaPulse', 'RenderSync',
+  'SceneLock', 'SonicLine', 'AudioSpan', 'TrackProof', 'MotionDrop', 'VaultMix', 'AudioIndex', 'VisualCast', 'MediaTrace', 'PulseTrack',
+  'EchoClaim', 'FrameNode', 'AudioMap', 'StreamCert', 'SonicView', 'RenderBoard', 'ClipVault', 'TrackScene', 'PulseNode', 'AudioDropX',
+  'SceneIndex', 'BeatGrid', 'VaultRender', 'SoundLoop', 'MediaLine', 'VoiceCast', 'SonicIndex', 'MotionPanel'
+];
+
+const mediaSubNodes = [
+  ['VaultScene', 'MediaNode', 'QRStream', 'ClipTag'],
+  ['AudioNode', 'WavePulse', 'QRMix', 'VaultTrack'],
+  ['ClipClaim', 'VaultCut', 'QREdit', 'LayerLink'],
+  ['StreamSignal', 'QRDrop', 'VaultFrame', 'EchoTag'],
+  ['VaultClip', 'QRLabel', 'MotionIndex', 'SceneMap'],
+  ['SoundNode', 'QRTrack', 'VaultEcho', 'MixProof'],
+  ['RenderGrid', 'VaultOutput', 'QREncode', 'ClipPush'],
+  ['VoicePing', 'TrackID', 'QRLine', 'VaultAudio'],
+  ['DropWave', 'VaultClaim', 'QRNode', 'SoundPrint'],
+  ['ClipMesh', 'VaultFrame', 'QRPlay', 'RenderTag'],
+  ['FrameNode', 'VaultTag', 'QRAngle', 'EditCast'],
+  ['CertifyMix', 'VaultTrack', 'QRWave', 'AudioLine'],
+  ['LoopNode', 'VaultPing', 'QRFlow', 'EchoTrack'],
+  ['MotionTag', 'QRPath', 'VaultScene', 'ClipSync'],
+  ['ClipRoute', 'VaultMesh', 'QRSignal', 'TrackDrop'],
+  ['BeatNode', 'VaultDrop', 'QRMix', 'SoundRoute'],
+  ['VaultProject', 'QREncode', 'MediaCert', 'TrackMap'],
+  ['AudioProof', 'VaultChain', 'QRWave', 'ClaimPing'],
+  ['PulseTrack', 'VaultEcho', 'QRScene', 'FramePush'],
+  ['NestID', 'VaultClaim', 'QRGrid', 'MixEcho'],
+  ['GridSync', 'VaultLabel', 'QRLine', 'TrackFrame'],
+  ['SoundCert', 'QRClip', 'VaultWave', 'EchoProof'],
+  ['CutNode', 'VaultEcho', 'QREdit', 'ClipFlow'],
+  ['VaultTone', 'QRPath', 'WaveNode', 'SoundChain'],
+  ['ClipPath', 'VaultPing', 'QRScene', 'AudioLink'],
+  ['LineTrack', 'VaultAudio', 'QRSync', 'SoundCast'],
+  ['QRConnect', 'VaultScript', 'ClipRoute', 'FrameID'],
+  ['MixVault', 'QRDrop', 'SoundLine', 'AudioJoin'],
+  ['VaultTag', 'QRBeat', 'TrackProof', 'ClaimNote'],
+  ['VaultEcho', 'QRWave', 'SoundLink', 'PingTrack'],
+  ['VaultProof', 'QRView', 'FrameTrace', 'ClipClaim'],
+  ['MeshNode', 'QRSignal', 'VaultSync', 'WaveEcho'],
+  ['DropStream', 'VaultFrame', 'QRPush', 'MediaLine'],
+  ['CastWave', 'QRMix', 'VaultBeam', 'TrackEcho'],
+  ['TraceClip', 'VaultScan', 'QRNode', 'ScenePath'],
+  ['ClaimDrop', 'QRProof', 'VaultRoute', 'SoundTrack'],
+  ['VaultPing', 'QRTrack', 'SoundGrid', 'EchoTag'],
+  ['CertNode', 'VaultLock', 'QRDrop', 'ClipTrack'],
+  ['PathTrack', 'VaultAudio', 'QRRoute', 'MixMap'],
+  ['NodeDrop', 'VaultStream', 'QRScene', 'AudioLine'],
+  ['IDTrack', 'VaultView', 'QRNode', 'ClipEcho'],
+  ['ProofPath', 'VaultPing', 'QRMix', 'EchoTrack'],
+  ['TagNode', 'VaultClaim', 'QRDrop', 'TrackEcho'],
+  ['GridNode', 'VaultScene', 'QRTrack', 'RenderProof'],
+  ['VaultEcho', 'SoundClaim', 'QRTrace', 'AudioBeam'],
+  ['ClipLink', 'VaultDrop', 'QRScene', 'TagLine'],
+  ['BeatID', 'VaultSound', 'QRTrack', 'MixFlow'],
+  ['BoardLine', 'VaultGrid', 'QRBeat', 'ClipTrack'],
+  ['PulseGrid', 'QRFlash', 'VaultSync', 'AudioNode'],
+  ['SyncLine', 'QRDrop', 'VaultEcho', 'SceneNode'],
+  ['LockNode', 'QRFrame', 'VaultScene', 'ProofTag'],
+  ['LineTag', 'QRDrop', 'VaultMix', 'TrackClaim'],
+  ['SpanLine', 'VaultEcho', 'QRTrack', 'LoopPath'],
+  ['VaultClaim', 'QRWave', 'SoundPing', 'EchoTrack'],
+  ['DropClip', 'VaultPush', 'QRScene', 'TrackGrid'],
+  ['MixDrop', 'QRLine', 'VaultBeam', 'TrackTag'],
+  ['IndexVault', 'QRPing', 'TrackScene', 'EchoLine'],
+  ['CastGrid', 'VaultNode', 'QRProof', 'ClipPush'],
+  ['TraceNode', 'QRDrop', 'VaultMap', 'RenderRoute'],
+  ['PulseID', 'QREcho', 'VaultClaim', 'TrackMap'],
+  ['VaultTrace', 'QRScene', 'EchoDrop', 'ClipNode'],
+  ['NodeID', 'QRPanel', 'VaultView', 'SceneSync'],
+  ['MapNode', 'QRDrop', 'VaultPing', 'TrackLine'],
+  ['CertifyScene', 'VaultWave', 'QRNode', 'ClipTrack'],
+  ['ViewGrid', 'VaultEcho', 'QRAudio', 'TagPath'],
+  ['BoardClip', 'QRMap', 'VaultTag', 'MediaFlow'],
+  ['ClipProof', 'VaultScene', 'QRDrop', 'FrameTrace'],
+  ['SceneID', 'QRLink', 'VaultClaim', 'ClipEcho'],
+  ['NodeBeat', 'VaultTrack', 'QRSound', 'EchoDrop'],
+  ['DropTrack', 'QRMix', 'VaultOutput', 'NodeSync'],
+  ['IndexTag', 'QRClaim', 'VaultFile', 'ClipGrid'],
+  ['GridWave', 'QRDrop', 'VaultEcho', 'SoundNode'],
+  ['RenderTag', 'VaultProject', 'QRPush', 'SyncLine'],
+  ['LoopEcho', 'VaultTrack', 'QRClaim', 'ClipNode'],
+  ['LineRoute', 'QRDrop', 'VaultIndex', 'TrackCast'],
+  ['VoiceID', 'VaultScene', 'QRClip', 'AudioEcho'],
+  ['IndexNode', 'QRSound', 'VaultDrop', 'PingTrack'],
+  ['PanelSync', 'QRTrack', 'VaultFrame', 'ClipClaim']
+];
+
+function renderMediaSection() {
+  const grid = document.getElementById('media-grid');
+  const snapContainer = document.getElementById('media-snapshots');
+
+  if (!grid || !snapContainer || mediaBrands.length !== mediaSubNodes.length) {
+    console.warn('[Media Grid] DOM elements missing or array mismatch');
+    return;
+  }
+
+  mediaBrands.forEach((brand, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'bg-white brand-button px-2 py-1 text-sm rounded shadow transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-indigo-100 hover:text-indigo-800 font-semibold cursor-pointer';
+    btn.innerHTML = `${brand}<sup>™</sup>`;
+    btn.onclick = () => toggleSnapshot(`media-snap-${i}`);
+    grid.appendChild(btn);
+
+    const subList = mediaSubNodes[i].map(n => `<li>🔹 ${n}</li>`).join('');
+    const snap = document.createElement('div');
+    snap.id = `media-snap-${i}`;
+    snap.className = 'brand-snapshot hidden mt-6';
+    snap.innerHTML = `
+      <div class='text-xl font-semibold mb-2'>${brand}<sup>™</sup> Snapshot</div>
+      <ul class='bg-white border rounded p-4 shadow text-sm list-disc list-inside space-y-1'>
+        ${subList}
+      </ul>`;
+    snapContainer.appendChild(snap);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', renderMediaSection);
+</script>
+
+
+  <script>
+const ailogicBrands = [
+  'OmniKey', 'SignalPulse', 'MeshIndex', 'ClaimNodeX', 'LogicEcho',
+  'OmniRender', 'SyncLine', 'TokenBoard', 'SignalClaim', 'GridCast',
+  'MeshSync', 'VaultGrid', 'TraceLoop', 'LogicMap', 'PulseKey',
+  'CertDrop', 'OmniTrack', 'TokenProof', 'AIGrid', 'SyncProof',
+  'OmniScan', 'SignalLine', 'MeshCore', 'VaultDrop', 'OmniLink',
+  'TokenYield', 'ClaimSync', 'CertLogic', 'OmniPathX', 'PulseClaim',
+  'GridTrace', 'AIBeam', 'SignalYield', 'LogicBoard', 'OmniSync',
+  'VaultAI', 'TraceCast', 'LogicPing', 'SignalMesh', 'OmniGrid',
+  'OmniProof', 'GridLink', 'CertAI', 'TokenMark', 'OmniDropX',
+  'PulseForm', 'MeshMark', 'LogicPingX', 'OmniLogicX', 'CertSync',
+  'GridYield', 'VaultPing', 'ClaimDrop', 'OmniLine', 'LogicTrace',
+  'TokenNode', 'MeshGrid', 'AITrack', 'SignalID', 'OmniCertX',
+  'VaultSignal', 'LogicCastX', 'TokenTraceX', 'LogicNest', 'CertBeam',
+  'OmniGridX', 'MeshCast', 'TraceAI', 'PulseBoard', 'SyncMesh',
+  'VaultLink', 'OmniEcho', 'LogicLoop', 'SignalTrack', 'MeshID',
+  'LogicCert', 'OmniMesh', 'SyncLogic', 'VaultPath', 'TokenCast',
+  'GridBoard', 'AIForm', 'OmniTrackX', 'SignalCast', 'LogicMark',
+  'CertLoop', 'PulseLogic', 'MeshFlow', 'OmniCertGrid', 'VaultBoard',
+  'AIYieldGrid', 'ClaimNodeGrid', 'OmniLogicField', 'GridNode', 'OmniSyncCore',
+  'BeamLogic', 'LogicGridX', 'OmniMap', 'CertNode', 'SignalTrace',
+  'MeshCert', 'VaultIndex', 'QRLogic', 'CastMesh', 'OmniProofChain',
+  'SyncAI', 'LogicDrop', 'GridRoot', 'OmniNode', 'TokenRoot',
+  'LogicCertX', 'OmniPattern', 'BeamIndex', 'MeshProof', 'SignalCore',
+  'SyncClaim', 'AIFrame', 'CertTag', 'PulseEcho', 'GridProof',
+  'SignalPanel', 'SyncFrame', 'MeshRoute', 'OmniEchoX', 'LogicPanel',
+  'OmniBeacon', 'ClaimSyncX', 'OmniWave', 'CertPing', 'VaultField',
+  'LogicSeal', 'OmniPulse', 'NodeGrid', 'SignalCastX', 'MeshClaimX',
+  'OmniClaim', 'TokenSignal', 'SyncSignal', 'OmniBeam', 'CertSignal',
+  'VaultAITrack', 'PulseRoot', 'OmniClaimX', 'BeamClaim', 'GridBeam',
+  'AIMapX', 'OmniRoot', 'SignalMeshX', 'OmniProofX', 'TokenCert',
+  'VaultAIProof', 'OmniLoopX', 'CertSyncBeam', 'LogicTraceX', 'TokenScanX',
+  'MeshSignalX', 'PulseFrame', 'SyncPulseX', 'BeamIndexX', 'OmniLogicNet',
+  'TokenSeal', 'LogicField', 'VaultMapX', 'AITraceGrid', 'ClaimFormX',
+  'SignalProofX', 'MeshEcho', 'GridLogicField', 'LogicRootX', 'OmniTagX',
+  'SignalFlowX', 'VaultTraceX', 'GridEchoX', 'AIClaimX', 'OmniMapX',
+  'SyncFormX', 'BeamNodeX', 'LogicMeshCore', 'CertTrackX', 'TokenPingX',
+  'MeshNodeX', 'AIProofCast', 'OmniDropGrid', 'GridScanX', 'VaultMeshX',
+  'LogicZoneX', 'OmniLogicTrace', 'AIMapSync',
+];
+
+  
+const ailogicSubNodes = [
+  ['TraceBeam', 'VaultEcho', 'QRPath', 'MeshID'],
+  ['BeamNode', 'VaultTrack', 'QRLogic', 'SignalDrop'],
+  ['YieldTrack', 'VaultMap', 'QRClaim', 'OmniPath'],
+  ['BoardNode', 'VaultCert', 'QRFrame', 'MeshCast'],
+  ['SyncGrid', 'VaultEcho', 'QRNode', 'TokenLink'],
+  ['AIPath', 'VaultClaim', 'QRLogic', 'SyncTag'],
+  ['CastGrid', 'VaultTrack', 'QRPing', 'SignalEcho'],
+  ['PingNode', 'VaultBeam', 'QRProof', 'MeshDrop'],
+  ['MeshTrace', 'VaultDrop', 'QRNode', 'LogicPush'],
+  ['GridPath', 'VaultFrame', 'QRSignal', 'TokenPing'],
+  ['ProofTag', 'VaultEcho', 'QRNode', 'SyncTrack'],
+  ['LinkNode', 'VaultRoute', 'QRLogic', 'PulseBeam'],
+  ['CertSignal', 'VaultTag', 'QRDrop', 'LogicNode'],
+  ['MarkID', 'VaultSync', 'QRClaim', 'OmniGrid'],
+  ['DropCast', 'VaultMesh', 'QRRoute', 'SignalClaim'],
+  ['FormLogic', 'VaultEcho', 'QRSync', 'MeshMap'],
+  ['MarkNode', 'VaultGrid', 'QRPing', 'SignalFlow'],
+  ['PingRoute', 'VaultTrack', 'QRNode', 'TokenDrop'],
+  ['LogicSync', 'VaultPath', 'QRFrame', 'MeshClaim'],
+  ['SyncPath', 'VaultMark', 'QRSignal', 'TraceNode'],
+  ['YieldMesh', 'VaultDrop', 'QRNode', 'PulseLogic'],
+  ['PingCast', 'VaultProof', 'QRLine', 'OmniLogic'],
+  ['DropLogic', 'VaultFrame', 'QRTrack', 'SignalGrid'],
+  ['LineTrace', 'VaultClaim', 'QRMap', 'GridProof'],
+  ['TracePath', 'VaultEcho', 'QRSignal', 'AIGrid'],
+  ['NodeClaim', 'VaultRoute', 'QRBeam', 'PulseForm'],
+  ['GridID', 'VaultPath', 'QRLogic', 'SignalTag'],
+  ['TrackEcho', 'VaultCert', 'QRDrop', 'OmniCast'],
+  ['IDFrame', 'VaultPing', 'QRLogic', 'MeshDrop'],
+  ['CertProof', 'VaultTrace', 'QRLink', 'AIPath'],
+  ['SignalNode', 'VaultRoute', 'QRPing', 'GridLogic'],
+  ['CastMap', 'VaultDrop', 'QRFrame', 'MeshNode'],
+  ['TraceRoute', 'VaultPing', 'QRGrid', 'OmniTag'],
+  ['NestClaim', 'VaultEcho', 'QRTrack', 'MeshProof'],
+  ['BeamToken', 'VaultSync', 'QRPath', 'LogicFlow'],
+  ['GridCast', 'VaultDrop', 'QRSignal', 'SyncForm'],
+  ['CastFrame', 'VaultLogic', 'QRDrop', 'TokenGrid'],
+  ['AILogic', 'VaultClaim', 'QRTrack', 'SyncNode'],
+  ['BoardLine', 'VaultPath', 'QRClaim', 'LogicBeam'],
+  ['MeshRoute', 'VaultGrid', 'QRSignal', 'TokenDrop'],
+  ['LinkTag', 'VaultCast', 'QRFrame', 'SignalFlow'],
+  ['EchoPath', 'VaultProof', 'QRDrop', 'LogicNode'],
+  ['LoopNode', 'VaultEcho', 'QRSync', 'GridCast'],
+  ['TrackPing', 'VaultMap', 'QRNode', 'MeshLine'],
+  ['IDNode', 'VaultGrid', 'QRFlow', 'PulseClaim'],
+  ['CertForm', 'VaultSync', 'QRBeam', 'GridClaim'],
+  ['MeshVault', 'QRSignal', 'DropClaim', 'LogicPulse'],
+  ['LogicTrace', 'VaultPing', 'QRNode', 'GridCast'],
+  ['PathDrop', 'VaultTrack', 'QRRoute', 'OmniMap'],
+  ['CastNode', 'VaultDrop', 'QRTrack', 'MeshSignal'],
+  ['BoardPing', 'VaultDrop', 'QRTrack', 'SignalCast'],
+  ['FormLine', 'VaultSync', 'QRNode', 'LogicPath'],
+  ['TrackProof', 'VaultEcho', 'QRClaim', 'PulseSync'],
+  ['CastFlow', 'VaultMark', 'QRGrid', 'OmniLink'],
+  ['MarkTrace', 'VaultForm', 'QRLogic', 'MeshSync'],
+  ['LoopPath', 'VaultRoute', 'QRNode', 'SignalCert'],
+  ['LogicLine', 'VaultPing', 'QRTrack', 'GridForm'],
+  ['FlowPath', 'VaultClaim', 'QRNode', 'OmniRoute'],
+  ['GridClaim', 'VaultMark', 'QRLogic', 'SyncEcho'],
+  ['BoardLink', 'VaultEcho', 'QRDrop', 'TokenMesh'],
+  ['YieldSync', 'VaultLogic', 'QRTrack', 'MeshDrop'],
+  ['NodeMap', 'VaultPath', 'QRProof', 'SignalFrame'],
+  ['FieldNode', 'VaultGrid', 'QRTag', 'LogicFlow'],
+  ['NodeClaim', 'VaultMark', 'QRLink', 'PulseMap'],
+  ['SyncForm', 'VaultCast', 'QRTrack', 'MeshBeam'],
+  ['LogicRoute', 'VaultDrop', 'QRBeam', 'SignalID'],
+  ['GridMap', 'VaultProof', 'QRToken', 'MeshNode'],
+  ['MapEcho', 'VaultPing', 'QRDrop', 'CertLine'],
+  ['NodeTrack', 'VaultGrid', 'QRRoute', 'OmniYield'],
+  ['TraceNode', 'VaultEcho', 'QRLink', 'LogicDrop'],
+  ['CertMap', 'VaultTrack', 'QRPath', 'PulseProof'],
+  ['IndexGrid', 'VaultLink', 'QRClaim', 'MeshRoute'],
+  ['LogicID', 'VaultForm', 'QRBeam', 'OmniTrack'],
+  ['MeshPing', 'VaultFlow', 'QRDrop', 'SignalMark'],
+  ['ChainID', 'VaultProof', 'QRTag', 'LogicRoot'],
+  ['AIForm', 'VaultRoute', 'QRClaim', 'MeshLogic'],
+  ['DropPing', 'VaultMark', 'QRTrack', 'OmniForm'],
+  ['RootNode', 'VaultClaim', 'QRMesh', 'PulseTrack'],
+  ['NodeLink', 'VaultDrop', 'QRSignal', 'GridMark'],
+  ['RootGrid', 'VaultEcho', 'QRClaim', 'SignalMesh'],
+  ['CertDrop', 'VaultRoute', 'QRToken', 'PulseCast'],
+  ['PatternGrid', 'VaultPing', 'QRMap', 'AIClaim'],
+  ['IndexEcho', 'VaultForm', 'QRLogic', 'MeshPath'],
+  ['ProofNode', 'VaultTrack', 'QRFlow', 'OmniID'],
+  ['CoreRoute', 'VaultPing', 'QRLogic', 'GridDrop'],
+  ['ClaimMesh', 'VaultGrid', 'QRTrack', 'OmniEcho'],
+  ['FrameNode', 'VaultRoute', 'QRProof', 'MeshFlow'],
+  ['TagClaim', 'VaultEcho', 'QRDrop', 'SignalNode'],
+  ['EchoLine', 'VaultPath', 'QRSync', 'LogicNode'],
+  ['ProofClaim', 'VaultBeam', 'QRNode', 'OmniMark'],
+  ['PanelLogic', 'VaultGrid', 'QRDrop', 'TokenEcho'],
+  ['FrameClaim', 'VaultTrack', 'QRFlow', 'GridPing'],
+  ['RouteNode', 'VaultCast', 'QRTrack', 'OmniTag'],
+  ['EchoClaim', 'VaultSync', 'QRLogic', 'SignalDrop'],
+  ['PanelPath', 'VaultProof', 'QRNode', 'MeshClaim'],
+  ['BeaconGrid', 'VaultTrack', 'QRSignal', 'PulseRoute'],
+  ['SyncDrop', 'VaultForm', 'QRNode', 'GridTrace'],
+  ['WaveNode', 'VaultMap', 'QRTrack', 'LogicLine'],
+  ['PingNode', 'VaultDrop', 'QRTag', 'MeshGrid'],
+  ['FieldLink', 'VaultFrame', 'QRClaim', 'SignalBeam'],
+  ['SealPath', 'VaultCert', 'QRDrop', 'TokenNode'],
+  ['PulseCast', 'VaultEcho', 'QRTrack', 'LogicClaim'],
+  ['GridLogic', 'VaultDrop', 'QRSync', 'PulseNode'],
+  ['CastLine', 'VaultRoute', 'QRNode', 'MeshLogic'],
+  ['ClaimPing', 'VaultMap', 'QRDrop', 'SignalLogic'],
+  ['ClaimGrid', 'VaultTrace', 'QRPath', 'LogicPing'],
+  ['SignalNode', 'VaultEcho', 'QRTrack', 'MeshProof'],
+  ['SyncDrop', 'VaultBeam', 'QRClaim', 'LogicRoute'],
+  ['BeamNode', 'VaultClaim', 'QRTrack', 'GridTag'],
+  ['CertFlow', 'VaultEcho', 'QRMap', 'LogicMark'],
+  ['AITrack', 'VaultGrid', 'QRClaim', 'TokenNode'],
+  ['RootPath', 'VaultCast', 'QRSignal', 'MeshTrace'],
+  ['ClaimFrame', 'VaultEcho', 'QRNode', 'LogicLine'],
+  ['BeamFlow', 'VaultMark', 'QRSignal', 'MeshDrop'],
+  ['BeamNode', 'VaultForm', 'QRTrack', 'LogicPanel'],
+  ['MapClaim', 'VaultTrack', 'QRPing', 'SignalDrop'],
+  ['RootGrid', 'VaultPath', 'QRDrop', 'MeshClaim'],
+  ['MeshCast', 'VaultLink', 'QRNode', 'LogicSync'],
+  ['ProofChain', 'VaultForm', 'QRLogic', 'SyncTrace'],
+  ['CertID', 'VaultTag', 'QRClaim', 'OmniFrame'],
+  ['ProofNode', 'VaultCert', 'QRDrop', 'TokenPath'],
+  ['LoopClaim', 'VaultPing', 'QRLogic', 'GridBeam'],
+  ['SyncToken', 'VaultTrack', 'QRClaim', 'LogicForm'],
+  ['TraceCast', 'VaultNode', 'QRFlow', 'BeamEcho'],
+  ['ScanPath', 'VaultGrid', 'QRTrace', 'TokenMark'],
+  ['MeshDrop', 'VaultSignal', 'QRLogic', 'PulseClaim'],
+  ['FrameID', 'VaultEcho', 'QRTrack', 'SignalSync'],
+  ['PulseSync', 'VaultRoute', 'QRDrop', 'MeshLogic'],
+  ['IndexProof', 'VaultMap', 'QRBeam', 'TokenRoute'],
+  ['LogicGrid', 'VaultClaim', 'QRFlow', 'SyncMark'],
+  ['SealNode', 'VaultFrame', 'QRLogic', 'PulseBeam'],
+  ['FieldClaim', 'VaultDrop', 'QRNode', 'TokenTrace'],
+  ['MapLine', 'VaultEcho', 'QRSignal', 'SyncTrack'],
+  ['AIGridID', 'VaultTrace', 'QRClaim', 'MeshEcho'],
+  ['FormClaim', 'VaultNode', 'QRDrop', 'LogicMap'],
+  ['ProofDrop', 'VaultPing', 'QRPath', 'SignalNode'],
+  ['EchoLine', 'VaultGrid', 'QRTrack', 'MeshLogic'],
+  ['LogicRoute', 'VaultClaim', 'QRMesh', 'NodeIndex'],
+  ['RootBeam', 'VaultSignal', 'QRTag', 'PulseGrid'],
+  ['TagNode', 'VaultDrop', 'QRSignal', 'LogicTrace'],
+  ['FlowTrack', 'VaultMap', 'QRClaim', 'MeshNode'],
+  ['TraceLoop', 'VaultProof', 'QRDrop', 'SyncFrame'],
+  ['EchoClaim', 'VaultBeam', 'QRNode', 'LogicBoard'],
+  ['AIClaimPath', 'VaultDrop', 'QRFrame', 'SignalTrace'],
+  ['MapSync', 'VaultGrid', 'QRTrack', 'TokenLogic'],
+  ['FormDrop', 'VaultCast', 'QRRoute', 'MeshFrame'],
+  ['BeamLine', 'VaultLogic', 'QRTrack', 'AIFlow'],
+  ['MeshCore', 'VaultEcho', 'QRToken', 'LogicPing'],
+  ['TrackCert', 'VaultPath', 'QRLogic', 'MeshEcho'],
+  ['PingRoute', 'VaultDrop', 'QRNode', 'GridTrack'],
+  ['NodePath', 'VaultSync', 'QRTrace', 'TokenMark'],
+  ['ClaimProof', 'VaultEcho', 'QRDrop', 'LogicField'],
+  ['DropMesh', 'VaultMap', 'QRNode', 'PulseSync'],
+  ['ScanTrack', 'VaultPing', 'QRClaim', 'BeamNode'],
+  ['MeshVault', 'VaultEcho', 'QRMap', 'SignalGrid'],
+  ['ZoneClaim', 'VaultProof', 'QRTrace', 'GridEcho'],
+  ['TraceLogic', 'VaultPath', 'QRBeam', 'OmniID'],
+  ['MapClaim', 'VaultSync', 'QRSignal', 'LogicMesh'],
+  ];
+
+  function renderAILogicSection() {
+    const grid = document.getElementById('ailogic-grid');
+    const snapContainer = document.getElementById('ailogic-snapshots');
+
+    if (!grid || !snapContainer) {
+      console.error('[FAA] Required DOM element(s) missing.');
+      return;
+    }
+
+    const minLength = Math.min(ailogicBrands.length, ailogicSubNodes.length);
+    for (let i = 0; i < minLength; i++) {
+      const brand = ailogicBrands[i];
+
+      const btn = document.createElement('button');
+      btn.className = 'bg-white brand-button px-2 py-1 text-sm rounded shadow transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-indigo-100 hover:text-indigo-800 font-semibold cursor-pointer';
+      btn.innerHTML = `${brand}<sup>™</sup>`;
+      btn.onclick = () => toggleSnapshot(`ailogic-snap-${i}`);
+      grid.appendChild(btn);
+
+      const subList = (ailogicSubNodes[i] || []).map(n => `<li>🔹 ${n}</li>`).join('');
+      const snap = document.createElement('div');
+      snap.id = `ailogic-snap-${i}`;
+      snap.className = 'brand-snapshot hidden mt-6';
+      snap.innerHTML = `
+        <div class='text-xl font-semibold mb-2'>${brand}<sup>™</sup> Snapshot</div>
+        <ul class='bg-white border rounded p-4 shadow text-sm list-disc list-inside space-y-1'>
+          ${subList}
+        </ul>`;
+      snapContainer.appendChild(snap);
+    }
+  }
+
+  function toggleSnapshot(id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('hidden');
+  }
+
+  const sectorList = {
+    "ai-logic": "🧠 AI, Logic & Grid",
+    "creative": "🖋️ Creative Tech",
+    "logistics": "📦 Logistics & Packaging",
+    "education-ip": "📚 Education & IP",
+    "fashion": "✂ Fashion & Identity",
+    "gaming": "🎮 Gaming & Simulation",
+    "health": "🧠 Health & Hygiene",
+    "housing": "🏗️ Housing & Infrastructure",
+    "justice": "⚖ Justice & Ethics",
+    "knowledge": "🧠 Knowledge & Archives",
+    "micromesh": "☰ Micro-Mesh Logistics",
+    "media": "🎬 Motion, Media & Sonic",
+    "nutrition": "✿ Nutrition & Food Chain",
+    "packaging": "📦 Packaging & Materials",
+    "quantum": "✴️ Quantum Protocols",
+    "ritual": "☯ Ritual & Culture",
+    "saas": "🔑 SaaS & Licensing",
+    "trade": "🧺 Trade Systems",
+    "utilities": "🔋 Utilities & Energy",
+    "voice": "🎙️ Voice & Audio",
+    "webless": "📡 Webless Tech & Nodes",
+    "nft": "🔁 NFT & Ownership",
+    "education-youth": "🎓 Education & Youth",
+    "zerowaste": "♻️ Zero Waste"
+  };
+
+  const sectorData = {};
+  for (let key in sectorList) {
+    sectorData[key] = { brands: [], nodes: [] };
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const select = document.getElementById("sectorSelect");
+    if (select) {
+      for (let key in sectorList) {
+        const option = document.createElement("option");
+        option.value = key;
+        option.textContent = sectorList[key];
+        select.appendChild(option);
+      }
+    }
+
+    renderAILogicSection();
+  });
+
+  function addBrandToSector() {
+    const sector = document.getElementById("sectorSelect").value;
+    const brand = document.getElementById("brandInput").value.trim();
+    const subnodes = document.getElementById("subnodesInput").value
+      .split(",").map(n => n.trim()).filter(Boolean);
+
+    if (!brand || subnodes.length === 0) {
+      document.getElementById("adminStatus").textContent = "⚠️ Please fill in both fields.";
+      return;
+    }
+
+    sectorData[sector].brands.push(brand);
+    sectorData[sector].nodes.push(subnodes);
+
+    document.getElementById("adminStatus").textContent =
+      `✅ Added ${brand} to ${sectorList[sector]} (${subnodes.length} nodes)`;
+
+    document.getElementById("brandInput").value = "";
+    document.getElementById("subnodesInput").value = "";
+
+    renderSectorOutput(sector);
+  }
+
+  function renderSectorOutput(sectorKey) {
+    let container = document.getElementById("output-section");
+    if (!container) {
+      container = document.createElement("section");
+      container.id = "output-section";
+      container.className = "p-8";
+      document.body.appendChild(container);
+    }
+
+    const data = sectorData[sectorKey];
+    const html = data.brands.map((brand, i) => `
+      <div class="mb-6 border rounded shadow p-4">
+        <h3 class="text-lg font-bold text-indigo-700 mb-2">${brand}<sup>™</sup></h3>
+        <ul class="text-sm list-disc list-inside">
+          ${data.nodes[i].map(n => `<li>🔹 ${n}</li>`).join("")}
+        </ul>
+      </div>
+    `).join("");
+
+    const panelId = `render-${sectorKey}`;
+    const existing = document.getElementById(panelId);
+    if (existing) existing.remove();
+
+    const panel = document.createElement("div");
+    panel.id = panelId;
+    panel.className = "my-8";
+    panel.innerHTML = `<h2 class="text-xl font-bold mb-4">${sectorList[sectorKey]} Brands</h2>${html}`;
+
+    container.appendChild(panel);
+  }
+</script>
+
+<!-- ✅ Now place Admin Panel JUST BEFORE </body> -->
+<section class="bg-white p-6 rounded shadow mt-16 mx-6" id="admin-panel">
+  <h2 class="text-xl font-bold text-gray-800 mb-4">⚙️ Admin Panel — Add Brand & Subnodes</h2>
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div>
+      <label class="text-sm font-medium block mb-1">📂 Sector</label>
+      <select id="sectorSelect" class="w-full border rounded p-2"></select>
+    </div>
+    <div>
+      <label class="text-sm font-medium block mb-1">🏷 Brand Name</label>
+      <input id="brandInput" class="w-full border rounded p-2" placeholder="e.g. OmniCastX" />
+    </div>
+    <div>
+      <label class="text-sm font-medium block mb-1">📌 Subnodes (comma-separated)</label>
+      <input id="subnodesInput" class="w-full border rounded p-2" placeholder="e.g. VaultDrop, QRClaim" />
+    </div>
+    <div class="flex items-end">
+      <button onclick="addBrandToSector()" class="bg-indigo-600 text-white px-4 py-2 rounded shadow hover:bg-indigo-700">
+        ➕ Add Brand
+      </button>
+    </div>
+  </div>
+  <p id="adminStatus" class="text-sm mt-4 text-gray-500"></p>
+</section>
+
+</body>
+</html>

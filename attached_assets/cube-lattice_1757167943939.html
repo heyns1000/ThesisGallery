@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>🧱 Cube Lattice GPT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes pulseBar {
+      0%, 100% { transform: scaleX(0); }
+      50% { transform: scaleX(1); }
+    }
+    .animate-pulseBar {
+      animation: pulseBar 9s infinite ease-in-out;
+      transform-origin: left;
+    }
+  </style>
+</head>
+<body class="bg-gray-950 text-white min-h-screen flex items-center justify-center p-4">
+
+  <!-- TreatyPulse Top Glyph Strip -->
+  <div class="fixed top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 via-blue-500 to-purple-600 animate-pulseBar z-50"></div>
+
+  <main class="w-full max-w-3xl bg-gray-900 border border-green-500 rounded-2xl p-6 shadow-xl space-y-6">
+    <header class="text-center">
+      <h1 class="text-3xl font-extrabold text-green-400 flex items-center justify-center gap-2">
+        🧱 Cube Lattice GPT
+      </h1>
+      <p class="text-sm text-center text-gray-400">Infrastructure scroll logic assistant for FAA.Zone lattice threading.</p>
+      <p class="text-sm text-gray-400 mt-2">Status: <span class="text-green-400 font-bold">Online</span> · Connected to VaultMesh</p>
+    </header>
+
+    <textarea id="prompt" rows="6" placeholder="Enter cube sync scroll..."
+      class="w-full bg-black border border-green-700 text-green-200 placeholder:text-green-400 rounded-xl px-4 py-3 text-sm shadow-inner"></textarea>
+
+    <div class="flex justify-between items-center">
+      <button id="sendBtn"
+        class="bg-green-400 hover:bg-green-500 text-black font-bold px-6 py-3 rounded-full shadow-lg transition-all">
+        ➤ Sync Cube
+      </button>
+      <button onclick="clearPrompt()" class="text-xs underline text-white ml-4">Clear</button>
+    </div>
+
+    <pre id="response"
+      class="bg-black border border-green-700 text-green-300 rounded-xl p-4 text-sm whitespace-pre-wrap overflow-x-auto">
+⚡️ Cube Lattice sync interface initialized...
+    </pre>
+  </main>
+
+  <script>
+    async function sendPrompt() {
+      const input = document.getElementById("prompt").value.trim();
+      const output = document.getElementById("response");
+
+      if (!input) {
+        output.textContent = "⚠️ TreatyNotice: Please enter a cube scroll to sync.";
+        return;
+      }
+
+      output.textContent = "🔄 TreatySync: Dispatching cube scroll to VaultBridge...";
+
+      try {
+        const res = await fetch("https://faa.zone/vaultbridge", {  // ✅ Correct Bridge Target
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt: input })
+        });
+
+        if (!res.ok) throw new Error(`Bridge error: ${res.status}`);
+
+        const data = await res.json();
+        output.textContent = data.reply || "✅ VaultGPT acknowledged scroll but no lattice reply was returned.";
+      } catch (err) {
+        output.textContent = `❌ Connection failure.\n\n🧬 OmniDrop fallback triggered:\n"${input}"`;
+      }
+    }
+
+    function clearPrompt() {
+      document.getElementById("prompt").value = "";
+      document.getElementById("response").textContent = "⚡️ Cube Lattice cleared. Ready for new scroll.";
+    }
+
+    document.getElementById("sendBtn").addEventListener("click", sendPrompt);
+  </script>
+</body>
+</html>
