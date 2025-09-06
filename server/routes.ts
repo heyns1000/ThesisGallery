@@ -24,6 +24,7 @@ import {
   insertBanimalCustomerSchema
 } from "@shared/schema";
 import { ContactProcessingAI, BanimalChatbot, CurrencyAI, HolidayAI, generateFaaReference } from "./ai-services";
+import { GeminiContactProcessor, GeminiBanimalChatbot, GeminiProductAI, GeminiMarketingAI } from "./gemini-ai";
 
 // Configure multer for file uploads
 const upload = multer({
@@ -990,11 +991,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // AI Chatbot Route
+  // AI Chatbot Route (Enhanced with Gemini AI)
   app.post("/api/banimal/chat", async (req, res) => {
     try {
       const { message, context } = req.body;
-      const response = await BanimalChatbot.processMessage(message, context);
+      const response = await GeminiBanimalChatbot.processMessage(message, context);
       res.json({ response });
     } catch (error) {
       res.status(500).json({ error: "Failed to process chat message" });
@@ -1034,6 +1035,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // AI Product Content Generation
+  app.post("/api/ai/product-content", async (req, res) => {
+    try {
+      const { name, category, features, specifications } = req.body;
+      const content = await GeminiProductAI.generateProductDescription({
+        name,
+        category,
+        features,
+        specifications
+      });
+      res.json(content);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to generate product content" });
+    }
+  });
+
+  // AI Marketing Content Generation
+  app.post("/api/ai/marketing-content", async (req, res) => {
+    try {
+      const { type, target, product, occasion } = req.body;
+      const content = await GeminiMarketingAI.generateMarketingContent({
+        type,
+        target,
+        product,
+        occasion
+      });
+      res.json(content);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to generate marketing content" });
+    }
+  });
+
+  // AI Contact Analysis Route
+  app.post("/api/ai/analyze-contact", async (req, res) => {
+    try {
+      const { contactData } = req.body;
+      const analysis = await GeminiContactProcessor.processUnstructuredContact(contactData);
+      res.json(analysis);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to analyze contact" });
+    }
+  });
+
   // Async file processing function
   async function processContactFile(file: any, importId: string) {
     try {
@@ -1069,14 +1113,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
             country: values[5]?.trim(),
           };
 
-          // Use AI to process the contact
-          const processed = ContactProcessingAI.processUnstructuredContact(rawContact);
+          // Use Gemini AI to process the contact
+          const processed = await GeminiContactProcessor.processUnstructuredContact(rawContact);
           
           // Create contact with FAA reference
           const contactData = {
             ...processed.processedContact,
             source: file.originalname,
-            faaId: generateFaaReference(rawContact.email || rawContact.name || i.toString()),
           };
 
           await storage.createContact(contactData);
