@@ -27,6 +27,8 @@ import RealEstatePlatform from "@/pages/realestate-platform";
 import EducationDashboard from "@/pages/education-dashboard";
 import SmartToysPlatform from "@/pages/smart-toys-platform";
 import ModularView from "@/pages/modular-view";
+import AILogicDashboard from "@/pages/ai-logic-dashboard";
+import CodeNestPlatform from "@/pages/codenest-platform";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -55,6 +57,8 @@ function Router() {
       <Route path="/education-dashboard" component={EducationDashboard} />
       <Route path="/smart-toys-platform" component={SmartToysPlatform} />
       <Route path="/modular-view" component={ModularView} />
+      <Route path="/ai-logic-dashboard" component={AILogicDashboard} />
+      <Route path="/codenest-platform" component={CodeNestPlatform} />
       <Route component={NotFound} />
     </Switch>
   );
