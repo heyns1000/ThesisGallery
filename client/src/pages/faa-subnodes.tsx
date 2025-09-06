@@ -26,19 +26,19 @@ const FAASubnodes = () => {
       name: "FAA™ Global Monitoring™",
       category: "Compliance & Monitoring",
       subnodes: [
-        { name: "Gentle Oversight Protocols", seedWisdom: "Gooi bietjie water bollie - monitor with care", wateringMethod: "Ouma's gentle observation", idDoc: "FAA-GM-001-2025-0906" },
+        { name: "Gentle Mist Protection", seedWisdom: "Gooi bietjie water bollie - fine mist only, no rain", wateringMethod: "Ouma's protective misting", idDoc: "FAA-GM-001-2025-0906" },
         { name: "Grateful Compliance Hearts", seedWisdom: "Like children thankful for water drops", wateringMethod: "Patient waiting and appreciation", idDoc: "FAA-GM-002-2025-0906" },
         { name: "Rainbow Nation Verification", seedWisdom: "Modimo accepts all children with honor", wateringMethod: "Inclusive monitoring with love", idDoc: "FAA-GM-003-2025-0906" },
         { name: "Spaza Shop Foundation", seedWisdom: "From teaspoons of sugar to global brands", wateringMethod: "Humble beginnings, careful growth", idDoc: "FAA-GM-004-2025-0906" },
         { name: "Baobab Root Monitoring", seedWisdom: "6 years of faithful walking, Ka Moduimo Dumsane", wateringMethod: "Deep roots, steady growth", idDoc: "FAA-GM-005-2025-0906" },
-        { name: "Sacred Timestamp Keeper", seedWisdom: "Every moment blessed and recorded", wateringMethod: "Pretoria time with divine precision", idDoc: "FAA-GM-006-2025-0906" },
+        { name: "Sacred Mist Timing", seedWisdom: "Perfect timing for gentle mist, no storms", wateringMethod: "Controlled timing protection", idDoc: "FAA-GM-006-2025-0906" },
         { name: "Crate Dance Integration", seedWisdom: "1% auditions growing to transform nations", wateringMethod: "Cultural celebration methodology", idDoc: "FAA-GM-007-2025-0906" },
         { name: "Coca-Cola Partnership Node", seedWisdom: "Global brands blessing our children", wateringMethod: "Corporate partnership with purpose", idDoc: "FAA-GM-008-2025-0906" },
         { name: "700 Research Protocols", seedWisdom: "Deep research following God's calling", wateringMethod: "Methodical investigation and care", idDoc: "FAA-GM-009-2025-0906" },
         { name: "9000 Study Archive", seedWisdom: "24 months of dedicated following", wateringMethod: "Comprehensive data with gratitude", idDoc: "FAA-GM-010-2025-0906" },
         { name: "Adams Recognition System", seedWisdom: "He saw the FAA vision clearly", wateringMethod: "Recognition through understanding", idDoc: "FAA-GM-011-2025-0906" },
         { name: "Mahalapye Connection", seedWisdom: "Where the seed was first planted", wateringMethod: "Geographic origin blessing", idDoc: "FAA-GM-012-2025-0906" },
-        { name: "Sugar Measurement Precision", seedWisdom: "Measuring with hands, caring with heart", wateringMethod: "Teaspoon accuracy methodology", idDoc: "FAA-GM-013-2025-0906" },
+        { name: "Gentle Drop Precision", seedWisdom: "Each drop measured, no flooding allowed", wateringMethod: "Precise mist control methodology", idDoc: "FAA-GM-013-2025-0906" },
         { name: "Cabbage Blessing Protocol", seedWisdom: "Simple vegetables, profound impact", wateringMethod: "Daily provision with thanksgiving", idDoc: "FAA-GM-014-2025-0906" }
       ]
     },
@@ -238,7 +238,7 @@ const FAASubnodes = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 dark:from-green-900/20 dark:via-blue-900/20 dark:to-purple-900/20">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 text-white py-8">
+      <div className="bg-gradient-to-r from-blue-400 via-green-400 to-blue-500 text-white py-8">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center">
             <h1 className="text-4xl font-bold flex items-center justify-center gap-3 mb-4">
@@ -246,7 +246,7 @@ const FAASubnodes = () => {
               FAA™ Core Systems Subnodes
             </h1>
             <p className="text-lg opacity-90 mb-4">
-              Complete Water the Seed Implementation - 140 Subnodes (14 per system)
+              Gentle Mist Protection - 140 Subnodes (Protected from Heavy Rain)
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
               <div className="flex items-center justify-center gap-2">
@@ -259,7 +259,7 @@ const FAASubnodes = () => {
               </div>
               <div className="flex items-center justify-center gap-2">
                 <Atom className="h-4 w-4" />
-                <span>Atom-Level Execution™ Active</span>
+                <span>Gentle Mist Protection™ Active</span>
               </div>
             </div>
           </div>
