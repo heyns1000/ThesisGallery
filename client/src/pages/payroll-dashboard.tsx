@@ -96,6 +96,16 @@ export default function PayrollDashboard() {
             </p>
           </div>
           <div className="flex gap-3">
+            <Link href="/payroll-features">
+              <Button className="bg-indigo-600 hover:bg-indigo-500" data-testid="button-payroll-features">
+                🔧 Features
+              </Button>
+            </Link>
+            <Link href="/payroll-sovereign-grid">
+              <Button className="bg-green-600 hover:bg-green-500" data-testid="button-sovereign-grid">
+                🛰 Sovereign Grid
+              </Button>
+            </Link>
             <Link href="/global-view">
               <Button className="bg-purple-600 hover:bg-purple-500" data-testid="button-global-view">
                 🌍 Global View
