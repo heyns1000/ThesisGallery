@@ -36,12 +36,15 @@ export default function Dashboard() {
       <header className="bg-card border-b border-border px-6 py-4 -mx-6 -mt-6 mb-6">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-foreground">FAA™ Command Center</h2>
-            <p className="text-muted-foreground">Global Document Processing & Brand Compliance System</p>
+            <h2 className="text-2xl font-bold text-foreground">🌳 Fruitful Global Command Center</h2>
+            <p className="text-muted-foreground">Master Hub for Business Ecosystem Integration - Sacred Baobab™ Foundation</p>
           </div>
           <div className="flex items-center space-x-4">
             <div className="status-indicator bg-secondary rounded-lg px-3 py-2">
-              <span className="text-xs text-secondary-foreground">Processing: Active</span>
+              <span className="text-xs text-secondary-foreground">🟢 VaultMesh™: Active</span>
+            </div>
+            <div className="status-indicator bg-accent/10 rounded-lg px-3 py-2">
+              <span className="text-xs text-accent">⚡ TreatySync: Online</span>
             </div>
             <button 
               className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:opacity-90 transition-opacity"
@@ -54,113 +57,212 @@ export default function Dashboard() {
       </header>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <StatsCard
-          title="Total Documents"
-          value={displayStats?.totalDocuments || 0}
-          icon="fas fa-file-alt"
-          iconBg="bg-primary/10 text-primary"
-          change="↗ 12% from last month"
-          changeType="positive"
-        />
-        <StatsCard
-          title="AI Conversations"
-          value={displayStats?.totalConversations || 0}
-          icon="fas fa-robot"
-          iconBg="bg-accent/10 text-accent"
-          change="↗ 8% from last week"
-          changeType="positive"
-        />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
         <StatsCard
           title="Protected Brands"
-          value={displayStats?.totalBrands || 0}
+          value={displayStats?.totalBrands || 9000}
           icon="fas fa-trademark"
           iconBg="bg-yellow-400/10 text-yellow-400"
-          change="✓ All compliant"
+          change="Global Expansion Target"
+          changeType="positive"
+        />
+        <StatsCard
+          title="Wildlife Nodes"
+          value={displayStats?.totalWildlifeNodes || 45}
+          icon="fas fa-tree"
+          iconBg="bg-green-400/10 text-green-400"
+          change="🌍 4 Regions Active"
+          changeType="positive"
+        />
+        <StatsCard
+          title="US States Ready"
+          value={displayStats?.totalAmericanStates || 13}
+          icon="fas fa-flag-usa"
+          iconBg="bg-blue-400/10 text-blue-400"
+          change="50 States Target"
           changeType="neutral"
         />
         <StatsCard
-          title="Compliance Score"
-          value={`${displayStats?.complianceScore || 99}%`}
-          icon="fas fa-shield-alt"
-          iconBg="bg-emerald-400/10 text-emerald-400"
-          change="Atom-Level Verified"
+          title="VaultMesh™ Status"
+          value={displayStats?.vaultMeshStatus === "active" ? "🟢 ACTIVE" : "⚪ OFFLINE"}
+          icon="fas fa-cube"
+          iconBg="bg-purple-400/10 text-purple-400"
+          change="Diamond Tier"
+          changeType="positive"
+        />
+        <StatsCard
+          title="Sacred Foundation"
+          value="🌳 BAOBAB™"
+          icon="fas fa-seedling"
+          iconBg="bg-amber-400/10 text-amber-400"
+          change="Aug 7, 2021 - Kruger"
           changeType="positive"
         />
       </div>
 
-      {/* Recent Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Integrated Systems Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         <div className="bg-card rounded-lg border border-border">
           <div className="px-6 py-4 border-b border-border">
-            <h3 className="text-lg font-semibold text-foreground">Recent Processing</h3>
+            <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+              🌍 Global Systems
+            </h3>
           </div>
-          <div className="p-6">
-            <div className="space-y-4">
-              {recentDocs.map((doc) => (
-                <div key={doc.id} className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <div className="bg-primary/10 p-2 rounded-lg mr-3">
-                      <i className="fas fa-file-pdf text-primary"></i>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-foreground line-clamp-1">{doc.title}</p>
-                      <p className="text-xs text-muted-foreground">
-                        Processed {new Date(doc.updatedAt).toLocaleString()}
-                      </p>
-                    </div>
-                  </div>
-                  <span className="text-xs bg-accent/10 text-accent px-2 py-1 rounded-full">
-                    {doc.status}
-                  </span>
-                </div>
-              ))}
-              {recentDocs.length === 0 && (
-                <p className="text-muted-foreground text-center py-8">No recent documents</p>
-              )}
+          <div className="p-6 space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-sm">Global View GPT</span>
+              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Online</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm">VaultMesh™ Bridge</span>
+              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Active</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm">TreatySync Protocol</span>
+              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Synced</span>
             </div>
           </div>
         </div>
 
         <div className="bg-card rounded-lg border border-border">
           <div className="px-6 py-4 border-b border-border">
-            <h3 className="text-lg font-semibold text-foreground">Brand Activity</h3>
+            <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+              🇺🇸 Fruitful America™
+            </h3>
+          </div>
+          <div className="p-6 space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-sm">Active States</span>
+              <span className="font-semibold text-blue-600">13 / 50</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm">Quantum Nexus™</span>
+              <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">Live</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm">Local Manufacturing</span>
+              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Growing</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-card rounded-lg border border-border">
+          <div className="px-6 py-4 border-b border-border">
+            <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+              🌳 Wildlife Grid
+            </h3>
+          </div>
+          <div className="p-6 space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-sm">Core Nodes</span>
+              <span className="font-semibold text-green-600">12 Active</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm">Deployment Regions</span>
+              <span className="font-semibold text-green-600">4 Countries</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm">Omnidrop Kits</span>
+              <span className="font-semibold text-purple-600">45 Deployed</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Recent Activity */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="bg-card rounded-lg border border-border">
+          <div className="px-6 py-4 border-b border-border">
+            <h3 className="text-lg font-semibold text-foreground">Ecosystem Progress</h3>
           </div>
           <div className="p-6">
             <div className="space-y-4">
-              {recentLogs.map((log) => (
-                <div key={log.id} className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <div className={`p-2 rounded-lg mr-3 ${
-                      log.status === 'success' ? 'bg-emerald-400/10' :
-                      log.status === 'warning' ? 'bg-yellow-400/10' :
-                      'bg-primary/10'
-                    }`}>
-                      <i className={`${
-                        log.status === 'success' ? 'fas fa-check text-emerald-400' :
-                        log.status === 'warning' ? 'fas fa-exclamation-triangle text-yellow-400' :
-                        'fas fa-cog text-primary'
-                      }`}></i>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-foreground line-clamp-1">{log.message}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {new Date(log.createdAt).toLocaleString()}
-                      </p>
-                    </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div className="bg-green-400/10 p-2 rounded-lg mr-3">
+                    <i className="fas fa-tree text-green-400"></i>
                   </div>
-                  <span className={`text-xs px-2 py-1 rounded-full ${
-                    log.status === 'success' ? 'bg-emerald-400/10 text-emerald-400' :
-                    log.status === 'warning' ? 'bg-yellow-400/10 text-yellow-400' :
-                    'bg-primary/10 text-primary'
-                  }`}>
-                    {log.status}
-                  </span>
+                  <div>
+                    <p className="text-sm font-medium text-foreground">Kenya Wildlife Deployment</p>
+                    <p className="text-xs text-muted-foreground">Scroll ID: KENYA-FAAZ-4312</p>
+                  </div>
                 </div>
-              ))}
-              {recentLogs.length === 0 && (
-                <p className="text-muted-foreground text-center py-8">No recent activity</p>
-              )}
+                <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Active</span>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div className="bg-blue-400/10 p-2 rounded-lg mr-3">
+                    <i className="fas fa-flag-usa text-blue-400"></i>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-foreground">Arizona SolarCore™ Launch</p>
+                    <p className="text-xs text-muted-foreground">Rand Index: 90% - Desert Modulars</p>
+                  </div>
+                </div>
+                <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">Live</span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div className="bg-purple-400/10 p-2 rounded-lg mr-3">
+                    <i className="fas fa-cube text-purple-400"></i>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-foreground">VaultMesh™ Diamond Tier</p>
+                    <p className="text-xs text-muted-foreground">Treaty-driven execution mesh</p>
+                  </div>
+                </div>
+                <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full">Deployed</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-card rounded-lg border border-border">
+          <div className="px-6 py-4 border-b border-border">
+            <h3 className="text-lg font-semibold text-foreground">Sacred Foundation</h3>
+          </div>
+          <div className="p-6">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div className="bg-amber-400/10 p-2 rounded-lg mr-3">
+                    <i className="fas fa-seedling text-amber-400"></i>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-foreground">Baobab™ Tree Foundation</p>
+                    <p className="text-xs text-muted-foreground">Kruger National Park - Aug 7, 2021</p>
+                  </div>
+                </div>
+                <span className="text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded-full">Divine</span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div className="bg-emerald-400/10 p-2 rounded-lg mr-3">
+                    <i className="fas fa-shield-alt text-emerald-400"></i>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-foreground">Baobab Security Network™</p>
+                    <p className="text-xs text-muted-foreground">120-country mapping active</p>
+                  </div>
+                </div>
+                <span className="text-xs bg-emerald-100 text-emerald-800 px-2 py-1 rounded-full">Protected</span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div className="bg-yellow-400/10 p-2 rounded-lg mr-3">
+                    <i className="fas fa-coins text-yellow-400"></i>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-foreground">ABSA Verification Complete</p>
+                    <p className="text-xs text-muted-foreground">H Schoeman - Account 9393313084</p>
+                  </div>
+                </div>
+                <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">Verified</span>
+              </div>
             </div>
           </div>
         </div>

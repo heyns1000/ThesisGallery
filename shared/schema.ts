@@ -80,12 +80,64 @@ export const processingQueue = pgTable("processing_queue", {
   metadata: json("metadata"),
 });
 
+// Wildlife and ecosystem management
+export const wildlifeNodes = pgTable("wildlife_nodes", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  nodeType: text("node_type").notNull(), // core-node, geo-lens, energy-beacon, etc.
+  status: text("status").default("active"), // active, pending, offline
+  region: text("region"), // kenya, rsa, namibia, botswana
+  hardware: text("hardware"),
+  model: text("model"),
+  price: text("price"),
+  monthlyFee: text("monthly_fee"),
+  scrollId: text("scroll_id"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+// US State management for Fruitful America
+export const americanStates = pgTable("american_states", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  brandName: text("brand_name").notNull(),
+  governor: text("governor"),
+  population: text("population"),
+  revenue: text("revenue"),
+  randIndex: text("rand_index"),
+  products: text("products").array(),
+  businessPlan: text("business_plan"),
+  status: text("status").default("active"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+// Global operations tracking
+export const globalOperations = pgTable("global_operations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  operationType: text("operation_type").notNull(), // vault-sync, treaty-mesh, brand-expansion
+  title: text("title").notNull(),
+  status: text("status").notNull(), // active, pending, completed, error
+  progress: integer("progress").default(0),
+  region: text("region"),
+  priority: text("priority").default("normal"), // low, normal, high, critical
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
 export const systemStats = pgTable("system_stats", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   totalDocuments: integer("total_documents").default(0),
   totalConversations: integer("total_conversations").default(0),
   totalBrands: integer("total_brands").default(0),
   complianceScore: integer("compliance_score").default(100),
+  totalWildlifeNodes: integer("total_wildlife_nodes").default(0),
+  totalAmericanStates: integer("total_american_states").default(0),
+  totalGlobalOperations: integer("total_global_operations").default(0),
+  vaultMeshStatus: text("vault_mesh_status").default("active"),
+  treatySyncStatus: text("treaty_sync_status").default("online"),
   lastUpdated: timestamp("last_updated").defaultNow().notNull(),
 });
 
@@ -149,6 +201,42 @@ export const insertProcessingQueueSchema = createInsertSchema(processingQueue).p
   metadata: true,
 });
 
+export const insertWildlifeNodeSchema = createInsertSchema(wildlifeNodes).pick({
+  name: true,
+  nodeType: true,
+  status: true,
+  region: true,
+  hardware: true,
+  model: true,
+  price: true,
+  monthlyFee: true,
+  scrollId: true,
+  metadata: true,
+});
+
+export const insertAmericanStateSchema = createInsertSchema(americanStates).pick({
+  name: true,
+  brandName: true,
+  governor: true,
+  population: true,
+  revenue: true,
+  randIndex: true,
+  products: true,
+  businessPlan: true,
+  status: true,
+  metadata: true,
+});
+
+export const insertGlobalOperationSchema = createInsertSchema(globalOperations).pick({
+  operationType: true,
+  title: true,
+  status: true,
+  progress: true,
+  region: true,
+  priority: true,
+  metadata: true,
+});
+
 // Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -170,5 +258,14 @@ export type ComplianceLog = typeof complianceLogs.$inferSelect;
 
 export type InsertProcessingQueue = z.infer<typeof insertProcessingQueueSchema>;
 export type ProcessingQueue = typeof processingQueue.$inferSelect;
+
+export type InsertWildlifeNode = z.infer<typeof insertWildlifeNodeSchema>;
+export type WildlifeNode = typeof wildlifeNodes.$inferSelect;
+
+export type InsertAmericanState = z.infer<typeof insertAmericanStateSchema>;
+export type AmericanState = typeof americanStates.$inferSelect;
+
+export type InsertGlobalOperation = z.infer<typeof insertGlobalOperationSchema>;
+export type GlobalOperation = typeof globalOperations.$inferSelect;
 
 export type SystemStats = typeof systemStats.$inferSelect;
