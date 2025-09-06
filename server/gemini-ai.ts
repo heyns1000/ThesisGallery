@@ -11,12 +11,13 @@ function initializeGemini() {
   return !!genAI;
 }
 
-// Enhanced Contact Processing with Real AI
+// Enhanced Contact Processing with Real AI and Thinking
 export class GeminiContactProcessor {
-  static async processUnstructuredContact(rawData: any): Promise<{
+  static async processUnstructuredContact(rawData: any, useThinking: boolean = false): Promise<{
     processedContact: any;
     confidence: number;
     suggestions: string[];
+    thinking?: string;
   }> {
     // Initialize Gemini if not already done
     if (!genAI && !initializeGemini()) {
@@ -25,7 +26,16 @@ export class GeminiContactProcessor {
     }
 
     try {
-      const model = genAI!.getGenerativeModel({ model: "gemini-2.5-flash" });
+      // Configure model with thinking if requested
+      const modelConfig: any = { model: "gemini-2.5-flash" };
+      if (useThinking) {
+        modelConfig.generationConfig = {
+          thinkingConfig: {
+            includeThoughts: true
+          }
+        };
+      }
+      const model = genAI!.getGenerativeModel(modelConfig);
 
       const prompt = `
         You are an expert data processor for contact management. Process this unstructured contact data and extract standardized information.
@@ -57,6 +67,15 @@ export class GeminiContactProcessor {
       const response = await result.response;
       const text = response.text();
 
+      // Extract thinking if available
+      let thinking = undefined;
+      if (useThinking && response.candidates?.[0]?.content?.parts) {
+        const thoughtPart = response.candidates[0].content.parts.find((part: any) => part.thought);
+        if (thoughtPart) {
+          thinking = thoughtPart.thought;
+        }
+      }
+
       try {
         const aiResult = JSON.parse(text);
         return {
@@ -77,7 +96,8 @@ export class GeminiContactProcessor {
             status: "active"
           },
           confidence: aiResult.confidence || 50,
-          suggestions: aiResult.suggestions || []
+          suggestions: aiResult.suggestions || [],
+          thinking
         };
       } catch (parseError) {
         // If AI response isn't valid JSON, fall back to basic processing
@@ -122,16 +142,28 @@ export class GeminiContactProcessor {
   }
 }
 
-// Enhanced Banimal Chatbot with Real AI
+// Enhanced Banimal Chatbot with Real AI and Thinking
 export class GeminiBanimalChatbot {
-  static async processMessage(message: string, context?: any): Promise<string> {
+  static async processMessage(message: string, context?: any, useThinking: boolean = false): Promise<{
+    response: string;
+    thinking?: string;
+  }> {
     // Initialize Gemini if not already done
     if (!genAI && !initializeGemini()) {
-      return this.fallbackResponse(message);
+      return { response: this.fallbackResponse(message) };
     }
 
     try {
-      const model = genAI!.getGenerativeModel({ model: "gemini-2.5-flash" });
+      // Configure model with thinking if requested
+      const modelConfig: any = { model: "gemini-2.5-flash" };
+      if (useThinking) {
+        modelConfig.generationConfig = {
+          thinkingConfig: {
+            includeThoughts: true
+          }
+        };
+      }
+      const model = genAI!.getGenerativeModel(modelConfig);
 
       const prompt = `
         You are the official AI customer support assistant for Banimal™, a premium FAA-compliant e-commerce platform. 
@@ -159,10 +191,23 @@ export class GeminiBanimalChatbot {
 
       const result = await model.generateContent(prompt);
       const response = await result.response;
-      return response.text();
+      
+      // Extract thinking if available
+      let thinking = undefined;
+      if (useThinking && response.candidates?.[0]?.content?.parts) {
+        const thoughtPart = response.candidates[0].content.parts.find((part: any) => part.thought);
+        if (thoughtPart) {
+          thinking = thoughtPart.thought;
+        }
+      }
+
+      return {
+        response: response.text(),
+        thinking
+      };
     } catch (error) {
       console.error('Gemini chatbot error:', error);
-      return this.fallbackResponse(message);
+      return { response: this.fallbackResponse(message) };
     }
   }
 

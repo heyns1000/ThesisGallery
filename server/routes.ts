@@ -991,12 +991,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // AI Chatbot Route (Enhanced with Gemini AI)
+  // AI Chatbot Route (Enhanced with Gemini AI and Thinking)
   app.post("/api/banimal/chat", async (req, res) => {
     try {
-      const { message, context } = req.body;
-      const response = await GeminiBanimalChatbot.processMessage(message, context);
-      res.json({ response });
+      const { message, context, useThinking = false } = req.body;
+      const result = await GeminiBanimalChatbot.processMessage(message, context, useThinking);
+      res.json(result);
     } catch (error) {
       res.status(500).json({ error: "Failed to process chat message" });
     }
@@ -1067,14 +1067,84 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // AI Contact Analysis Route
+  // AI Contact Analysis Route (Enhanced with Thinking)
   app.post("/api/ai/analyze-contact", async (req, res) => {
     try {
-      const { contactData } = req.body;
-      const analysis = await GeminiContactProcessor.processUnstructuredContact(contactData);
+      const { contactData, useThinking = false } = req.body;
+      const analysis = await GeminiContactProcessor.processUnstructuredContact(contactData, useThinking);
       res.json(analysis);
     } catch (error) {
       res.status(500).json({ error: "Failed to analyze contact" });
+    }
+  });
+
+  // Advanced AI Insights Route (Thinking + Analysis)
+  app.post("/api/ai/business-insights", async (req, res) => {
+    try {
+      const { data, analysisType, useThinking = true } = req.body;
+      
+      if (!process.env.GEMINI_API_KEY) {
+        return res.json({
+          insights: "Business intelligence analysis requires AI API access. Please configure your Gemini API key.",
+          thinking: "No API key available for advanced analysis.",
+          confidence: 0
+        });
+      }
+
+      const genAI = new (await import("@google/generative-ai")).GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+      
+      const modelConfig: any = { model: "gemini-2.5-flash" };
+      if (useThinking) {
+        modelConfig.generationConfig = {
+          thinkingConfig: {
+            includeThoughts: true
+          }
+        };
+      }
+      
+      const model = genAI.getGenerativeModel(modelConfig);
+      
+      const prompt = `
+        You are a business intelligence expert for Fruitful Global Master Hub. Analyze the following data and provide strategic insights.
+        
+        Analysis Type: ${analysisType}
+        Data: ${JSON.stringify(data)}
+        
+        Provide:
+        1. Key insights and patterns
+        2. Strategic recommendations
+        3. Risk assessment
+        4. Growth opportunities
+        5. Action items
+        
+        Focus on FAA™-compliant business strategies and data-driven decisions.
+        Return as JSON with: insights, recommendations, risks, opportunities, actionItems, confidence
+      `;
+
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      
+      // Extract thinking if available
+      let thinking = undefined;
+      if (useThinking && response.candidates?.[0]?.content?.parts) {
+        const thoughtPart = response.candidates[0].content.parts.find((part: any) => part.thought);
+        if (thoughtPart) {
+          thinking = thoughtPart.thought;
+        }
+      }
+
+      try {
+        const analysis = JSON.parse(response.text());
+        res.json({ ...analysis, thinking });
+      } catch (parseError) {
+        res.json({
+          insights: response.text(),
+          thinking,
+          confidence: 75
+        });
+      }
+    } catch (error) {
+      res.status(500).json({ error: "Failed to generate business insights" });
     }
   });
 
