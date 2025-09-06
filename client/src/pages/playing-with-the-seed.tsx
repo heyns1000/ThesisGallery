@@ -452,11 +452,23 @@ const PlayingWithTheSeed = () => {
                           <div className="relative w-48 h-48 mx-auto">
                             {/* Garden Bed */}
                             <div className="absolute bottom-0 w-full h-24 bg-gradient-to-t from-amber-800 to-amber-600 rounded-lg border-4 border-amber-700">
-                              {/* Seeds */}
-                              <div className="absolute top-4 left-6 w-2 h-2 bg-green-600 rounded-full animate-pulse"></div>
-                              <div className="absolute top-6 left-12 w-2 h-2 bg-green-600 rounded-full animate-pulse"></div>
-                              <div className="absolute top-4 right-8 w-2 h-2 bg-red-600 rounded-full animate-pulse"></div>
-                              <div className="absolute top-7 right-14 w-2 h-2 bg-red-600 rounded-full animate-pulse"></div>
+                              {/* Grateful Seeds - Each with tiny shimmer showing appreciation */}
+                              <div className="absolute top-4 left-6 w-3 h-3 bg-green-600 rounded-full animate-pulse">
+                                <div className="absolute inset-0 bg-yellow-300 rounded-full animate-ping opacity-30"></div>
+                                <div className="absolute -top-1 -right-1 text-xs">🙏</div>
+                              </div>
+                              <div className="absolute top-6 left-12 w-3 h-3 bg-green-600 rounded-full animate-pulse" style={{animationDelay: '0.5s'}}>
+                                <div className="absolute inset-0 bg-yellow-300 rounded-full animate-ping opacity-30" style={{animationDelay: '0.5s'}}></div>
+                                <div className="absolute -top-1 -right-1 text-xs">💚</div>
+                              </div>
+                              <div className="absolute top-4 right-8 w-3 h-3 bg-red-600 rounded-full animate-pulse" style={{animationDelay: '1s'}}>
+                                <div className="absolute inset-0 bg-yellow-300 rounded-full animate-ping opacity-30" style={{animationDelay: '1s'}}></div>
+                                <div className="absolute -top-1 -right-1 text-xs">✨</div>
+                              </div>
+                              <div className="absolute top-7 right-14 w-3 h-3 bg-red-600 rounded-full animate-pulse" style={{animationDelay: '1.5s'}}>
+                                <div className="absolute inset-0 bg-yellow-300 rounded-full animate-ping opacity-30" style={{animationDelay: '1.5s'}}></div>
+                                <div className="absolute -top-1 -right-1 text-xs">🌟</div>
+                              </div>
                             </div>
                             
                             {/* Watering Can */}
@@ -464,13 +476,35 @@ const PlayingWithTheSeed = () => {
                               <div className="w-12 h-8 bg-green-600 rounded-lg"></div>
                               <div className="absolute -right-2 top-2 w-4 h-1 bg-green-600 rounded"></div>
                               
-                              {/* Gentle Water Drops */}
+                              {/* Precious Water Drops - Each one a gift */}
                               <div className="absolute -bottom-12 left-6 space-y-1">
-                                <div className="w-1 h-1 bg-blue-400 rounded-full animate-bounce"></div>
-                                <div className="w-1 h-1 bg-blue-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
-                                <div className="w-1 h-1 bg-blue-400 rounded-full animate-bounce" style={{animationDelay: '0.4s'}}></div>
+                                <div className="relative">
+                                  <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce"></div>
+                                  <div className="absolute -right-2 -top-1 text-xs opacity-70">💧</div>
+                                </div>
+                                <div className="relative" style={{animationDelay: '0.2s'}}>
+                                  <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                                  <div className="absolute -right-2 -top-1 text-xs opacity-70">✨</div>
+                                </div>
+                                <div className="relative" style={{animationDelay: '0.4s'}}>
+                                  <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce" style={{animationDelay: '0.4s'}}></div>
+                                  <div className="absolute -right-2 -top-1 text-xs opacity-70">💙</div>
+                                </div>
                               </div>
                             </div>
+                            
+                            {/* Gratitude Aura around the garden */}
+                            <div className="absolute inset-0 border-2 border-yellow-300 rounded-full animate-pulse opacity-20"></div>
+                          </div>
+                          
+                          {/* Child-like Gratitude Message */}
+                          <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border-2 border-yellow-200">
+                            <p className="text-sm italic text-yellow-700 dark:text-yellow-300">
+                              "Thank you for this precious drop... I will grow with grateful heart" 
+                            </p>
+                            <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
+                              - The grateful seeds whisper
+                            </p>
                           </div>
                         </div>
 
@@ -480,11 +514,35 @@ const PlayingWithTheSeed = () => {
                             Water Like Ouma Taught - Gently
                           </Button>
                           
+                          <Button 
+                            className="w-full bg-yellow-500 hover:bg-yellow-600" 
+                            data-testid="button-gratitude-meditation"
+                          >
+                            <Heart className="h-4 w-4 mr-2" />
+                            Let Seeds Sit & Be Grateful
+                          </Button>
+                          
                           <div className="text-center space-y-2">
                             <Progress value={75} className="h-2" />
                             <p className="text-sm text-gray-600 dark:text-gray-400">
                               Soil Moisture: Perfect! Not too much, not too little
                             </p>
+                          </div>
+                          
+                          {/* Gratitude Timer */}
+                          <div className="p-3 bg-gradient-to-r from-yellow-100 to-orange-100 dark:from-yellow-900/30 dark:to-orange-900/30 rounded-lg">
+                            <div className="text-center">
+                              <p className="text-sm font-medium text-yellow-700 dark:text-yellow-300">
+                                Seeds in Gratitude Meditation
+                              </p>
+                              <div className="flex items-center justify-center gap-2 mt-2">
+                                <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
+                                <span className="text-xs text-yellow-600 dark:text-yellow-400">
+                                  Soaking in appreciation... like a child's joy for water
+                                </span>
+                                <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
