@@ -21,6 +21,7 @@ const navItems = [
   { href: "/pulse-grid-dashboard", label: "🍇 PulseGrid Trading", icon: "fas fa-chart-line", id: "pulse-grid-dashboard" },
   { href: "/crate-dance-smart-grid", label: "🧩 Crate Dance Grid", icon: "fas fa-cubes", id: "crate-dance-smart-grid" },
   { href: "/vault-payments", label: "💳 Vault Payments", icon: "fas fa-credit-card", id: "vault-payments" },
+  { href: "/team-onboarding", label: "👥 Team Onboarding", icon: "fas fa-user-plus", id: "team-onboarding" },
 ];
 
 export function Sidebar() {

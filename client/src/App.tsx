@@ -36,6 +36,7 @@ import CrateDanceSmartGrid from "@/pages/crate-dance-smart-grid";
 import PayrollFeatures from "@/pages/payroll-features";
 import PayrollSovereignGrid from "@/pages/payroll-sovereign-grid";
 import AdvancedPayrollDashboard from "@/pages/advanced-payroll-dashboard";
+import TeamOnboarding from "@/pages/team-onboarding";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -73,6 +74,7 @@ function Router() {
       <Route path="/payroll-features" component={PayrollFeatures} />
       <Route path="/payroll-sovereign-grid" component={PayrollSovereignGrid} />
       <Route path="/advanced-payroll-dashboard" component={AdvancedPayrollDashboard} />
+      <Route path="/team-onboarding" component={TeamOnboarding} />
       <Route component={NotFound} />
     </Switch>
   );
