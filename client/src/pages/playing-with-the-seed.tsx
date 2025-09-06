@@ -347,14 +347,243 @@ const PlayingWithTheSeed = () => {
           </div>
 
           {/* Main Content Tabs */}
-          <Tabs defaultValue="seed-garden" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-5">
+          <Tabs defaultValue="watering-wisdom" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-6">
+              <TabsTrigger value="watering-wisdom">Watering Wisdom</TabsTrigger>
               <TabsTrigger value="seed-garden">Seed Garden</TabsTrigger>
               <TabsTrigger value="faa-monitoring">FAA™ Monitoring</TabsTrigger>
               <TabsTrigger value="natural-ingredients">Natural Soil</TabsTrigger>
               <TabsTrigger value="atom-level">Atom-Level View</TabsTrigger>
               <TabsTrigger value="global-impact">Global Impact</TabsTrigger>
             </TabsList>
+
+            {/* Watering Wisdom Tab */}
+            <TabsContent value="watering-wisdom" className="space-y-6">
+              <div className="grid gap-6">
+                {/* Header Story */}
+                <Card className="bg-gradient-to-r from-green-100 via-blue-100 to-yellow-100 dark:from-green-900/30 dark:via-blue-900/30 dark:to-yellow-900/30">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-3 text-2xl">
+                      <Droplets className="h-8 w-8 text-blue-500" />
+                      Watering the Seed - Family Wisdom
+                    </CardTitle>
+                    <p className="text-lg italic text-gray-700 dark:text-gray-300">
+                      "How a child knows things you never knew he knew..." 
+                    </p>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <div className="prose max-w-none">
+                      <blockquote className="border-l-4 border-blue-500 pl-6 italic text-gray-700 dark:text-gray-300">
+                        <p className="text-lg leading-relaxed">
+                          "Rossouw 'Klitsie' as her Oumie calls him, and now the school tjommies as well. 
+                          Rossouw was so peacefully taught that walking with his oumie in the garden how to look 
+                          for the smaller things in life, the seeds, the leaves, the trees, everything moves, 
+                          nothing rests..." - Bob Proctor
+                        </p>
+                        <footer className="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                          — From the garden wisdom of the Schoeman family
+                        </footer>
+                      </blockquote>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      <div className="space-y-4">
+                        <h3 className="text-xl font-semibold flex items-center gap-2">
+                          <Heart className="h-6 w-6 text-red-500" />
+                          Ouma's Garden Teaching
+                        </h3>
+                        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border-2 border-green-200">
+                          <p className="text-lg font-medium text-green-700 dark:text-green-300 mb-3">
+                            "Gooi bietjie water bollie, anders gaan jy die grond uitspoel en dan gaan die saadtjies nie groei nie"
+                          </p>
+                          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                            Translation: "Pour a little water gently, otherwise you'll wash out the soil and then the seeds won't grow"
+                          </p>
+                          <div className="space-y-2 text-sm">
+                            <p><strong>Gentle Watering:</strong> "So gooi mooi en moenie spuit nie"</p>
+                            <p><strong>Hand Position:</strong> "Buig die tuinslang so effens met jou handje"</p>
+                            <p><strong>Water Flow:</strong> "En laat die water sprei"</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-4">
+                        <h3 className="text-xl font-semibold flex items-center gap-2">
+                          <Sparkles className="h-6 w-6 text-yellow-500" />
+                          The Sacred Teaching
+                        </h3>
+                        <div className="space-y-3">
+                          <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                            <h4 className="font-medium text-blue-700 dark:text-blue-300">The Garden Walk</h4>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                              Walking together, observing, teaching the ways of the previous generation
+                            </p>
+                          </div>
+                          <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                            <h4 className="font-medium text-green-700 dark:text-green-300">Planting Together</h4>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                              Strawberry seeds and tomato seeds - hands-on learning with love
+                            </p>
+                          </div>
+                          <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+                            <h4 className="font-medium text-yellow-700 dark:text-yellow-300">Life Lessons</h4>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                              Even with doggy poo: "Sies ouma hier is sies" - teaching life's realities with humor
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Interactive Gentle Watering Simulator */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Droplets className="h-6 w-6 text-blue-500" />
+                      Gentle Watering Simulator - Ouma's Way
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      <div className="space-y-4">
+                        <div className="text-center">
+                          <div className="relative w-48 h-48 mx-auto">
+                            {/* Garden Bed */}
+                            <div className="absolute bottom-0 w-full h-24 bg-gradient-to-t from-amber-800 to-amber-600 rounded-lg border-4 border-amber-700">
+                              {/* Seeds */}
+                              <div className="absolute top-4 left-6 w-2 h-2 bg-green-600 rounded-full animate-pulse"></div>
+                              <div className="absolute top-6 left-12 w-2 h-2 bg-green-600 rounded-full animate-pulse"></div>
+                              <div className="absolute top-4 right-8 w-2 h-2 bg-red-600 rounded-full animate-pulse"></div>
+                              <div className="absolute top-7 right-14 w-2 h-2 bg-red-600 rounded-full animate-pulse"></div>
+                            </div>
+                            
+                            {/* Watering Can */}
+                            <div className="absolute top-4 right-8 transform -rotate-12">
+                              <div className="w-12 h-8 bg-green-600 rounded-lg"></div>
+                              <div className="absolute -right-2 top-2 w-4 h-1 bg-green-600 rounded"></div>
+                              
+                              {/* Gentle Water Drops */}
+                              <div className="absolute -bottom-12 left-6 space-y-1">
+                                <div className="w-1 h-1 bg-blue-400 rounded-full animate-bounce"></div>
+                                <div className="w-1 h-1 bg-blue-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                                <div className="w-1 h-1 bg-blue-400 rounded-full animate-bounce" style={{animationDelay: '0.4s'}}></div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          <Button className="w-full bg-blue-500 hover:bg-blue-600" data-testid="button-gentle-water">
+                            <Droplets className="h-4 w-4 mr-2" />
+                            Water Like Ouma Taught - Gently
+                          </Button>
+                          
+                          <div className="text-center space-y-2">
+                            <Progress value={75} className="h-2" />
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                              Soil Moisture: Perfect! Not too much, not too little
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-4">
+                        <h4 className="font-semibold text-lg">Ouma's Watering Wisdom</h4>
+                        <div className="space-y-3">
+                          <div className="flex items-start gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                            <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
+                            <div>
+                              <p className="font-medium">Gentle Flow</p>
+                              <p className="text-sm text-gray-600 dark:text-gray-400">
+                                Bend the hose gently with your hand to create a soft spray
+                              </p>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-start gap-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                            <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
+                            <div>
+                              <p className="font-medium">Watch the Soil</p>
+                              <p className="text-sm text-gray-600 dark:text-gray-400">
+                                Don't wash away the earth - the seeds need their home
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flex items-start gap-3 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+                            <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
+                            <div>
+                              <p className="font-medium">Love in Every Drop</p>
+                              <p className="text-sm text-gray-600 dark:text-gray-400">
+                                Water with intention, just like Ouma taught us
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="mt-6 p-4 bg-gradient-to-r from-green-100 to-blue-100 dark:from-green-900/30 dark:to-blue-900/30 rounded-lg">
+                          <h5 className="font-semibold mb-2">Family Legacy Continues</h5>
+                          <p className="text-sm text-gray-700 dark:text-gray-300">
+                            "She is my Mother 'Ouma, Magogo' Schoeman aka Tannie Zollie, teaching Rossouw the ways I was brought up"
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Afrikaans & English Wisdom Collection */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Heart className="h-6 w-6 text-red-500" />
+                      Family Wisdom Sayings - Gesegdes van die Familie
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      <div className="space-y-4">
+                        <h4 className="font-semibold text-green-700 dark:text-green-300">Afrikaans Wisdom</h4>
+                        <div className="space-y-3">
+                          <div className="p-3 border-l-4 border-green-500 bg-gray-50 dark:bg-gray-800">
+                            <p className="font-medium">"Gooi bietjie water bollie"</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">Pour a little water gently</p>
+                          </div>
+                          <div className="p-3 border-l-4 border-blue-500 bg-gray-50 dark:bg-gray-800">
+                            <p className="font-medium">"So gooi mooi en moenie spuit nie"</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">Pour nicely and don't spray</p>
+                          </div>
+                          <div className="p-3 border-l-4 border-yellow-500 bg-gray-50 dark:bg-gray-800">
+                            <p className="font-medium">"Laat die water sprei"</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">Let the water spread</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-4">
+                        <h4 className="font-semibold text-blue-700 dark:text-blue-300">English Understanding</h4>
+                        <div className="space-y-3">
+                          <div className="p-3 border-l-4 border-green-500 bg-gray-50 dark:bg-gray-800">
+                            <p className="font-medium">Gentle Care</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">Every seed deserves tender attention</p>
+                          </div>
+                          <div className="p-3 border-l-4 border-blue-500 bg-gray-50 dark:bg-gray-800">
+                            <p className="font-medium">Patient Teaching</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">Wisdom passed through generations</p>
+                          </div>
+                          <div className="p-3 border-l-4 border-yellow-500 bg-gray-50 dark:bg-gray-800">
+                            <p className="font-medium">Love in Action</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">Showing care through simple acts</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
 
             {/* Seed Garden Tab */}
             <TabsContent value="seed-garden" className="space-y-6">
