@@ -12,7 +12,11 @@ import {
   insertConversationSchema,
   insertBrandSchema,
   insertComplianceLogSchema,
-  insertProcessingQueueSchema 
+  insertProcessingQueueSchema,
+  insertTeamMemberSchema,
+  insertTeamProjectSchema,
+  insertTeamTestimonialSchema,
+  insertOnboardingStepSchema
 } from "@shared/schema";
 
 // Configure multer for file uploads
@@ -574,6 +578,282 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Email processing error:', error);
       res.status(500).json({ error: "Failed to process email" });
+    }
+  });
+
+  // Team Management Routes
+  
+  // Team Members
+  app.get("/api/team/members", async (req, res) => {
+    try {
+      const members = await storage.getTeamMembers();
+      res.json(members);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch team members" });
+    }
+  });
+
+  app.get("/api/team/members/:id", async (req, res) => {
+    try {
+      const member = await storage.getTeamMember(req.params.id);
+      if (!member) {
+        return res.status(404).json({ error: "Team member not found" });
+      }
+      res.json(member);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch team member" });
+    }
+  });
+
+  app.post("/api/team/members", upload.fields([
+    { name: 'profileImage', maxCount: 1 },
+    { name: 'aboutImage', maxCount: 1 },
+    { name: 'projectImage', maxCount: 1 }
+  ]), async (req, res) => {
+    try {
+      // Parse the member data
+      const memberData = insertTeamMemberSchema.parse({
+        ...req.body,
+        skills: req.body.skills ? JSON.parse(req.body.skills) : null,
+        portfolioItems: req.body.portfolioItems ? JSON.parse(req.body.portfolioItems) : null,
+        socialLinks: req.body.socialLinks ? JSON.parse(req.body.socialLinks) : null,
+        metadata: req.body.metadata ? JSON.parse(req.body.metadata) : null,
+      });
+
+      // Handle image uploads
+      const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+      if (files?.profileImage?.[0]) {
+        memberData.profileImageUrl = `/uploads/${files.profileImage[0].filename}`;
+      }
+      if (files?.aboutImage?.[0]) {
+        memberData.aboutImageUrl = `/uploads/${files.aboutImage[0].filename}`;
+      }
+      if (files?.projectImage?.[0]) {
+        memberData.projectImageUrl = `/uploads/${files.projectImage[0].filename}`;
+      }
+
+      const member = await storage.createTeamMember(memberData);
+      
+      // Create default onboarding steps
+      const defaultSteps = [
+        { stepName: "Profile Setup", stepDescription: "Complete your profile information", stepOrder: 1 },
+        { stepName: "System Access", stepDescription: "Get access to required systems and tools", stepOrder: 2 },
+        { stepName: "Team Introduction", stepDescription: "Meet your team members and understand workflows", stepOrder: 3 },
+        { stepName: "First Project Assignment", stepDescription: "Get assigned to your first project", stepOrder: 4 },
+      ];
+
+      for (const step of defaultSteps) {
+        await storage.createOnboardingStep({
+          stepId: `${member.memberId}-${step.stepName.toLowerCase().replace(/\s+/g, '-')}`,
+          memberId: member.memberId,
+          ...step,
+        });
+      }
+      
+      broadcast({ type: 'team_member_added', data: member });
+      
+      res.status(201).json(member);
+    } catch (error) {
+      console.error('Team member creation error:', error);
+      res.status(400).json({ error: "Failed to create team member" });
+    }
+  });
+
+  app.put("/api/team/members/:id", async (req, res) => {
+    try {
+      const updates = req.body;
+      const member = await storage.updateTeamMember(req.params.id, updates);
+      if (!member) {
+        return res.status(404).json({ error: "Team member not found" });
+      }
+      
+      broadcast({ type: 'team_member_updated', data: member });
+      res.json(member);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update team member" });
+    }
+  });
+
+  // Team Projects
+  app.get("/api/team/projects", async (req, res) => {
+    try {
+      const projects = await storage.getTeamProjects();
+      res.json(projects);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch team projects" });
+    }
+  });
+
+  app.post("/api/team/projects", async (req, res) => {
+    try {
+      const projectData = insertTeamProjectSchema.parse(req.body);
+      const project = await storage.createTeamProject(projectData);
+      
+      broadcast({ type: 'team_project_created', data: project });
+      res.status(201).json(project);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to create team project" });
+    }
+  });
+
+  // Team Testimonials
+  app.get("/api/team/testimonials", async (req, res) => {
+    try {
+      const { memberId } = req.query;
+      const testimonials = memberId 
+        ? await storage.getTestimonialsForMember(memberId as string)
+        : await storage.getTeamTestimonials();
+      res.json(testimonials);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch testimonials" });
+    }
+  });
+
+  app.post("/api/team/testimonials", async (req, res) => {
+    try {
+      const testimonialData = insertTeamTestimonialSchema.parse(req.body);
+      const testimonial = await storage.createTeamTestimonial(testimonialData);
+      
+      broadcast({ type: 'testimonial_created', data: testimonial });
+      res.status(201).json(testimonial);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to create testimonial" });
+    }
+  });
+
+  // Onboarding Steps
+  app.get("/api/team/onboarding/:memberId", async (req, res) => {
+    try {
+      const steps = await storage.getOnboardingSteps(req.params.memberId);
+      res.json(steps);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch onboarding steps" });
+    }
+  });
+
+  app.put("/api/team/onboarding/:stepId", async (req, res) => {
+    try {
+      const updates = req.body;
+      const step = await storage.updateOnboardingStep(req.params.stepId, updates);
+      if (!step) {
+        return res.status(404).json({ error: "Onboarding step not found" });
+      }
+      
+      broadcast({ type: 'onboarding_step_updated', data: step });
+      res.json(step);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update onboarding step" });
+    }
+  });
+
+  // Onboard specific team member endpoint
+  app.post("/api/team/onboard", upload.fields([
+    { name: 'profileImage', maxCount: 1 },
+    { name: 'aboutImage', maxCount: 1 },
+    { name: 'projectImage', maxCount: 1 }
+  ]), async (req, res) => {
+    try {
+      const { 
+        name, 
+        email, 
+        role, 
+        department, 
+        specialization, 
+        bio,
+        experience,
+        skills,
+        portfolioItems,
+        socialLinks 
+      } = req.body;
+
+      // Create the team member with uploaded images
+      const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+      
+      const memberData = {
+        memberId: `TM-${Date.now()}`,
+        name,
+        email,
+        role,
+        department,
+        specialization: specialization || null,
+        bio: bio || null,
+        experience: experience || null,
+        skills: skills ? JSON.parse(skills) : null,
+        portfolioItems: portfolioItems ? JSON.parse(portfolioItems) : null,
+        socialLinks: socialLinks ? JSON.parse(socialLinks) : null,
+        profileImageUrl: files?.profileImage?.[0] ? `/uploads/${files.profileImage[0].filename}` : null,
+        aboutImageUrl: files?.aboutImage?.[0] ? `/uploads/${files.aboutImage[0].filename}` : null,
+        projectImageUrl: files?.projectImage?.[0] ? `/uploads/${files.projectImage[0].filename}` : null,
+        onboardingStatus: "in-progress",
+        accessLevel: "standard",
+        status: "active"
+      };
+
+      const member = await storage.createTeamMember(memberData);
+      
+      // Create comprehensive onboarding workflow
+      const onboardingSteps = [
+        {
+          stepId: `${member.memberId}-welcome`,
+          stepName: "Welcome & Profile Setup",
+          stepDescription: "Complete your professional profile and upload your photos",
+          stepOrder: 1,
+          status: "completed"
+        },
+        {
+          stepId: `${member.memberId}-system-access`,
+          stepName: "System Access Setup",
+          stepDescription: "Configure access to development tools, repositories, and project management systems",
+          stepOrder: 2,
+          status: "pending"
+        },
+        {
+          stepId: `${member.memberId}-team-introduction`,
+          stepName: "Team Introduction",
+          stepDescription: "Meet your team members and understand team dynamics and communication channels",
+          stepOrder: 3,
+          status: "pending"
+        },
+        {
+          stepId: `${member.memberId}-project-assignment`,
+          stepName: "First Project Assignment",
+          stepDescription: "Get assigned to your first project and understand the requirements",
+          stepOrder: 4,
+          status: "pending"
+        },
+        {
+          stepId: `${member.memberId}-compliance-training`,
+          stepName: "Compliance & Security Training",
+          stepDescription: "Complete required security and compliance training modules",
+          stepOrder: 5,
+          status: "pending"
+        }
+      ];
+
+      for (const stepData of onboardingSteps) {
+        await storage.createOnboardingStep({
+          ...stepData,
+          memberId: member.memberId,
+        });
+      }
+
+      broadcast({ 
+        type: 'team_member_onboarded', 
+        data: { 
+          member, 
+          message: `${member.name} has been successfully onboarded to the team!` 
+        } 
+      });
+      
+      res.status(201).json({
+        success: true,
+        member,
+        message: `Welcome ${member.name}! Your onboarding process has been initiated.`,
+        onboardingSteps: onboardingSteps.length
+      });
+    } catch (error) {
+      console.error('Team onboarding error:', error);
+      res.status(400).json({ error: "Failed to onboard team member" });
     }
   });
 

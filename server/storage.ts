@@ -13,7 +13,15 @@ import {
   type InsertComplianceLog,
   type ProcessingQueue,
   type InsertProcessingQueue,
-  type SystemStats
+  type SystemStats,
+  type TeamMember,
+  type InsertTeamMember,
+  type TeamProject,
+  type InsertTeamProject,
+  type TeamTestimonial,
+  type InsertTeamTestimonial,
+  type OnboardingStep,
+  type InsertOnboardingStep
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -57,6 +65,30 @@ export interface IStorage {
   createProcessingQueueItem(item: InsertProcessingQueue): Promise<ProcessingQueue>;
   updateProcessingQueueItem(id: string, updates: Partial<ProcessingQueue>): Promise<ProcessingQueue | undefined>;
   
+  // Team management methods
+  getTeamMembers(): Promise<TeamMember[]>;
+  getTeamMember(id: string): Promise<TeamMember | undefined>;
+  getTeamMemberByMemberId(memberId: string): Promise<TeamMember | undefined>;
+  createTeamMember(member: InsertTeamMember): Promise<TeamMember>;
+  updateTeamMember(id: string, updates: Partial<TeamMember>): Promise<TeamMember | undefined>;
+  deleteTeamMember(id: string): Promise<boolean>;
+  
+  // Team projects methods
+  getTeamProjects(): Promise<TeamProject[]>;
+  getTeamProject(id: string): Promise<TeamProject | undefined>;
+  createTeamProject(project: InsertTeamProject): Promise<TeamProject>;
+  updateTeamProject(id: string, updates: Partial<TeamProject>): Promise<TeamProject | undefined>;
+  
+  // Team testimonials methods
+  getTeamTestimonials(): Promise<TeamTestimonial[]>;
+  getTestimonialsForMember(memberId: string): Promise<TeamTestimonial[]>;
+  createTeamTestimonial(testimonial: InsertTeamTestimonial): Promise<TeamTestimonial>;
+  
+  // Onboarding methods
+  getOnboardingSteps(memberId: string): Promise<OnboardingStep[]>;
+  createOnboardingStep(step: InsertOnboardingStep): Promise<OnboardingStep>;
+  updateOnboardingStep(id: string, updates: Partial<OnboardingStep>): Promise<OnboardingStep | undefined>;
+  
   // System stats
   getSystemStats(): Promise<SystemStats | undefined>;
   updateSystemStats(stats: Partial<SystemStats>): Promise<SystemStats>;
@@ -70,16 +102,32 @@ export class MemStorage implements IStorage {
   private brands: Map<string, Brand> = new Map();
   private complianceLogs: Map<string, ComplianceLog> = new Map();
   private processingQueue: Map<string, ProcessingQueue> = new Map();
+  private teamMembers: Map<string, TeamMember> = new Map();
+  private teamProjects: Map<string, TeamProject> = new Map();
+  private teamTestimonials: Map<string, TeamTestimonial> = new Map();
+  private onboardingSteps: Map<string, OnboardingStep> = new Map();
   private systemStats: SystemStats | undefined;
 
   constructor() {
-    // Initialize with sample system stats
+    // Initialize with complete system stats
     this.systemStats = {
       id: randomUUID(),
       totalDocuments: 0,
       totalConversations: 0,
       totalBrands: 0,
       complianceScore: 99,
+      totalWildlifeNodes: 0,
+      totalAmericanStates: 0,
+      totalGlobalOperations: 0,
+      totalPayrollNodes: 0,
+      totalAiModules: 0,
+      totalMiningNodes: 0,
+      totalMiningPlatforms: 0,
+      totalTeamMembers: 0,
+      totalProjects: 0,
+      vaultMeshStatus: "active",
+      treatySyncStatus: "online",
+      pulseGridStatus: "9s-sync",
       lastUpdated: new Date(),
     };
   }
@@ -123,6 +171,7 @@ export class MemStorage implements IStorage {
       updatedAt: now,
       status: "processed",
       metadata: insertDocument.metadata || null,
+      filePath: insertDocument.filePath || null,
     };
     this.documents.set(id, document);
     await this.updateStats();
@@ -316,11 +365,184 @@ export class MemStorage implements IStorage {
     return this.systemStats;
   }
 
+  // Team management methods
+  async getTeamMembers(): Promise<TeamMember[]> {
+    return Array.from(this.teamMembers.values()).sort(
+      (a, b) => new Date(b.joinDate).getTime() - new Date(a.joinDate).getTime()
+    );
+  }
+
+  async getTeamMember(id: string): Promise<TeamMember | undefined> {
+    return this.teamMembers.get(id);
+  }
+
+  async getTeamMemberByMemberId(memberId: string): Promise<TeamMember | undefined> {
+    return Array.from(this.teamMembers.values()).find(
+      (member) => member.memberId === memberId
+    );
+  }
+
+  async createTeamMember(insertMember: InsertTeamMember): Promise<TeamMember> {
+    const id = randomUUID();
+    const now = new Date();
+    const member: TeamMember = {
+      ...insertMember,
+      id,
+      joinDate: now,
+      createdAt: now,
+      updatedAt: now,
+      onboardingStatus: insertMember.onboardingStatus || "pending",
+      accessLevel: insertMember.accessLevel || "standard",
+      status: insertMember.status || "active",
+      profileImageUrl: insertMember.profileImageUrl || null,
+      aboutImageUrl: insertMember.aboutImageUrl || null,
+      projectImageUrl: insertMember.projectImageUrl || null,
+      bio: insertMember.bio || null,
+      specialization: insertMember.specialization || null,
+      skills: insertMember.skills || null,
+      experience: insertMember.experience || null,
+      portfolioItems: insertMember.portfolioItems || null,
+      socialLinks: insertMember.socialLinks || null,
+      lastActive: null,
+      metadata: insertMember.metadata || null,
+    };
+    this.teamMembers.set(id, member);
+    await this.updateStats();
+    return member;
+  }
+
+  async updateTeamMember(id: string, updates: Partial<TeamMember>): Promise<TeamMember | undefined> {
+    const existing = this.teamMembers.get(id);
+    if (!existing) return undefined;
+    
+    const updated = { ...existing, ...updates, updatedAt: new Date() };
+    this.teamMembers.set(id, updated);
+    return updated;
+  }
+
+  async deleteTeamMember(id: string): Promise<boolean> {
+    const deleted = this.teamMembers.delete(id);
+    if (deleted) await this.updateStats();
+    return deleted;
+  }
+
+  // Team projects methods
+  async getTeamProjects(): Promise<TeamProject[]> {
+    return Array.from(this.teamProjects.values()).sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }
+
+  async getTeamProject(id: string): Promise<TeamProject | undefined> {
+    return this.teamProjects.get(id);
+  }
+
+  async createTeamProject(insertProject: InsertTeamProject): Promise<TeamProject> {
+    const id = randomUUID();
+    const now = new Date();
+    const project: TeamProject = {
+      ...insertProject,
+      id,
+      createdAt: now,
+      updatedAt: now,
+      status: insertProject.status || "active",
+      priority: insertProject.priority || "normal",
+      progress: insertProject.progress || 0,
+      description: insertProject.description || null,
+      teamMemberIds: insertProject.teamMemberIds || null,
+      leadMemberId: insertProject.leadMemberId || null,
+      technologies: insertProject.technologies || null,
+      imageUrl: insertProject.imageUrl || null,
+      demoUrl: insertProject.demoUrl || null,
+      repositoryUrl: insertProject.repositoryUrl || null,
+      startDate: insertProject.startDate || null,
+      endDate: insertProject.endDate || null,
+      metadata: insertProject.metadata || null,
+    };
+    this.teamProjects.set(id, project);
+    await this.updateStats();
+    return project;
+  }
+
+  async updateTeamProject(id: string, updates: Partial<TeamProject>): Promise<TeamProject | undefined> {
+    const existing = this.teamProjects.get(id);
+    if (!existing) return undefined;
+    
+    const updated = { ...existing, ...updates, updatedAt: new Date() };
+    this.teamProjects.set(id, updated);
+    return updated;
+  }
+
+  // Team testimonials methods
+  async getTeamTestimonials(): Promise<TeamTestimonial[]> {
+    return Array.from(this.teamTestimonials.values()).sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }
+
+  async getTestimonialsForMember(memberId: string): Promise<TeamTestimonial[]> {
+    return Array.from(this.teamTestimonials.values())
+      .filter(testimonial => testimonial.aboutMemberId === memberId)
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }
+
+  async createTeamTestimonial(insertTestimonial: InsertTeamTestimonial): Promise<TeamTestimonial> {
+    const id = randomUUID();
+    const testimonial: TeamTestimonial = {
+      ...insertTestimonial,
+      id,
+      createdAt: new Date(),
+      rating: insertTestimonial.rating || 5,
+      isPublic: insertTestimonial.isPublic !== undefined ? insertTestimonial.isPublic : true,
+      projectId: insertTestimonial.projectId || null,
+      metadata: insertTestimonial.metadata || null,
+    };
+    this.teamTestimonials.set(id, testimonial);
+    return testimonial;
+  }
+
+  // Onboarding methods
+  async getOnboardingSteps(memberId: string): Promise<OnboardingStep[]> {
+    return Array.from(this.onboardingSteps.values())
+      .filter(step => step.memberId === memberId)
+      .sort((a, b) => a.stepOrder - b.stepOrder);
+  }
+
+  async createOnboardingStep(insertStep: InsertOnboardingStep): Promise<OnboardingStep> {
+    const id = randomUUID();
+    const step: OnboardingStep = {
+      ...insertStep,
+      id,
+      createdAt: new Date(),
+      status: insertStep.status || "pending",
+      isRequired: insertStep.isRequired !== undefined ? insertStep.isRequired : true,
+      stepDescription: insertStep.stepDescription || null,
+      completedAt: null,
+      metadata: insertStep.metadata || null,
+    };
+    this.onboardingSteps.set(id, step);
+    return step;
+  }
+
+  async updateOnboardingStep(id: string, updates: Partial<OnboardingStep>): Promise<OnboardingStep | undefined> {
+    const existing = this.onboardingSteps.get(id);
+    if (!existing) return undefined;
+    
+    const updated = { ...existing, ...updates };
+    if (updates.status === "completed" && !existing.completedAt) {
+      updated.completedAt = new Date();
+    }
+    this.onboardingSteps.set(id, updated);
+    return updated;
+  }
+
   private async updateStats(): Promise<void> {
     if (this.systemStats) {
       this.systemStats.totalDocuments = this.documents.size;
       this.systemStats.totalConversations = this.conversations.size;
       this.systemStats.totalBrands = this.brands.size;
+      this.systemStats.totalTeamMembers = this.teamMembers.size;
+      this.systemStats.totalProjects = this.teamProjects.size;
       this.systemStats.lastUpdated = new Date();
     }
   }

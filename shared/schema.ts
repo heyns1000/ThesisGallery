@@ -127,6 +127,82 @@ export const globalOperations = pgTable("global_operations", {
   metadata: json("metadata"),
 });
 
+// Team Member Management System
+export const teamMembers = pgTable("team_members", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  memberId: text("member_id").notNull().unique(),
+  name: text("name").notNull(),
+  email: text("email").notNull().unique(),
+  role: text("role").notNull(), // developer, designer, manager, analyst, consultant
+  department: text("department").notNull(), // engineering, design, business, operations
+  specialization: text("specialization"), // frontend, backend, ui/ux, data-science, etc.
+  profileImageUrl: text("profile_image_url"),
+  aboutImageUrl: text("about_image_url"),
+  projectImageUrl: text("project_image_url"),
+  bio: text("bio"),
+  skills: text("skills").array(),
+  experience: text("experience"), // senior, mid-level, junior, expert
+  portfolioItems: json("portfolio_items"), // array of portfolio project objects
+  socialLinks: json("social_links"), // linkedin, github, dribbble, etc.
+  onboardingStatus: text("onboarding_status").default("pending"), // pending, in-progress, completed
+  accessLevel: text("access_level").default("standard"), // basic, standard, advanced, admin
+  joinDate: timestamp("join_date").defaultNow().notNull(),
+  lastActive: timestamp("last_active"),
+  status: text("status").default("active"), // active, inactive, on-leave, terminated
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+export const teamProjects = pgTable("team_projects", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  projectId: text("project_id").notNull().unique(),
+  title: text("title").notNull(),
+  description: text("description"),
+  projectType: text("project_type").notNull(), // web-app, mobile-app, design, ai-system, etc.
+  status: text("status").default("active"), // active, completed, paused, cancelled
+  priority: text("priority").default("normal"), // low, normal, high, critical
+  teamMemberIds: text("team_member_ids").array(), // assigned team members
+  leadMemberId: text("lead_member_id"), // project lead
+  technologies: text("technologies").array(), // tech stack used
+  imageUrl: text("image_url"),
+  demoUrl: text("demo_url"),
+  repositoryUrl: text("repository_url"),
+  startDate: timestamp("start_date"),
+  endDate: timestamp("end_date"),
+  progress: integer("progress").default(0), // percentage complete
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+export const teamTestimonials = pgTable("team_testimonials", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  testimonialId: text("testimonial_id").notNull().unique(),
+  fromMemberId: text("from_member_id").notNull(), // who gave the testimonial
+  aboutMemberId: text("about_member_id").notNull(), // who the testimonial is about
+  message: text("message").notNull(),
+  rating: integer("rating").default(5), // 1-5 stars
+  projectId: text("project_id"), // related project if applicable
+  isPublic: boolean("is_public").default(true),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+export const onboardingSteps = pgTable("onboarding_steps", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  stepId: text("step_id").notNull().unique(),
+  memberId: text("member_id").notNull(),
+  stepName: text("step_name").notNull(), // profile-setup, document-upload, system-access, etc.
+  stepDescription: text("step_description"),
+  status: text("status").default("pending"), // pending, in-progress, completed, skipped
+  completedAt: timestamp("completed_at"),
+  stepOrder: integer("step_order").notNull(),
+  isRequired: boolean("is_required").default(true),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
 export const systemStats = pgTable("system_stats", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   totalDocuments: integer("total_documents").default(0),
@@ -140,6 +216,8 @@ export const systemStats = pgTable("system_stats", {
   totalAiModules: integer("total_ai_modules").default(0),
   totalMiningNodes: integer("total_mining_nodes").default(0),
   totalMiningPlatforms: integer("total_mining_platforms").default(0),
+  totalTeamMembers: integer("total_team_members").default(0),
+  totalProjects: integer("total_projects").default(0),
   vaultMeshStatus: text("vault_mesh_status").default("active"),
   treatySyncStatus: text("treaty_sync_status").default("online"),
   pulseGridStatus: text("pulse_grid_status").default("9s-sync"),
@@ -556,6 +634,69 @@ export const insertPulseGridLogSchema = createInsertSchema(pulseGridLogs).pick({
   latency: true,
 });
 
+// Team Management Insert Schemas
+export const insertTeamMemberSchema = createInsertSchema(teamMembers).pick({
+  memberId: true,
+  name: true,
+  email: true,
+  role: true,
+  department: true,
+  specialization: true,
+  profileImageUrl: true,
+  aboutImageUrl: true,
+  projectImageUrl: true,
+  bio: true,
+  skills: true,
+  experience: true,
+  portfolioItems: true,
+  socialLinks: true,
+  onboardingStatus: true,
+  accessLevel: true,
+  status: true,
+  metadata: true,
+});
+
+export const insertTeamProjectSchema = createInsertSchema(teamProjects).pick({
+  projectId: true,
+  title: true,
+  description: true,
+  projectType: true,
+  status: true,
+  priority: true,
+  teamMemberIds: true,
+  leadMemberId: true,
+  technologies: true,
+  imageUrl: true,
+  demoUrl: true,
+  repositoryUrl: true,
+  startDate: true,
+  endDate: true,
+  progress: true,
+  metadata: true,
+});
+
+export const insertTeamTestimonialSchema = createInsertSchema(teamTestimonials).pick({
+  testimonialId: true,
+  fromMemberId: true,
+  aboutMemberId: true,
+  message: true,
+  rating: true,
+  projectId: true,
+  isPublic: true,
+  metadata: true,
+});
+
+export const insertOnboardingStepSchema = createInsertSchema(onboardingSteps).pick({
+  stepId: true,
+  memberId: true,
+  stepName: true,
+  stepDescription: true,
+  status: true,
+  stepOrder: true,
+  isRequired: true,
+  metadata: true,
+});
+
 // Mining System Types
 export type InsertMiningPlatform = z.infer<typeof insertMiningPlatformSchema>;
 export type MiningPlatform = typeof miningPlatforms.$inferSelect;
@@ -571,5 +712,18 @@ export type MiningCompliance = typeof miningCompliance.$inferSelect;
 
 export type InsertPulseGridLog = z.infer<typeof insertPulseGridLogSchema>;
 export type PulseGridLog = typeof pulseGridLogs.$inferSelect;
+
+// Team Management Types
+export type InsertTeamMember = z.infer<typeof insertTeamMemberSchema>;
+export type TeamMember = typeof teamMembers.$inferSelect;
+
+export type InsertTeamProject = z.infer<typeof insertTeamProjectSchema>;
+export type TeamProject = typeof teamProjects.$inferSelect;
+
+export type InsertTeamTestimonial = z.infer<typeof insertTeamTestimonialSchema>;
+export type TeamTestimonial = typeof teamTestimonials.$inferSelect;
+
+export type InsertOnboardingStep = z.infer<typeof insertOnboardingStepSchema>;
+export type OnboardingStep = typeof onboardingSteps.$inferSelect;
 
 export type SystemStats = typeof systemStats.$inferSelect;
