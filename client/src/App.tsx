@@ -21,6 +21,9 @@ import MiningDashboard from "@/pages/mining-dashboard";
 import AutoBornPlatform from "@/pages/autoborn-platform";
 import MinervaplatForm from "@/pages/minerva-platform";
 import HeartbeatDashboard from "@/pages/heartbeat-dashboard";
+import HousingDashboard from "@/pages/housing-dashboard";
+import CornexPlatform from "@/pages/cornex-platform";
+import RealEstatePlatform from "@/pages/realestate-platform";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -43,6 +46,9 @@ function Router() {
       <Route path="/autoborn-platform" component={AutoBornPlatform} />
       <Route path="/minerva-platform" component={MinervaplatForm} />
       <Route path="/heartbeat-dashboard" component={HeartbeatDashboard} />
+      <Route path="/housing-dashboard" component={HousingDashboard} />
+      <Route path="/cornex-platform" component={CornexPlatform} />
+      <Route path="/realestate-platform" component={RealEstatePlatform} />
       <Route component={NotFound} />
     </Switch>
   );

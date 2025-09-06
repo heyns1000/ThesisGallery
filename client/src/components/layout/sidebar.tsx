@@ -14,6 +14,7 @@ const navItems = [
   { href: "/wildlife-dashboard", label: "🌳 Wildlife Grid", icon: "fas fa-tree", id: "wildlife-dashboard" },
   { href: "/payroll-dashboard", label: "🧬 Payroll OS", icon: "fas fa-calculator", id: "payroll-dashboard" },
   { href: "/mining-dashboard", label: "⛏️ Mining Ecosystem", icon: "fas fa-pickaxe", id: "mining-dashboard" },
+  { href: "/housing-dashboard", label: "🏛️ Housing Sector", icon: "fas fa-home", id: "housing-dashboard" },
   { href: "/vault-payments", label: "💳 Vault Payments", icon: "fas fa-credit-card", id: "vault-payments" },
 ];
 
