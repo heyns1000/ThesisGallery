@@ -123,7 +123,42 @@ export const globalOperations = pgTable("global_operations", {
   region: text("region"),
   priority: text("priority").default("normal"), // low, normal, high, critical
   createdAt: timestamp("created_at").defaultNow().notNull(),
+
+// FAA™ Core System Subnodes - Water the Seed Implementation
+export const faaSubnodes = pgTable("faa_subnodes", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  parentSystemId: integer("parent_system_id").notNull(), // 1-10 for core FAA systems
+  subnodeIndex: integer("subnode_index").notNull(), // 1-14 per system
+  nodeName: text("node_name").notNull(),
+  category: text("category").notNull(),
+  seedWisdom: text("seed_wisdom").notNull(), // From our conversations
+  wateringMethod: text("watering_method").notNull(), // Ouma's teaching style
+  gratitudeLevel: integer("gratitude_level").default(100), // Like children with water
+  growthStage: text("growth_stage").default("planted"), // planted, sprouting, growing, flowering
+  pretoriaTimestamp: text("pretoria_timestamp").notNull(), // 7:06pm Sept 6 2025
+  replitDnsLocation: text("replit_dns_location").notNull(),
+  idDocumentNumber: text("id_document_number").notNull(), // Digital ID document
+  complianceMethod: text("compliance_method").notNull(),
+  atomLevelIntegrity: integer("atom_level_integrity").default(98),
+  methodology: text("methodology").default("Atom-Level Execution™"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+// Seed Wisdom Archive - Preserving conversations
+export const seedWisdomArchive = pgTable("seed_wisdom_archive", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  conversationTitle: text("conversation_title").notNull(),
+  speakerName: text("speaker_name").notNull(), // Ouma, Rossouw, Heyns, etc.
+  originalLanguage: text("original_language").notNull(), // Afrikaans, English, Setswana
+  wisdomText: text("wisdom_text").notNull(),
+  englishTranslation: text("english_translation"),
+  culturalContext: text("cultural_context"),
+  applicationArea: text("application_area"), // watering, planting, gratitude, etc.
+  pretoriaTimestamp: text("pretoria_timestamp").notNull(),
+  archived: boolean("archived").default(false),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
   metadata: json("metadata"),
 });
 

@@ -35,6 +35,7 @@ import PulseGridDashboard from "@/pages/pulse-grid-dashboard";
 import CrateDanceSmartGrid from "@/pages/crate-dance-smart-grid";
 import CrateDanceAfrica from "@/pages/crate-dance-africa";
 import PlayingWithTheSeed from "@/pages/playing-with-the-seed";
+import FAASubnodes from "@/pages/faa-subnodes";
 import PayrollFeatures from "@/pages/payroll-features";
 import PayrollSovereignGrid from "@/pages/payroll-sovereign-grid";
 import AdvancedPayrollDashboard from "@/pages/advanced-payroll-dashboard";
@@ -77,6 +78,7 @@ function Router() {
       <Route path="/crate-dance-smart-grid" component={CrateDanceSmartGrid} />
       <Route path="/crate-dance-africa" component={CrateDanceAfrica} />
       <Route path="/playing-with-the-seed" component={PlayingWithTheSeed} />
+      <Route path="/faa-subnodes" component={FAASubnodes} />
       <Route path="/payroll-features" component={PayrollFeatures} />
       <Route path="/payroll-sovereign-grid" component={PayrollSovereignGrid} />
       <Route path="/advanced-payroll-dashboard" component={AdvancedPayrollDashboard} />
