@@ -234,6 +234,114 @@ export class FirebaseAnalyticsService {
       }
     });
   }
+
+  // Track AdMob advertising interactions and revenue
+  trackAdMobEvent(adType: 'banner' | 'interstitial' | 'rewarded' | 'native', action: 'loaded' | 'shown' | 'clicked' | 'dismissed' | 'reward_earned', revenue?: number): void {
+    this.logCustomEvent({
+      name: 'admob_interaction',
+      parameters: {
+        ad_type: adType,
+        action: action,
+        revenue: revenue || 0,
+        currency: 'USD',
+        timestamp: new Date().toISOString()
+      }
+    });
+  }
+
+  // Track AdMob revenue metrics
+  trackAdMobRevenue(dailyRevenue: number, totalRevenue: number, impressions: number, ctr: number): void {
+    this.logCustomEvent({
+      name: 'admob_revenue_metrics',
+      parameters: {
+        daily_revenue: dailyRevenue,
+        total_revenue: totalRevenue,
+        total_impressions: impressions,
+        click_through_rate: ctr,
+        recorded_date: new Date().toISOString().split('T')[0]
+      }
+    });
+  }
+
+  // Track Firebase push notification events with enhanced metrics
+  trackPushNotificationEvent(action: 'permission_requested' | 'permission_granted' | 'permission_denied' | 'token_generated' | 'notification_sent' | 'notification_opened' | 'notification_dismissed', details?: any): void {
+    this.logCustomEvent({
+      name: 'push_notification_event',
+      parameters: {
+        action: action,
+        notification_details: details ? JSON.stringify(details).substring(0, 100) : '',
+        user_agent: navigator.userAgent.substring(0, 100),
+        timestamp: new Date().toISOString()
+      }
+    });
+  }
+
+  // Track abandoned cart recovery success
+  trackAbandonedCartRecovery(cartValue: number, remindersSent: number, recoveryMethod: 'push_notification' | 'email' | 'sms'): void {
+    this.logCustomEvent({
+      name: 'abandoned_cart_recovery',
+      parameters: {
+        cart_value: cartValue,
+        reminders_sent: remindersSent,
+        recovery_method: recoveryMethod,
+        recovery_time: new Date().toISOString()
+      }
+    });
+  }
+
+  // Track seedling language learning achievements with enhanced details
+  trackSeedlingAchievement(seedlingId: string, languageCode: string, achievement: 'first_word' | 'kindness_mastery' | 'cultural_wisdom' | 'daily_practice', streak?: number): void {
+    this.logCustomEvent({
+      name: 'seedling_achievement',
+      parameters: {
+        seedling_id: seedlingId,
+        language_code: languageCode,
+        achievement_type: achievement,
+        practice_streak: streak || 0,
+        achievement_date: new Date().toISOString()
+      }
+    });
+  }
+
+  // Track comprehensive user session data
+  trackUserSession(sessionData: {
+    sessionDuration: number;
+    pagesViewed: number;
+    featuresUsed: string[];
+    deviceType: string;
+    connection: string;
+  }): void {
+    this.logCustomEvent({
+      name: 'user_session_summary',
+      parameters: {
+        session_duration: sessionData.sessionDuration,
+        pages_viewed: sessionData.pagesViewed,
+        features_used: sessionData.featuresUsed.join(','),
+        device_type: sessionData.deviceType,
+        connection_type: sessionData.connection,
+        session_end_time: new Date().toISOString()
+      }
+    });
+  }
+
+  // Track performance metrics for the platform
+  trackPerformanceMetrics(metrics: {
+    pageLoadTime: number;
+    apiResponseTime: number;
+    errorCount: number;
+    feature: string;
+  }): void {
+    this.logCustomEvent({
+      name: 'performance_metrics',
+      parameters: {
+        page_load_time: metrics.pageLoadTime,
+        api_response_time: metrics.apiResponseTime,
+        error_count: metrics.errorCount,
+        feature_name: metrics.feature,
+        recorded_at: new Date().toISOString()
+      }
+    });
+  }
 }
 
 export const analyticsService = FirebaseAnalyticsService.getInstance();
