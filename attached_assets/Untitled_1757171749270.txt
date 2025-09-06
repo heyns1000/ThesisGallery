@@ -1,0 +1,347 @@
+VITE_OPENAI_API_KEY=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
+
+import React, { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Wallet, ShieldCheck, Zap, RefreshCcw } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+const FAASeedwaveRuntime = () => {
+  const [walletData, setWalletData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const syncSeedwave = async () => {
+      try {
+        const res = await fetch("https://vault.faa.zone/api/seedwave?id=001-HS&wallet=Vault@faa.zone");
+        if (!res.ok) {
+          throw new Error(`Server responded with status ${res.status}`);
+        }
+        const contentType = res.headers.get("content-type") || "";
+        if (!contentType.includes("application/json")) {
+          throw new TypeError("Response is not JSON");
+        }
+        const data = await res.json();
+        setWalletData(data);
+
+
+
+
+      } catch (err) {
+        console.error("Seedwave Error:", err?.message || err);
+        setError("Unable to sync Seedwave from Vault.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    syncSeedwave();
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-black via-purple-900 to-gray-900 text-white p-6">
+      <header className="text-center mb-10">
+        <h1 className="text-4xl font-bold mb-2 tracking-tight">FAA™ Wallet Gateway</h1>
+        <p className="text-purple-300 text-sm">Signal-generated vault node connected to Vault@faa.zone</p>
+      </header>
+
+      {loading && (
+        <div className="p-4 text-center text-purple-300">⏳ Syncing FAA Seedwave...</div>
+      )}
+
+      {error && (
+        <div className="p-4 text-center text-red-400">🚫 {error}</div>
+      )}
+
+      <Tabs defaultValue="license" className="w-full max-w-5xl mx-auto">
+        <TabsList className="grid grid-cols-3 gap-2 mb-6">
+          <TabsTrigger value="license">License Options</TabsTrigger>
+          <TabsTrigger value="payment">Payment</TabsTrigger>
+          <TabsTrigger value="access">Access Control</TabsTrigger>
+          <TabsTrigger value="omnikey">OmniKey™</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="license">
+          <Card className="bg-gradient-to-br from-purple-800 to-indigo-900 text-white">
+            <CardContent className="p-6 space-y-4">
+              <h2 className="text-2xl font-bold mb-2">Choose Your License</h2>
+              <p>FAA Start™ – $3,000/yr</p>
+              <p>FAA Growth™ – $48,000/yr</p>
+              <p>FAA Enterprise™ – $129,000+/yr</p>
+              <p className="text-sm text-purple-200">Every license is ledger-anchored with your FAA Sovereign ID</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="payment">
+          <Card className="bg-gradient-to-br from-indigo-900 to-purple-900 text-white">
+            <CardContent className="p-6 space-y-4">
+              <h2 className="text-2xl font-bold mb-2">Send Payment to FAA Wallet</h2>
+              <Button className="w-full" onClick={() => alert("Stripe Payment Gateway Coming Soon")}>💳 Pay with Card (Stripe)</Button>
+              <Button className="w-full">₿ Pay with Crypto (GRIPTO/ETH/BTC)</Button>
+              <p className="text-sm text-purple-200">Every transaction is recorded on FAA Ledger and activates access instantly.</p>
+              <h3 className="text-lg font-semibold mt-6">🪙 Pay via FAA Wallet (Crypto)</h3>
+              <p>Scan the matching wallet QR to activate instantly:</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6">
+                <div className="text-center">
+                  <img src="/FAA_BTC_Wallet.png" alt="FAA BTC Wallet" className="w-48 mx-auto border border-gray-300 rounded-lg" />
+                  <p className="mt-2 text-sm text-purple-200">BTC Wallet</p>
+                </div>
+                <div className="text-center">
+                  <img src="/FAA_ETH_Wallet.png" alt="FAA ETH Wallet" className="w-48 mx-auto border border-gray-300 rounded-lg" />
+                  <p className="mt-2 text-sm text-purple-200">ETH Wallet</p>
+                </div>
+                <div className="text-center">
+                  <img src="/FAA_XRP_Wallet.png" alt="FAA XRP Wallet" className="w-48 mx-auto border border-gray-300 rounded-lg" />
+                  <p className="mt-2 text-sm text-purple-200">XRP Wallet</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="access">
+          <Card className="bg-gradient-to-br from-purple-900 to-black text-white">
+            <CardContent className="p-6 space-y-4 text-center">
+              <h2 className="text-2xl font-bold mb-2">Access Your Product</h2>
+              <p>If your payment is verified, your node, SaaS API, or download link will activate below.</p>
+              <Button>🔓 Verify License</Button>
+              <p className="text-sm text-purple-200">Access is governed by your FAA Identity + payment match. Immutable + logged.</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="omnikey">
+          <Card className="bg-gradient-to-br from-yellow-800 to-yellow-600 text-white">
+            <CardContent className="p-6 space-y-4 text-center">
+              <h2 className="text-3xl font-extrabold">🔐 OmniKey™ Full Identity License</h2>
+              <p className="text-base text-yellow-100">Bound to: FAA-WALLET-001-HS</p>
+              <img src="/FAA_OmniKey_QR_TopCenter_CORRECTED.png" alt="OmniKey QR Full" className="mx-auto w-52 h-52 border-2 border-yellow-300 rounded-xl shadow-xl" />
+              <div className="text-yellow-200 text-xs mt-2">
+                License is scroll-bound. Auto-reissues every 9 seconds from Vault@faa.zone<br/>
+                Sovereign: Heyns Schoeman | Identity: 001-HS | Node: FAA-ZONE-V1
+              </div>
+              <Button className="mt-4 px-6 py-2 rounded-xl bg-black text-yellow-300 hover:bg-yellow-700">🧾 View Ledger Receipt</Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+
+      <div className="mt-12 text-center">
+        <Button className="inline-flex gap-2 items-center" onClick={() => window.location.reload()}>
+          <RefreshCcw className="w-4 h-4" /> Sync Signal
+        </Button>
+        <p className="text-sm text-purple-400 mt-2">Loop is active. UI feeds from Vault signal.</p>
+      </div>
+
+      <footer className="mt-20 text-center text-xs text-purple-500">
+        FAA SEEDWAVE™ ⒲ 2025 | Bound to Vault@faa.zone | Identity: Heyns Schoeman
+      </footer>
+    </div>
+  );
+};
+
+export default FAASeedwaveRuntime;
+
+
+// FAA™ SEEDWAVE ATOMIC CODE MODULE — Vault@faa.zone
+// Runtime UI growth based on CI visual guide + sovereign wallet logic
+
+import React, { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Wallet, ShieldCheck, Zap, RefreshCcw } from "lucide-react";
+
+const FAASeedwaveRuntime = () => {
+const [walletData, setWalletData] = useState(null);
+const [loading, setLoading] = useState(true);
+
+useEffect(() => {
+async function syncSeedwave() {
+try {
+const res = await fetch("https://vault.faa.zone/api/seedwave?id=001-HS&wallet=Vault@faa.zone");
+const data = await res.json();
+setWalletData(data);
+} catch (error) {
+console.error("Seedwave Error:", error);
+} finally {
+setLoading(false);
+}
+}
+syncSeedwave();
+}, []);
+
+if (loading) {
+return
+
+ Syncing FAA Seedwave...
+
+;
+}
+
+return (
+
+FAA™ Wallet Gateway
+
+Signal-generated vault node connected to Vault@faa.zone
+
+
+
+
+Wallet Status
+
+{walletData?.status || "Active"}
+
+ View Wallet QR
+
+
+
+
+
+
+
+Scroll Engine
+
+Trigger license and receipt from vault-bound scroll
+
+ Activate Scroll
+
+
+
+
+
+
+
+Immutable Ledger
+
+Each action logged + sealed with Trace Protocols™
+
+ View Archive
+
+
+
+window.location.reload()}>
+Sync Signal
+
+
+Loop is active. UI feeds from Vault signal.
+
+FAA SEEDWAVE™ Ⓒ 2025 | Bound to Vault@faa.zone | Identity: Heyns Schoeman
+
+
+);
+};{{ post.title }} {{ sep }} {{ page }} {{ sep }} {{ site.title }}
+
+Preview:  Why Choose FAA Payroll?  AI-Driven Payroll Execution  Multi-Currency &amp; Global Payments  Automated Tax &amp; Compliance Processing  Seamless Integrations with Deel, Sage, &amp; MoreAI-Driven Payroll Automation – Instant, Global, and Compliance-Ready. FAA Payroll ensures seamless, automated payroll processing with advanced AI-driven compliance and multi-currency support.// FAA™ SEEDWAVE ATOMIC CODE MODULE — Vault@faa.zone // Runtime UI growth based on CI visual guide + sovereign wallet logic import React, { useEffect, useState } from "react"; import { Button } from "@/components/ui/button"; import { Card, CardContent } from "@/components/ui/card"; import { Wallet, ShieldCheck, Zap, RefreshCcw } from "lucide-react"; const FAASeedwaveRuntime = () => { const [walletData, setWalletData] = useState(null); const [loading, setLoading] = useState(true); useEffect(() => { async function syncSeedwave() { try { const res = await fetch("https://vault.faa.zone/api/seedwave?id=001-HS&wallet=Vault@faa.zone"); const data = await res.json(); setWalletData(data); } catch (error) { console.error("Seedwave Error:", error); } finally { setLoading(false); } } syncSeedwave(); }, []); if (loading) { return  Syncing FAA Seedwave... ; } return ( FAA™ Wallet Gateway Signal-generated vault node connected to Vault@faa.zone Wallet Status {walletData?.status || "Active"}  View Wallet QR Scroll Engine Trigger license and receipt from vault-bound scroll  Activate Scroll Immutable Ledger Each action logged + sealed with Trace Protocols™  View Archive window.location.reload()}> Sync Signal Loop is active. UI feeds from Vault signal. FAA SEEDWAVE™ Ⓒ 2025 | Bound to Vault@faa.zone | Identity: Heyns Schoeman ); }
+
+
+
+
+import React, { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { RefreshCcw } from "lucide-react";
+
+const FAASeedwaveRuntime = () => {
+  const [walletData, setWalletData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function syncSeedwave() {
+      try {
+        const res = await fetch("https://vault.faa.zone/api/seedwave?id=001-HS&wallet=Vault@faa.zone");
+        const data = await res.json();
+        setWalletData(data);
+      } catch (error) {
+        console.error("Seedwave Error:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    syncSeedwave();
+  }, []);
+
+  if (loading) {
+    return <div className="p-8 text-center text-gray-500">⏳ Syncing FAA Seedwave...</div>;
+  }
+
+  return (
+    <div className="min-h-screen bg-white text-gray-900 font-sans">
+      <header className="text-center py-12 border-b border-gray-200">
+        <h1 className="text-5xl font-semibold mb-4">FAA™ Wallet Gateway</h1>
+        <p className="text-gray-500">Signal-generated vault node connected to Vault@faa.zone</p>
+      </header>
+
+      <main className="max-w-6xl mx-auto py-16 grid grid-cols-1 md:grid-cols-3 gap-12">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold">Wallet Status</h2>
+          <p className="text-sm text-gray-600 mt-1 mb-4">{walletData?.status || "Active"}</p>
+          <Button onClick={() => alert('Wallet QR Code: Vault@faa.zone')}>🔗 View Wallet QR</Button>
+        </div>
+
+        <div className="text-center">
+          <h2 className="text-xl font-semibold">Scroll Engine</h2>
+          <p className="text-sm text-gray-600 mt-1 mb-4">Trigger license and receipt from vault-bound scroll</p>
+          <Button onClick={() => alert('Scroll activated for ID: 001-HS')}>📜 Activate Scroll</Button>
+        </div>
+
+        <div className="text-center">
+          <h2 className="text-xl font-semibold">Immutable Ledger</h2>
+          <p className="text-sm text-gray-600 mt-1 mb-4">Each action logged + sealed with Trace Protocols™</p>
+          <Button onClick={() => alert('Ledger Archive Opened for Vault@faa.zone')}>🧾 View Archive</Button>
+        </div>
+      </main>
+
+      <section className="text-center py-12 border-t border-b border-gray-200 bg-gray-50">
+        <h3 className="text-xl font-bold mb-6">🌐 Crypto Wallets (QR Sync)</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="text-center">
+            <img src="/FAA_BTC_Wallet.png" alt="BTC Wallet" className="w-40 h-40 mx-auto border border-gray-300 rounded-lg" />
+            <p className="text-sm text-gray-500 mt-2">BTC Wallet</p>
+          </div>
+          <div className="text-center">
+            <img src="/FAA_ETH_Wallet.png" alt="ETH Wallet" className="w-40 h-40 mx-auto border border-gray-300 rounded-lg" />
+            <p className="text-sm text-gray-500 mt-2">ETH Wallet</p>
+          </div>
+          <div className="text-center">
+            <img src="/FAA_XRP_Wallet.png" alt="XRP Wallet" className="w-40 h-40 mx-auto border border-gray-300 rounded-lg" />
+            <p className="text-sm text-gray-500 mt-2">XRP Wallet</p>
+          </div>
+          <div className="text-center">
+            <img src="/FAA_OmniKey_QR_TopCenter_CORRECTED.png" alt="OmniKey QR" className="w-40 h-40 mx-auto border border-yellow-400 rounded-lg" />
+            <p className="text-sm text-yellow-600 mt-2 font-semibold">OmniKey™ QR</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="text-center py-8">
+        <Button onClick={() => window.location.reload()} className="inline-flex gap-2 items-center">
+          <RefreshCcw className="w-4 h-4" /> Sync Signal
+        </Button>
+        <p className="text-sm text-gray-400 mt-2">Loop is active. UI feeds from Vault signal.</p>
+      </section>
+
+      <footer className="text-center text-xs text-gray-400 py-6 border-t border-gray-200">
+        FAA SEEDWAVE™ ⒲ 2025 | Bound to Vault@faa.zone | Identity: Heyns Schoeman
+      </footer>
+    </div>
+  );
+};
+
+export default FAASeedwaveRuntime;
+
+What to Do Next:
+Wait for the Installation to Finish: Let it complete the download and installation.
+
+Verify NumPy Installation: Once it’s done, you can verify by running:
+Yes
+bash
+Copy
+python3 -c "import numpy; print(numpy.__version__)"
+Run Your Script: After that, try running the script again with:
+
+bash
+Copy
+python3 ~/Desktop/test_extract.py
+If you still face any issues or see another error, feel free to share it, and I can ass
