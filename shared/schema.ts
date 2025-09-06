@@ -218,6 +218,12 @@ export const systemStats = pgTable("system_stats", {
   totalMiningPlatforms: integer("total_mining_platforms").default(0),
   totalTeamMembers: integer("total_team_members").default(0),
   totalProjects: integer("total_projects").default(0),
+  totalContacts: integer("total_contacts").default(0),
+  totalCrateDanceEvents: integer("total_crate_dance_events").default(0),
+  totalCrateDanceContestants: integer("total_crate_dance_contestants").default(0),
+  totalCrateDanceRegistrations: integer("total_crate_dance_registrations").default(0),
+  activeCrateDanceEvents: integer("active_crate_dance_events").default(0),
+  crateDanceStatus: text("crate_dance_status").default("active"),
   vaultMeshStatus: text("vault_mesh_status").default("active"),
   treatySyncStatus: text("treaty_sync_status").default("online"),
   pulseGridStatus: text("pulse_grid_status").default("9s-sync"),
@@ -639,6 +645,177 @@ export const dataImports = pgTable("data_imports", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// Crate Dance™ Africa Competition System
+export const crateDanceEvents = pgTable("crate_dance_events", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  eventId: text("event_id").notNull().unique(),
+  name: text("name").notNull(),
+  description: text("description"),
+  eventType: text("event_type").notNull(), // audition, competition, showcase, regional, national, final
+  location: text("location").notNull(), // Limpopo, Gauteng, KZN, etc.
+  venue: text("venue"),
+  address: text("address"),
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date"),
+  registrationDeadline: timestamp("registration_deadline"),
+  maxParticipants: integer("max_participants"),
+  currentParticipants: integer("current_participants").default(0),
+  entryFee: numeric("entry_fee", { precision: 10, scale: 2 }),
+  prizeMoney: numeric("prize_money", { precision: 10, scale: 2 }),
+  sponsors: json("sponsors"), // Array of sponsor objects
+  danceStyles: text("dance_styles").array(), // hip-hop, contemporary, traditional, freestyle
+  ageCategories: text("age_categories").array(), // junior, teen, adult, open
+  judgePanel: json("judge_panel"), // Array of judge objects
+  status: text("status").default("upcoming"), // upcoming, registration-open, in-progress, completed, cancelled
+  images: json("images"), // Event photos and promotional material
+  rules: text("rules"), // Competition rules and guidelines
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+export const crateDanceContestants = pgTable("crate_dance_contestants", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  contestantId: text("contestant_id").notNull().unique(),
+  faaContactId: varchar("faa_contact_id").references(() => contacts.id), // Link to contact system
+  firstName: text("first_name").notNull(),
+  lastName: text("last_name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone"),
+  dateOfBirth: date("date_of_birth"),
+  age: integer("age"),
+  gender: text("gender"),
+  province: text("province").notNull(),
+  city: text("city").notNull(),
+  address: text("address"),
+  emergencyContact: json("emergency_contact"), // Name, phone, relationship
+  danceStyles: text("dance_styles").array(), // Preferred dance styles
+  experienceLevel: text("experience_level"), // beginner, intermediate, advanced, professional
+  groupType: text("group_type"), // solo, duo, crew, school-group
+  groupName: text("group_name"), // If part of crew or group
+  groupMembers: json("group_members"), // Array of group member details
+  schoolName: text("school_name"), // If representing school
+  coachName: text("coach_name"),
+  coachContact: text("coach_contact"),
+  medicalInfo: text("medical_info"), // Medical conditions, allergies
+  tshirtSize: text("tshirt_size"),
+  profileImage: text("profile_image"),
+  videoSubmission: text("video_submission"), // URL to audition video
+  socialMedia: json("social_media"), // Instagram, TikTok, YouTube
+  achievements: json("achievements"), // Previous wins, recognition
+  goals: text("goals"), // Personal goals and aspirations
+  consent: boolean("consent").default(false), // Parental consent if under 18
+  status: text("status").default("registered"), // registered, auditioned, qualified, eliminated, winner
+  totalScore: numeric("total_score", { precision: 5, scale: 2 }).default("0"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+export const crateDanceRegistrations = pgTable("crate_dance_registrations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  registrationId: text("registration_id").notNull().unique(),
+  eventId: varchar("event_id").notNull().references(() => crateDanceEvents.id),
+  contestantId: varchar("contestant_id").notNull().references(() => crateDanceContestants.id),
+  category: text("category").notNull(), // junior, teen, adult, open
+  danceStyle: text("dance_style").notNull(),
+  performanceSlot: text("performance_slot"), // Day 1 - Slot 1, etc.
+  performanceTime: timestamp("performance_time"),
+  paymentStatus: text("payment_status").default("pending"), // pending, paid, waived
+  paymentReference: text("payment_reference"),
+  checkInStatus: text("check_in_status").default("pending"), // pending, checked-in, no-show
+  checkInTime: timestamp("check_in_time"),
+  specialRequirements: text("special_requirements"),
+  notes: text("notes"),
+  registeredAt: timestamp("registered_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+export const crateDanceJudges = pgTable("crate_dance_judges", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  judgeId: text("judge_id").notNull().unique(),
+  firstName: text("first_name").notNull(),
+  lastName: text("last_name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone"),
+  bio: text("bio"),
+  expertise: text("expertise").array(), // hip-hop, contemporary, choreography, etc.
+  experience: text("experience"), // Years of experience, credentials
+  achievements: json("achievements"), // Awards, recognition, certifications
+  profileImage: text("profile_image"),
+  socialMedia: json("social_media"),
+  availability: json("availability"), // Available dates and regions
+  ratePerEvent: numeric("rate_per_event", { precision: 10, scale: 2 }),
+  status: text("status").default("active"), // active, inactive, retired
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+export const crateDanceScores = pgTable("crate_dance_scores", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  scoreId: text("score_id").notNull().unique(),
+  eventId: varchar("event_id").notNull().references(() => crateDanceEvents.id),
+  contestantId: varchar("contestant_id").notNull().references(() => crateDanceContestants.id),
+  judgeId: varchar("judge_id").notNull().references(() => crateDanceJudges.id),
+  round: text("round").notNull(), // audition, quarter-final, semi-final, final
+  technique: integer("technique"), // 1-10 score
+  creativity: integer("creativity"), // 1-10 score
+  musicality: integer("musicality"), // 1-10 score
+  stagePlatform: integer("stage_platform"), // 1-10 score
+  overallImpression: integer("overall_impression"), // 1-10 score
+  totalScore: numeric("total_score", { precision: 5, scale: 2 }),
+  comments: text("comments"),
+  feedback: text("feedback"), // Constructive feedback for contestant
+  scoredAt: timestamp("scored_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+export const crateDanceSponsors = pgTable("crate_dance_sponsors", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  sponsorId: text("sponsor_id").notNull().unique(),
+  companyName: text("company_name").notNull(),
+  contactPerson: text("contact_person"),
+  email: text("email").notNull(),
+  phone: text("phone"),
+  website: text("website"),
+  logo: text("logo"), // Logo image URL
+  sponsorshipLevel: text("sponsorship_level"), // tier-1, tier-2, tier-3, presenting, title
+  contributionAmount: numeric("contribution_amount", { precision: 10, scale: 2 }),
+  contributionType: text("contribution_type"), // cash, prizes, venue, equipment, services
+  benefits: json("benefits"), // Sponsorship benefits and visibility
+  contract: text("contract"), // Contract document URL
+  startDate: timestamp("start_date"),
+  endDate: timestamp("end_date"),
+  status: text("status").default("active"), // active, expired, terminated
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+export const crateDanceAuditions = pgTable("crate_dance_auditions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  auditionId: text("audition_id").notNull().unique(),
+  eventId: varchar("event_id").notNull().references(() => crateDanceEvents.id),
+  contestantId: varchar("contestant_id").notNull().references(() => crateDanceContestants.id),
+  auditionDate: timestamp("audition_date").notNull(),
+  auditionSlot: text("audition_slot"), // Morning, Afternoon, Evening
+  category: text("category").notNull(),
+  danceStyle: text("dance_style").notNull(),
+  videoSubmission: text("video_submission"), // URL to audition video
+  livePerformance: boolean("live_performance").default(false),
+  result: text("result"), // qualified, not-qualified, callback, pending
+  averageScore: numeric("average_score", { precision: 5, scale: 2 }),
+  judgeNotes: text("judge_notes"),
+  nextRound: text("next_round"), // quarter-final, semi-final, final
+  qualificationDate: timestamp("qualification_date"),
+  feedback: text("feedback"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
 // Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -812,6 +989,175 @@ export const insertOnboardingStepSchema = createInsertSchema(onboardingSteps).pi
   isRequired: true,
   metadata: true,
 });
+
+// Crate Dance Insert Schemas
+export const insertCrateDanceEventSchema = createInsertSchema(crateDanceEvents).pick({
+  eventId: true,
+  name: true,
+  description: true,
+  eventType: true,
+  location: true,
+  venue: true,
+  address: true,
+  startDate: true,
+  endDate: true,
+  registrationDeadline: true,
+  maxParticipants: true,
+  entryFee: true,
+  prizeMoney: true,
+  sponsors: true,
+  danceStyles: true,
+  ageCategories: true,
+  judgePanel: true,
+  status: true,
+  images: true,
+  rules: true,
+  metadata: true,
+});
+
+export const insertCrateDanceContestantSchema = createInsertSchema(crateDanceContestants).pick({
+  contestantId: true,
+  faaContactId: true,
+  firstName: true,
+  lastName: true,
+  email: true,
+  phone: true,
+  dateOfBirth: true,
+  age: true,
+  gender: true,
+  province: true,
+  city: true,
+  address: true,
+  emergencyContact: true,
+  danceStyles: true,
+  experienceLevel: true,
+  groupType: true,
+  groupName: true,
+  groupMembers: true,
+  schoolName: true,
+  coachName: true,
+  coachContact: true,
+  medicalInfo: true,
+  tshirtSize: true,
+  profileImage: true,
+  videoSubmission: true,
+  socialMedia: true,
+  achievements: true,
+  goals: true,
+  consent: true,
+  status: true,
+  metadata: true,
+});
+
+export const insertCrateDanceRegistrationSchema = createInsertSchema(crateDanceRegistrations).pick({
+  registrationId: true,
+  eventId: true,
+  contestantId: true,
+  category: true,
+  danceStyle: true,
+  performanceSlot: true,
+  performanceTime: true,
+  paymentStatus: true,
+  paymentReference: true,
+  specialRequirements: true,
+  notes: true,
+  metadata: true,
+});
+
+export const insertCrateDanceJudgeSchema = createInsertSchema(crateDanceJudges).pick({
+  judgeId: true,
+  firstName: true,
+  lastName: true,
+  email: true,
+  phone: true,
+  bio: true,
+  expertise: true,
+  experience: true,
+  achievements: true,
+  profileImage: true,
+  socialMedia: true,
+  availability: true,
+  ratePerEvent: true,
+  status: true,
+  metadata: true,
+});
+
+export const insertCrateDanceScoreSchema = createInsertSchema(crateDanceScores).pick({
+  scoreId: true,
+  eventId: true,
+  contestantId: true,
+  judgeId: true,
+  round: true,
+  technique: true,
+  creativity: true,
+  musicality: true,
+  stagePlatform: true,
+  overallImpression: true,
+  totalScore: true,
+  comments: true,
+  feedback: true,
+  metadata: true,
+});
+
+export const insertCrateDanceSponsorSchema = createInsertSchema(crateDanceSponsors).pick({
+  sponsorId: true,
+  companyName: true,
+  contactPerson: true,
+  email: true,
+  phone: true,
+  website: true,
+  logo: true,
+  sponsorshipLevel: true,
+  contributionAmount: true,
+  contributionType: true,
+  benefits: true,
+  contract: true,
+  startDate: true,
+  endDate: true,
+  status: true,
+  metadata: true,
+});
+
+export const insertCrateDanceAuditionSchema = createInsertSchema(crateDanceAuditions).pick({
+  auditionId: true,
+  eventId: true,
+  contestantId: true,
+  auditionDate: true,
+  auditionSlot: true,
+  category: true,
+  danceStyle: true,
+  videoSubmission: true,
+  livePerformance: true,
+  result: true,
+  averageScore: true,
+  judgeNotes: true,
+  nextRound: true,
+  qualificationDate: true,
+  feedback: true,
+  metadata: true,
+});
+
+// Crate Dance Types
+export type InsertCrateDanceEvent = z.infer<typeof insertCrateDanceEventSchema>;
+export type CrateDanceEvent = typeof crateDanceEvents.$inferSelect;
+
+export type InsertCrateDanceContestant = z.infer<typeof insertCrateDanceContestantSchema>;
+export type CrateDanceContestant = typeof crateDanceContestants.$inferSelect;
+
+export type InsertCrateDanceRegistration = z.infer<typeof insertCrateDanceRegistrationSchema>;
+export type CrateDanceRegistration = typeof crateDanceRegistrations.$inferSelect;
+
+export type InsertCrateDanceJudge = z.infer<typeof insertCrateDanceJudgeSchema>;
+export type CrateDanceJudge = typeof crateDanceJudges.$inferSelect;
+
+export type InsertCrateDanceScore = z.infer<typeof insertCrateDanceScoreSchema>;
+export type CrateDanceScore = typeof crateDanceScores.$inferSelect;
+
+export type InsertCrateDanceSponsor = z.infer<typeof insertCrateDanceSponsorSchema>;
+export type CrateDanceSponsor = typeof crateDanceSponsors.$inferSelect;
+
+export type InsertCrateDanceAudition = z.infer<typeof insertCrateDanceAuditionSchema>;
+export type CrateDanceAudition = typeof crateDanceAuditions.$inferSelect;
 
 // Mining System Types
 export type InsertMiningPlatform = z.infer<typeof insertMiningPlatformSchema>;

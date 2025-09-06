@@ -31,7 +31,21 @@ import {
   type BanimalCustomer,
   type InsertBanimalCustomer,
   type DataImport,
-  type InsertDataImport
+  type InsertDataImport,
+  type CrateDanceEvent,
+  type InsertCrateDanceEvent,
+  type CrateDanceContestant,
+  type InsertCrateDanceContestant,
+  type CrateDanceRegistration,
+  type InsertCrateDanceRegistration,
+  type CrateDanceJudge,
+  type InsertCrateDanceJudge,
+  type CrateDanceScore,
+  type InsertCrateDanceScore,
+  type CrateDanceSponsor,
+  type InsertCrateDanceSponsor,
+  type CrateDanceAudition,
+  type InsertCrateDanceAudition
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -170,6 +184,12 @@ export class MemStorage implements IStorage {
       totalMiningPlatforms: 0,
       totalTeamMembers: 0,
       totalProjects: 0,
+      totalContacts: 0,
+      totalCrateDanceEvents: 0,
+      totalCrateDanceContestants: 0,
+      totalCrateDanceRegistrations: 0,
+      activeCrateDanceEvents: 0,
+      crateDanceStatus: "active",
       vaultMeshStatus: "active",
       treatySyncStatus: "online",
       pulseGridStatus: "9s-sync",

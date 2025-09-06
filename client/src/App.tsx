@@ -33,6 +33,7 @@ import AdminPortal from "@/pages/admin-portal";
 import AdminAccessPortal from "@/pages/admin-access-portal";
 import PulseGridDashboard from "@/pages/pulse-grid-dashboard";
 import CrateDanceSmartGrid from "@/pages/crate-dance-smart-grid";
+import CrateDanceAfrica from "@/pages/crate-dance-africa";
 import PayrollFeatures from "@/pages/payroll-features";
 import PayrollSovereignGrid from "@/pages/payroll-sovereign-grid";
 import AdvancedPayrollDashboard from "@/pages/advanced-payroll-dashboard";
@@ -73,6 +74,7 @@ function Router() {
       <Route path="/admin-access-portal" component={AdminAccessPortal} />
       <Route path="/pulse-grid-dashboard" component={PulseGridDashboard} />
       <Route path="/crate-dance-smart-grid" component={CrateDanceSmartGrid} />
+      <Route path="/crate-dance-africa" component={CrateDanceAfrica} />
       <Route path="/payroll-features" component={PayrollFeatures} />
       <Route path="/payroll-sovereign-grid" component={PayrollSovereignGrid} />
       <Route path="/advanced-payroll-dashboard" component={AdvancedPayrollDashboard} />
