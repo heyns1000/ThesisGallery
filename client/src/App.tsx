@@ -24,6 +24,9 @@ import HeartbeatDashboard from "@/pages/heartbeat-dashboard";
 import HousingDashboard from "@/pages/housing-dashboard";
 import CornexPlatform from "@/pages/cornex-platform";
 import RealEstatePlatform from "@/pages/realestate-platform";
+import EducationDashboard from "@/pages/education-dashboard";
+import SmartToysPlatform from "@/pages/smart-toys-platform";
+import ModularView from "@/pages/modular-view";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -49,6 +52,9 @@ function Router() {
       <Route path="/housing-dashboard" component={HousingDashboard} />
       <Route path="/cornex-platform" component={CornexPlatform} />
       <Route path="/realestate-platform" component={RealEstatePlatform} />
+      <Route path="/education-dashboard" component={EducationDashboard} />
+      <Route path="/smart-toys-platform" component={SmartToysPlatform} />
+      <Route path="/modular-view" component={ModularView} />
       <Route component={NotFound} />
     </Switch>
   );
