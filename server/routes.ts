@@ -330,6 +330,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Bulk brand import for FAA Global Industry Index
+  app.post("/api/brands/bulk-import", async (req, res) => {
+    try {
+      const { brands: brandData } = req.body;
+      
+      if (!Array.isArray(brandData)) {
+        return res.status(400).json({ error: "Brands data must be an array" });
+      }
+      
+      const createdBrands = [];
+      const logs = [];
+      
+      for (const brand of brandData) {
+        try {
+          const validatedBrand = insertBrandSchema.parse(brand);
+          const newBrand = await storage.createBrand(validatedBrand);
+          createdBrands.push(newBrand);
+          
+          // Create compliance log for each imported brand
+          const log = await storage.createComplianceLog({
+            type: "import",
+            message: `FAA Brand "${newBrand.name}" imported from Global Industry Index`,
+            status: "success",
+            brandId: newBrand.id,
+            details: `Category: ${newBrand.category}, Status: ${newBrand.status}`
+          });
+          logs.push(log);
+        } catch (brandError) {
+          console.error(`Failed to import brand:`, brand, brandError);
+          // Continue with other brands even if one fails
+        }
+      }
+      
+      // Update system stats
+      await storage.updateSystemStats({
+        totalBrands: (await storage.getBrands()).length,
+      });
+      
+      broadcast({ type: 'brands_bulk_imported', data: createdBrands });
+      broadcast({ type: 'compliance_logs_created', data: logs });
+      
+      res.json({ 
+        imported: createdBrands.length,
+        total: brandData.length,
+        brands: createdBrands,
+        message: `Successfully imported ${createdBrands.length} FAA brands from Global Industry Index`
+      });
+    } catch (error) {
+      console.error('Bulk import error:', error);
+      res.status(500).json({ error: "Failed to bulk import brands" });
+    }
+  });
+
   // Compliance routes
   app.get("/api/compliance/logs", async (req, res) => {
     try {
