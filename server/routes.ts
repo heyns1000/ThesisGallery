@@ -16,8 +16,14 @@ import {
   insertTeamMemberSchema,
   insertTeamProjectSchema,
   insertTeamTestimonialSchema,
-  insertOnboardingStepSchema
+  insertOnboardingStepSchema,
+  insertContactSchema,
+  insertDataImportSchema,
+  insertBanimalProductSchema,
+  insertBanimalOrderSchema,
+  insertBanimalCustomerSchema
 } from "@shared/schema";
+import { ContactProcessingAI, BanimalChatbot, CurrencyAI, HolidayAI, generateFaaReference } from "./ai-services";
 
 // Configure multer for file uploads
 const upload = multer({
@@ -856,6 +862,276 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(400).json({ error: "Failed to onboard team member" });
     }
   });
+
+  // Contact Management Routes
+  app.get("/api/contacts", async (req, res) => {
+    try {
+      const { search, status, source } = req.query;
+      const filters = {
+        search: search as string,
+        status: status as string,
+        source: source as string
+      };
+      const contacts = await storage.getContacts(filters);
+      res.json(contacts);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch contacts" });
+    }
+  });
+
+  app.post("/api/contacts", async (req, res) => {
+    try {
+      const contactData = insertContactSchema.parse(req.body);
+      const contact = await storage.createContact(contactData);
+      broadcast({ type: 'contact_created', data: contact });
+      res.status(201).json(contact);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to create contact" });
+    }
+  });
+
+  app.post("/api/contacts/import", upload.single('file'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded" });
+      }
+
+      // Create data import record
+      const dataImport = await storage.createDataImport({
+        fileName: req.file.originalname,
+        fileSize: req.file.size,
+        totalRecords: 0, // Will be updated after processing
+        status: "pending",
+        startedAt: new Date()
+      });
+
+      // Process file asynchronously
+      processContactFile(req.file, dataImport.id);
+
+      res.status(201).json({
+        message: "File upload started",
+        importId: dataImport.id,
+        fileName: req.file.originalname,
+        totalRecords: 0
+      });
+    } catch (error) {
+      res.status(400).json({ error: "Failed to upload file" });
+    }
+  });
+
+  // Data Import Routes
+  app.get("/api/data-imports", async (req, res) => {
+    try {
+      const imports = await storage.getDataImports();
+      res.json(imports);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch data imports" });
+    }
+  });
+
+  // Banimal E-commerce Routes
+  app.get("/api/banimal/products", async (req, res) => {
+    try {
+      const products = await storage.getBanimalProducts();
+      res.json(products);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch products" });
+    }
+  });
+
+  app.post("/api/banimal/products", async (req, res) => {
+    try {
+      const productData = insertBanimalProductSchema.parse(req.body);
+      const product = await storage.createBanimalProduct(productData);
+      broadcast({ type: 'product_created', data: product });
+      res.status(201).json(product);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to create product" });
+    }
+  });
+
+  app.get("/api/banimal/orders", async (req, res) => {
+    try {
+      const orders = await storage.getBanimalOrders();
+      res.json(orders);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch orders" });
+    }
+  });
+
+  app.post("/api/banimal/orders", async (req, res) => {
+    try {
+      const orderData = insertBanimalOrderSchema.parse(req.body);
+      const order = await storage.createBanimalOrder(orderData);
+      broadcast({ type: 'order_created', data: order });
+      res.status(201).json(order);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to create order" });
+    }
+  });
+
+  app.get("/api/banimal/customers", async (req, res) => {
+    try {
+      const customers = await storage.getBanimalCustomers();
+      res.json(customers);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch customers" });
+    }
+  });
+
+  app.post("/api/banimal/customers", async (req, res) => {
+    try {
+      const customerData = insertBanimalCustomerSchema.parse(req.body);
+      const customer = await storage.createBanimalCustomer(customerData);
+      broadcast({ type: 'customer_created', data: customer });
+      res.status(201).json(customer);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to create customer" });
+    }
+  });
+
+  // AI Chatbot Route
+  app.post("/api/banimal/chat", async (req, res) => {
+    try {
+      const { message, context } = req.body;
+      const response = await BanimalChatbot.processMessage(message, context);
+      res.json({ response });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to process chat message" });
+    }
+  });
+
+  // Currency Conversion Route
+  app.get("/api/currency/convert", async (req, res) => {
+    try {
+      const { amount, from, to } = req.query;
+      const convertedAmount = CurrencyAI.convertCurrency(
+        parseFloat(amount as string),
+        from as string,
+        to as string
+      );
+      const formattedPrice = CurrencyAI.formatPrice(convertedAmount, to as string);
+      res.json({ 
+        originalAmount: parseFloat(amount as string),
+        convertedAmount,
+        formattedPrice,
+        from,
+        to
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to convert currency" });
+    }
+  });
+
+  // Holiday Promotions Route
+  app.get("/api/promotions", async (req, res) => {
+    try {
+      const promotions = HolidayAI.getActivePromotions();
+      const holidayMessage = HolidayAI.generateHolidayMessage();
+      res.json({ promotions, holidayMessage });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch promotions" });
+    }
+  });
+
+  // Async file processing function
+  async function processContactFile(file: any, importId: string) {
+    try {
+      await storage.updateDataImport(importId, { 
+        status: "processing",
+        startedAt: new Date()
+      });
+
+      const fileContent = fs.readFileSync(file.path, 'utf8');
+      const lines = fileContent.split('\n').filter(line => line.trim());
+      const totalRecords = lines.length - 1; // Exclude header
+
+      await storage.updateDataImport(importId, { totalRecords });
+
+      let processedCount = 0;
+      let successCount = 0;
+      let failedCount = 0;
+      let duplicateCount = 0;
+
+      // Process each line (skip header)
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i];
+        const values = line.split(',');
+        
+        try {
+          // Create mock contact data from CSV
+          const rawContact = {
+            name: values[0]?.trim(),
+            email: values[1]?.trim(),
+            phone: values[2]?.trim(),
+            company: values[3]?.trim(),
+            position: values[4]?.trim(),
+            country: values[5]?.trim(),
+          };
+
+          // Use AI to process the contact
+          const processed = ContactProcessingAI.processUnstructuredContact(rawContact);
+          
+          // Create contact with FAA reference
+          const contactData = {
+            ...processed.processedContact,
+            source: file.originalname,
+            faaId: generateFaaReference(rawContact.email || rawContact.name || i.toString()),
+          };
+
+          await storage.createContact(contactData);
+          successCount++;
+        } catch (error) {
+          failedCount++;
+        }
+
+        processedCount++;
+        
+        // Update progress every 100 records
+        if (processedCount % 100 === 0) {
+          await storage.updateDataImport(importId, {
+            processedRecords: processedCount,
+            successfulRecords: successCount,
+            failedRecords: failedCount,
+            duplicateRecords: duplicateCount
+          });
+        }
+      }
+
+      // Final update
+      await storage.updateDataImport(importId, {
+        status: "completed",
+        processedRecords: processedCount,
+        successfulRecords: successCount,
+        failedRecords: failedCount,
+        duplicateRecords: duplicateCount,
+        completedAt: new Date(),
+        summary: {
+          totalProcessed: processedCount,
+          successRate: (successCount / processedCount) * 100,
+          fileName: file.originalname
+        }
+      });
+
+      broadcast({ 
+        type: 'import_completed', 
+        data: { 
+          importId, 
+          successCount, 
+          totalRecords: processedCount 
+        }
+      });
+
+      // Clean up uploaded file
+      fs.unlinkSync(file.path);
+    } catch (error) {
+      await storage.updateDataImport(importId, {
+        status: "failed",
+        completedAt: new Date(),
+        errors: [error instanceof Error ? error.message : "Unknown error"]
+      });
+    }
+  }
 
   return httpServer;
 }
