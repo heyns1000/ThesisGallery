@@ -1,0 +1,189 @@
+{
+  "id": "backup_1756174351418_475cqjx5i",
+  "timestamp": "2025-08-26T02:12:31.418Z",
+  "version": "1.0.0",
+  "urls": {
+    "vipUrls": [
+      {
+        "id": "omnigrid",
+        "label": "🌐 OmniGrid",
+        "url": "https://faa.zone/omnigrid",
+        "type": "primary",
+        "description": "Explore OmniGrid Infrastructure"
+      },
+      {
+        "id": "globalPackages",
+        "label": "📦 Global Packages",
+        "url": "https://vaultmesh.faa.zone/fruitful-brand-packages.html",
+        "type": "primary",
+        "description": "VaultMesh Fruitful Brand Packages"
+      },
+      {
+        "id": "replitFruitful",
+        "label": "🔧 Replit Fruitful",
+        "url": "https://replit.com/t/fruitful-global/",
+        "type": "primary",
+        "description": "Fruitful Global Replit Team"
+      },
+      {
+        "id": "vercelAccess",
+        "label": "⚡ Vercel Access",
+        "url": "https://vercel.com/faa-systems-projects/",
+        "type": "secondary",
+        "description": "FAA Systems Vercel Projects"
+      },
+      {
+        "id": "hetznerCloud",
+        "label": "☁️ Hetzner Cloud",
+        "url": "https://accounts.hetzner.com/account/masterdata",
+        "type": "secondary",
+        "description": "Hetzner Account Management"
+      },
+      {
+        "id": "gemini",
+        "label": "🤖 Gemini",
+        "url": "https://gemini.google.com/",
+        "type": "secondary",
+        "description": "Google Gemini AI"
+      },
+      {
+        "id": "xeroLogin",
+        "label": "💼 Xero Login",
+        "url": "https://login.xero.com/identity/user/login",
+        "type": "secondary",
+        "description": "Xero Accounting Platform Access"
+      },
+      {
+        "id": "sageAccess",
+        "label": "💼 Sage Access",
+        "url": "https://accounting.sageone.co.za/Maintenance/OpenAndManageCompanyMaintenance.aspx",
+        "type": "secondary",
+        "description": "Sage Accounting Platform"
+      },
+      {
+        "id": "paypalAccess",
+        "label": "💳 PayPal Access",
+        "url": "https://www.paypal.com/signin/",
+        "type": "secondary",
+        "description": "PayPal Account Login"
+      },
+      {
+        "id": "fnbBank",
+        "label": "🏦 FNB Banking",
+        "url": "https://www.fnb.co.za/",
+        "type": "secondary",
+        "description": "First National Bank Online Banking"
+      },
+      {
+        "id": "takealot",
+        "label": "🛒 Takealot Sellers",
+        "url": "https://sellers.takealot.com/",
+        "type": "secondary",
+        "description": "Takealot Seller Portal"
+      },
+      {
+        "id": "alibabaAccount",
+        "label": "🏪 Alibaba Account",
+        "url": "https://login.alibaba.com/newlogin/icbuLogin.htm?defaultActive=signIn&return_url=https%3A%2F%2Fwww.alibaba.com%2F%3Fsrc%3Dsem_ggl%26field%3DUG%26from%3Dsem_ggl%26cmpgn%3D9922923274%26adgrp%3D97780323342%26fditm%3D%26tgt%3Dkwd-482944541254%26locintrst%3D%26locphyscl%3D1028682%26mtchtyp%3De%26ntwrk%3Dg%26device%3Dc%26dvcmdl%3D%26creative%3D598857653475%26plcmnt%3D%26plcmntcat%3D%26aceid%3D%26position%3D%26gad_source%3D1%26gad_campaignid%3D9922923274%26gbraid%3D0AAAAAD8m77qRAZex2ej01gArx6VezE9m5%26gclid%3DCjwKCAjw6s7CBhACEiwAuHQckkoZ8x6add65vgObqo7p06J8PMrqd9Jj5d3QDQk02m9K2MLM2Q3hURoCWgkQAvD_BwE&_lang=en_US",
+        "type": "secondary",
+        "description": "Alibaba Business Account"
+      },
+      {
+        "id": "homemart",
+        "label": "🏠 Homemart",
+        "url": "https://homemart.africa/",
+        "type": "secondary",
+        "description": "Homemart Africa Platform"
+      },
+      {
+        "id": "gmailInbox",
+        "label": "📧 Gmail Inbox",
+        "url": "https://mail.google.com/mail/u/0/#inbox",
+        "type": "secondary",
+        "description": "Personal Gmail Landing Page Inbox"
+      },
+      {
+        "id": "vaultEmail",
+        "label": "📧 Vault Email",
+        "url": "https://www.zoho.com/",
+        "type": "secondary",
+        "description": "Zoho Email Access"
+      },
+      {
+        "id": "legalAccess",
+        "label": "⚖️ Legal Access",
+        "url": "https://faa.zone/legal/",
+        "type": "secondary",
+        "description": "FAA Legal Documentation"
+      },
+      {
+        "id": "respitories",
+        "label": "📚 Respitories™",
+        "url": "https://legal.faa.zone/respitories/index.html",
+        "type": "secondary",
+        "description": "Legal Respitories Index"
+      },
+      {
+        "id": "fruitful",
+        "label": "🍃 Fruitful",
+        "url": "https://fruitful.faa.zone",
+        "type": "secondary",
+        "description": "Visit Fruitful Platform"
+      },
+      {
+        "id": "baobab",
+        "label": "🌳 Baobab",
+        "url": "https://baobab.faa.zone",
+        "type": "secondary",
+        "description": "Access Baobab System"
+      },
+      {
+        "id": "crateDance",
+        "label": "🎵 Crate Dance",
+        "url": "https://fruitfulcratedance.com/",
+        "type": "secondary",
+        "description": "Fruitful Crate Dance Platform"
+      },
+      {
+        "id": "ecosystemDashboard",
+        "label": "🌱 Ecosystem Dashboard",
+        "url": "https://seedwave.faa.zone/ecosystem-dashboard.html",
+        "type": "secondary",
+        "description": "Seedwave Ecosystem Overview"
+      },
+      {
+        "id": "seedwave",
+        "label": "🌱 Seedwave™",
+        "url": "https://seedwave.faa.zone/global.html",
+        "type": "secondary",
+        "description": "Seedwave Global Platform"
+      },
+      {
+        "id": "banimal",
+        "label": "🦊 Banimal™",
+        "url": "https://www.clmhosting.co.za/banimal/",
+        "type": "secondary",
+        "description": "CLM Hosting - Designer Platform for App Development"
+      }
+    ],
+    "routingHistory": [],
+    "analytics": [
+      {
+        "url": "/",
+        "timestamp": "2025-08-26T02:12:31.416Z",
+        "referrer": "https://e7300f80-edff-4045-b1ec-28d791f853a0-00-2mqdj5uhv1x67.worf.replit.dev/__replco/workspace_iframe.html?initialPath=%2F&id=%3Ar72%3A",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Safari/605.1.15",
+        "viewport": "1150x1206",
+        "sessionId": "vm-1756174351373-qlyp0hbeo",
+        "loadTime": 0,
+        "pageTitle": "VaultMesh Home - Main Dashboard"
+      }
+    ],
+    "userPreferences": {}
+  },
+  "metadata": {
+    "totalUrls": 23,
+    "backupSize": "4.6 KB",
+    "checksum": "31e13b4"
+  }
+}
