@@ -266,7 +266,7 @@ export default function Automation() {
           ) : (
             <div className="space-y-4">
               {processingQueue.map((item) => {
-                const statusInfo = getStatusIcon(item.status, item.progress);
+                const statusInfo = getStatusIcon(item.status || 'unknown', item.progress);
                 const typeIcon = getTypeIcon(item.type);
                 
                 return (

@@ -122,6 +122,7 @@ export class MemStorage implements IStorage {
       uploadedAt: now,
       updatedAt: now,
       status: "processed",
+      metadata: insertDocument.metadata || null,
     };
     this.documents.set(id, document);
     await this.updateStats();
@@ -161,6 +162,8 @@ export class MemStorage implements IStorage {
       id,
       uploadedAt: new Date(),
       metadata: insertGallery.metadata || null,
+      description: insertGallery.description || null,
+      tags: insertGallery.tags || null,
     };
     this.galleries.set(id, gallery);
     return gallery;
@@ -190,6 +193,7 @@ export class MemStorage implements IStorage {
       createdAt: now,
       updatedAt: now,
       status: insertConversation.status || "active",
+      messageCount: insertConversation.messageCount || null,
     };
     this.conversations.set(id, conversation);
     await this.updateStats();
@@ -226,6 +230,8 @@ export class MemStorage implements IStorage {
       updatedAt: now,
       complianceScore: insertBrand.complianceScore || 100,
       metadata: insertBrand.metadata || null,
+      valuation: insertBrand.valuation || null,
+      trademarkStatus: insertBrand.trademarkStatus || null,
     };
     this.brands.set(id, brand);
     await this.updateStats();
@@ -256,6 +262,7 @@ export class MemStorage implements IStorage {
       createdAt: new Date(),
       brandId: insertLog.brandId || null,
       metadata: insertLog.metadata || null,
+      details: insertLog.details || null,
     };
     this.complianceLogs.set(id, log);
     return log;
@@ -280,6 +287,7 @@ export class MemStorage implements IStorage {
       status: insertItem.status || "queued",
       estimatedTime: insertItem.estimatedTime || null,
       metadata: insertItem.metadata || null,
+      description: insertItem.description || null,
     };
     this.processingQueue.set(id, item);
     return item;

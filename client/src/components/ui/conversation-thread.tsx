@@ -47,7 +47,7 @@ export function ConversationThread({ conversation, onExpand }: ConversationThrea
             <div>
               <h4 className="font-semibold text-foreground">{conversation.title}</h4>
               <p className="text-sm text-muted-foreground">
-                {conversation.aiProvider} • {new Date(conversation.updatedAt).toLocaleDateString()} • {conversation.messageCount} messages
+                {conversation.aiProvider} • {new Date(conversation.updatedAt).toLocaleDateString()} • {conversation.messageCount || 0} messages
               </p>
             </div>
           </div>
