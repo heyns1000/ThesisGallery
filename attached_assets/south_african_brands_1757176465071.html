@@ -1,0 +1,1698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fruitful | South Africa Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom CSS variables for consistent theming */
+        :root {
+            /* Dark Theme Defaults */
+            --brand-gold: #facc15;
+            --brand-purple: #9333ea;
+            --bg-dark: #0a0a0a;
+            --bg-med: #111827;
+            --bg-light: #1f2937;
+            --text-light: #e5e7eb;
+            --text-med: #9ca3af;
+            --primary-color: #0071e3; /* Apple Blue */
+            --secondary-color: #30d158; /* Apple Green */
+            --border-color-dark: #3a3a3e; /* Subtle dark border */
+            --status-error: #ef4444; /* Red for error messages */
+            --page-theme-accent-color: #facc15;
+            --page-theme-text-light: #fcd34d;
+            --page-theme-text-muted: #eab308;
+            --page-card-background: #1a1a1c;
+            --page-border-color: #2e2e2e;
+        }
+
+        /* Light Theme Overrides */
+        body.light-theme {
+            --brand-gold: #d97706; /* Darker gold for contrast */
+            --brand-purple: #7c2d12; /* Darker purple/brown for contrast */
+            --bg-dark: #f8f8f8; /* Light background */
+            --bg-med: #ffffff; /* Lighter background */
+            --bg-light: #f0f0f0; /* Even lighter background */
+            --text-light: #333333; /* Dark text */
+            --text-med: #6b7280; /* Medium gray text */
+            --primary-color: #1d4ed8; /* Darker blue */
+            --secondary-color: #059669; /* Darker green */
+            --border-color-dark: #d1d5db; /* Light border */
+            --status-error: #dc2626; /* Consistent red */
+            --page-theme-accent-color: #d97706; /* Match brand gold */
+            --page-theme-text-light: #92400e; /* Darker accent text */
+            --page-theme-text-muted: #b45309; /* Muted accent text */
+            --page-card-background: #ffffff; /* White card background */
+            --page-border-color: #e5e7eb; /* Light border for cards */
+        }
+
+        /* Base body styling for font and background */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            margin: 0; /* Remove default body margin */
+            overflow: hidden; /* Prevent body scroll, main-content handles it */
+            transition: background-color 0.3s ease, color 0.3s ease; /* Smooth theme transition */
+        }
+        /* Custom font for specific elements */
+        .font-space-grotesk {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        /* Grid layout for the dashboard with fixed sidebar and flexible main content */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            height: 100vh; /* Full viewport height */
+        }
+        /* Sidebar styling */
+        .sidebar {
+            background-color: var(--bg-med);
+            border-right: 1px solid var(--border-color-dark);
+            overflow-y: auto; /* Allow sidebar to scroll if content overflows */
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        /* Main content area, allowing vertical scrolling */
+        .main-content {
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+        }
+        /* Styling for brand cards */
+        .brand-card {
+            background: var(--bg-light);
+            border: 1px solid var(--border-color-dark);
+            transition: all 0.3s ease; /* Smooth transition for hover effects */
+        }
+        /* Hover effects for brand cards */
+        .brand-card:hover {
+            transform: translateY(-5px); /* Lift card on hover */
+            box-shadow: 0 10px 20px rgba(147, 51, 234, 0.1); /* Subtle shadow with brand purple */
+            border-color: var(--brand-purple); /* Highlight border on hover */
+        }
+        /* Modal backdrop for overlay effect */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7); /* Semi-transparent black overlay */
+            backdrop-filter: blur(5px); /* Blur background content */
+            display: none; /* Hidden by default */
+            align-items: center;
+            justify-content: center;
+            z-index: 50; /* High z-index to appear on top */
+        }
+        /* Active state for modal backdrop */
+        .modal-backdrop.active {
+            display: flex; /* Show when active */
+        }
+        /* Modal content styling */
+        .modal-content {
+            background: var(--bg-med);
+            border: 1px solid var(--brand-purple);
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto; /* Allow modal content to scroll */
+            border-radius: 1rem; /* Rounded corners */
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        /* Active state for tab buttons */
+        .tab-button.active {
+            background-color: var(--brand-purple);
+            color: white;
+        }
+        /* Styling for feature cards */
+        .feature-card {
+            background-color: var(--bg-light);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color-dark);
+            width: 100%;
+            max-width: 900px;
+            margin: 2rem auto; /* Center the card with vertical margin */
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        /* Styling for feature card headings */
+        .feature-card h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--brand-gold);
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color-dark);
+            padding-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+        /* Styling for form inputs within feature cards */
+        .feature-card textarea,
+        .feature-card input,
+        .feature-card select {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color-dark);
+            background-color: var(--bg-med); /* Use bg-med for input backgrounds */
+            color: var(--text-light);
+            font-size: 0.95rem;
+            min-height: 40px; /* Ensure a minimum height */
+            resize: vertical; /* Allow vertical resizing for textareas */
+            margin-bottom: 1rem;
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+        /* Styling for response boxes */
+        .response-box {
+            background-color: var(--bg-med); /* Use bg-med for response box backgrounds */
+            border: 1px solid var(--border-color-dark);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            min-height: 50px;
+            font-family: 'Space Grotesk', monospace; /* Monospace font for code/data */
+            word-break: break-all; /* Break long words */
+            white-space: pre-wrap; /* Preserve whitespace and wrap text */
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+        /* Spinner animation for loading states */
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block; /* Align with text */
+            vertical-align: middle; /* Center vertically with text */
+        }
+        /* Keyframe animation for the spinner */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* Styling for action buttons */
+        .action-button {
+            background-color: var(--secondary-color);
+            color: var(--bg-dark);
+            padding: 0.8rem 1.8rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            display: inline-flex; /* Use flex for icon and text alignment */
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            border: none; /* Remove default button border */
+        }
+        /* Hover effects for action buttons */
+        .action-button:hover {
+            background-color: #28a745; /* Darker green on hover */
+            transform: translateY(-2px); /* Slight lift on hover */
+        }
+        /* Styling for info buttons (a variant of action buttons) */
+        .info-button {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        /* Hover effects for info buttons */
+        .info-button:hover {
+            background-color: #005bb5; /* Darker blue on hover */
+        }
+        /* Container for pricing toggle buttons */
+        .pricing-toggle-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 2rem;
+            background-color: var(--bg-med);
+            border-radius: 9999px; /* Pill shape */
+            padding: 0.25rem;
+            border: 1px solid var(--border-color-dark);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        /* Styling for pricing toggle buttons */
+        .pricing-toggle-btn {
+            background-color: transparent;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-med);
+        }
+        .pricing-toggle-btn.active {
+            background-color: var(--brand-purple);
+            color: white;
+        }
+
+        /* Custom modal for demo/messages (replaces alert/confirm) */
+        .demo-modal {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            backdrop-filter: blur(3px);
+        }
+        .demo-content {
+            background-color: #000;
+            border: 1px solid #0f0;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            font-family: 'Space Grotesk', monospace;
+            color: #0f0;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+            text-align: center; /* Center text within demo modal */
+        }
+        /* Styles for the Google Map container */
+        #map {
+            height: 400px;
+            border-radius: 8px;
+            background-color: #333;
+            margin-top: 1.5rem;
+        }
+
+        /* Styles for the API key display */
+        .key-display {
+            font-family: monospace;
+            background: var(--bg-dark); /* Use bg-dark for key display */
+            padding: 0.5rem;
+            border-radius: 4px;
+            word-break: break-all;
+            font-size: 0.8rem;
+            color: var(--text-med);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* FAA.zone Demo Specific Styles */
+        .dashboard-section-title { font-size: 2.5rem; font-weight: 700; text-align: center; color: var(--page-theme-accent-color); margin-bottom: 40px; transition: color 0.3s ease; }
+        .dashboard-card { background-color: var(--page-card-background); padding: 30px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.4); border: 1px solid var(--page-border-color); transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; }
+        .operations-log-console { background-color: #000000; border: 1px solid #333; border-radius: 8px; padding: 20px; height: 250px; overflow-y: auto; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 0.85rem; color: #00ff00; white-space: pre-wrap; text-align: left; box-shadow: inset 0 0 10px rgba(0,255,0,0.2); flex-grow: 1; }
+        .operations-log-console span.log-timestamp { color: #888; margin-right: 10px; }
+        .operations-log-console span.log-message-info { color: #00e0ff; }
+        .operations-log-console span.log-message-success { color: #30d158; }
+        .operations-log-console span.log-message-warning { color: #facc15; }
+        .operations-log-console span.log-message-error { color: #ff3b30; }
+        .operations-log-console span.engine-name { font-weight: bold; color: var(--page-theme-accent-color); }
+        .kpi-card { background-color: var(--page-card-background); border: 1px solid var(--page-border-color); border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.3); transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; }
+        .kpi-card .kpi-value { font-size: 2.5rem; font-weight: 800; color: var(--page-theme-accent-color); margin-bottom: 5px; transition: color 0.3s ease; }
+        .kpi-card .kpi-label { font-size: 0.9rem; color: var(--page-theme-text-muted); transition: color 0.3s ease; }
+        .chart-container { position: relative; height: 280px; width: 100%; background-color: #000000; border: 1px solid var(--page-border-color); border-radius: 8px; padding: 15px; box-shadow: 0 1px 5px rgba(0,0,0,0.3); margin-bottom: 20px; }
+        .node-card { background-color: var(--page-card-background); padding: 20px; border-radius: 12px; border: 1px solid var(--page-border-color); box-shadow: 0 2px 8px rgba(0,0,0,0.3); display: flex; flex-direction: column; gap: 10px; transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, opacity 0.5s ease; }
+        .node-card.active { box-shadow: 0 5px 20px rgba(250, 200, 20, 0.4); }
+        .node-card h3 { font-size: 1.2rem; font-weight: 600; color: var(--page-theme-accent-color); transition: color 0.3s ease; }
+        .progress-bar-container { width: 100%; background-color: var(--border-color-dark); border-radius: 5px; height: 8px; overflow: hidden; margin-top: 5px; transition: background-color 0.3s ease; }
+        .progress-bar-fill { height: 100%; width: 0%; background-color: var(--page-theme-accent-color); border-radius: 5px; transition: width 0.15s ease-out, background-color 0.3s ease; }
+        .metadata-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .metadata-table th, .metadata-table td { border: 1px solid var(--page-border-color); padding: 12px; text-align: left; font-size: 0.95rem; color: var(--page-theme-text-muted); transition: border-color 0.3s ease, color 0.3s ease; }
+        .metadata-table thead { background-color: var(--bg-light); color: var(--page-theme-text-light); font-weight: 600; transition: background-color 0.3s ease, color 0.3s ease; }
+        .metadata-table pre { background-color: var(--bg-dark); color: var(--text-light); padding: 15px; border-radius: 8px; overflow-x: auto; white-space: pre-wrap; word-break: break-all; font-size: 0.85rem; border: 1px solid var(--border-color-dark); transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
+        .generate-demo-button { background-color: var(--primary-color); color: white; padding: 12px 25px; border-radius: 8px; font-weight: 600; transition: all 0.2s ease; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+
+
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr; /* Stack sidebar and main content */
+            }
+            .sidebar {
+                height: auto; /* Allow sidebar to take natural height */
+                border-right: none;
+                border-bottom: 1px solid var(--border-color-dark); /* Add bottom border */
+            }
+            .main-content {
+                padding: 1rem; /* Reduce padding on smaller screens */
+            }
+            .feature-card {
+                padding: 1.5rem; /* Adjust padding */
+                margin: 1rem auto; /* Adjust margin */
+            }
+            .feature-card h2 {
+                font-size: 1.5rem; /* Smaller heading */
+            }
+            .modal-content {
+                width: 95%; /* Wider modal on small screens */
+                padding: 1rem; /* Reduce modal padding */
+            }
+            .modal-content h2 {
+                font-size: 2rem; /* Adjust modal title size */
+            }
+            .modal-content .flex.justify-between {
+                flex-direction: column; /* Stack modal header elements */
+                align-items: center;
+            }
+            .modal-content .flex.justify-between button {
+                margin-top: 1rem; /* Add space above close button */
+            }
+            .modal-content .grid {
+                grid-template-columns: 1fr; /* Stack grid items in modal */
+            }
+            .pricing-toggle-container {
+                flex-direction: column; /* Stack toggle buttons */
+                padding: 0.5rem;
+            }
+            .pricing-toggle-btn {
+                width: 100%; /* Full width buttons */
+                margin-bottom: 0.5rem; /* Space between stacked buttons */
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div id="app" class="dashboard-grid">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar p-6 flex flex-col">
+            <div class="flex items-center gap-3 mb-10">
+                <!-- Brand Logo RSA Flag -->
+                <span class="text-5xl">🇿🇦</span>
+                <div>
+                    <h1 class="font-space-grotesk text-xl font-bold text-white">Fruitful</h1>
+                    <p class="text-xs text-brand-gold uppercase tracking-widest">South Africa</p>
+                </div>
+            </div>
+            <!-- User Authentication Status -->
+            <div id="auth-status" class="mb-6 text-center text-sm">
+                <!-- Authentication status will be rendered here -->
+                <div class="spinner"></div> Loading authentication...
+            </div>
+            <button id="auth-button" class="action-button info-button w-full mb-6">Login</button>
+
+            <!-- Navigation Tabs Container -->
+            <nav id="nav-tabs" class="flex flex-col gap-2"></nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content p-8">
+            <div id="content-area">
+                <!-- Content will be dynamically loaded here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Structure for Brand Details -->
+    <div id="modal" class="modal-backdrop">
+        <div id="modal-content" class="modal-content rounded-2xl p-8">
+            <!-- Modal content will be dynamically loaded here -->
+        </div>
+    </div>
+
+    <!-- Modal Structure for Authentication (Login/Signup) -->
+    <div id="auth-modal" class="modal-backdrop">
+        <div id="auth-modal-content" class="modal-content rounded-2xl p-8">
+            <!-- Auth content will be dynamically loaded here -->
+        </div>
+    </div>
+
+    <script type="module">
+        // Firebase SDK Imports
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- EMBEDDED API KEYS ---
+        // These API keys are directly embedded for demonstration purposes.
+        // In a production environment, these should be securely managed (e.g., environment variables, backend service).
+        const apiKeys = {
+            "ExchangeRate-API": "40015d117bc7fff9495dcf28",
+            "PayPal (SDK)": "BAAGdPecRsf6dw_nIrWqUen0GdW0UsBZapp1Gn62xkPdD-Vqc-4lqWAidKK8LOObXux8pHJGjXknZoar6Q",
+            "PayPal (Starter)": "EMWGPGHNN8Y8E",
+            "PayPal (Pro)": "QGU3ZUQCMD49Q",
+            "PayPal (Enterprise)": "9C88S44F93M5J",
+            "PayPal (Banimal)": "YOUR_BANIMAL_PAYPAL_BUTTON_ID_HERE", // Placeholder, needs actual ID
+            "Google Maps": "AIzaSyBPG8dG29cl0TvYRGyLozejGed5Wj5Ab80",
+            "Spotify": "BQBDSZ232IQmSLVbROkxqdwNMoGhtitKOJBjDzE-Lu9YKsSK1RKVwXNfYfncP2wf6Ff6xcYlnGD75baEqOmd3XtxhU...", // Placeholder/truncated
+            "Gemini AI": "AIzaSyBGSDZATtITv5iIoB3rgKHBpWx9MrufxXE",
+            "Xero (Client ID)": "81B3573D453040508996432C5DAD565B",
+            "Xero (Client Secret)": "FIaJGmsaCcKR3Z8kWxPnQd04EhYy6_bImPmoitQDP1U6Smaq",
+            "Xero (Redirect URI)": "https://seedwave.faa.zone/admin_panel_xero.html",
+            "Xero (Webhook Key)": "2fd5LQV0TQDI3572Er/sg66zqEbl8mFWRyfX3XkoKFZGRLK2cZPGpWV/j4yMTU7aUpbgBCfeZkuHnQIwD/0igw=="
+        };
+        console.log("All 13 API keys have been loaded directly into the script.", apiKeys);
+
+        // Data structure for different brand categories
+        const data = {
+            sa_brands: [
+                { name: 'LoopPay™', glyph: '💳', desc: 'Construction-grade payout loop for RSA-based contractor networks.', master_license: '$6,500', monthly: '$92', master_license_alt: '$5,200', monthly_alt: '$75', systems: ['PulseTrade™', 'ClaimRoot™', 'DivLock™'], omnidrop: ['Construction UI', 'Vendor Payout API', 'ScrollLicense.pdf'], tagline: 'Real-time settlement for the build economy.' },
+                { name: 'VeldGroei™', glyph: '🌱', desc: 'Ancestral crop seed packs and soil tablets.', master_license: '$3,200', monthly: '$45', master_license_alt: '$2,500', monthly_alt: '$35', systems: ['ClaimRoot™', 'AgriID™'], omnidrop: ['Seed Vault Access', 'Soil Tablet Formula', 'Clan Brand Kit'], tagline: 'Securing local sovereignty over food genetics.' },
+                { name: 'BoerKraal™', glyph: '🏞️', desc: 'Family land rights management and digital mapping.', master_license: '$7,800', monthly: '$110', master_license_alt: '$6,500', monthly_alt: '$90', systems: ['ClaimRoot™', 'DwellCode Atlas™', 'NodeRite™'], omnidrop: ['Land Title Scroll', 'Geospatial API', 'Family Codex'], tagline: 'Digitally anchoring legacy farms.' },
+                { name: 'PlaasFix™', glyph: '🛠️', desc: 'Durable, off-grid rural tools and farm repair kits.', master_license: '$4,100', monthly: '$55', master_license_alt: '$3,300', monthly_alt: '$45', systems: ['VendorGenesis™', 'CrateLogic™'], omnidrop: ['Tool Blueprints', 'Repair Manual Scroll', 'Vendor Kiosk License'], tagline: 'Resilience, built to last.' },
+                { name: 'MielieFire™', glyph: '🌽', desc: 'Meal-based nutrition brand focused on mielie.', master_license: '$2,900', monthly: '$38', master_license_alt: '$2,300', monthly_alt: '$30', systems: ['Soaza Fresh™', 'AgriID™'], omnidrop: ['Recipe Scrolls', 'Survival Pack Layout', 'Brand Kit'], tagline: 'Tradition, combined with survival.' },
+                { name: 'OumaWys™', glyph: '👵', desc: 'Heritage cooking and preservation line.', master_license: '$3,500', monthly: '$48', master_license_alt: '$2,800', monthly_alt: '$40', systems: ['Soaza Fresh™', 'ClaimRoot™'], omnidrop: ['Preservation Scrolls', 'Sauce Recipes', 'Family Brand Kit'], tagline: 'Heritage cooking for the modern clan.' },
+            ],
+            logic_brands: [
+                 { name: 'OmniLogic™', glyph: '🧠', desc: 'Primary AI for systemic reasoning and decision logic.', master_license: '$15,000', monthly: '$250', royalty: '15%', systems: ['Corethink™', 'NestCortex™'], omnidrop: ['Logic Core API', 'Decision Tree Visualizer', 'Sovereign AI License'], tagline: 'The thinking core of the sovereign grid.' },
+                 { name: 'MineNest™', glyph: '🕸️', desc: 'Decentralized data storage and application mesh for mining operations.', master_license: '$12,000', monthly: '$180', royalty: '12%', systems: ['NodeNest™', 'VaultSync™'], omnidrop: ['Node Deployment Script', 'Mesh Management UI', 'Data Sovereignty Scroll'], tagline: 'Host anything, anywhere, without the cloud.' },
+                 { name: 'TraceNode™', glyph: '🛰️', desc: 'Atom-level tracking for assets, data, and signals.', master_license: '$10,500', monthly: '$150', royalty: '11%', systems: ['OmniTrace™', 'GhostTrace™'], omnidrop: ['Trace API', 'Real-time Signal Map', 'Chain of Custody License'], tagline: 'If it moves, TraceNode sees it.' },
+            ],
+            insurance_brands: [
+                { name: 'CrownGuard™', glyph: '👑', desc: 'Sovereign insurance layer for high-value assets and scrolls.', master_license: '$25,000', monthly: '$450', royalty: '18%', systems: ['ClaimRoot™', 'NodeRite™', 'FireRatio™'], omnidrop: ['Asset Vaulting API', 'Premium Calculation Engine', 'Sovereign Insurance Scroll'], tagline: 'Protecting what is truly yours.' },
+                { name: 'RiskRebate™', glyph: '📉', desc: 'Dynamic premium reduction system based on risk-lowering behavior.', master_license: '$18,000', monthly: '$220', royalty: '14%', systems: ['PulseIndex™', 'LiftHalo™', 'VaultPay™'], omnidrop: ['Risk Scoring API', 'Rebate Payout Script', 'Behavioral Analytics UI'], tagline: 'Your premium decreases as your sovereignty increases.' },
+                { name: 'ClanCover™', glyph: '🛡️', desc: 'Community-based risk pooling for clans and vendor groups.', master_license: '$15,000', monthly: '$180', royalty: '12%', systems: ['VaultPay™', 'ClanCore™', 'NodeRite™'], omnidrop: ['Clan Treasury UI', 'Smart Contract for Pooling', 'Community Governance Scroll'], tagline: 'The clan protects its own.' },
+            ]
+        };
+
+        // Navigation tab configuration
+        const tabs = [
+            { id: 'sa_brands', name: 'South African Brands', icon: '🇿🇦' },
+            { id: 'logic_brands', name: 'Logic & Automation', icon: '🧠' },
+            { id: 'insurance_brands', name: 'Sovereign Insurance', icon: '🛡️' },
+            { id: 'faa_demo', name: 'FAA.zone™ Live Demo', icon: '🚀' },
+        ];
+
+        // Get DOM elements
+        const navTabsContainer = document.getElementById('nav-tabs');
+        const contentArea = document.getElementById('content-area');
+        const modal = document.getElementById('modal');
+        const modalContent = document.getElementById('modal-content');
+        const authStatusDiv = document.getElementById('auth-status');
+        const authButton = document.getElementById('auth-button');
+        const authModal = document.getElementById('auth-modal');
+        const authModalContent = document.getElementById('auth-modal-content');
+
+
+        // State variables
+        let activeTab = 'sa_brands'; // Currently active tab
+        let usePartnerPricing = false; // Toggle for pricing display
+        // isLoggedIn is now managed by Firebase onAuthStateChanged
+        let currentUserId = null; // Stores Firebase UID
+        let authInstance = null; // Stores Firebase Auth instance
+        let dbInstance = null; // Stores Firebase Firestore instance
+
+
+        // Firebase Initialization and Auth Listener
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+
+        // Initialize Firebase and set up auth listener
+        function initializeFirebaseAndAuth() {
+            try {
+                const app = initializeApp(firebaseConfig);
+                authInstance = getAuth(app);
+                dbInstance = getFirestore(app);
+
+                onAuthStateChanged(authInstance, async (user) => {
+                    if (user) {
+                        currentUserId = user.uid;
+                        console.log("Firebase User Logged In:", user.uid);
+                        updateAuthStatusUI(true, user.email || user.uid);
+                    } else {
+                        currentUserId = null;
+                        console.log("Firebase User Logged Out or Anonymous.");
+                        updateAuthStatusUI(false);
+                        // Sign in anonymously if no user is logged in and no initial token is provided
+                        if (typeof __initial_auth_token === 'undefined') {
+                            await signInAnonymously(authInstance);
+                        }
+                    }
+                });
+
+                // Use the initial custom token if provided by the environment
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    signInWithCustomToken(authInstance, __initial_auth_token)
+                        .then((userCredential) => {
+                            console.log("Signed in with custom token:", userCredential.user.uid);
+                        })
+                        .catch((error) => {
+                            console.error("Error signing in with custom token:", error);
+                            // Fallback to anonymous sign-in if custom token fails
+                            signInAnonymously(authInstance).catch(anonError => console.error("Anonymous sign-in failed:", anonError));
+                        });
+                } else {
+                    // Sign in anonymously if no initial token is provided
+                    signInAnonymously(authInstance).catch(error => console.error("Anonymous sign-in failed:", error));
+                }
+
+            } catch (error) {
+                console.error("Error initializing Firebase:", error);
+                showCustomMessageBox(`Firebase initialization failed: ${error.message}`);
+            }
+        }
+
+
+        /**
+         * Renders the navigation tabs in the sidebar.
+         */
+        function renderNav() {
+            navTabsContainer.innerHTML = tabs.map(tab => `
+                <button onclick="switchTab('${tab.id}')"
+                        class="tab-button w-full text-left flex items-center gap-3 px-4 py-2 rounded-lg transition-colors hover:bg-brand-purple/50
+                        ${activeTab === tab.id ? 'active' : 'bg-transparent'}">
+                    <span class="text-2xl">${tab.icon}</span>
+                    <span class="font-semibold">${tab.name}</span>
+                </button>
+            `).join('');
+        }
+
+        /**
+         * Renders the main content area based on the active tab.
+         * Includes brand cards and feature sections.
+         */
+        function renderContent() {
+            // Filter brands based on search input
+            const searchInput = document.getElementById('brand-search-input');
+            const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+
+            // Handle 'faa_demo' tab separately
+            if (activeTab === 'faa_demo') {
+                renderFaaDemo();
+                return; // Exit function after rendering FAA demo tab
+            }
+
+            const currentData = data[activeTab].filter(brand =>
+                brand.name.toLowerCase().includes(searchTerm) ||
+                brand.desc.toLowerCase().includes(searchTerm) ||
+                brand.tagline.toLowerCase().includes(searchTerm)
+            );
+
+            let pricingToggleHTML = '';
+            if (activeTab === 'sa_brands') {
+                pricingToggleHTML = `
+                    <div class="pricing-toggle-container">
+                        <button id="standard-pricing-btn" class="pricing-toggle-btn ${!usePartnerPricing ? 'active' : ''}" onclick="setPricing(false)">Standard Pricing</button>
+                        <button id="partner-pricing-btn" class="pricing-toggle-btn ${usePartnerPricing ? 'active' : ''}" onclick="setPricing(true)">Partner Pricing</button>
+                    </div>
+                `;
+            }
+
+            contentArea.innerHTML = `
+                <h2 class="font-space-grotesk text-3xl font-bold mb-6 text-sky-300">${tabs.find(t => t.id === activeTab).name}</h2>
+                ${pricingToggleHTML}
+
+                <!-- Brand Search Input -->
+                <div class="mb-6">
+                    <input type="text" id="brand-search-input" placeholder="Search brands by name or description..." class="w-full p-3 rounded-lg border border-gray-700 bg-gray-800 text-text-light" value="${searchTerm}">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    ${currentData.length > 0 ? currentData.map((brand, index) => {
+                        // Determine which pricing to display
+                        const masterLicense = usePartnerPricing && brand.master_license_alt ? brand.master_license_alt : brand.master_license;
+                        const monthlyFee = usePartnerPricing && brand.monthly_alt ? brand.monthly_alt : brand.monthly;
+                        return `
+                            <div class="brand-card p-6 rounded-2xl cursor-pointer" onclick="showModal('${activeTab}', ${data[activeTab].indexOf(brand)})">
+                                <div class="flex items-center gap-4 mb-3">
+                                    <span class="text-4xl">${brand.glyph}</span>
+                                    <h3 class="font-space-grotesk text-xl font-bold text-white">${brand.name}</h3>
+                                </div>
+                                <p class="text-sm text-text-med">${brand.desc}</p>
+                                <div class="mt-4 pt-4 border-t border-gray-700">
+                                    <p class="text-sm text-gray-400">Master License: <span class="font-bold text-white">${masterLicense}</span></p>
+                                    <p class="text-sm text-gray-400">Monthly Fee: <span class="font-bold text-white">${monthlyFee}</span></p>
+                                </div>
+                            </div>`
+                    }).join('') : '<p class="text-text-med text-center col-span-full">No brands found matching your search.</p>'}
+                </div>
+
+                <!-- Feature Cards Section -->
+                <div class="mt-12">
+                    <!-- AI Security Advisor Feature -->
+                    <div class="feature-card">
+                        <h2><i class="fas fa-brain"></i>AI Security Advisor</h2>
+                        <textarea id="securityConceptInput" placeholder="e.g., Explain API key rotation..." rows="3"></textarea>
+                        <button class="action-button w-full" id="getAiExplanationBtn"><span class="mr-2">✨</span> Get AI Explanation</button>
+                        <div id="aiExplanationResult" class="response-box">Your AI explanation will appear here.</div>
+                    </div>
+
+                    <!-- Universal Integrations Feature -->
+                    <div class="feature-card">
+                        <h2><i class="fas fa-globe"></i>Universal Integrations</h2>
+
+                        <!-- Global Currency Converter -->
+                        <h3 class="text-lg font-bold text-sky-300 mb-2 mt-4 flex items-center gap-2"><i class="fas fa-coins"></i>Global Currency Converter</h3>
+                        <div class="flex flex-col md:flex-row gap-4 items-center mb-4">
+                            <input type="number" id="amount-input" value="1" class="flex-grow">
+                            <select id="from-currency-select" class="flex-grow"></select>
+                            <i class="fas fa-exchange-alt text-2xl"></i>
+                            <select id="to-currency-select" class="flex-grow"></select>
+                            <button id="convert-button" class="action-button">Convert</button>
+                        </div>
+                        <div id="currency-converter-result" class="response-box text-center text-lg">Converted amount will appear here...</div>
+
+                        <!-- Spotify Integration -->
+                        <h3 class="text-lg font-bold text-sky-300 mt-6 mb-2 flex items-center gap-2"><i class="fab fa-spotify" style="color: #1DB954;"></i>Spotify Integration</h3>
+                        <button id="spotify-fetch-btn" class="action-button info-button w-full">Fetch Spotify Track</button>
+                        <div id="spotify-result" class="response-box">Click to fetch mock Spotify data.</div>
+
+                        <!-- PayPal Integration -->
+                        <h3 class="text-lg font-bold text-sky-300 mt-6 mb-2 flex items-center gap-2"><i class="fab fa-paypal" style="color: #0070ba;"></i>PayPal Integration</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                            <button class="action-button info-button" onclick="initiateSdkCheckout()">SDK Checkout</button>
+                            <button class="action-button info-button" onclick="initiateActualPayPalCheckout('Starter')">Buy Starter</button>
+                            <button class="action-button info-button" onclick="initiateActualPayPalCheckout('Pro')">Buy Pro</button>
+                            <button class="action-button info-button" onclick="initiateActualPayPalCheckout('Enterprise')">Buy Enterprise</button>
+                            <button class="action-button info-button" onclick="initiateActualPayPalCheckout('Banimal')">Buy Banimal</button>
+                        </div>
+
+                        <!-- Xero Accounting Integration -->
+                        <h3 class="text-lg font-bold text-sky-300 mt-6 mb-2 flex items-center gap-2">
+                            <img src="https://www.xero.com/etc.clientlibs/xero-sites/clientlibs/dist/images/svg/logo.svg" alt="Xero Logo" class="h-6 bg-white rounded p-1">Xero Accounting
+                        </h3>
+                        <button id="connect-xero-btn" class="action-button info-button w-full">Connect to Xero</button>
+                        <div id="xero-result" class="response-box">Click to initiate Xero OAuth flow.</div>
+
+                        <!-- Google Maps Integration -->
+                        <h3 class="text-lg font-bold text-sky-300 mt-6 mb-2 flex items-center gap-2"><i class="fas fa-map-marked-alt"></i>Global Operations Map</h3>
+                        <button id="init-map-btn" class="action-button info-button w-full">Initialize Map</button>
+                        <div id="map-result" class="response-box">Map not initialized.</div>
+                    </div>
+
+                    <!-- Developer Tools / API Keys Section -->
+                    <div class="feature-card">
+                        <h2><i class="fas fa-code"></i>Developer Tools & API Keys</h2>
+                        <p class="text-sm text-text-med mb-4">Manage and copy your API keys for various integrations. Keys are masked for security.</p>
+                        <div class="grid grid-cols-1 gap-4">
+                            ${Object.entries(apiKeys).map(([keyName, keyValue]) => `
+                                <div class="flex items-center justify-between bg-gray-800 p-3 rounded-lg border border-gray-700">
+                                    <span class="font-semibold text-white">${keyName}:</span>
+                                    <span class="font-mono text-sm text-text-med break-all ml-4">${keyValue.substring(0, 8)}...${keyValue.substring(keyValue.length - 4)}</span>
+                                    <button class="action-button info-button px-3 py-1 ml-4" onclick="copyToClipboard('${keyValue}', this)">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Contact Us Form -->
+                    <div class="feature-card">
+                        <h2><i class="fas fa-envelope"></i>Contact Us</h2>
+                        <p class="text-text-med mb-4">Have a question or feedback? Send us a message!</p>
+                        <form id="contact-form">
+                            <input type="text" id="contact-name" placeholder="Your Name" required>
+                            <input type="email" id="contact-email" placeholder="Your Email" required>
+                            <textarea id="contact-message" placeholder="Your Message" rows="5" required></textarea>
+                            <button type="submit" class="action-button w-full">Send Message</button>
+                        </form>
+                        <div id="contact-form-status" class="response-box mt-4"></div>
+                    </div>
+
+                    <!-- Latest News & Updates Section -->
+                    <div class="feature-card">
+                        <h2><i class="fas fa-newspaper"></i>Latest News & Updates</h2>
+                        <div id="news-updates-container" class="space-y-4">
+                            <!-- News items will be dynamically loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Theme Customization -->
+                    <div class="feature-card">
+                        <h2><i class="fas fa-paint-brush"></i>Theme Customization</h2>
+                        <p class="text-text-med mb-4">Switch between different dashboard themes.</p>
+                        <div class="flex gap-4">
+                            <button id="dark-theme-btn" class="action-button info-button flex-1">Dark Theme</button>
+                            <button id="light-theme-btn" class="action-button flex-1 bg-gray-500 hover:bg-gray-600">Light Theme</button>
+                        </div>
+                    </div>
+
+                </div>
+            `;
+            // Re-attach event listeners after content is rendered
+            setupEventListeners();
+        }
+
+        /**
+         * Toggles between standard and partner pricing.
+         * @param {boolean} isPartner - True to use partner pricing, false for standard.
+         */
+        window.setPricing = (isPartner) => {
+            usePartnerPricing = isPartner;
+            renderContent(); // Re-render content to update prices
+        }
+
+        /**
+         * Switches the active tab and re-renders the navigation and content.
+         * @param {string} tabId - The ID of the tab to switch to.
+         */
+        window.switchTab = (tabId) => {
+            activeTab = tabId;
+            renderNav();
+            renderContent();
+        }
+
+        /**
+         * Displays the modal with detailed information about a selected brand.
+         * @param {string} tabId - The ID of the current tab (e.g., 'sa_brands').
+         * @param {number} index - The index of the brand within the data array.
+         */
+        window.showModal = (tabId, index) => {
+            const brand = data[tabId][index];
+            // Determine which pricing to display in the modal
+            const masterLicense = usePartnerPricing && brand.master_license_alt ? brand.master_license_alt : brand.master_license;
+            const monthlyFee = usePartnerPricing && brand.monthly_alt ? brand.monthly_alt : brand.monthly;
+
+            const isLoopPay = brand.name === 'LoopPay™';
+            const advancedToolsHTML = isLoopPay ? `
+                <div class="mt-8 pt-6 border-t border-gray-700">
+                    <h4 class="font-space-grotesk text-xl font-bold text-sky-300 mb-4">Sovereign Tools</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                        <div class="bg-gray-800 p-4 rounded-lg flex flex-col items-center justify-center">
+                            <i class="fas fa-chart-line text-3xl text-brand-purple mb-2"></i>
+                            <h5 class="font-semibold text-white mb-2">Live Metrics</h5>
+                            <button onclick="showMetrics()" class="bg-purple-600 text-white text-sm font-bold py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors w-full">View</button>
+                        </div>
+                        <div class="bg-gray-800 p-4 rounded-lg flex flex-col items-center justify-center">
+                            <i class="fas fa-file-pdf text-3xl text-brand-purple mb-2"></i>
+                            <h5 class="font-semibold text-white mb-2">Manual</h5>
+                            <button onclick="downloadManual()" class="bg-sky-500 text-white text-sm font-bold py-2 px-4 rounded-lg hover:bg-sky-600 transition-colors w-full">Download</button>
+                        </div>
+                        <div class="bg-gray-800 p-4 rounded-lg flex flex-col items-center justify-center">
+                            <i class="fas fa-play-circle text-3xl text-brand-purple mb-2"></i>
+                            <h5 class="font-semibold text-white mb-2">Live Demo</h5>
+                            <button onclick="runDemo()" class="bg-green-500 text-white text-sm font-bold py-2 px-4 rounded-lg hover:bg-green-600 transition-colors w-full">Launch</button>
+                        </div>
+                    </div>
+                </div>
+            ` : '';
+
+            modalContent.innerHTML = `
+                <div class="flex justify-between items-start mb-6">
+                    <div class="flex items-center gap-4">
+                        <span class="text-6xl">${brand.glyph}</span>
+                        <div>
+                            <h2 class="font-space-grotesk text-4xl font-bold text-white">${brand.name}</h2>
+                            <p class="text-brand-gold font-semibold text-lg">${brand.tagline}</p>
+                        </div>
+                    </div>
+                    <button onclick="closeModal()" class="text-gray-400 hover:text-white text-4xl font-bold">&times;</button>
+                </div>
+                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 text-base">
+                    <div class="bg-gray-800 p-5 rounded-lg">
+                        <h4 class="font-space-grotesk text-lg font-bold text-sky-300 mb-3">Licensing & Royalties</h4>
+                        <p><strong>Master License:</strong> <span class="text-brand-gold">${masterLicense}</span></p>
+                        <p><strong>Monthly Fee:</strong> ${monthlyFee}</p>
+                        <p><strong>Royalty Split:</strong> ${brand.royalty || 'N/A'}</p> <!-- Display royalty if available -->
+                    </div>
+                    <div class="bg-gray-800 p-5 rounded-lg">
+                        <h4 class="font-space-grotesk text-lg font-bold text-sky-300 mb-3">Integrated Systems</h4>
+                        <ul class="list-disc list-inside text-text-med">
+                            ${brand.systems.map(sys => `<li>${sys}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div class="bg-gray-800 p-5 rounded-lg lg:col-span-2">
+                        <h4 class="font-space-grotesk text-lg font-bold text-sky-300 mb-3">Omnidrop™ Kit</h4>
+                        <p class="text-text-med">${brand.omnidrop.join(', ')}</p>
+                    </div>
+                </div>
+
+                ${advancedToolsHTML}
+
+                <div class="mt-10 text-center">
+                    <button class="bg-brand-gold text-black font-bold py-3 px-8 rounded-lg hover:bg-yellow-300 transition-colors text-lg">
+                        Initiate Licensing Scroll
+                    </button>
+                </div>
+            `;
+            modal.classList.add('active'); // Show the modal
+        }
+
+        /**
+         * Closes the currently open modal.
+         */
+        window.closeModal = () => {
+            modal.classList.remove('active'); // Hide the modal
+        }
+
+        /**
+         * Simulates showing metrics for LoopPay™.
+         */
+        window.showMetrics = () => {
+            const demoModal = document.createElement('div');
+            demoModal.className = 'demo-modal';
+            demoModal.onclick = () => demoModal.remove(); // Close on click
+            demoModal.innerHTML = `
+                <div class="demo-content text-left">
+                    <p class="text-green-400">> Fetching live metrics for LoopPay™...</p>
+                    <p class="text-white mt-4">> Scroll ID: LP-RSA-001</p>
+                    <p class="text-white">> Active Nodes: 178</p>
+                    <p class="text-white">> Payout Velocity: 9.1s</p>
+                    <p class="text-white">> Avg. Yield: R289,104.50/mo</p>
+                    <p class="text-green-400">> Status: Operational</p>
+                    <button class="action-button mt-4" onclick="this.parentNode.parentNode.remove()">Close</button>
+                </div>
+            `;
+            document.body.appendChild(demoModal);
+        }
+
+        /**
+         * Simulates downloading a manual.
+         */
+        window.downloadManual = () => {
+            const pdfContent = 'This is the LoopPay™ user manual. It contains detailed instructions on how to set up and operate the LoopPay™ system for construction-grade payouts. Please refer to this document for all operational guidelines and troubleshooting steps.';
+            const blob = new Blob([pdfContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'LoopPay_Manual.txt'; // Download as a text file for simplicity
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showCustomMessageBox('LoopPay™ Manual download initiated!');
+        }
+
+        /**
+         * Simulates running a live demo for LoopPay™.
+         */
+        window.runDemo = () => {
+            const demoModal = document.createElement('div');
+            demoModal.className = 'demo-modal';
+            demoModal.onclick = () => demoModal.remove(); // Close on click
+            demoModal.innerHTML = `
+                <div class="demo-content">
+                    <p class="text-green-400">> Booting LoopPay™ Demo...</p>
+                    <p class="text-green-400">> Connecting to PulseTrade™ testnet...</p>
+                    <p class="text-green-400">> Connection successful.</p>
+                    <p class="text-white mt-4">> Simulating 9s payout cycle:</p>
+                    <p class="text-yellow-400">> [TX: 0x...a3f2] Payout to Vendor 1... SUCCESS</p>
+                    <p class="text-yellow-400">> [TX: 0x...b9c1] Payout to Vendor 2... SUCCESS</p>
+                    <p class="text-yellow-400">> [TX: 0x...c4a8] Payout to Vendor 3... SUCCESS</p>
+                    <p class="text-green-400 mt-4">> Demo complete. Click anywhere to close.</p>
+                    <button class="action-button mt-4" onclick="this.parentNode.parentNode.remove()">Close</button>
+                </div>
+            `;
+            document.body.appendChild(demoModal);
+        }
+
+        /**
+         * Calls the Gemini AI API to get an explanation for a given prompt.
+         * Displays loading state, result, or error.
+         * @param {string} prompt - The text prompt to send to the AI.
+         * @param {HTMLElement} resultElement - The DOM element to display the AI's response.
+         * @param {HTMLElement} buttonElement - The button element to disable during the API call.
+         */
+        async function callGeminiApi(prompt, resultElement, buttonElement) {
+            resultElement.innerHTML = '<div class="spinner"></div><span class="ml-2">Calling AI...</span>';
+            buttonElement.disabled = true; // Disable button during API call
+            const apiKey = apiKeys["Gemini AI"];
+            console.log("Using embedded Gemini AI key:", apiKey.slice(0, 4) + '...'); // Log a partial key for security
+
+            try {
+                const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(`API Error: ${error.error.message}`);
+                }
+
+                const result = await response.json();
+                if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
+                    resultElement.textContent = result.candidates[0].content.parts[0].text;
+                } else {
+                    throw new Error("Unexpected API response format.");
+                }
+            } catch (error) {
+                resultElement.textContent = `Error: ${error.message}`;
+            } finally {
+                buttonElement.disabled = false; // Re-enable button after call
+            }
+        }
+
+        /**
+         * Fetches and populates currency codes into the select dropdowns
+         * for the currency converter.
+         */
+        async function populateCurrencies() {
+            const apiKey = apiKeys["ExchangeRate-API"];
+            console.log("Using ExchangeRate-API key:", apiKey);
+            try {
+                const response = await fetch(`https://v6.exchangerate-api.com/v6/${apiKey}/codes`);
+                const data = await response.json();
+
+                if (data.result === 'success') {
+                    const fromSelect = document.getElementById('from-currency-select');
+                    const toSelect = document.getElementById('to-currency-select');
+                    fromSelect.innerHTML = ''; // Clear existing options
+                    toSelect.innerHTML = ''; // Clear existing options
+
+                    data.supported_codes.forEach(code => {
+                        const option = `<option value="${code[0]}">${code[0]} - ${code[1]}</option>`;
+                        fromSelect.innerHTML += option;
+                        toSelect.innerHTML += option;
+                    });
+                    // Set default selected currencies
+                    fromSelect.value = "USD";
+                    toSelect.value = "ZAR";
+                } else {
+                    throw new Error(data['error-type']);
+                }
+            } catch (error) {
+                document.getElementById('currency-converter-result').textContent = `Error fetching currencies: ${error.message}`;
+            }
+        }
+
+        /**
+         * Converts currency based on user input using the ExchangeRate-API.
+         */
+        async function convertCurrency() {
+            const apiKey = apiKeys["ExchangeRate-API"];
+            const amount = document.getElementById('amount-input').value;
+            const from = document.getElementById('from-currency-select').value;
+            const to = document.getElementById('to-currency-select').value;
+            const resultDiv = document.getElementById('currency-converter-result');
+
+            // Basic validation
+            if (!amount || isNaN(amount) || amount <= 0) {
+                resultDiv.textContent = "Please enter a valid amount.";
+                return;
+            }
+
+            resultDiv.innerHTML = '<div class="spinner"></div>'; // Show loading spinner
+            try {
+                const response = await fetch(`https://v6.exchangerate-api.com/v6/${apiKey}/pair/${from}/${to}/${amount}`);
+                const data = await response.json();
+
+                if (data.result === 'success') {
+                    resultDiv.textContent = `${amount} ${from} = ${data.conversion_result.toFixed(2)} ${to}`;
+                } else {
+                    throw new Error(data['error-type']);
+                }
+            } catch (error) {
+                resultDiv.textContent = `Error: ${error.message}`;
+            }
+        }
+
+        /**
+         * Simulates initiating a PayPal SDK checkout.
+         * In a real application, this would involve loading and interacting with the PayPal SDK.
+         */
+        window.initiateSdkCheckout = () => {
+            const sdkKey = apiKeys["PayPal (SDK)"];
+            console.log("Initiating PayPal SDK Checkout. Using SDK Key:", sdkKey.slice(0,10) + '...');
+            // Using a custom message box instead of alert()
+            showCustomMessageBox(`Simulating PayPal SDK Checkout.\nSDK Key: ${sdkKey}`);
+        }
+
+        /**
+         * Initiates an actual PayPal checkout by redirecting to PayPal's hosted button URL.
+         * @param {string} plan - The PayPal plan (e.g., 'Starter', 'Pro').
+         */
+        window.initiateActualPayPalCheckout = (plan) => {
+            const buttonId = apiKeys[`PayPal (${plan})`];
+            if (!buttonId || buttonId.includes("YOUR_")) {
+                // Using a custom message box instead of alert()
+                showCustomMessageBox(`Placeholder Button ID for ${plan}. Please replace it in the script.`);
+                return;
+            }
+            console.log(`Redirecting to PayPal for ${plan} Plan. Using Button ID: ${buttonId}`);
+            const paypalUrl = `https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=${buttonId}`;
+            window.open(paypalUrl, '_blank'); // Open in a new tab
+        }
+
+        /**
+         * Simulates fetching Spotify data.
+         * In a real application, this would involve making an API call to Spotify.
+         */
+        function fetchSpotifyData() {
+            const accessToken = apiKeys["Spotify"];
+            const resultDiv = document.getElementById('spotify-result');
+            console.log("Using Spotify Access Token:", accessToken.slice(0, 10) + '...');
+            resultDiv.textContent = `Using Spotify Access Token: ${accessToken.slice(0,10)}...\n(In a real app, an API call would be made here to fetch track data). \n\nExample Data:\nTrack: Blinding Lights\nArtist: The Weeknd`;
+        }
+
+        /**
+         * Initiates the Xero OAuth flow by redirecting the user to Xero's authorization URL.
+         */
+        function connectToXero() {
+            const clientId = apiKeys["Xero (Client ID)"];
+            const redirectUri = apiKeys["Xero (Redirect URI)"];
+            const webhookKey = apiKeys["Xero (Webhook Key)"]; // Webhook key is for server-side
+            const scope = "openid profile email accounting.transactions accounting.settings offline_access"; // Required scopes
+            // Construct the Xero authorization URL
+            const xeroAuthUrl = `https://login.xero.com/identity/connect/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&state=12345`; // 'state' is for CSRF protection
+
+            const resultDiv = document.getElementById('xero-result');
+            resultDiv.innerHTML = `Redirecting to Xero...<br>Client ID: ${clientId}<br>Redirect URI: ${redirectUri}<br>Webhook Key (for server): ${webhookKey.slice(0,10)}...`;
+            console.log("Initiating Xero connection. URL:", xeroAuthUrl);
+            window.open(xeroAuthUrl, '_blank'); // Open Xero auth in a new tab
+        }
+
+        /**
+         * Simulates initializing a Google Map.
+         * In a real application, this would load the Google Maps JavaScript API and render a map.
+         */
+        function initializeMap() {
+            const apiKey = apiKeys["Google Maps"];
+            const mapResultDiv = document.getElementById('map-result');
+            if (!apiKey) {
+                mapResultDiv.innerHTML = '<p class="text-center text-red-500 p-4">Google Maps API Key not found.</p>';
+                return;
+            }
+            console.log("Initializing Google Map. Using API Key:", apiKey.slice(0,10) + '...');
+            mapResultDiv.innerHTML = `Map Initialized. Using API Key: ${apiKey.slice(0,10)}...<br>(In a real app, this would load the Google Maps JS SDK and render a map here).`;
+
+            // Dynamically load Google Maps script if not already loaded
+            if (!window.google || !window.google.maps) {
+                const script = document.createElement('script');
+                script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=renderGoogleMap`;
+                script.async = true;
+                script.defer = true;
+                document.head.appendChild(script);
+            } else {
+                renderGoogleMap(); // If already loaded, just render the map
+            }
+        }
+
+        /**
+         * Renders the Google Map. This function is called as a callback by the Google Maps API script.
+         */
+        window.renderGoogleMap = () => {
+            const mapElement = document.getElementById("map");
+            if (!mapElement) {
+                console.error("Map element not found.");
+                return;
+            }
+            const steelpoort = { lat: -24.733, lng: 30.217 };
+            const map = new google.maps.Map(mapElement, {
+                zoom: 10,
+                center: steelpoort,
+                mapTypeId: google.maps.MapTypeId.ROADMAP // Ensure a default map type
+            });
+            new google.maps.Marker({
+                position: steelpoort,
+                map: map,
+                title: "Steelpoort, SA"
+            });
+        }
+
+
+        /**
+         * Copies text to the clipboard.
+         * @param {string} text - The text to copy.
+         * @param {HTMLElement} button - The button element that triggered the copy.
+         */
+        window.copyToClipboard = (text, button) => {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed'; // Avoid scrolling to bottom
+            textarea.style.opacity = '0'; // Hide it
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+                showCustomMessageBox('Failed to copy text. Please copy manually.');
+            } finally {
+                document.body.removeChild(textarea);
+            }
+        };
+
+
+        /**
+         * Updates the authentication status display in the UI.
+         * @param {boolean} loggedIn - True if a user is logged in, false otherwise.
+         * @param {string} userIdentifier - The user's email or UID to display.
+         */
+        function updateAuthStatusUI(loggedIn, userIdentifier = '') {
+            if (loggedIn) {
+                authStatusDiv.innerHTML = `<p class="text-green-400">Logged in as: <span class="font-bold">${userIdentifier}</span></p><p class="text-xs text-text-med">UID: ${currentUserId}</p>`;
+                authButton.textContent = 'Logout';
+                authButton.classList.remove('info-button');
+                authButton.classList.add('bg-red-500', 'hover:bg-red-600');
+                authButton.onclick = async () => {
+                    try {
+                        await signOut(authInstance);
+                        showCustomMessageBox('Logged out successfully!');
+                    } catch (error) {
+                        console.error("Error signing out:", error);
+                        showCustomMessageBox(`Error logging out: ${error.message}`);
+                    }
+                };
+            } else {
+                authStatusDiv.innerHTML = '<p class="text-red-400">Not logged in</p>';
+                authButton.textContent = 'Login';
+                authButton.classList.remove('bg-red-500', 'hover:bg-red-600');
+                authButton.classList.add('info-button');
+                authButton.onclick = () => showAuthModal('login'); // Show login modal on click
+            }
+        }
+
+        /**
+         * Displays the authentication modal (login or signup).
+         * @param {string} type - 'login' or 'signup'.
+         */
+        window.showAuthModal = (type = 'login') => {
+            authModalContent.innerHTML = `
+                <div class="flex justify-between items-start mb-6">
+                    <h2 class="font-space-grotesk text-3xl font-bold text-white">${type === 'login' ? 'Login' : 'Sign Up'}</h2>
+                    <button onclick="closeAuthModal()" class="text-gray-400 hover:text-white text-4xl font-bold">&times;</button>
+                </div>
+                <form id="auth-form" class="space-y-4">
+                    <div>
+                        <label for="auth-email" class="block text-text-med text-sm font-bold mb-2">Email:</label>
+                        <input type="email" id="auth-email" class="w-full p-3 rounded-lg border border-gray-700 bg-gray-800 text-text-light" required>
+                    </div>
+                    <div>
+                        <label for="auth-password" class="block text-text-med text-sm font-bold mb-2">Password:</label>
+                        <input type="password" id="auth-password" class="w-full p-3 rounded-lg border border-gray-700 bg-gray-800 text-text-light" required>
+                    </div>
+                    <button type="submit" id="auth-submit-btn" class="action-button w-full">
+                        ${type === 'login' ? 'Login' : 'Sign Up'}
+                    </button>
+                    <div id="auth-error-message" class="text-red-500 text-center mt-4"></div>
+                </form>
+                <p class="text-center text-text-med mt-4">
+                    ${type === 'login' ? 'Don\'t have an account?' : 'Already have an account?'}
+                    <button onclick="showAuthModal('${type === 'login' ? 'signup' : 'login'}')" class="text-primary-color hover:underline">
+                        ${type === 'login' ? 'Sign Up' : 'Login'}
+                    </button>
+                </p>
+            `;
+            authModal.classList.add('active'); // Show the auth modal
+
+            document.getElementById('auth-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('auth-email').value;
+                const password = document.getElementById('auth-password').value;
+                const errorMessageDiv = document.getElementById('auth-error-message');
+                const submitBtn = document.getElementById('auth-submit-btn');
+
+                errorMessageDiv.textContent = '';
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<div class="spinner"></div> Authenticating...';
+
+                try {
+                    if (type === 'login') {
+                        await signInWithEmailAndPassword(authInstance, email, password);
+                        showCustomMessageBox('Logged in successfully!');
+                    } else {
+                        await createUserWithEmailAndPassword(authInstance, email, password);
+                        showCustomMessageBox('Account created successfully! You are now logged in.');
+                    }
+                    closeAuthModal(); // Close modal on success
+                } catch (error) {
+                    let message = error.message;
+                    // Provide more user-friendly messages for common Firebase auth errors
+                    if (error.code === 'auth/invalid-email') message = 'Invalid email address.';
+                    else if (error.code === 'auth/user-disabled') message = 'This account has been disabled.';
+                    else if (error.code === 'auth/user-not-found') message = 'No user found with this email.';
+                    else if (error.code === 'auth/wrong-password') message = 'Incorrect password.';
+                    else if (error.code === 'auth/email-already-in-use') message = 'Email already in use. Try logging in.';
+                    else if (error.code === 'auth/weak-password') message = 'Password should be at least 6 characters.';
+                    errorMessageDiv.textContent = message;
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = type === 'login' ? 'Login' : 'Sign Up';
+                }
+            });
+        };
+
+        /**
+         * Closes the authentication modal.
+         */
+        window.closeAuthModal = () => {
+            authModal.classList.remove('active');
+        };
+
+
+        /**
+         * Handles the submission of the contact form.
+         * @param {Event} event - The form submission event.
+         */
+        function handleContactFormSubmit(event) {
+            event.preventDefault(); // Prevent default form submission
+            const name = document.getElementById('contact-name').value;
+            const email = document.getElementById('contact-email').value;
+            const message = document.getElementById('contact-message').value;
+            const statusDiv = document.getElementById('contact-form-status');
+
+            if (!name || !email || !message) {
+                statusDiv.textContent = 'Please fill in all fields.';
+                statusDiv.style.color = 'var(--status-error)';
+                return;
+            }
+
+            statusDiv.innerHTML = '<div class="spinner"></div><span class="ml-2">Sending message...</span>';
+            statusDiv.style.color = 'var(--text-light)';
+
+            // Simulate API call
+            setTimeout(() => {
+                statusDiv.textContent = `Thank you, ${name}! Your message has been received. We will respond to ${email} shortly.`;
+                statusDiv.style.color = 'var(--secondary-color)';
+                document.getElementById('contact-form').reset(); // Clear form
+            }, 1500);
+        }
+
+        /**
+         * Mock data for news items.
+         */
+        const newsItems = [
+            { title: 'New OmniLogic™ AI Model Released', date: 'July 1, 2025', content: 'Our latest OmniLogic™ AI model, "Nexus Prime," offers enhanced decision-making capabilities and improved real-time data processing.' },
+            { title: 'VeldGroei™ Expands Seed Vault', date: 'June 20, 2025', content: 'VeldGroei™ announces the expansion of its secure ancestral seed vault, ensuring greater biodiversity and food security for future generations.' },
+            { title: 'CrownGuard™ Introduces Digital Asset Protection', date: 'June 5, 2025', content: 'CrownGuard™ now offers sovereign insurance for digital assets and blockchain-based scrolls, providing unparalleled security.' },
+        ];
+
+        /**
+         * Renders the news and updates items.
+         */
+        function renderNewsUpdates() {
+            const container = document.getElementById('news-updates-container');
+            if (container) {
+                container.innerHTML = newsItems.map(item => `
+                    <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
+                        <h3 class="font-semibold text-white text-lg mb-1">${item.title}</h3>
+                        <p class="text-xs text-text-med mb-2">${item.date}</p>
+                        <p class="text-sm text-text-light">${item.content}</p>
+                    </div>
+                `).join('');
+            }
+        }
+
+        /**
+         * Toggles the theme of the dashboard.
+         * @param {string} theme - The theme to apply ('dark' or 'light').
+         */
+        function toggleTheme(theme) {
+            const body = document.body;
+            const darkThemeBtn = document.getElementById('dark-theme-btn');
+            const lightThemeBtn = document.getElementById('light-theme-btn');
+
+            if (theme === 'dark') {
+                body.classList.remove('light-theme');
+                darkThemeBtn.classList.add('info-button');
+                darkThemeBtn.classList.remove('bg-gray-500', 'hover:bg-gray-600');
+                lightThemeBtn.classList.remove('info-button');
+                lightThemeBtn.classList.add('bg-gray-500', 'hover:bg-gray-600');
+                showCustomMessageBox('Switched to Dark Theme.');
+            } else if (theme === 'light') {
+                body.classList.add('light-theme');
+                lightThemeBtn.classList.add('info-button');
+                lightThemeBtn.classList.remove('bg-gray-500', 'hover:bg-gray-600');
+                darkThemeBtn.classList.remove('info-button');
+                darkThemeBtn.classList.add('bg-gray-500', 'hover:bg-gray-600');
+                showCustomMessageBox('Switched to Light Theme.');
+            }
+        }
+
+        // Mock data for FAA.zone demo node details
+        const faaNodeDetails = {
+            Corethink: {
+                id: 'CT-001-ALPHA',
+                status: 'Operational',
+                version: '2.1.0-beta',
+                last_update: '2025-07-01T10:30:00Z',
+                payload_example: {
+                    type: 'decision_request',
+                    timestamp: '2025-07-07T14:00:00Z',
+                    data: {
+                        input_vector: [0.8, 0.2, 0.5],
+                        context: 'supply_chain_optimization'
+                    },
+                    expected_output: 'optimal_route_suggestion'
+                }
+            },
+            TruthWeight: {
+                id: 'TW-005-GAMMA',
+                status: 'Calibrating',
+                version: '1.5.2',
+                last_update: '2025-07-05T08:15:00Z',
+                payload_example: {
+                    type: 'data_validation',
+                    source: 'sensor_array_A',
+                    value: 123.45,
+                    threshold: 120.0,
+                    confidence_score: 0.98
+                }
+            },
+            EchoSynth: {
+                id: 'ES-003-DELTA',
+                status: 'Active',
+                version: '3.0.1',
+                last_update: '2025-06-28T16:45:00Z',
+                payload_example: {
+                    type: 'synthetic_data_generation',
+                    model: 'financial_trends',
+                    parameters: {
+                        duration_days: 30,
+                        volatility: 'medium'
+                    },
+                    output_format: 'json'
+                }
+            },
+            AutoSigil: {
+                id: 'AS-002-BETA',
+                status: 'Idle',
+                version: '1.0.0',
+                last_update: '2025-07-02T11:00:00Z',
+                payload_example: {
+                    type: 'signature_verification',
+                    document_hash: 'abc123def456',
+                    signer_id: 'user_X',
+                    timestamp: '2025-07-07T14:05:00Z'
+                }
+            },
+            PulseIndex: {
+                id: 'PI-007-EPSILON',
+                status: 'Monitoring',
+                version: '2.2.0',
+                last_update: '2025-07-07T09:00:00Z',
+                payload_example: {
+                    type: 'market_pulse_query',
+                    asset_class: 'commodities',
+                    timeframe: '24h',
+                    indicators: ['volume', 'price_change']
+                }
+            },
+            OmniTrace: {
+                id: 'OT-009-ZETA',
+                status: 'Tracing',
+                version: '1.1.0',
+                last_update: '2025-07-07T13:00:00Z',
+                payload_example: {
+                    type: 'asset_tracking',
+                    asset_id: 'asset_Y',
+                    location_history: true,
+                    realtime_feed: true
+                }
+            },
+            LiftHalo: {
+                id: 'LH-004-ETA',
+                status: 'Optimizing',
+                version: '1.3.0',
+                last_update: '2025-07-06T18:00:00Z',
+                payload_example: {
+                    type: 'efficiency_optimization',
+                    process_id: 'process_Z',
+                    metrics: {
+                        energy_consumption: 'high',
+                        waste_output: 'medium'
+                    },
+                    target_reduction: '15%'
+                }
+            },
+            MirrorLoop: {
+                id: 'ML-006-THETA',
+                status: 'Synchronized',
+                version: '2.0.0',
+                last_update: '2025-07-07T11:00:00Z',
+                payload_example: {
+                    type: 'data_replication',
+                    source_node: 'node_A',
+                    destination_node: 'node_B',
+                    data_volume_gb: 100,
+                    checksum_verified: true
+                }
+            },
+            FireRatio: {
+                id: 'FR-008-IOTA',
+                status: 'Analyzing',
+                version: '1.0.5',
+                last_update: '2025-07-04T09:30:00Z',
+                payload_example: {
+                    type: 'risk_assessment',
+                    asset_value: 500000,
+                    risk_factors: ['geopolitical_instability', 'market_volatility'],
+                    insurance_type: 'sovereign_asset'
+                }
+            }
+        };
+
+        /**
+         * Renders the content for the 'FAA.zone™ Live Demo' tab.
+         */
+        function renderFaaDemo() {
+            contentArea.innerHTML = `
+                <div class="container">
+                    <h1 class="dashboard-section-title">FAA.zone™ Live Trial Dashboard</h1>
+                    <p class="text-xl text-page-theme-text-muted text-center mb-8 max-w-3xl mx-auto">
+                        Configure your scenario to experience the real-time power of our Atom-Level Engines. See how each node streamlines operations, enhances security, and drives tangible business outcomes.
+                    </p>
+
+                    <!-- KPI Cards Section -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                        <div class="kpi-card">
+                            <div class="kpi-value">128</div>
+                            <div class="kpi-label">Total Active Nodes</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-value">9.8 TB/day</div>
+                            <div class="kpi-label">Data Throughput</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-value">0</div>
+                            <div class="kpi-label">Security Incidents</div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+                        <div id="demo-controls-panel" class="lg:col-span-1 dashboard-card">
+                            <h2 class="text-2xl font-bold mb-6 text-center text-page-theme-accent-color">Configure Your Demo</h2>
+                            <p class="text-text-med mb-4">Click "Generate Live Demo" to simulate real-time operations across our Atom-Level Engines.</p>
+                            <button id="generateDemoBtn" class="generate-demo-button mt-8 w-full"><i class="fas fa-play-circle mr-2"></i> Generate Live Demo</button>
+                        </div>
+                        <div id="operationsLog" class="operations-log-console lg:col-span-2"></div>
+                    </div>
+
+                    <div id="coreEnginesTab" class="demo-tab-content pt-8">
+                        <h2 class="dashboard-section-title">Atom-Level Engines: Operational Impact</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- Node cards will be injected here by JS -->
+                        </div>
+                    </div>
+                </div>
+            `;
+            setupFaaDemo();
+        }
+
+        /**
+         * Sets up the interactive elements and logic for the FAA.zone demo.
+         */
+        function setupFaaDemo() {
+            const nodeContainer = document.querySelector('#coreEnginesTab .grid');
+            const logConsole = document.getElementById('operationsLog');
+            const generateBtn = document.getElementById('generateDemoBtn');
+            const coreAbilities = Object.keys(faaNodeDetails); // Use keys from faaNodeDetails for names
+            
+            // Populate node cards
+            nodeContainer.innerHTML = coreAbilities.map(name => `
+                <div class="node-card" id="card-${name}">
+                    <h3 class="flex items-center gap-2"><i class="fas fa-microchip"></i>${name}™</h3>
+                    <div class="progress-bar-container"><div class="progress-bar-fill" id="${name.toLowerCase()}ProgressBar"></div></div>
+                    <button class="action-button info-button mt-2 w-full" onclick="showNodeDetailsModal('${name}')">View Details</button>
+                </div>
+            `).join('');
+
+            generateBtn.addEventListener('click', () => {
+                logConsole.innerHTML = ''; // Clear log on new demo
+                let delay = 0;
+                coreAbilities.forEach(name => {
+                    setTimeout(() => {
+                        const card = document.getElementById(`card-${name}`);
+                        const progressBar = document.getElementById(`${name.toLowerCase()}ProgressBar`);
+                        
+                        // Reset progress bar
+                        progressBar.style.width = '0%';
+                        card.classList.remove('active');
+
+                        // Simulate processing
+                        card.classList.add('active');
+                        logConsole.innerHTML += `<span class="log-timestamp">[${new Date().toLocaleTimeString()}]</span> <span class="engine-name">${name}™:</span> <span class="log-message-info">Initiating data processing...</span><br>`;
+                        logConsole.scrollTop = logConsole.scrollHeight;
+                        
+                        // Simulate progress
+                        let progress = 0;
+                        const interval = setInterval(() => {
+                            progress += 10;
+                            if (progress <= 100) {
+                                progressBar.style.width = `${progress}%`;
+                            } else {
+                                clearInterval(interval);
+                                progressBar.style.width = '100%'; // Ensure it reaches 100%
+                                logConsole.innerHTML += `<span class="log-timestamp">[${new Date().toLocaleTimeString()}]</span> <span class="engine-name">${name}™:</span> <span class="log-message-success">Operation complete.</span><br>`;
+                                logConsole.scrollTop = logConsole.scrollHeight;
+                                setTimeout(() => card.classList.remove('active'), 500); // Remove active state after a short delay
+                            }
+                        }, 100); // Update every 100ms
+                        
+                    }, delay);
+                    delay += 500; // Stagger the start of each node's processing
+                });
+            });
+        }
+
+        /**
+         * Displays a modal with detailed information for a specific FAA node.
+         * @param {string} nodeName - The name of the node (e.g., 'Corethink').
+         */
+        window.showNodeDetailsModal = (nodeName) => {
+            const details = faaNodeDetails[nodeName];
+            if (!details) {
+                showCustomMessageBox(`Details for ${nodeName} not found.`);
+                return;
+            }
+
+            modalContent.innerHTML = `
+                <div class="flex justify-between items-start mb-6">
+                    <div class="flex items-center gap-4">
+                        <span class="text-6xl">🔬</span> <!-- Generic glyph for node details -->
+                        <div>
+                            <h2 class="font-space-grotesk text-4xl font-bold text-white">${nodeName}™ Details</h2>
+                            <p class="text-brand-gold font-semibold text-lg">Atom-Level Engine Information</p>
+                        </div>
+                    </div>
+                    <button onclick="closeModal()" class="text-gray-400 hover:text-white text-4xl font-bold">&times;</button>
+                </div>
+
+                <div class="bg-gray-800 p-5 rounded-lg mb-6">
+                    <h4 class="font-space-grotesk text-lg font-bold text-sky-300 mb-3">General Information</h4>
+                    <p><strong>ID:</strong> ${details.id}</p>
+                    <p><strong>Status:</strong> ${details.status}</p>
+                    <p><strong>Version:</strong> ${details.version}</p>
+                    <p><strong>Last Update:</strong> ${new Date(details.last_update).toLocaleString()}</p>
+                </div>
+
+                <div class="bg-gray-800 p-5 rounded-lg">
+                    <h4 class="font-space-grotesk text-lg font-bold text-sky-300 mb-3">Payload Example</h4>
+                    <pre>${JSON.stringify(details.payload_example, null, 2)}</pre>
+                </div>
+
+                <div class="mt-10 text-center">
+                    <button class="bg-brand-gold text-black font-bold py-3 px-8 rounded-lg hover:bg-yellow-300 transition-colors text-lg" onclick="closeModal()">
+                        Close Details
+                    </button>
+                </div>
+            `;
+            modal.classList.add('active');
+        };
+
+
+        /**
+         * Sets up all necessary event listeners for interactive elements after content is rendered.
+         */
+        function setupEventListeners() {
+            // AI Security Advisor button
+            const getAiExplanationBtn = document.getElementById('getAiExplanationBtn');
+            if (getAiExplanationBtn) {
+                getAiExplanationBtn.onclick = () => {
+                    const input = document.getElementById('securityConceptInput');
+                    if (!input.value) {
+                        document.getElementById('aiExplanationResult').textContent = "Please enter a concept to explain.";
+                        return;
+                    }
+                    callGeminiApi(
+                        `Explain this concept simply: "${input.value}"`,
+                        document.getElementById('aiExplanationResult'),
+                        getAiExplanationBtn
+                    );
+                };
+            }
+
+            // Currency Converter
+            populateCurrencies(); // Populate currencies on load
+            const convertButton = document.getElementById('convert-button');
+            if (convertButton) {
+                convertButton.onclick = convertCurrency;
+            }
+
+            // Spotify Integration button
+            const spotifyFetchBtn = document.getElementById('spotify-fetch-btn');
+            if (spotifyFetchBtn) {
+                spotifyFetchBtn.onclick = fetchSpotifyData;
+            }
+
+            // Xero Integration button
+            const connectXeroBtn = document.getElementById('connect-xero-btn');
+            if (connectXeroBtn) {
+                connectXeroBtn.onclick = connectToXero;
+            }
+
+            // Google Maps Initialization button
+            const initMapBtn = document.getElementById('init-map-btn');
+            if (initMapBtn) {
+                initMapBtn.onclick = initializeMap;
+            }
+
+            // Brand Search Input
+            const brandSearchInput = document.getElementById('brand-search-input');
+            if (brandSearchInput) {
+                brandSearchInput.onkeyup = renderContent; // Re-render content on key up for filtering
+            }
+
+            // Contact Form
+            const contactForm = document.getElementById('contact-form');
+            if (contactForm) {
+                contactForm.addEventListener('submit', handleContactFormSubmit);
+            }
+
+            // Render News Updates (call on initial load of content)
+            renderNewsUpdates();
+
+            // Theme Switcher Buttons
+            const darkThemeBtn = document.getElementById('dark-theme-btn');
+            const lightThemeBtn = document.getElementById('light-theme-btn');
+            if (darkThemeBtn) {
+                darkThemeBtn.addEventListener('click', () => toggleTheme('dark'));
+            }
+            if (lightThemeBtn) {
+                lightThemeBtn.addEventListener('click', () => toggleTheme('light'));
+            }
+        }
+
+        /**
+         * Custom message box function to replace alert().
+         * Creates a temporary modal-like div to display messages.
+         * @param {string} message - The message to display.
+         */
+        function showCustomMessageBox(message) {
+            const messageBox = document.createElement('div');
+            messageBox.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background-color: var(--bg-med);
+                color: var(--text-light);
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+                z-index: 100;
+                text-align: center;
+                max-width: 90%;
+                border: 1px solid var(--brand-purple);
+            `;
+            messageBox.innerHTML = `
+                <p class="mb-4">${message}</p>
+                <button class="action-button" onclick="this.parentNode.remove()">OK</button>
+            `;
+            document.body.appendChild(messageBox);
+        }
+
+
+        // Initial rendering calls when the script loads
+        initializeFirebaseAndAuth(); // Initialize Firebase and set up auth listener
+        renderNav();
+        renderContent();
+        // updateAuthStatusUI is now called by onAuthStateChanged listener
+        // authButton.onclick is now set by updateAuthStatusUI
+    </script>
+</body>
+</html>
