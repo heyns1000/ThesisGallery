@@ -9,6 +9,10 @@ const navItems = [
   { href: "/brands", label: "Brand Management", icon: "fas fa-trademark", id: "brands" },
   { href: "/compliance", label: "Compliance Monitor", icon: "fas fa-shield-alt", id: "compliance" },
   { href: "/automation", label: "Automation Engine", icon: "fas fa-robot", id: "automation" },
+  { href: "/global-view", label: "🌍 Global View GPT", icon: "fas fa-globe", id: "global-view" },
+  { href: "/fruitful-america", label: "🇺🇸 Fruitful America™", icon: "fas fa-flag-usa", id: "fruitful-america" },
+  { href: "/wildlife-dashboard", label: "🌳 Wildlife Grid", icon: "fas fa-tree", id: "wildlife-dashboard" },
+  { href: "/vault-payments", label: "💳 Vault Payments", icon: "fas fa-credit-card", id: "vault-payments" },
 ];
 
 export function Sidebar() {
@@ -19,8 +23,8 @@ export function Sidebar() {
       <div className="p-6">
         <div className="gradient-border">
           <div className="gradient-border-inner p-4 text-center">
-            <h1 className="text-xl font-bold text-primary">FAA™ Global</h1>
-            <p className="text-xs text-muted-foreground mt-1">Document & Brand Management</p>
+            <h1 className="text-xl font-bold text-primary">🌳 Fruitful Global</h1>
+            <p className="text-xs text-muted-foreground mt-1">Master Hub & Ecosystem Platform</p>
           </div>
         </div>
       </div>

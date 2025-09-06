@@ -11,6 +11,10 @@ import Conversations from "@/pages/conversations";
 import Brands from "@/pages/brands";
 import Compliance from "@/pages/compliance";
 import Automation from "@/pages/automation";
+import GlobalView from "@/pages/global-view";
+import FruitfulAmerica from "@/pages/fruitful-america";
+import WildlifeDashboard from "@/pages/wildlife-dashboard";
+import VaultPayments from "@/pages/vault-payments";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -23,6 +27,10 @@ function Router() {
       <Route path="/brands" component={Brands} />
       <Route path="/compliance" component={Compliance} />
       <Route path="/automation" component={Automation} />
+      <Route path="/global-view" component={GlobalView} />
+      <Route path="/fruitful-america" component={FruitfulAmerica} />
+      <Route path="/wildlife-dashboard" component={WildlifeDashboard} />
+      <Route path="/vault-payments" component={VaultPayments} />
       <Route component={NotFound} />
     </Switch>
   );
