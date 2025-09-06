@@ -194,6 +194,27 @@ export default function GalleryPage() {
               Load More Images
             </Button>
           </div>
+          
+          {/* Spotify Album Embed */}
+          <div className="mt-12 bg-card rounded-lg border border-border p-6">
+            <h4 className="text-lg font-semibold text-foreground mb-4 flex items-center">
+              <i className="fab fa-spotify text-green-500 mr-2"></i>
+              Music Experience
+            </h4>
+            <p className="text-muted-foreground mb-4">Enhance your FAA™ journey with curated audio experience</p>
+            <iframe 
+              data-testid="embed-iframe" 
+              style={{borderRadius: '12px'}} 
+              src="https://open.spotify.com/embed/album/30OeYX8aVRKtwzyUS9D1kZ?utm_source=generator" 
+              width="100%" 
+              height="352" 
+              frameBorder="0" 
+              allowFullScreen 
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+              loading="lazy"
+              className="w-full"
+            />
+          </div>
         </>
       )}
     </div>
