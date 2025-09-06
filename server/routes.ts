@@ -1825,5 +1825,118 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Google AdMob Analytics API Routes
+  
+  // Track AdMob events and metrics
+  app.post("/api/analytics/admob", async (req, res) => {
+    try {
+      const { adType, event, metrics, timestamp, platform } = req.body;
+      
+      if (!adType || !event) {
+        return res.status(400).json({ error: "Ad type and event are required" });
+      }
+
+      // Log AdMob analytics (you would store this in your analytics database)
+      console.log('AdMob Analytics:', { 
+        adType, 
+        event, 
+        metrics: {
+          impressions: metrics?.impressions || 0,
+          clicks: metrics?.clicks || 0,
+          revenue: metrics?.revenue || 0,
+          ctr: metrics?.ctr || 0
+        },
+        timestamp, 
+        platform 
+      });
+      
+      res.json({ 
+        success: true, 
+        message: "AdMob analytics tracked successfully" 
+      });
+    } catch (error) {
+      console.error('AdMob analytics tracking error:', error);
+      res.status(500).json({ error: "Failed to track AdMob analytics" });
+    }
+  });
+
+  // Get AdMob revenue analytics
+  app.get("/api/analytics/admob/revenue", async (req, res) => {
+    try {
+      // This would fetch from your analytics database
+      // For now, return mock data
+      const revenueData = {
+        totalRevenue: 127.34,
+        dailyRevenue: 18.45,
+        weeklyRevenue: 94.23,
+        monthlyRevenue: 412.67,
+        topPerformingAdType: 'rewarded',
+        averageECPM: 2.85,
+        fillRate: 96.2,
+        totalImpressions: 12847,
+        totalClicks: 356,
+        overallCTR: 2.77,
+        revenueByAdType: {
+          banner: 23.45,
+          interstitial: 67.89,
+          rewarded: 124.56,
+          native: 45.67
+        },
+        dailyTrends: [
+          { date: '2025-09-01', revenue: 15.67, impressions: 1250 },
+          { date: '2025-09-02', revenue: 18.34, impressions: 1456 },
+          { date: '2025-09-03', revenue: 22.11, impressions: 1687 },
+          { date: '2025-09-04', revenue: 19.88, impressions: 1523 },
+          { date: '2025-09-05', revenue: 24.56, impressions: 1834 },
+          { date: '2025-09-06', revenue: 18.45, impressions: 1421 }
+        ]
+      };
+      
+      res.json(revenueData);
+    } catch (error) {
+      console.error('AdMob revenue analytics error:', error);
+      res.status(500).json({ error: "Failed to fetch AdMob revenue analytics" });
+    }
+  });
+
+  // Get AdMob performance analytics
+  app.get("/api/analytics/admob/performance", async (req, res) => {
+    try {
+      const { adType, timeRange = '7d' } = req.query;
+      
+      // Mock performance data
+      const performanceData = {
+        timeRange,
+        adType: adType || 'all',
+        metrics: {
+          impressions: 12847,
+          clicks: 356,
+          ctr: 2.77,
+          fillRate: 96.2,
+          revenue: 127.34,
+          ecpm: 9.91
+        },
+        comparison: {
+          impressions: { value: 12847, change: 15.6, trend: 'up' },
+          clicks: { value: 356, change: 8.3, trend: 'up' },
+          ctr: { value: 2.77, change: -2.1, trend: 'down' },
+          revenue: { value: 127.34, change: 22.4, trend: 'up' }
+        },
+        topCountries: [
+          { country: 'United States', revenue: 45.67, share: 35.9 },
+          { country: 'South Africa', revenue: 23.45, share: 18.4 },
+          { country: 'United Kingdom', revenue: 18.34, share: 14.4 },
+          { country: 'Germany', revenue: 15.67, share: 12.3 },
+          { country: 'Canada', revenue: 12.45, share: 9.8 }
+        ]
+      };
+      
+      res.json(performanceData);
+    } catch (error) {
+      console.error('AdMob performance analytics error:', error);
+      res.status(500).json({ error: "Failed to fetch AdMob performance analytics" });
+    }
+  });
+
   return httpServer;
 }
