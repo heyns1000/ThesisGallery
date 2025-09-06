@@ -29,6 +29,8 @@ import SmartToysPlatform from "@/pages/smart-toys-platform";
 import ModularView from "@/pages/modular-view";
 import AILogicDashboard from "@/pages/ai-logic-dashboard";
 import CodeNestPlatform from "@/pages/codenest-platform";
+import AdminPortal from "@/pages/admin-portal";
+import AdminAccessPortal from "@/pages/admin-access-portal";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -59,6 +61,8 @@ function Router() {
       <Route path="/modular-view" component={ModularView} />
       <Route path="/ai-logic-dashboard" component={AILogicDashboard} />
       <Route path="/codenest-platform" component={CodeNestPlatform} />
+      <Route path="/admin-portal" component={AdminPortal} />
+      <Route path="/admin-access-portal" component={AdminAccessPortal} />
       <Route component={NotFound} />
     </Switch>
   );

@@ -17,6 +17,7 @@ const navItems = [
   { href: "/housing-dashboard", label: "🏛️ Housing Sector", icon: "fas fa-home", id: "housing-dashboard" },
   { href: "/education-dashboard", label: "🧸 Education Sector", icon: "fas fa-graduation-cap", id: "education-dashboard" },
   { href: "/ai-logic-dashboard", label: "🧠 AI & Logic Grid", icon: "fas fa-brain", id: "ai-logic-dashboard" },
+  { href: "/admin-portal", label: "🦁 Admin Portal", icon: "fas fa-shield-alt", id: "admin-portal" },
   { href: "/vault-payments", label: "💳 Vault Payments", icon: "fas fa-credit-card", id: "vault-payments" },
 ];
 
