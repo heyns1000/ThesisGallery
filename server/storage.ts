@@ -21,7 +21,17 @@ import {
   type TeamTestimonial,
   type InsertTeamTestimonial,
   type OnboardingStep,
-  type InsertOnboardingStep
+  type InsertOnboardingStep,
+  type Contact,
+  type InsertContact,
+  type BanimalProduct,
+  type InsertBanimalProduct,
+  type BanimalOrder,
+  type InsertBanimalOrder,
+  type BanimalCustomer,
+  type InsertBanimalCustomer,
+  type DataImport,
+  type InsertDataImport
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -92,6 +102,36 @@ export interface IStorage {
   // System stats
   getSystemStats(): Promise<SystemStats | undefined>;
   updateSystemStats(stats: Partial<SystemStats>): Promise<SystemStats>;
+
+  // Contact management methods
+  getContacts(filters?: { search?: string; status?: string; source?: string }): Promise<Contact[]>;
+  getContact(id: string): Promise<Contact | undefined>;
+  createContact(contact: InsertContact): Promise<Contact>;
+  updateContact(id: string, updates: Partial<Contact>): Promise<Contact | undefined>;
+  deleteContact(id: string): Promise<boolean>;
+
+  // Data import methods
+  getDataImports(): Promise<DataImport[]>;
+  getDataImport(id: string): Promise<DataImport | undefined>;
+  createDataImport(dataImport: InsertDataImport): Promise<DataImport>;
+  updateDataImport(id: string, updates: Partial<DataImport>): Promise<DataImport | undefined>;
+
+  // Banimal e-commerce methods
+  getBanimalProducts(): Promise<BanimalProduct[]>;
+  getBanimalProduct(id: string): Promise<BanimalProduct | undefined>;
+  createBanimalProduct(product: InsertBanimalProduct): Promise<BanimalProduct>;
+  updateBanimalProduct(id: string, updates: Partial<BanimalProduct>): Promise<BanimalProduct | undefined>;
+
+  getBanimalOrders(): Promise<BanimalOrder[]>;
+  getBanimalOrder(id: string): Promise<BanimalOrder | undefined>;
+  createBanimalOrder(order: InsertBanimalOrder): Promise<BanimalOrder>;
+  updateBanimalOrder(id: string, updates: Partial<BanimalOrder>): Promise<BanimalOrder | undefined>;
+
+  getBanimalCustomers(): Promise<BanimalCustomer[]>;
+  getBanimalCustomer(id: string): Promise<BanimalCustomer | undefined>;
+  getBanimalCustomerByEmail(email: string): Promise<BanimalCustomer | undefined>;
+  createBanimalCustomer(customer: InsertBanimalCustomer): Promise<BanimalCustomer>;
+  updateBanimalCustomer(id: string, updates: Partial<BanimalCustomer>): Promise<BanimalCustomer | undefined>;
 }
 
 export class MemStorage implements IStorage {
@@ -106,6 +146,11 @@ export class MemStorage implements IStorage {
   private teamProjects: Map<string, TeamProject> = new Map();
   private teamTestimonials: Map<string, TeamTestimonial> = new Map();
   private onboardingSteps: Map<string, OnboardingStep> = new Map();
+  private contacts: Map<string, Contact> = new Map();
+  private dataImports: Map<string, DataImport> = new Map();
+  private banimalProducts: Map<string, BanimalProduct> = new Map();
+  private banimalOrders: Map<string, BanimalOrder> = new Map();
+  private banimalCustomers: Map<string, BanimalCustomer> = new Map();
   private systemStats: SystemStats | undefined;
 
   constructor() {
@@ -533,6 +578,263 @@ export class MemStorage implements IStorage {
       updated.completedAt = new Date();
     }
     this.onboardingSteps.set(id, updated);
+    return updated;
+  }
+
+  // Contact management methods
+  async getContacts(filters?: { search?: string; status?: string; source?: string }): Promise<Contact[]> {
+    let contacts = Array.from(this.contacts.values());
+    
+    if (filters?.search) {
+      const search = filters.search.toLowerCase();
+      contacts = contacts.filter(contact => 
+        contact.fullName?.toLowerCase().includes(search) ||
+        contact.email?.toLowerCase().includes(search) ||
+        contact.company?.toLowerCase().includes(search) ||
+        contact.firstName?.toLowerCase().includes(search) ||
+        contact.lastName?.toLowerCase().includes(search)
+      );
+    }
+    
+    if (filters?.status && filters.status !== 'all') {
+      contacts = contacts.filter(contact => contact.status === filters.status);
+    }
+    
+    if (filters?.source && filters.source !== 'all') {
+      contacts = contacts.filter(contact => contact.source === filters.source);
+    }
+    
+    return contacts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }
+
+  async getContact(id: string): Promise<Contact | undefined> {
+    return this.contacts.get(id);
+  }
+
+  async createContact(insertContact: InsertContact): Promise<Contact> {
+    const id = randomUUID();
+    const now = new Date();
+    const contact: Contact = {
+      ...insertContact,
+      id,
+      createdAt: now,
+      updatedAt: now,
+      leadScore: insertContact.leadScore || 0,
+      status: insertContact.status || "active",
+      socialProfiles: insertContact.socialProfiles || null,
+      tags: insertContact.tags || null,
+      customFields: insertContact.customFields || null,
+      lastContactDate: insertContact.lastContactDate || null,
+      firstName: insertContact.firstName || null,
+      lastName: insertContact.lastName || null,
+      fullName: insertContact.fullName || null,
+      email: insertContact.email || null,
+      phone: insertContact.phone || null,
+      company: insertContact.company || null,
+      position: insertContact.position || null,
+      country: insertContact.country || null,
+      city: insertContact.city || null,
+      address: insertContact.address || null,
+      website: insertContact.website || null,
+      industry: insertContact.industry || null,
+    };
+    this.contacts.set(id, contact);
+    return contact;
+  }
+
+  async updateContact(id: string, updates: Partial<Contact>): Promise<Contact | undefined> {
+    const existing = this.contacts.get(id);
+    if (!existing) return undefined;
+    
+    const updated = { ...existing, ...updates, updatedAt: new Date() };
+    this.contacts.set(id, updated);
+    return updated;
+  }
+
+  async deleteContact(id: string): Promise<boolean> {
+    return this.contacts.delete(id);
+  }
+
+  // Data import methods
+  async getDataImports(): Promise<DataImport[]> {
+    return Array.from(this.dataImports.values()).sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }
+
+  async getDataImport(id: string): Promise<DataImport | undefined> {
+    return this.dataImports.get(id);
+  }
+
+  async createDataImport(insertDataImport: InsertDataImport): Promise<DataImport> {
+    const id = randomUUID();
+    const dataImport: DataImport = {
+      ...insertDataImport,
+      id,
+      createdAt: new Date(),
+      processedRecords: insertDataImport.processedRecords || 0,
+      successfulRecords: insertDataImport.successfulRecords || 0,
+      failedRecords: insertDataImport.failedRecords || 0,
+      duplicateRecords: insertDataImport.duplicateRecords || 0,
+      status: insertDataImport.status || "pending",
+      errors: insertDataImport.errors || null,
+      summary: insertDataImport.summary || null,
+      startedAt: insertDataImport.startedAt || null,
+      completedAt: insertDataImport.completedAt || null,
+      fileSize: insertDataImport.fileSize || null,
+      totalRecords: insertDataImport.totalRecords || null,
+    };
+    this.dataImports.set(id, dataImport);
+    return dataImport;
+  }
+
+  async updateDataImport(id: string, updates: Partial<DataImport>): Promise<DataImport | undefined> {
+    const existing = this.dataImports.get(id);
+    if (!existing) return undefined;
+    
+    const updated = { ...existing, ...updates };
+    this.dataImports.set(id, updated);
+    return updated;
+  }
+
+  // Banimal e-commerce methods
+  async getBanimalProducts(): Promise<BanimalProduct[]> {
+    return Array.from(this.banimalProducts.values()).sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }
+
+  async getBanimalProduct(id: string): Promise<BanimalProduct | undefined> {
+    return this.banimalProducts.get(id);
+  }
+
+  async createBanimalProduct(insertProduct: InsertBanimalProduct): Promise<BanimalProduct> {
+    const id = randomUUID();
+    const now = new Date();
+    const product: BanimalProduct = {
+      ...insertProduct,
+      id,
+      createdAt: now,
+      updatedAt: now,
+      currency: insertProduct.currency || "ZAR",
+      inventory: insertProduct.inventory || 0,
+      status: insertProduct.status || "active",
+      images: insertProduct.images || null,
+      variants: insertProduct.variants || null,
+      specifications: insertProduct.specifications || null,
+      seoTitle: insertProduct.seoTitle || null,
+      seoDescription: insertProduct.seoDescription || null,
+      tags: insertProduct.tags || null,
+      description: insertProduct.description || null,
+      subcategory: insertProduct.subcategory || null,
+    };
+    this.banimalProducts.set(id, product);
+    return product;
+  }
+
+  async updateBanimalProduct(id: string, updates: Partial<BanimalProduct>): Promise<BanimalProduct | undefined> {
+    const existing = this.banimalProducts.get(id);
+    if (!existing) return undefined;
+    
+    const updated = { ...existing, ...updates, updatedAt: new Date() };
+    this.banimalProducts.set(id, updated);
+    return updated;
+  }
+
+  async getBanimalOrders(): Promise<BanimalOrder[]> {
+    return Array.from(this.banimalOrders.values()).sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }
+
+  async getBanimalOrder(id: string): Promise<BanimalOrder | undefined> {
+    return this.banimalOrders.get(id);
+  }
+
+  async createBanimalOrder(insertOrder: InsertBanimalOrder): Promise<BanimalOrder> {
+    const id = randomUUID();
+    const now = new Date();
+    const order: BanimalOrder = {
+      ...insertOrder,
+      id,
+      createdAt: now,
+      updatedAt: now,
+      currency: insertOrder.currency || "ZAR",
+      paymentStatus: insertOrder.paymentStatus || "pending",
+      orderStatus: insertOrder.orderStatus || "pending",
+      shippingCost: insertOrder.shippingCost || "0",
+      taxAmount: insertOrder.taxAmount || "0",
+      discountAmount: insertOrder.discountAmount || "0",
+      customerPhone: insertOrder.customerPhone || null,
+      billingAddress: insertOrder.billingAddress || null,
+      trackingNumber: insertOrder.trackingNumber || null,
+      shippingProvider: insertOrder.shippingProvider || null,
+      paymentMethod: insertOrder.paymentMethod || null,
+      notes: insertOrder.notes || null,
+      metadata: insertOrder.metadata || null,
+    };
+    this.banimalOrders.set(id, order);
+    return order;
+  }
+
+  async updateBanimalOrder(id: string, updates: Partial<BanimalOrder>): Promise<BanimalOrder | undefined> {
+    const existing = this.banimalOrders.get(id);
+    if (!existing) return undefined;
+    
+    const updated = { ...existing, ...updates, updatedAt: new Date() };
+    this.banimalOrders.set(id, updated);
+    return updated;
+  }
+
+  async getBanimalCustomers(): Promise<BanimalCustomer[]> {
+    return Array.from(this.banimalCustomers.values()).sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }
+
+  async getBanimalCustomer(id: string): Promise<BanimalCustomer | undefined> {
+    return this.banimalCustomers.get(id);
+  }
+
+  async getBanimalCustomerByEmail(email: string): Promise<BanimalCustomer | undefined> {
+    return Array.from(this.banimalCustomers.values()).find(
+      (customer) => customer.email === email
+    );
+  }
+
+  async createBanimalCustomer(insertCustomer: InsertBanimalCustomer): Promise<BanimalCustomer> {
+    const id = randomUUID();
+    const now = new Date();
+    const customer: BanimalCustomer = {
+      ...insertCustomer,
+      id,
+      createdAt: now,
+      updatedAt: now,
+      loyaltyPoints: insertCustomer.loyaltyPoints || 0,
+      totalSpent: insertCustomer.totalSpent || "0",
+      orderCount: insertCustomer.orderCount || 0,
+      status: insertCustomer.status || "active",
+      customerSince: insertCustomer.customerSince || now,
+      marketingOptIn: insertCustomer.marketingOptIn !== undefined ? insertCustomer.marketingOptIn : false,
+      firstName: insertCustomer.firstName || null,
+      lastName: insertCustomer.lastName || null,
+      phone: insertCustomer.phone || null,
+      dateOfBirth: insertCustomer.dateOfBirth || null,
+      addresses: insertCustomer.addresses || null,
+      preferences: insertCustomer.preferences || null,
+      lastOrderDate: insertCustomer.lastOrderDate || null,
+      metadata: insertCustomer.metadata || null,
+    };
+    this.banimalCustomers.set(id, customer);
+    return customer;
+  }
+
+  async updateBanimalCustomer(id: string, updates: Partial<BanimalCustomer>): Promise<BanimalCustomer | undefined> {
+    const existing = this.banimalCustomers.get(id);
+    if (!existing) return undefined;
+    
+    const updated = { ...existing, ...updates, updatedAt: new Date() };
+    this.banimalCustomers.set(id, updated);
     return updated;
   }
 

@@ -37,6 +37,8 @@ import PayrollFeatures from "@/pages/payroll-features";
 import PayrollSovereignGrid from "@/pages/payroll-sovereign-grid";
 import AdvancedPayrollDashboard from "@/pages/advanced-payroll-dashboard";
 import TeamOnboarding from "@/pages/team-onboarding";
+import ContactManagement from "@/pages/contact-management";
+import BanimalPlatform from "@/pages/banimal-platform";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -75,6 +77,8 @@ function Router() {
       <Route path="/payroll-sovereign-grid" component={PayrollSovereignGrid} />
       <Route path="/advanced-payroll-dashboard" component={AdvancedPayrollDashboard} />
       <Route path="/team-onboarding" component={TeamOnboarding} />
+      <Route path="/contact-management" component={ContactManagement} />
+      <Route path="/banimal-platform" component={BanimalPlatform} />
       <Route component={NotFound} />
     </Switch>
   );
