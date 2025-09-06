@@ -30,6 +30,7 @@ import { ContactProcessingAI, BanimalChatbot, CurrencyAI, HolidayAI, generateFaa
 import { GeminiContactProcessor, GeminiBanimalChatbot, GeminiProductAI, GeminiMarketingAI } from "./gemini-ai";
 import { languageLearningService } from "./language-learning-service";
 import { firebaseAdmin } from "./firebase-admin";
+import { abandonedCartService } from "./abandoned-cart-service";
 
 // Configure multer for file uploads
 const upload = multer({
@@ -1399,6 +1400,122 @@ export async function registerRoutes(app: Express): Promise<Server> {
         error: "Failed to fetch seedling progress",
         details: error instanceof Error ? error.message : "Unknown error"
       });
+    }
+  });
+
+  // Abandoned Cart Tracking API Routes
+  
+  // Track cart creation/modification
+  app.post("/api/cart/track", async (req, res) => {
+    try {
+      const { cartId, userId, userToken, userName, userEmail, items } = req.body;
+      
+      if (!cartId || !userId || !items) {
+        return res.status(400).json({ error: "Cart ID, user ID, and items are required" });
+      }
+
+      abandonedCartService.trackCart({
+        cartId,
+        userId,
+        userToken,
+        userName,
+        userEmail,
+        items
+      });
+      
+      res.json({ 
+        success: true, 
+        message: "Cart tracking updated successfully",
+        cartId 
+      });
+    } catch (error) {
+      console.error('Cart tracking error:', error);
+      res.status(500).json({ error: "Failed to track cart" });
+    }
+  });
+
+  // Track cart completion
+  app.post("/api/cart/complete", async (req, res) => {
+    try {
+      const { cartId } = req.body;
+      
+      if (!cartId) {
+        return res.status(400).json({ error: "Cart ID is required" });
+      }
+
+      abandonedCartService.completeCart(cartId);
+      
+      res.json({ 
+        success: true, 
+        message: "Cart marked as completed",
+        cartId 
+      });
+    } catch (error) {
+      console.error('Cart completion error:', error);
+      res.status(500).json({ error: "Failed to mark cart as completed" });
+    }
+  });
+
+  // Get abandoned cart statistics
+  app.get("/api/cart/analytics", async (req, res) => {
+    try {
+      const stats = abandonedCartService.getAbandonedCartStats();
+      res.json(stats);
+    } catch (error) {
+      console.error('Cart analytics error:', error);
+      res.status(500).json({ error: "Failed to fetch cart analytics" });
+    }
+  });
+
+  // Get all abandoned carts (admin only)
+  app.get("/api/cart/abandoned", async (req, res) => {
+    try {
+      const abandonedCarts = abandonedCartService.getAllAbandonedCarts();
+      res.json(abandonedCarts);
+    } catch (error) {
+      console.error('Abandoned carts fetch error:', error);
+      res.status(500).json({ error: "Failed to fetch abandoned carts" });
+    }
+  });
+
+  // Force send reminder (admin only)
+  app.post("/api/cart/force-reminder", async (req, res) => {
+    try {
+      const { cartId } = req.body;
+      
+      if (!cartId) {
+        return res.status(400).json({ error: "Cart ID is required" });
+      }
+
+      const success = await abandonedCartService.forceSendReminder(cartId);
+      
+      if (success) {
+        res.json({ 
+          success: true, 
+          message: "Reminder sent successfully" 
+        });
+      } else {
+        res.status(404).json({ error: "Cart not found or not in abandoned state" });
+      }
+    } catch (error) {
+      console.error('Force reminder error:', error);
+      res.status(500).json({ error: "Failed to send reminder" });
+    }
+  });
+
+  // Update abandoned cart configuration (admin only)
+  app.put("/api/cart/config", async (req, res) => {
+    try {
+      const config = req.body;
+      abandonedCartService.updateConfig(config);
+      
+      res.json({ 
+        success: true, 
+        message: "Cart service configuration updated successfully" 
+      });
+    } catch (error) {
+      console.error('Cart config update error:', error);
+      res.status(500).json({ error: "Failed to update cart configuration" });
     }
   });
 

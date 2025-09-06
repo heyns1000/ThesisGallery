@@ -1,26 +1,42 @@
 import admin from 'firebase-admin';
 import { getMessaging, Message, MulticastMessage, BatchResponse } from 'firebase-admin/messaging';
 
-// Initialize Firebase Admin SDK
-const serviceAccount = {
-  type: "service_account",
-  project_id: process.env.FIREBASE_PROJECT_ID || "fruitful-global-hub",
-  private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID || "demo-key-id",
-  private_key: (process.env.FIREBASE_PRIVATE_KEY || "demo-private-key").replace(/\\n/g, '\n'),
-  client_email: process.env.FIREBASE_CLIENT_EMAIL || "firebase-adminsdk@fruitful-global-hub.iam.gserviceaccount.com",
-  client_id: process.env.FIREBASE_CLIENT_ID || "123456789012345678901",
-  auth_uri: "https://accounts.google.com/o/oauth2/auth",
-  token_uri: "https://oauth2.googleapis.com/token",
-  auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
-  client_x509_cert_url: process.env.FIREBASE_CLIENT_CERT_URL || "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk%40fruitful-global-hub.iam.gserviceaccount.com"
-};
+// Initialize Firebase Admin SDK with proper error handling
+let isFirebaseInitialized = false;
 
-// Initialize Firebase Admin only if not already initialized
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
-    projectId: process.env.FIREBASE_PROJECT_ID || "fruitful-global-hub"
-  });
+try {
+  // Only initialize if we have proper credentials
+  if (process.env.FIREBASE_PRIVATE_KEY && process.env.FIREBASE_CLIENT_EMAIL && process.env.FIREBASE_PROJECT_ID) {
+    const serviceAccount = {
+      type: "service_account",
+      project_id: process.env.FIREBASE_PROJECT_ID,
+      private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID,
+      private_key: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+      client_email: process.env.FIREBASE_CLIENT_EMAIL,
+      client_id: process.env.FIREBASE_CLIENT_ID,
+      auth_uri: "https://accounts.google.com/o/oauth2/auth",
+      token_uri: "https://oauth2.googleapis.com/token",
+      auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
+      client_x509_cert_url: process.env.FIREBASE_CLIENT_CERT_URL
+    };
+
+    // Initialize Firebase Admin only if not already initialized
+    if (!admin.apps.length) {
+      admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
+        projectId: process.env.FIREBASE_PROJECT_ID
+      });
+    }
+    
+    isFirebaseInitialized = true;
+    console.log('Firebase Admin SDK initialized successfully');
+  } else {
+    console.warn('Firebase credentials not provided. Push notifications will be disabled.');
+    console.warn('To enable Firebase notifications, provide: FIREBASE_PRIVATE_KEY, FIREBASE_CLIENT_EMAIL, FIREBASE_PROJECT_ID');
+  }
+} catch (error) {
+  console.error('Failed to initialize Firebase Admin SDK:', error);
+  console.warn('Push notifications will be disabled. Please check your Firebase credentials.');
 }
 
 export interface NotificationPayload {
@@ -41,9 +57,19 @@ export interface PushNotificationTarget {
 
 export class FirebaseAdminService {
   private static instance: FirebaseAdminService;
-  private messaging = getMessaging();
+  private messaging: any = null;
 
-  private constructor() {}
+  private constructor() {
+    // Only initialize messaging if Firebase is properly set up
+    try {
+      if (isFirebaseInitialized && admin.apps.length > 0) {
+        this.messaging = getMessaging();
+      }
+    } catch (error) {
+      console.warn('Firebase messaging initialization failed:', error);
+      this.messaging = null;
+    }
+  }
 
   static getInstance(): FirebaseAdminService {
     if (!FirebaseAdminService.instance) {
@@ -52,8 +78,18 @@ export class FirebaseAdminService {
     return FirebaseAdminService.instance;
   }
 
+  private checkFirebaseInitialized(): boolean {
+    if (!isFirebaseInitialized || !this.messaging) {
+      console.warn('Firebase Admin not initialized. Push notifications are disabled.');
+      return false;
+    }
+    return true;
+  }
+
   // Send notification to single device
   async sendToDevice(token: string, payload: NotificationPayload): Promise<boolean> {
+    if (!this.checkFirebaseInitialized()) return false;
+    
     try {
       const message: Message = {
         token: token,
@@ -90,6 +126,10 @@ export class FirebaseAdminService {
 
   // Send notification to multiple devices
   async sendToMultipleDevices(tokens: string[], payload: NotificationPayload): Promise<BatchResponse> {
+    if (!this.checkFirebaseInitialized()) {
+      throw new Error('Firebase not initialized');
+    }
+    
     try {
       const message: MulticastMessage = {
         tokens: tokens,
@@ -126,6 +166,8 @@ export class FirebaseAdminService {
 
   // Send notification to topic subscribers
   async sendToTopic(topic: string, payload: NotificationPayload): Promise<boolean> {
+    if (!this.checkFirebaseInitialized()) return false;
+    
     try {
       const message: Message = {
         topic: topic,
@@ -166,6 +208,8 @@ export class FirebaseAdminService {
     payload: NotificationPayload,
     customData?: { [key: string]: string }
   ): Promise<boolean> {
+    if (!this.checkFirebaseInitialized()) return false;
+    
     try {
       const message: Message = {
         condition: this.getConditionForSegment(userSegment),
@@ -287,6 +331,8 @@ export class FirebaseAdminService {
 
   // Subscribe user to topic
   async subscribeToTopic(tokens: string[], topic: string): Promise<boolean> {
+    if (!this.checkFirebaseInitialized()) return false;
+    
     try {
       const response = await this.messaging.subscribeToTopic(tokens, topic);
       console.log('Successfully subscribed to topic:', response);
@@ -323,6 +369,8 @@ export class FirebaseAdminService {
 
   // Validate FCM token
   async validateToken(token: string): Promise<boolean> {
+    if (!this.checkFirebaseInitialized()) return false;
+    
     try {
       await this.messaging.send({
         token: token,
