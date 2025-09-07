@@ -468,7 +468,286 @@ export const emailTracking = pgTable("email_tracking", {
   metadata: json("metadata"),
 });
 
+// ===============================
+// MULTI-CHANNEL MESSAGING SYSTEM
+// ===============================
+
+// Message Channels - WhatsApp, SMS, Push, Email
+export const messageChannels = pgTable("message_channels", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(), // WhatsApp Business, SMS, Push Notifications, Email
+  type: text("type").notNull(), // "whatsapp", "sms", "push", "email", "direct-line"
+  provider: text("provider").notNull(), // Twilio, Firebase, Custom
+  isActive: boolean("is_active").default(true),
+  configuration: json("configuration").notNull(), // Provider-specific config
+  rateLimits: json("rate_limits"), // Message limits per hour/day
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+// Unified Message Templates - Works across all channels
+export const messageTemplates = pgTable("message_templates", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  subject: text("subject"), // For email, WhatsApp preview
+  content: text("content").notNull(), // Main message content
+  channelType: text("channel_type").notNull(), // whatsapp, sms, email, push
+  variables: text("variables").array(), // Available template variables
+  category: text("category").default("general"), // marketing, transactional, notification, kindness
+  language: text("language").default("en"), // For FAA™ 111 languages support
+  isActive: boolean("is_active").default(true),
+  approvalStatus: text("approval_status").default("approved"), // For WhatsApp template approval
+  whatsappTemplateId: text("whatsapp_template_id"), // WhatsApp Business API template ID
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+// Multi-Channel Campaigns
+export const messagingCampaigns = pgTable("messaging_campaigns", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  description: text("description"),
+  channelIds: text("channel_ids").array().notNull(), // Multiple channels per campaign
+  templateId: varchar("template_id").references(() => messageTemplates.id),
+  status: text("status").default("draft"), // draft, scheduled, sending, sent, paused
+  targetAudience: json("target_audience"), // Contact filters and segments
+  scheduleType: text("schedule_type").default("immediate"), // immediate, scheduled, drip
+  scheduledAt: timestamp("scheduled_at"),
+  sentAt: timestamp("sent_at"),
+  totalRecipients: integer("total_recipients").default(0),
+  sentCount: integer("sent_count").default(0),
+  deliveredCount: integer("delivered_count").default(0),
+  readCount: integer("read_count").default(0), // WhatsApp read receipts
+  clickCount: integer("click_count").default(0),
+  responseCount: integer("response_count").default(0), // Replies/interactions
+  failedCount: integer("failed_count").default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+// Multi-Channel Message Sends
+export const messageSends = pgTable("message_sends", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  campaignId: varchar("campaign_id").references(() => messagingCampaigns.id),
+  contactId: varchar("contact_id").references(() => contacts.id),
+  channelId: varchar("channel_id").references(() => messageChannels.id),
+  templateId: varchar("template_id").references(() => messageTemplates.id),
+  recipientIdentifier: text("recipient_identifier").notNull(), // email, phone, device_token
+  status: text("status").default("pending"), // pending, sent, delivered, read, failed, replied
+  sentAt: timestamp("sent_at"),
+  deliveredAt: timestamp("delivered_at"),
+  readAt: timestamp("read_at"), // WhatsApp read receipts
+  repliedAt: timestamp("replied_at"),
+  failureReason: text("failure_reason"),
+  externalMessageId: text("external_message_id"), // Provider message ID (Twilio SID, etc.)
+  trackingId: text("tracking_id").unique(), // For tracking interactions
+  personalizedContent: json("personalized_content"), // Rendered template with variables
+  whatsappMessageData: json("whatsapp_message_data"), // WhatsApp-specific data
+  smsMessageData: json("sms_message_data"), // SMS-specific data
+  pushMessageData: json("push_message_data"), // Push notification data
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+// WhatsApp Specific Features
+export const whatsappConversations = pgTable("whatsapp_conversations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  contactId: varchar("contact_id").references(() => contacts.id),
+  whatsappNumber: text("whatsapp_number").notNull(), // +27123456789
+  conversationStatus: text("conversation_status").default("active"), // active, closed, archived
+  lastMessageAt: timestamp("last_message_at"),
+  messageCount: integer("message_count").default(0),
+  isBusinessInitiated: boolean("is_business_initiated").default(true),
+  sessionStart: timestamp("session_start").defaultNow().notNull(),
+  sessionEnd: timestamp("session_end"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+// WhatsApp Messages (Incoming & Outgoing)
+export const whatsappMessages = pgTable("whatsapp_messages", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  conversationId: varchar("conversation_id").references(() => whatsappConversations.id),
+  messageId: varchar("message_id").references(() => messageSends.id), // If outgoing
+  twilioMessageSid: text("twilio_message_sid").unique(), // Twilio SID
+  direction: text("direction").notNull(), // inbound, outbound
+  messageType: text("message_type").notNull(), // text, media, template, interactive
+  content: text("content"), // Message text content
+  mediaUrl: text("media_url"), // For images, videos, documents
+  messageStatus: text("message_status"), // queued, sent, delivered, read, failed
+  timestamp: timestamp("timestamp").defaultNow().notNull(),
+  fromNumber: text("from_number").notNull(),
+  toNumber: text("to_number").notNull(),
+  webhookData: json("webhook_data"), // Raw webhook data from Twilio
+  metadata: json("metadata"),
+});
+
+// SMS Direct Line Features
+export const smsConversations = pgTable("sms_conversations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  contactId: varchar("contact_id").references(() => contacts.id),
+  phoneNumber: text("phone_number").notNull(), // +27123456789
+  conversationStatus: text("conversation_status").default("active"), // active, closed, archived
+  lastMessageAt: timestamp("last_message_at"),
+  messageCount: integer("message_count").default(0),
+  twilioPhoneNumber: text("twilio_phone_number"), // Our Twilio number used
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+// SMS Messages (Incoming & Outgoing)
+export const smsMessages = pgTable("sms_messages", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  conversationId: varchar("conversation_id").references(() => smsConversations.id),
+  messageId: varchar("message_id").references(() => messageSends.id), // If outgoing
+  twilioMessageSid: text("twilio_message_sid").unique(),
+  direction: text("direction").notNull(), // inbound, outbound
+  content: text("content").notNull(),
+  messageStatus: text("message_status"), // queued, sent, delivered, failed
+  timestamp: timestamp("timestamp").defaultNow().notNull(),
+  fromNumber: text("from_number").notNull(),
+  toNumber: text("to_number").notNull(),
+  webhookData: json("webhook_data"), // Raw webhook data from Twilio
+  metadata: json("metadata"),
+});
+
+// Unified Message Tracking - All Channels
+export const messageTracking = pgTable("message_tracking", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  sendId: varchar("send_id").references(() => messageSends.id),
+  trackingId: text("tracking_id").notNull(),
+  channelType: text("channel_type").notNull(), // whatsapp, sms, email, push
+  eventType: text("event_type").notNull(), // sent, delivered, read, clicked, replied, failed
+  eventData: json("event_data"), // Channel-specific event data
+  userAgent: text("user_agent"),
+  ipAddress: text("ip_address"),
+  timestamp: timestamp("timestamp").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+// Message Analytics & Insights
+export const messageAnalytics = pgTable("message_analytics", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  channelType: text("channel_type").notNull(),
+  date: date("date").notNull(), // Daily analytics
+  totalSent: integer("total_sent").default(0),
+  totalDelivered: integer("total_delivered").default(0),
+  totalRead: integer("total_read").default(0),
+  totalReplied: integer("total_replied").default(0),
+  totalFailed: integer("total_failed").default(0),
+  averageResponseTime: integer("average_response_time"), // in minutes
+  costPerMessage: numeric("cost_per_message", { precision: 10, scale: 4 }), // Cost tracking
+  totalCost: numeric("total_cost", { precision: 10, scale: 2 }),
+  metadata: json("metadata"),
+}, (table) => ({
+  unique_channel_date: unique().on(table.channelType, table.date),
+}));
+
 // Insert schemas
+// Multi-Channel Messaging Schema Exports
+export const insertMessageChannelSchema = createInsertSchema(messageChannels).pick({
+  name: true,
+  type: true,
+  provider: true,
+  isActive: true,
+  configuration: true,
+  rateLimits: true,
+  metadata: true,
+});
+
+export const insertMessageTemplateSchema = createInsertSchema(messageTemplates).pick({
+  name: true,
+  subject: true,
+  content: true,
+  channelType: true,
+  variables: true,
+  category: true,
+  language: true,
+  isActive: true,
+  approvalStatus: true,
+  whatsappTemplateId: true,
+  metadata: true,
+});
+
+export const insertMessagingCampaignSchema = createInsertSchema(messagingCampaigns).pick({
+  name: true,
+  description: true,
+  channelIds: true,
+  templateId: true,
+  status: true,
+  targetAudience: true,
+  scheduleType: true,
+  scheduledAt: true,
+  metadata: true,
+});
+
+export const insertMessageSendSchema = createInsertSchema(messageSends).pick({
+  campaignId: true,
+  contactId: true,
+  channelId: true,
+  templateId: true,
+  recipientIdentifier: true,
+  status: true,
+  trackingId: true,
+  personalizedContent: true,
+  whatsappMessageData: true,
+  smsMessageData: true,
+  pushMessageData: true,
+  metadata: true,
+});
+
+export const insertWhatsappConversationSchema = createInsertSchema(whatsappConversations).pick({
+  contactId: true,
+  whatsappNumber: true,
+  conversationStatus: true,
+  isBusinessInitiated: true,
+  metadata: true,
+});
+
+export const insertSmsConversationSchema = createInsertSchema(smsConversations).pick({
+  contactId: true,
+  phoneNumber: true,
+  conversationStatus: true,
+  twilioPhoneNumber: true,
+  metadata: true,
+});
+
+export const insertMessageTrackingSchema = createInsertSchema(messageTracking).pick({
+  sendId: true,
+  trackingId: true,
+  channelType: true,
+  eventType: true,
+  eventData: true,
+  userAgent: true,
+  ipAddress: true,
+  metadata: true,
+});
+
+// Type exports for multi-channel messaging
+export type MessageChannel = typeof messageChannels.$inferSelect;
+export type InsertMessageChannel = z.infer<typeof insertMessageChannelSchema>;
+
+export type MessageTemplate = typeof messageTemplates.$inferSelect;
+export type InsertMessageTemplate = z.infer<typeof insertMessageTemplateSchema>;
+
+export type MessagingCampaign = typeof messagingCampaigns.$inferSelect;
+export type InsertMessagingCampaign = z.infer<typeof insertMessagingCampaignSchema>;
+
+export type MessageSend = typeof messageSends.$inferSelect;
+export type InsertMessageSend = z.infer<typeof insertMessageSendSchema>;
+
+export type WhatsappConversation = typeof whatsappConversations.$inferSelect;
+export type InsertWhatsappConversation = z.infer<typeof insertWhatsappConversationSchema>;
+
+export type SmsConversation = typeof smsConversations.$inferSelect;
+export type InsertSmsConversation = z.infer<typeof insertSmsConversationSchema>;
+
+export type MessageTracking = typeof messageTracking.$inferSelect;
+export type InsertMessageTracking = z.infer<typeof insertMessageTrackingSchema>;
+
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
