@@ -54,19 +54,28 @@ export default function SeedlingLanguageLearning() {
   // Fetch all languages for seedling learning
   const { data: languages = [], isLoading: languagesLoading } = useQuery({
     queryKey: ['/api/language-learning/languages'],
-    queryFn: () => apiRequest('/api/language-learning/languages')
+    queryFn: async () => {
+      const response = await fetch('/api/language-learning/languages');
+      return await response.json() as Language[];
+    }
   });
 
   // Fetch seedling language statistics
   const { data: seedlingStats, isLoading: statsLoading } = useQuery({
     queryKey: ['/api/language-learning/seedlings', selectedSeedling, 'stats'],
-    queryFn: () => apiRequest(`/api/language-learning/seedlings/${selectedSeedling}/stats`),
+    queryFn: async () => {
+      const response = await fetch(`/api/language-learning/seedlings/${selectedSeedling}/stats`);
+      return await response.json() as LearningStats;
+    },
     enabled: !!selectedSeedling
   });
 
   // Initialize language learning system
   const initializeMutation = useMutation({
-    mutationFn: () => apiRequest('/api/language-learning/initialize', { method: 'POST' }),
+    mutationFn: async () => {
+      const response = await fetch('/api/language-learning/initialize', { method: 'POST' });
+      return await response.json();
+    },
     onSuccess: () => {
       toast({
         title: "🌱 Language System Initialized",

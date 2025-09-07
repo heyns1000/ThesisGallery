@@ -1310,10 +1310,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         validatedData.seedlingId,
         validatedData.languageCode,
         {
-          thankYouLearned: validatedData.thankYouLearned,
-          pleaseLearned: validatedData.pleaseLearned,
-          practiceCount: validatedData.practiceCount,
-          kindnessScore: validatedData.kindnessScore
+          thankYouLearned: validatedData.thankYouLearned ?? undefined,
+          pleaseLearned: validatedData.pleaseLearned ?? undefined,
+          practiceCount: validatedData.practiceCount ?? undefined,
+          kindnessScore: validatedData.kindnessScore ?? undefined
         }
       );
       
