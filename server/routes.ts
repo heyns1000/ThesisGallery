@@ -5,6 +5,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import { storage } from "./storage";
+import { samFoxStudioService } from "./samfox-studio-service";
 import { EmailProcessor, type EmailParsingResult } from "./email-processor";
 import { 
   insertDocumentSchema,
@@ -3397,6 +3398,166 @@ May this wisdom serve your journey well! 🌳✨`
         error: "Failed to export daily summary",
         details: error instanceof Error ? error.message : 'Unknown error'
       });
+    }
+  });
+
+  // ===============================
+  // SAMFOX STUDIO PLATFORM ROUTES
+  // ===============================
+
+  // Get or Initialize SamFox Studio
+  app.get("/api/samfox-studio", async (req, res) => {
+    try {
+      let studio = await samFoxStudioService.getSamFoxStudio();
+      
+      if (!studio) {
+        studio = await samFoxStudioService.initializeSamFoxStudio();
+      }
+      
+      res.json(studio);
+    } catch (error) {
+      console.error("Error getting SamFox Studio:", error);
+      res.status(500).json({ error: "Failed to get SamFox Studio" });
+    }
+  });
+
+  // Initialize SamFox Studio
+  app.post("/api/samfox-studio/initialize", async (req, res) => {
+    try {
+      const studio = await samFoxStudioService.initializeSamFoxStudio();
+      res.json(studio);
+    } catch (error) {
+      console.error("Error initializing SamFox Studio:", error);
+      res.status(500).json({ error: "Failed to initialize SamFox Studio" });
+    }
+  });
+
+  // Get SamFox Studio Dashboard Stats
+  app.get("/api/samfox-studio/:id/stats", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const stats = await samFoxStudioService.getDashboardStats(id);
+      res.json(stats);
+    } catch (error) {
+      console.error("Error getting SamFox Studio stats:", error);
+      res.status(500).json({ error: "Failed to get stats" });
+    }
+  });
+
+  // Collaboration Workspaces
+  app.get("/api/samfox-studio/workspaces", async (req, res) => {
+    try {
+      const { samFoxStudioId } = req.query;
+      const workspaces = await samFoxStudioService.getWorkspaces(samFoxStudioId as string);
+      res.json(workspaces);
+    } catch (error) {
+      console.error("Error getting workspaces:", error);
+      res.status(500).json({ error: "Failed to get workspaces" });
+    }
+  });
+
+  app.post("/api/samfox-studio/workspaces", async (req, res) => {
+    try {
+      const workspace = await samFoxStudioService.createWorkspace(req.body);
+      res.json(workspace);
+    } catch (error) {
+      console.error("Error creating workspace:", error);
+      res.status(500).json({ error: "Failed to create workspace" });
+    }
+  });
+
+  // Global Master Licenses
+  app.get("/api/samfox-studio/licenses", async (req, res) => {
+    try {
+      const { samFoxStudioId } = req.query;
+      const licenses = await samFoxStudioService.getMasterLicenses(samFoxStudioId as string);
+      res.json(licenses);
+    } catch (error) {
+      console.error("Error getting licenses:", error);
+      res.status(500).json({ error: "Failed to get licenses" });
+    }
+  });
+
+  app.post("/api/samfox-studio/licenses", async (req, res) => {
+    try {
+      const license = await samFoxStudioService.createMasterLicense(req.body);
+      res.json(license);
+    } catch (error) {
+      console.error("Error creating license:", error);
+      res.status(500).json({ error: "Failed to create license" });
+    }
+  });
+
+  // SamFox Fileroom
+  app.get("/api/samfox-studio/fileroom", async (req, res) => {
+    try {
+      const { samFoxStudioId, fileType } = req.query;
+      const files = await samFoxStudioService.getFileroom(
+        samFoxStudioId as string, 
+        fileType as string
+      );
+      res.json(files);
+    } catch (error) {
+      console.error("Error getting fileroom:", error);
+      res.status(500).json({ error: "Failed to get fileroom" });
+    }
+  });
+
+  app.post("/api/samfox-studio/fileroom", async (req, res) => {
+    try {
+      const file = await samFoxStudioService.uploadToFileroom(req.body);
+      res.json(file);
+    } catch (error) {
+      console.error("Error uploading to fileroom:", error);
+      res.status(500).json({ error: "Failed to upload file" });
+    }
+  });
+
+  // Treaty Collaboration
+  app.get("/api/samfox-studio/treaties", async (req, res) => {
+    try {
+      const { samFoxStudioId } = req.query;
+      const treaties = await samFoxStudioService.getTreaties(samFoxStudioId as string);
+      res.json(treaties);
+    } catch (error) {
+      console.error("Error getting treaties:", error);
+      res.status(500).json({ error: "Failed to get treaties" });
+    }
+  });
+
+  app.post("/api/samfox-studio/treaties", async (req, res) => {
+    try {
+      const treaty = await samFoxStudioService.createTreaty(req.body);
+      res.json(treaty);
+    } catch (error) {
+      console.error("Error creating treaty:", error);
+      res.status(500).json({ error: "Failed to create treaty" });
+    }
+  });
+
+  app.patch("/api/samfox-studio/treaties/:treatyId/sign", async (req, res) => {
+    try {
+      const { treatyId } = req.params;
+      const treaty = await samFoxStudioService.signTreaty(treatyId);
+      if (!treaty) {
+        return res.status(404).json({ error: "Treaty not found" });
+      }
+      res.json(treaty);
+    } catch (error) {
+      console.error("Error signing treaty:", error);
+      res.status(500).json({ error: "Failed to sign treaty" });
+    }
+  });
+
+  // Vault Sync
+  app.post("/api/samfox-studio/:id/sync", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const syncResult = await samFoxStudioService.syncWithVault(id);
+      res.json(syncResult);
+    } catch (error) {
+      console.error("Error syncing with vault:", error);
+      res.status(500).json({ error: "Failed to sync with vault" });
     }
   });
 
