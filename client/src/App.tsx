@@ -58,6 +58,7 @@ import EurekaCloudflowDashboard from "@/pages/eureka-cloudflow-dashboard";
 import DailySummaryExtractor from "@/pages/daily-summary-extractor";
 import NotificationSettings from "@/pages/notification-settings";
 import AdMobDashboard from "@/pages/admob-dashboard";
+import SamFoxStudioPlatform from "@/pages/samfox-studio-platform";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -117,6 +118,7 @@ function Router() {
       <Route path="/multi-channel-messaging" component={MultiChannelMessaging} />
       <Route path="/notifications/settings" component={NotificationSettings} />
       <Route path="/admob-dashboard" component={AdMobDashboard} />
+      <Route path="/samfox-studio-platform" component={SamFoxStudioPlatform} />
       <Route component={NotFound} />
     </Switch>
   );
