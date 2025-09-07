@@ -59,6 +59,7 @@ import DailySummaryExtractor from "@/pages/daily-summary-extractor";
 import NotificationSettings from "@/pages/notification-settings";
 import AdMobDashboard from "@/pages/admob-dashboard";
 import SamFoxStudioPlatform from "@/pages/samfox-studio-platform";
+import LoopPayGallery from "@/pages/looppay-gallery";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -119,6 +120,7 @@ function Router() {
       <Route path="/notifications/settings" component={NotificationSettings} />
       <Route path="/admob-dashboard" component={AdMobDashboard} />
       <Route path="/samfox-studio-platform" component={SamFoxStudioPlatform} />
+      <Route path="/looppay-gallery" component={LoopPayGallery} />
       <Route component={NotFound} />
     </Switch>
   );

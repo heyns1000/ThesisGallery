@@ -41,6 +41,7 @@ const navItems = [
   { href: "/team-onboarding", label: "👥 Team Onboarding", icon: "fas fa-user-plus", id: "team-onboarding" },
   { href: "/contact-management", label: "📧 Contact Management", icon: "fas fa-address-book", id: "contact-management" },
   { href: "/banimal-platform", label: "🐾 Banimal™ FAA Platform", icon: "fas fa-shopping-cart", id: "banimal-platform" },
+  { href: "/looppay-gallery", label: "💳 LoopPay™ Sovereign Portal", icon: "fas fa-credit-card", id: "looppay-gallery" },
 ];
 
 export function Sidebar() {
