@@ -45,7 +45,17 @@ import {
   type CrateDanceSponsor,
   type InsertCrateDanceSponsor,
   type CrateDanceAudition,
-  type InsertCrateDanceAudition
+  type InsertCrateDanceAudition,
+  type EmailProvider,
+  type InsertEmailProvider,
+  type EmailTemplate,
+  type InsertEmailTemplate,
+  type EmailCampaign,
+  type InsertEmailCampaign,
+  type EmailSend,
+  type InsertEmailSend,
+  type EmailTracking,
+  type InsertEmailTracking
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -146,6 +156,48 @@ export interface IStorage {
   getBanimalCustomerByEmail(email: string): Promise<BanimalCustomer | undefined>;
   createBanimalCustomer(customer: InsertBanimalCustomer): Promise<BanimalCustomer>;
   updateBanimalCustomer(id: string, updates: Partial<BanimalCustomer>): Promise<BanimalCustomer | undefined>;
+
+  // ===============================
+  // EMAIL SYSTEM METHODS
+  // ===============================
+  
+  // Email provider methods
+  getEmailProviders(): Promise<EmailProvider[]>;
+  getEmailProvider(id: string): Promise<EmailProvider | undefined>;
+  createEmailProvider(provider: InsertEmailProvider): Promise<EmailProvider>;
+  updateEmailProvider(id: string, updates: Partial<EmailProvider>): Promise<EmailProvider | undefined>;
+  deleteEmailProvider(id: string): Promise<boolean>;
+
+  // Email template methods
+  getEmailTemplates(): Promise<EmailTemplate[]>;
+  getEmailTemplate(id: string): Promise<EmailTemplate | undefined>;
+  createEmailTemplate(template: InsertEmailTemplate): Promise<EmailTemplate>;
+  updateEmailTemplate(id: string, updates: Partial<EmailTemplate>): Promise<EmailTemplate | undefined>;
+  deleteEmailTemplate(id: string): Promise<boolean>;
+
+  // Email campaign methods
+  getEmailCampaigns(): Promise<EmailCampaign[]>;
+  getEmailCampaign(id: string): Promise<EmailCampaign | undefined>;
+  createEmailCampaign(campaign: InsertEmailCampaign): Promise<EmailCampaign>;
+  updateEmailCampaign(id: string, updates: Partial<EmailCampaign>): Promise<EmailCampaign | undefined>;
+  deleteEmailCampaign(id: string): Promise<boolean>;
+  incrementCampaignOpens(campaignId: string): Promise<void>;
+  incrementCampaignClicks(campaignId: string): Promise<void>;
+  incrementCampaignUnsubscribes(campaignId: string): Promise<void>;
+
+  // Email send methods
+  getEmailSends(): Promise<EmailSend[]>;
+  getEmailSend(id: string): Promise<EmailSend | undefined>;
+  getEmailSendByTrackingId(trackingId: string): Promise<EmailSend | undefined>;
+  createEmailSend(emailSend: InsertEmailSend): Promise<EmailSend>;
+  updateEmailSend(id: string, updates: Partial<EmailSend>): Promise<EmailSend | undefined>;
+
+  // Email tracking methods
+  getEmailTrackings(): Promise<EmailTracking[]>;
+  createEmailTracking(tracking: InsertEmailTracking): Promise<EmailTracking>;
+
+  // Contact helper methods for email system
+  getContactsByIds(contactIds: string[]): Promise<Contact[]>;
 }
 
 export class MemStorage implements IStorage {
@@ -165,6 +217,11 @@ export class MemStorage implements IStorage {
   private banimalProducts: Map<string, BanimalProduct> = new Map();
   private banimalOrders: Map<string, BanimalOrder> = new Map();
   private banimalCustomers: Map<string, BanimalCustomer> = new Map();
+  private emailProviders: Map<string, EmailProvider> = new Map();
+  private emailTemplates: Map<string, EmailTemplate> = new Map();
+  private emailCampaigns: Map<string, EmailCampaign> = new Map();
+  private emailSends: Map<string, EmailSend> = new Map();
+  private emailTrackings: Map<string, EmailTracking> = new Map();
   private systemStats: SystemStats | undefined;
 
   constructor() {
@@ -856,6 +913,251 @@ export class MemStorage implements IStorage {
     const updated = { ...existing, ...updates, updatedAt: new Date() };
     this.banimalCustomers.set(id, updated);
     return updated;
+  }
+
+  // ===============================
+  // EMAIL SYSTEM METHODS
+  // ===============================
+
+  // Email provider methods
+  async getEmailProviders(): Promise<EmailProvider[]> {
+    return Array.from(this.emailProviders.values()).sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }
+
+  async getEmailProvider(id: string): Promise<EmailProvider | undefined> {
+    return this.emailProviders.get(id);
+  }
+
+  async createEmailProvider(insertProvider: InsertEmailProvider): Promise<EmailProvider> {
+    const id = randomUUID();
+    const now = new Date();
+    const provider: EmailProvider = {
+      ...insertProvider,
+      id,
+      createdAt: now,
+      updatedAt: now,
+      isActive: insertProvider.isActive !== undefined ? insertProvider.isActive : true,
+      metadata: insertProvider.metadata || null
+    };
+    this.emailProviders.set(id, provider);
+    return provider;
+  }
+
+  async updateEmailProvider(id: string, updates: Partial<EmailProvider>): Promise<EmailProvider | undefined> {
+    const existing = this.emailProviders.get(id);
+    if (!existing) return undefined;
+    
+    const updated = { ...existing, ...updates, updatedAt: new Date() };
+    this.emailProviders.set(id, updated);
+    return updated;
+  }
+
+  async deleteEmailProvider(id: string): Promise<boolean> {
+    return this.emailProviders.delete(id);
+  }
+
+  // Email template methods
+  async getEmailTemplates(): Promise<EmailTemplate[]> {
+    return Array.from(this.emailTemplates.values()).sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }
+
+  async getEmailTemplate(id: string): Promise<EmailTemplate | undefined> {
+    return this.emailTemplates.get(id);
+  }
+
+  async createEmailTemplate(insertTemplate: InsertEmailTemplate): Promise<EmailTemplate> {
+    const id = randomUUID();
+    const now = new Date();
+    const template: EmailTemplate = {
+      ...insertTemplate,
+      id,
+      createdAt: now,
+      updatedAt: now,
+      category: insertTemplate.category || "general",
+      isActive: insertTemplate.isActive !== undefined ? insertTemplate.isActive : true,
+      variables: insertTemplate.variables || [],
+      textContent: insertTemplate.textContent || null,
+      metadata: insertTemplate.metadata || null
+    };
+    this.emailTemplates.set(id, template);
+    return template;
+  }
+
+  async updateEmailTemplate(id: string, updates: Partial<EmailTemplate>): Promise<EmailTemplate | undefined> {
+    const existing = this.emailTemplates.get(id);
+    if (!existing) return undefined;
+    
+    const updated = { ...existing, ...updates, updatedAt: new Date() };
+    this.emailTemplates.set(id, updated);
+    return updated;
+  }
+
+  async deleteEmailTemplate(id: string): Promise<boolean> {
+    return this.emailTemplates.delete(id);
+  }
+
+  // Email campaign methods
+  async getEmailCampaigns(): Promise<EmailCampaign[]> {
+    return Array.from(this.emailCampaigns.values()).sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }
+
+  async getEmailCampaign(id: string): Promise<EmailCampaign | undefined> {
+    return this.emailCampaigns.get(id);
+  }
+
+  async createEmailCampaign(insertCampaign: InsertEmailCampaign): Promise<EmailCampaign> {
+    const id = randomUUID();
+    const now = new Date();
+    const campaign: EmailCampaign = {
+      ...insertCampaign,
+      id,
+      createdAt: now,
+      updatedAt: now,
+      status: insertCampaign.status || "draft",
+      scheduleType: insertCampaign.scheduleType || "immediate",
+      totalRecipients: insertCampaign.totalRecipients || 0,
+      sentCount: 0,
+      deliveredCount: 0,
+      openCount: 0,
+      clickCount: 0,
+      bounceCount: 0,
+      unsubscribeCount: 0,
+      scheduledAt: insertCampaign.scheduledAt || null,
+      sentAt: null,
+      description: insertCampaign.description || null,
+      targetAudience: insertCampaign.targetAudience || null,
+      metadata: insertCampaign.metadata || null
+    };
+    this.emailCampaigns.set(id, campaign);
+    return campaign;
+  }
+
+  async updateEmailCampaign(id: string, updates: Partial<EmailCampaign>): Promise<EmailCampaign | undefined> {
+    const existing = this.emailCampaigns.get(id);
+    if (!existing) return undefined;
+    
+    const updated = { ...existing, ...updates, updatedAt: new Date() };
+    this.emailCampaigns.set(id, updated);
+    return updated;
+  }
+
+  async deleteEmailCampaign(id: string): Promise<boolean> {
+    return this.emailCampaigns.delete(id);
+  }
+
+  async incrementCampaignOpens(campaignId: string): Promise<void> {
+    const campaign = this.emailCampaigns.get(campaignId);
+    if (campaign) {
+      campaign.openCount = (campaign.openCount || 0) + 1;
+      campaign.updatedAt = new Date();
+      this.emailCampaigns.set(campaignId, campaign);
+    }
+  }
+
+  async incrementCampaignClicks(campaignId: string): Promise<void> {
+    const campaign = this.emailCampaigns.get(campaignId);
+    if (campaign) {
+      campaign.clickCount = (campaign.clickCount || 0) + 1;
+      campaign.updatedAt = new Date();
+      this.emailCampaigns.set(campaignId, campaign);
+    }
+  }
+
+  async incrementCampaignUnsubscribes(campaignId: string): Promise<void> {
+    const campaign = this.emailCampaigns.get(campaignId);
+    if (campaign) {
+      campaign.unsubscribeCount = (campaign.unsubscribeCount || 0) + 1;
+      campaign.updatedAt = new Date();
+      this.emailCampaigns.set(campaignId, campaign);
+    }
+  }
+
+  // Email send methods
+  async getEmailSends(): Promise<EmailSend[]> {
+    return Array.from(this.emailSends.values()).sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }
+
+  async getEmailSend(id: string): Promise<EmailSend | undefined> {
+    return this.emailSends.get(id);
+  }
+
+  async getEmailSendByTrackingId(trackingId: string): Promise<EmailSend | undefined> {
+    return Array.from(this.emailSends.values()).find(
+      send => send.trackingId === trackingId
+    );
+  }
+
+  async createEmailSend(insertSend: InsertEmailSend): Promise<EmailSend> {
+    const id = randomUUID();
+    const now = new Date();
+    const send: EmailSend = {
+      ...insertSend,
+      id,
+      createdAt: now,
+      status: insertSend.status || "pending",
+      sentAt: null,
+      deliveredAt: null,
+      openedAt: null,
+      clickedAt: null,
+      unsubscribedAt: null,
+      bounceReason: null,
+      messageId: insertSend.messageId || null,
+      personalizedContent: insertSend.personalizedContent || null,
+      metadata: insertSend.metadata || null
+    };
+    this.emailSends.set(id, send);
+    return send;
+  }
+
+  async updateEmailSend(id: string, updates: Partial<EmailSend>): Promise<EmailSend | undefined> {
+    const existing = this.emailSends.get(id);
+    if (!existing) return undefined;
+    
+    const updated = { ...existing, ...updates };
+    this.emailSends.set(id, updated);
+    return updated;
+  }
+
+  // Email tracking methods
+  async getEmailTrackings(): Promise<EmailTracking[]> {
+    return Array.from(this.emailTrackings.values()).sort(
+      (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+    );
+  }
+
+  async createEmailTracking(insertTracking: InsertEmailTracking): Promise<EmailTracking> {
+    const id = randomUUID();
+    const tracking: EmailTracking = {
+      ...insertTracking,
+      id,
+      timestamp: new Date(),
+      userAgent: insertTracking.userAgent || null,
+      ipAddress: insertTracking.ipAddress || null,
+      eventData: insertTracking.eventData || null,
+      metadata: insertTracking.metadata || null
+    };
+    this.emailTrackings.set(id, tracking);
+    return tracking;
+  }
+
+  // Contact helper methods for email system
+  async getContactsByIds(contactIds: string[]): Promise<Contact[]> {
+    const contacts: Contact[] = [];
+    for (const id of contactIds) {
+      const contact = this.contacts.get(id);
+      if (contact) {
+        contacts.push(contact);
+      }
+    }
+    return contacts;
   }
 
   private async updateStats(): Promise<void> {
