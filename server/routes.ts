@@ -29,7 +29,15 @@ import {
   insertEmailTemplateSchema,
   insertEmailCampaignSchema,
   insertEmailSendSchema,
-  insertEmailTrackingSchema
+  insertEmailTrackingSchema,
+  // Multi-Channel Messaging Schemas
+  insertMessageChannelSchema,
+  insertMessageTemplateSchema,
+  insertMessagingCampaignSchema,
+  insertMessageSendSchema,
+  insertWhatsappConversationSchema,
+  insertSmsConversationSchema,
+  insertMessageTrackingSchema
 } from "@shared/schema";
 import { ContactProcessingAI, BanimalChatbot, CurrencyAI, HolidayAI, generateFaaReference } from "./ai-services";
 import { GeminiContactProcessor, GeminiBanimalChatbot, GeminiProductAI, GeminiMarketingAI } from "./gemini-ai";
@@ -37,6 +45,7 @@ import { languageLearningService } from "./language-learning-service";
 import { firebaseAdmin } from "./firebase-admin";
 import { abandonedCartService } from "./abandoned-cart-service";
 import { enterpriseEmailService } from "./email-service";
+import { multiChannelMessagingService } from "./multi-channel-service";
 
 // Configure multer for file uploads
 const upload = multer({
@@ -2630,6 +2639,357 @@ May this wisdom serve your journey well! 🌳✨`
     } catch (error) {
       console.error('Get email tracking error:', error);
       res.status(500).json({ error: "Failed to fetch email tracking data" });
+    }
+  });
+
+  // ===============================
+  // MULTI-CHANNEL MESSAGING ROUTES 
+  // ===============================
+
+  // Message Channel Routes
+  app.get("/api/messaging/channels", async (req, res) => {
+    try {
+      const channels = await storage.getMessageChannels();
+      res.json(channels);
+    } catch (error) {
+      console.error('Get message channels error:', error);
+      res.status(500).json({ error: "Failed to fetch message channels" });
+    }
+  });
+
+  app.get("/api/messaging/channels/:id", async (req, res) => {
+    try {
+      const channel = await storage.getMessageChannel(req.params.id);
+      if (!channel) {
+        return res.status(404).json({ error: "Message channel not found" });
+      }
+      res.json(channel);
+    } catch (error) {
+      console.error('Get message channel error:', error);
+      res.status(500).json({ error: "Failed to fetch message channel" });
+    }
+  });
+
+  app.post("/api/messaging/channels", async (req, res) => {
+    try {
+      const channelData = insertMessageChannelSchema.parse(req.body);
+      const channel = await multiChannelMessagingService.createMessageChannel(channelData);
+      
+      broadcast({ 
+        type: 'channel_created',
+        data: channel 
+      });
+      
+      res.status(201).json(channel);
+    } catch (error) {
+      console.error('Create message channel error:', error);
+      res.status(500).json({ error: "Failed to create message channel" });
+    }
+  });
+
+  app.put("/api/messaging/channels/:id", async (req, res) => {
+    try {
+      const updates = req.body;
+      const channel = await multiChannelMessagingService.updateMessageChannel(req.params.id, updates);
+      
+      if (!channel) {
+        return res.status(404).json({ error: "Message channel not found" });
+      }
+      
+      broadcast({ 
+        type: 'channel_updated',
+        data: channel 
+      });
+      
+      res.json(channel);
+    } catch (error) {
+      console.error('Update message channel error:', error);
+      res.status(500).json({ error: "Failed to update message channel" });
+    }
+  });
+
+  // Test Channel Route
+  app.post("/api/messaging/channels/:id/test", async (req, res) => {
+    try {
+      const { testRecipient } = req.body;
+      if (!testRecipient) {
+        return res.status(400).json({ error: "Test recipient is required" });
+      }
+      
+      const result = await multiChannelMessagingService.testChannel(req.params.id, testRecipient);
+      res.json(result);
+    } catch (error) {
+      console.error('Test channel error:', error);
+      res.status(500).json({ error: "Failed to test channel" });
+    }
+  });
+
+  // Message Template Routes  
+  app.get("/api/messaging/templates", async (req, res) => {
+    try {
+      const { channelType } = req.query;
+      const templates = channelType 
+        ? await storage.getMessageTemplatesByChannel(channelType as string)
+        : await storage.getMessageTemplates();
+      res.json(templates);
+    } catch (error) {
+      console.error('Get message templates error:', error);
+      res.status(500).json({ error: "Failed to fetch message templates" });
+    }
+  });
+
+  app.get("/api/messaging/templates/:id", async (req, res) => {
+    try {
+      const template = await storage.getMessageTemplate(req.params.id);
+      if (!template) {
+        return res.status(404).json({ error: "Message template not found" });
+      }
+      res.json(template);
+    } catch (error) {
+      console.error('Get message template error:', error);
+      res.status(500).json({ error: "Failed to fetch message template" });
+    }
+  });
+
+  app.post("/api/messaging/templates", async (req, res) => {
+    try {
+      const templateData = insertMessageTemplateSchema.parse(req.body);
+      const template = await multiChannelMessagingService.createMessageTemplate(templateData);
+      
+      broadcast({ 
+        type: 'template_created',
+        data: template 
+      });
+      
+      res.status(201).json(template);
+    } catch (error) {
+      console.error('Create message template error:', error);
+      res.status(500).json({ error: "Failed to create message template" });
+    }
+  });
+
+  app.put("/api/messaging/templates/:id", async (req, res) => {
+    try {
+      const updates = req.body;
+      const template = await multiChannelMessagingService.updateMessageTemplate(req.params.id, updates);
+      
+      if (!template) {
+        return res.status(404).json({ error: "Message template not found" });
+      }
+      
+      broadcast({ 
+        type: 'template_updated',
+        data: template 
+      });
+      
+      res.json(template);
+    } catch (error) {
+      console.error('Update message template error:', error);
+      res.status(500).json({ error: "Failed to update message template" });
+    }
+  });
+
+  // Messaging Campaign Routes
+  app.get("/api/messaging/campaigns", async (req, res) => {
+    try {
+      const campaigns = await storage.getMessagingCampaigns();
+      res.json(campaigns);
+    } catch (error) {
+      console.error('Get messaging campaigns error:', error);
+      res.status(500).json({ error: "Failed to fetch messaging campaigns" });
+    }
+  });
+
+  app.get("/api/messaging/campaigns/:id", async (req, res) => {
+    try {
+      const campaign = await storage.getMessagingCampaign(req.params.id);
+      if (!campaign) {
+        return res.status(404).json({ error: "Messaging campaign not found" });
+      }
+      res.json(campaign);
+    } catch (error) {
+      console.error('Get messaging campaign error:', error);
+      res.status(500).json({ error: "Failed to fetch messaging campaign" });
+    }
+  });
+
+  app.post("/api/messaging/campaigns", async (req, res) => {
+    try {
+      const campaignData = insertMessagingCampaignSchema.parse(req.body);
+      const campaign = await multiChannelMessagingService.createMessagingCampaign(campaignData);
+      
+      broadcast({ 
+        type: 'campaign_created',
+        data: campaign 
+      });
+      
+      res.status(201).json(campaign);
+    } catch (error) {
+      console.error('Create messaging campaign error:', error);
+      res.status(500).json({ error: "Failed to create messaging campaign" });
+    }
+  });
+
+  app.post("/api/messaging/campaigns/:id/start", async (req, res) => {
+    try {
+      await multiChannelMessagingService.startCampaign(req.params.id);
+      
+      const campaign = await storage.getMessagingCampaign(req.params.id);
+      
+      broadcast({ 
+        type: 'campaign_started',
+        data: campaign 
+      });
+      
+      res.json({ success: true, message: "Campaign started successfully" });
+    } catch (error) {
+      console.error('Start campaign error:', error);
+      res.status(500).json({ error: "Failed to start campaign" });
+    }
+  });
+
+  app.get("/api/messaging/campaigns/:id/analytics", async (req, res) => {
+    try {
+      const analytics = await multiChannelMessagingService.getMultiChannelAnalytics();
+      res.json(analytics);
+    } catch (error) {
+      console.error('Get campaign analytics error:', error);
+      res.status(500).json({ error: "Failed to fetch campaign analytics" });
+    }
+  });
+
+  // WhatsApp Routes
+  app.get("/api/messaging/whatsapp/conversations", async (req, res) => {
+    try {
+      const conversations = await storage.getWhatsAppConversations();
+      res.json(conversations);
+    } catch (error) {
+      console.error('Get WhatsApp conversations error:', error);
+      res.status(500).json({ error: "Failed to fetch WhatsApp conversations" });
+    }
+  });
+
+  app.get("/api/messaging/whatsapp/conversations/:id", async (req, res) => {
+    try {
+      const conversation = await storage.getWhatsAppConversation(req.params.id);
+      if (!conversation) {
+        return res.status(404).json({ error: "WhatsApp conversation not found" });
+      }
+      res.json(conversation);
+    } catch (error) {
+      console.error('Get WhatsApp conversation error:', error);
+      res.status(500).json({ error: "Failed to fetch WhatsApp conversation" });
+    }
+  });
+
+  // SMS Routes
+  app.get("/api/messaging/sms/conversations", async (req, res) => {
+    try {
+      const conversations = await storage.getSMSConversations();
+      res.json(conversations);
+    } catch (error) {
+      console.error('Get SMS conversations error:', error);
+      res.status(500).json({ error: "Failed to fetch SMS conversations" });
+    }
+  });
+
+  app.get("/api/messaging/sms/conversations/:id", async (req, res) => {
+    try {
+      const conversation = await storage.getSMSConversation(req.params.id);
+      if (!conversation) {
+        return res.status(404).json({ error: "SMS conversation not found" });
+      }
+      res.json(conversation);
+    } catch (error) {
+      console.error('Get SMS conversation error:', error);
+      res.status(500).json({ error: "Failed to fetch SMS conversation" });
+    }
+  });
+
+  // Twilio Webhook Handler
+  app.post("/api/messaging/twilio/webhook", async (req, res) => {
+    try {
+      await multiChannelMessagingService.handleTwilioWebhook(req.body);
+      res.status(200).send('OK');
+    } catch (error) {
+      console.error('Twilio webhook error:', error);
+      res.status(500).json({ error: "Failed to process webhook" });
+    }
+  });
+
+  // Message Send Routes
+  app.get("/api/messaging/sends", async (req, res) => {
+    try {
+      const sends = await storage.getMessageSends();
+      res.json(sends);
+    } catch (error) {
+      console.error('Get message sends error:', error);
+      res.status(500).json({ error: "Failed to fetch message sends" });
+    }
+  });
+
+  app.get("/api/messaging/tracking", async (req, res) => {
+    try {
+      const tracking = await storage.getMessageTrackings();
+      res.json(tracking);
+    } catch (error) {
+      console.error('Get message tracking error:', error);
+      res.status(500).json({ error: "Failed to fetch message tracking data" });
+    }
+  });
+
+  // Analytics Routes
+  app.get("/api/messaging/analytics", async (req, res) => {
+    try {
+      const { channelType, days } = req.query;
+      const analytics = await multiChannelMessagingService.getMultiChannelAnalytics(
+        channelType as string,
+        days ? parseInt(days as string) : 30
+      );
+      res.json(analytics);
+    } catch (error) {
+      console.error('Get messaging analytics error:', error);
+      res.status(500).json({ error: "Failed to fetch messaging analytics" });
+    }
+  });
+
+  // Direct Send Message Route
+  app.post("/api/messaging/send", async (req, res) => {
+    try {
+      const { templateId, channelIds, contactIds, campaignName } = req.body;
+      
+      if (!templateId || !channelIds || !contactIds || !Array.isArray(channelIds) || !Array.isArray(contactIds)) {
+        return res.status(400).json({ 
+          error: "Template ID, channel IDs, and contact IDs are required" 
+        });
+      }
+
+      // Create a quick campaign for this send
+      const campaign = await multiChannelMessagingService.createMessagingCampaign({
+        name: campaignName || `Direct Send - ${new Date().toLocaleDateString()}`,
+        channelIds,
+        templateId,
+        status: 'draft',
+        scheduleType: 'immediate',
+        targetAudience: { contactIds }
+      });
+
+      // Start the campaign
+      await multiChannelMessagingService.startCampaign(campaign.id);
+
+      broadcast({ 
+        type: 'message_sent',
+        data: { campaignId: campaign.id, contactIds, channelIds } 
+      });
+
+      res.json({ 
+        success: true, 
+        campaignId: campaign.id,
+        message: "Messages sent successfully across all channels" 
+      });
+    } catch (error) {
+      console.error('Send message error:', error);
+      res.status(500).json({ error: "Failed to send messages" });
     }
   });
 

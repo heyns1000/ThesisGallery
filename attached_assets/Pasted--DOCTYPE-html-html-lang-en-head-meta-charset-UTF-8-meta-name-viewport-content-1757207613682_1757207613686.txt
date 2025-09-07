@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAA Real Estate AI™ - Property Intelligence for South Africa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .flow-node {
+            border: 2px solid;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .flow-connector {
+            position: relative;
+            width: 2px;
+            height: 30px;
+            margin: 0 auto;
+        }
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2rem;
+            padding-left: 2.5rem;
+            border-left: 3px solid #118AB2;
+        }
+        .timeline-dot {
+            position: absolute;
+            left: -11px;
+            top: 0;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            border: 4px solid #f0f4f8;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="bg-[#073B4C] text-white p-8 text-center">
+        <h1 class="text-4xl md:text-5xl font-black">FAA Real Estate AI™</h1>
+        <p class="mt-2 text-lg md:text-xl text-[#FFD166]">Revolutionizing Property Intelligence in South Africa</p>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+
+        <section class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-[#073B4C] mb-4">Bridging the Information Gap</h2>
+            <p class="max-w-3xl mx-auto text-lg">
+                The South African property market has long been divided. FAA Real Estate AI™ dismantles this information asymmetry, delivering professional-grade analytics and strategic guidance to everyone, from first-time buyers in cities to self-builders in rural communities. We provide clarity in a complex market.
+            </p>
+        </section>
+
+        <section class="bg-white rounded-lg shadow-md p-6 mb-12">
+            <h2 class="text-3xl font-bold text-[#073B4C] text-center mb-6">A Powerhouse of Technology</h2>
+            <p class="text-center max-w-2xl mx-auto mb-8">Our platform is built on a modern, robust, and scalable architecture designed for speed, reliability, and end-to-end type safety. This ensures a seamless experience and trustworthy data processing.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center text-white">
+                <div class="flow-node bg-[#118AB2] border-[#118AB2]">
+                    <h3 class="text-xl font-bold mb-2">Frontend</h3>
+                    <p>React, TypeScript, Shadcn/ui, Tailwind CSS, Chart.js</p>
+                </div>
+                <div class="hidden md:block flow-connector bg-[#06D6A0]"></div>
+                <div class="md:hidden flow-connector bg-[#06D6A0] rotate-90 w-full h-[2px]"></div>
+                <div class="flow-node bg-[#06D6A0] border-[#06D6A0]">
+                    <h3 class="text-xl font-bold mb-2">Backend</h3>
+                    <p>Node.js, Express, TypeScript, RESTful API</p>
+                </div>
+                <div class="hidden md:block flow-connector bg-[#FFD166]"></div>
+                <div class="md:hidden flow-connector bg-[#FFD166] rotate-90 w-full h-[2px]"></div>
+                <div class="flow-node bg-[#FF6B6B] border-[#FF6B6B]">
+                     <h3 class="text-xl font-bold mb-2">Data & Storage</h3>
+                    <p>PostgreSQL, Neon DB, Drizzle ORM, Zod Validation</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 items-center">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-3xl font-bold text-[#073B4C] text-center mb-4">Serving All South Africans</h2>
+                <p class="text-center mb-6">Our platform is meticulously designed to cater to the unique needs of a diverse range of users across the South African property landscape.</p>
+                 <div class="chart-container">
+                    <canvas id="userPersonasChart"></canvas>
+                </div>
+            </div>
+             <div class="space-y-4">
+                 <div class="bg-white rounded-lg shadow-md p-4">
+                    <h3 class="font-bold text-lg text-[#118AB2]">First-Time Buyers</h3>
+                    <p>Simplifying the journey to homeownership with clear valuations and market forecasts.</p>
+                </div>
+                 <div class="bg-white rounded-lg shadow-md p-4">
+                    <h3 class="font-bold text-lg text-[#06D6A0]">Property Investors</h3>
+                    <p>Unlocking opportunities with intelligent analytics and data-driven risk assessment.</p>
+                </div>
+                 <div class="bg-white rounded-lg shadow-md p-4">
+                    <h3 class="font-bold text-lg text-[#FFD166]">Relocators</h3>
+                    <p>Providing deep provincial and local insights for confident decision-making.</p>
+                </div>
+                 <div class="bg-white rounded-lg shadow-md p-4">
+                    <h3 class="font-bold text-lg text-[#FF6B6B]">Rural Self-Builders</h3>
+                    <p>Empowering development with specialized tools for LSM 3-7 markets and informal land tenure.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="bg-white rounded-lg shadow-md p-6 mb-12">
+            <h2 class="text-3xl font-bold text-[#073B4C] text-center mb-2">Deep Dive: The South African 'Kasi' Market</h2>
+            <p class="text-center max-w-3xl mx-auto mb-8">We go where others don't. Our platform provides unprecedented insights into the peri-urban and rural property markets, acknowledging the diverse reality of land ownership and housing in South Africa.</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold text-center mb-4 text-[#118AB2]">Average Household Density by Province</h3>
+                    <p class="text-center text-sm mb-4">Understanding population density is key to valuing property in diverse areas. Our data models account for these provincial variations, especially in high-density informal settlements.</p>
+                    <div class="chart-container">
+                        <canvas id="provincialDensityChart"></canvas>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-center mb-4 text-[#06D6A0]">Land Tenure in Target Markets (LSM 3-7)</h3>
+                    <p class="text-center text-sm mb-4">Property in South Africa isn't just about formal deeds. We support formal, informal, and communal land tenure structures, reflecting the on-the-ground reality for millions.</p>
+                    <div class="chart-container">
+                        <canvas id="landTenureChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white rounded-lg shadow-md p-6 mb-12">
+            <h2 class="text-3xl font-bold text-[#073B4C] text-center mb-6">The Data Ecosystem: Connecting the Dots</h2>
+            <p class="text-center max-w-2xl mx-auto mb-8">Our intelligence is powered by a network of planned integrations with key data providers, ensuring comprehensive, accurate, and real-time insights.</p>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 text-center">
+                <div class="p-4 bg-gray-100 rounded-lg">
+                    <p class="font-bold text-[#118AB2]">Lightstone</p>
+                    <p class="text-sm">AI Valuations</p>
+                </div>
+                <div class="p-4 bg-gray-100 rounded-lg">
+                    <p class="font-bold text-[#06D6A0]">Deeds Office</p>
+                    <p class="text-sm">Ownership Verification</p>
+                </div>
+                 <div class="p-4 bg-gray-100 rounded-lg">
+                    <p class="font-bold text-[#FFD166]">SA Banks</p>
+                    <p class="text-sm">(Nedbank, Absa)</p>
+                </div>
+                <div class="p-4 bg-gray-100 rounded-lg">
+                    <p class="font-bold text-[#FF6B6B]">DataFiniti</p>
+                    <p class="text-sm">Property Listings</p>
+                </div>
+                <div class="p-4 bg-gray-100 rounded-lg col-span-2 md:col-span-1">
+                    <p class="font-bold text-[#073B4C]">Microfinance</p>
+                    <p class="text-sm">(NHFC)</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-[#073B4C] text-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-3xl font-bold text-center mb-6 text-white">Our Research Roadmap: Building the Future</h2>
+            <p class="text-center max-w-2xl mx-auto mb-8 text-gray-300">Our commitment to data excellence is ongoing. We are executing a multi-phase research plan to build the most comprehensive picture of the South African township and rural property market ever created.</p>
+            <div class="relative">
+                <div class="timeline-item">
+                    <div class="timeline-dot bg-[#118AB2]"></div>
+                    <h3 class="font-bold text-xl text-[#FFD166]">Phase 2: Housing & LSM Mapping</h3>
+                    <p class="text-gray-300">Detailed analysis of housing sizes, rooms, and LSM bases across 1000+ locations.</p>
+                </div>
+                <div class="timeline-item">
+                     <div class="timeline-dot bg-[#06D6A0]"></div>
+                    <h3 class="font-bold text-xl text-[#FFD166]">Phase 3: Local Market Dynamics</h3>
+                    <p class="text-gray-300">Identifying and mapping independent, visionary property entrepreneurs and traders in every township.</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot bg-[#FFD166]"></div>
+                    <h3 class="font-bold text-xl text-[#FFD166]">Phase 4: Building & Design Preferences</h3>
+                    <p class="text-gray-300">Researching building styles, roofing architecture, and material preferences unique to local markets.</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot bg-[#FF6B6B]"></div>
+                    <h3 class="font-bold text-xl text-[#FFD166]">Phase 5 & 6: Retail Spend & BOQ</h3>
+                    <p class="text-gray-300">Establishing household budgets for hardware and creating atom-level Bill of Quantities (BOQ) for typical housing models.</p>
+                </div>
+                <div class="timeline-item border-l-transparent">
+                    <div class="timeline-dot bg-[#073B4C] border-[#118AB2]"></div>
+                    <h3 class="font-bold text-xl text-[#FFD166]">Phase 7 & 8: Growth & Renovation</h3>
+                    <p class="text-gray-300">Determining growth in renovations, restyling, and the integration of modern living standards.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const energeticPlayfulPalette = {
+                red: '#FF6B6B',
+                yellow: '#FFD166',
+                green: '#06D6A0',
+                blue: '#118AB2',
+                dark: '#073B4C'
+            };
+
+            const wrapLabel = (str, maxLen = 16) => {
+                if (str.length <= maxLen) {
+                    return str;
+                }
+                const words = str.split(' ');
+                const lines = [];
+                let currentLine = '';
+                for (const word of words) {
+                    if ((currentLine + word).length > maxLen && currentLine.length > 0) {
+                        lines.push(currentLine.trim());
+                        currentLine = '';
+                    }
+                    currentLine += `${word} `;
+                }
+                lines.push(currentLine.trim());
+                return lines;
+            };
+
+            const CHART_TOOLTIP_CONFIG = {
+                plugins: {
+                    legend: {
+                        labels: {
+                           color: '#073B4C'
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                if (Array.isArray(label)) {
+                                  return label.join(' ');
+                                } else {
+                                  return label;
+                                }
+                            }
+                        }
+                    }
+                },
+                scales: {
+                     x: { ticks: { color: '#073B4C' }, grid: { display: false } },
+                     y: { ticks: { color: '#073B4C' }, grid: { display: false } }
+                }
+            };
+
+            const userPersonasCtx = document.getElementById('userPersonasChart');
+            if(userPersonasCtx) {
+                new Chart(userPersonasCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Rural Self-Builders', 'First-Time Buyers', 'Investors', 'Relocators'],
+                        datasets: [{
+                            label: 'User Focus',
+                            data: [40, 25, 20, 15],
+                            backgroundColor: [
+                                energeticPlayfulPalette.red,
+                                energeticPlayfulPalette.blue,
+                                energeticPlayfulPalette.green,
+                                energeticPlayfulPalette.yellow
+                            ],
+                            borderColor: '#ffffff',
+                            borderWidth: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                             legend: {
+                                position: 'top',
+                                labels: {
+                                    color: '#073B4C'
+                                }
+                            },
+                            tooltip: CHART_TOOLTIP_CONFIG.plugins.tooltip
+                        }
+                    }
+                });
+            }
+            
+            const provincialDensityCtx = document.getElementById('provincialDensityChart');
+            if(provincialDensityCtx) {
+                new Chart(provincialDensityCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Gauteng', 'KwaZulu-Natal', 'Western Cape', 'Eastern Cape', 'Limpopo', 'Mpumalanga', 'North West', 'Free State', 'Northern Cape'].map(l => wrapLabel(l)),
+                        datasets: [{
+                            label: 'Persons per Household',
+                            data: [4.1, 3.8, 3.5, 3.9, 3.2, 3.1, 2.9, 2.8, 2.5],
+                            backgroundColor: energeticPlayfulPalette.blue,
+                            borderRadius: 4
+                        }]
+                    },
+                    options: { ...CHART_TOOLTIP_CONFIG, responsive: true, maintainAspectRatio: false }
+                });
+            }
+
+            const landTenureCtx = document.getElementById('landTenureChart');
+            if(landTenureCtx) {
+                new Chart(landTenureCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Target Market Land Tenure'],
+                        datasets: [
+                            {
+                                label: 'Informal',
+                                data: [45],
+                                backgroundColor: energeticPlayfulPalette.red,
+                                borderRadius: 4
+                            },
+                            {
+                                label: 'Communal',
+                                data: [35],
+                                backgroundColor: energeticPlayfulPalette.yellow,
+                                borderRadius: 4
+                            },
+                             {
+                                label: 'Formal',
+                                data: [20],
+                                backgroundColor: energeticPlayfulPalette.green,
+                                borderRadius: 4
+                            }
+                        ]
+                    },
+                    options: {
+                        ...CHART_TOOLTIP_CONFIG,
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        indexAxis: 'y',
+                        scales: {
+                            x: { stacked: true, ticks: { color: '#073B4C' }, grid: { display: false } },
+                            y: { stacked: true, ticks: { color: '#073B4C' }, grid: { display: false } }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
