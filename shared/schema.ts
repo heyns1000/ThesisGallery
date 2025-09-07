@@ -383,6 +383,91 @@ export const payrollShiftLogs = pgTable("payroll_shift_logs", {
   updatedAt: timestamp("updated_at").defaultNow()
 });
 
+// ===============================
+// ENTERPRISE EMAIL SYSTEM TABLES
+// ===============================
+
+export const emailProviders = pgTable("email_providers", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(), // Gmail, Outlook, Custom SMTP
+  type: text("type").notNull(), // "oauth", "smtp", "api"
+  isActive: boolean("is_active").default(true),
+  configuration: json("configuration").notNull(), // Provider-specific config
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata"), // Additional provider settings
+});
+
+export const emailTemplates = pgTable("email_templates", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  subject: text("subject").notNull(),
+  htmlContent: text("html_content").notNull(),
+  textContent: text("text_content"),
+  variables: text("variables").array(), // Available template variables
+  category: text("category").default("general"), // marketing, transactional, notification
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+export const emailCampaigns = pgTable("email_campaigns", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  description: text("description"),
+  templateId: varchar("template_id").references(() => emailTemplates.id),
+  providerId: varchar("provider_id").references(() => emailProviders.id),
+  status: text("status").default("draft"), // draft, scheduled, sending, sent, paused
+  targetAudience: json("target_audience"), // Contact filters and segments
+  scheduleType: text("schedule_type").default("immediate"), // immediate, scheduled, drip
+  scheduledAt: timestamp("scheduled_at"),
+  sentAt: timestamp("sent_at"),
+  totalRecipients: integer("total_recipients").default(0),
+  sentCount: integer("sent_count").default(0),
+  deliveredCount: integer("delivered_count").default(0),
+  openCount: integer("open_count").default(0),
+  clickCount: integer("click_count").default(0),
+  bounceCount: integer("bounce_count").default(0),
+  unsubscribeCount: integer("unsubscribe_count").default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+export const emailSends = pgTable("email_sends", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  campaignId: varchar("campaign_id").references(() => emailCampaigns.id),
+  contactId: varchar("contact_id").references(() => contacts.id),
+  emailAddress: text("email_address").notNull(),
+  templateId: varchar("template_id").references(() => emailTemplates.id),
+  providerId: varchar("provider_id").references(() => emailProviders.id),
+  status: text("status").default("pending"), // pending, sent, delivered, bounced, failed
+  sentAt: timestamp("sent_at"),
+  deliveredAt: timestamp("delivered_at"),
+  openedAt: timestamp("opened_at"),
+  clickedAt: timestamp("clicked_at"),
+  bounceReason: text("bounce_reason"),
+  unsubscribedAt: timestamp("unsubscribed_at"),
+  messageId: text("message_id"), // Provider message ID
+  trackingId: text("tracking_id").unique(), // For tracking pixels/links
+  personalizedContent: json("personalized_content"), // Rendered template with variables
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+export const emailTracking = pgTable("email_tracking", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  sendId: varchar("send_id").references(() => emailSends.id),
+  trackingId: text("tracking_id").notNull(),
+  eventType: text("event_type").notNull(), // open, click, bounce, unsubscribe
+  eventData: json("event_data"), // Click URL, bounce details, etc.
+  userAgent: text("user_agent"),
+  ipAddress: text("ip_address"),
+  timestamp: timestamp("timestamp").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
@@ -1439,3 +1524,78 @@ export type SeedlingLanguageProgress = typeof seedlingLanguageProgress.$inferSel
 
 export type InsertLanguageLearningSession = z.infer<typeof insertLanguageLearningSessionSchema>;
 export type LanguageLearningSession = typeof languageLearningSessions.$inferSelect;
+
+// ===============================
+// EMAIL SYSTEM INSERT SCHEMAS
+// ===============================
+
+export const insertEmailProviderSchema = createInsertSchema(emailProviders).pick({
+  name: true,
+  type: true,
+  isActive: true,
+  configuration: true,
+  metadata: true,
+});
+
+export const insertEmailTemplateSchema = createInsertSchema(emailTemplates).pick({
+  name: true,
+  subject: true,
+  htmlContent: true,
+  textContent: true,
+  variables: true,
+  category: true,
+  isActive: true,
+  metadata: true,
+});
+
+export const insertEmailCampaignSchema = createInsertSchema(emailCampaigns).pick({
+  name: true,
+  description: true,
+  templateId: true,
+  providerId: true,
+  status: true,
+  targetAudience: true,
+  scheduleType: true,
+  scheduledAt: true,
+  totalRecipients: true,
+  metadata: true,
+});
+
+export const insertEmailSendSchema = createInsertSchema(emailSends).pick({
+  campaignId: true,
+  contactId: true,
+  emailAddress: true,
+  templateId: true,
+  providerId: true,
+  status: true,
+  messageId: true,
+  trackingId: true,
+  personalizedContent: true,
+  metadata: true,
+});
+
+export const insertEmailTrackingSchema = createInsertSchema(emailTracking).pick({
+  sendId: true,
+  trackingId: true,
+  eventType: true,
+  eventData: true,
+  userAgent: true,
+  ipAddress: true,
+  metadata: true,
+});
+
+// Email System Types
+export type InsertEmailProvider = z.infer<typeof insertEmailProviderSchema>;
+export type EmailProvider = typeof emailProviders.$inferSelect;
+
+export type InsertEmailTemplate = z.infer<typeof insertEmailTemplateSchema>;
+export type EmailTemplate = typeof emailTemplates.$inferSelect;
+
+export type InsertEmailCampaign = z.infer<typeof insertEmailCampaignSchema>;
+export type EmailCampaign = typeof emailCampaigns.$inferSelect;
+
+export type InsertEmailSend = z.infer<typeof insertEmailSendSchema>;
+export type EmailSend = typeof emailSends.$inferSelect;
+
+export type InsertEmailTracking = z.infer<typeof insertEmailTrackingSchema>;
+export type EmailTracking = typeof emailTracking.$inferSelect;
