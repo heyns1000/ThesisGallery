@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 
 const aiModules = [
   {
@@ -241,9 +241,14 @@ export default function RealEstatePlatform() {
                       </div>
                     ))}
                   </div>
-                  <Button className="w-full mt-4 bg-green-600 hover:bg-green-500">
-                    Launch Module
-                  </Button>
+                  <Link href={`/ai-module/${module.id}`}>
+                    <Button 
+                      className="w-full mt-4 bg-green-600 hover:bg-green-500 transition-all duration-200 transform hover:scale-105"
+                      data-testid={`launch-${module.id}`}
+                    >
+                      🚀 Launch Module
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             ))}

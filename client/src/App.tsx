@@ -60,6 +60,10 @@ import NotificationSettings from "@/pages/notification-settings";
 import AdMobDashboard from "@/pages/admob-dashboard";
 import SamFoxStudioPlatform from "@/pages/samfox-studio-platform";
 import LoopPayGallery from "@/pages/looppay-gallery";
+import ValuationAIModule from "@/pages/ai-module-valuation";
+import MortgageRiskModule from "@/pages/ai-module-mortgage-risk";
+import MarketForecastModule from "@/pages/ai-module-market-forecast";
+import AgentInsightsModule from "@/pages/ai-module-agent-insights";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -121,6 +125,10 @@ function Router() {
       <Route path="/admob-dashboard" component={AdMobDashboard} />
       <Route path="/samfox-studio-platform" component={SamFoxStudioPlatform} />
       <Route path="/looppay-gallery" component={LoopPayGallery} />
+      <Route path="/ai-module/valuation-ai" component={ValuationAIModule} />
+      <Route path="/ai-module/mortgage-risk" component={MortgageRiskModule} />
+      <Route path="/ai-module/market-forecast" component={MarketForecastModule} />
+      <Route path="/ai-module/agent-insights" component={AgentInsightsModule} />
       <Route component={NotFound} />
     </Switch>
   );
