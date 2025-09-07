@@ -47,6 +47,7 @@ import DataPipeline from "@/pages/data-pipeline";
 import EmailSystemPage from "@/pages/email-system";
 import MultiChannelMessaging from "@/pages/multi-channel-messaging";
 import FAARealestatePlatform from "@/pages/faa-realestate-platform";
+import FAAGlobalIndustryIndex from "@/pages/faa-global-industry-index";
 import GitHubRepositoryBrowser from "@/pages/github-repository-browser";
 import NotificationSettings from "@/pages/notification-settings";
 import AdMobDashboard from "@/pages/admob-dashboard";
@@ -76,6 +77,7 @@ function Router() {
       <Route path="/cornex-platform" component={CornexPlatform} />
       <Route path="/realestate-platform" component={RealEstatePlatform} />
       <Route path="/faa-realestate-platform" component={FAARealestatePlatform} />
+      <Route path="/faa-global-industry-index" component={FAAGlobalIndustryIndex} />
       <Route path="/github-repository-browser" component={GitHubRepositoryBrowser} />
       <Route path="/education-dashboard" component={EducationDashboard} />
       <Route path="/smart-toys-platform" component={SmartToysPlatform} />
