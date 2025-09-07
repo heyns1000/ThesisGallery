@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, timestamp, integer, json, boolean, numeric, date, unique } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, timestamp, integer, json, boolean, numeric, decimal, date, unique, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -2200,3 +2200,216 @@ export type GithubFile = typeof githubFiles.$inferSelect;
 
 export type InsertGithubSyncLog = z.infer<typeof insertGithubSyncLogSchema>;
 export type GithubSyncLog = typeof githubSyncLogs.$inferSelect;
+
+// ===============================
+// LOOPPAY™ SOVEREIGN PAYMENT SYSTEM
+// ===============================
+
+export const loopPayLicenses = pgTable("loop_pay_licenses", {
+  id: text("id").primaryKey().$defaultFn(() => nanoid()),
+  licenseType: text("license_type").notNull(), // core, starter-node, pro-grid
+  licenseName: text("license_name").notNull(),
+  priceUsd: decimal("price_usd", { precision: 10, scale: 2 }).notNull(),
+  billingCycle: text("billing_cycle").notNull(), // one-time, monthly, annual
+  features: text("features").array().notNull(),
+  maxPayouts: integer("max_payouts"),
+  maxVendors: integer("max_vendors"),
+  analyticsAccess: boolean("analytics_access").default(false),
+  prioritySupport: boolean("priority_support").default(false),
+  apiAccess: boolean("api_access").default(false),
+  active: boolean("active").default(true),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const loopPayTransactions = pgTable("loop_pay_transactions", {
+  id: text("id").primaryKey().$defaultFn(() => nanoid()),
+  transactionId: text("transaction_id").unique().notNull(),
+  payoutMeshId: text("payout_mesh_id").notNull(),
+  vendorId: text("vendor_id").notNull(),
+  contractorId: text("contractor_id"),
+  amountUsd: decimal("amount_usd", { precision: 12, scale: 2 }).notNull(),
+  currency: text("currency").notNull().default("USD"),
+  exchangeRate: decimal("exchange_rate", { precision: 10, scale: 6 }),
+  localAmount: decimal("local_amount", { precision: 12, scale: 2 }),
+  status: text("status").notNull().default("pending"), // pending, processing, completed, failed
+  payoutCycle: integer("payout_cycle").notNull().default(9), // 9-second cycles
+  claimRootHash: text("claim_root_hash"), // Immutable scroll contract
+  divLockCompliance: boolean("div_lock_compliance").default(true),
+  regionalCompliance: text("regional_compliance"),
+  processedAt: timestamp("processed_at"),
+  completedAt: timestamp("completed_at"),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const loopPayVendors = pgTable("loop_pay_vendors", {
+  id: text("id").primaryKey().$defaultFn(() => nanoid()),
+  vendorCode: text("vendor_code").unique().notNull(),
+  companyName: text("company_name").notNull(),
+  contactEmail: text("contact_email").notNull(),
+  contactPhone: text("contact_phone"),
+  paymentMethod: text("payment_method").notNull(), // bank_transfer, paypal, crypto
+  bankDetails: jsonb("bank_details"),
+  cryptoWallet: text("crypto_wallet"),
+  preferredCurrency: text("preferred_currency").default("USD"),
+  region: text("region").notNull(),
+  complianceStatus: text("compliance_status").notNull().default("verified"),
+  licenseId: text("license_id").references(() => loopPayLicenses.id),
+  totalPayouts: decimal("total_payouts", { precision: 15, scale: 2 }).default("0"),
+  lastPayoutAt: timestamp("last_payout_at"),
+  active: boolean("active").default(true),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const loopPayCurrencyRates = pgTable("loop_pay_currency_rates", {
+  id: text("id").primaryKey().$defaultFn(() => nanoid()),
+  baseCurrency: text("base_currency").notNull(),
+  targetCurrency: text("target_currency").notNull(),
+  rate: decimal("rate", { precision: 12, scale: 6 }).notNull(),
+  rateDate: timestamp("rate_date").defaultNow().notNull(),
+  source: text("source").default("external-api"),
+  active: boolean("active").default(true),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const loopPayPayoutMesh = pgTable("loop_pay_payout_mesh", {
+  id: text("id").primaryKey().$defaultFn(() => nanoid()),
+  meshId: text("mesh_id").unique().notNull(),
+  meshName: text("mesh_name").notNull(),
+  pulseTradeEnabled: boolean("pulse_trade_enabled").default(true),
+  cycleSeconds: integer("cycle_seconds").default(9),
+  totalVendors: integer("total_vendors").default(0),
+  totalTransactions: integer("total_transactions").default(0),
+  totalVolumeUsd: decimal("total_volume_usd", { precision: 15, scale: 2 }).default("0"),
+  status: text("status").notNull().default("active"), // active, paused, maintenance
+  lastCycleAt: timestamp("last_cycle_at"),
+  nextCycleAt: timestamp("next_cycle_at"),
+  sovereignLegalScroll: text("sovereign_legal_scroll"),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const loopPayAiAssistant = pgTable("loop_pay_ai_assistant", {
+  id: text("id").primaryKey().$defaultFn(() => nanoid()),
+  sessionId: text("session_id").notNull(),
+  query: text("query").notNull(),
+  response: text("response").notNull(),
+  queryType: text("query_type"), // functionality, integration, security, pricing
+  aiProvider: text("ai_provider").default("gemini"),
+  responseTime: integer("response_time_ms"),
+  satisfaction: integer("satisfaction"), // 1-5 rating
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Insert schemas for LoopPay system
+export const insertLoopPayLicenseSchema = createInsertSchema(loopPayLicenses).pick({
+  licenseType: true,
+  licenseName: true,
+  priceUsd: true,
+  billingCycle: true,
+  features: true,
+  maxPayouts: true,
+  maxVendors: true,
+  analyticsAccess: true,
+  prioritySupport: true,
+  apiAccess: true,
+  active: true,
+  metadata: true,
+});
+
+export const insertLoopPayTransactionSchema = createInsertSchema(loopPayTransactions).pick({
+  transactionId: true,
+  payoutMeshId: true,
+  vendorId: true,
+  contractorId: true,
+  amountUsd: true,
+  currency: true,
+  exchangeRate: true,
+  localAmount: true,
+  status: true,
+  payoutCycle: true,
+  claimRootHash: true,
+  divLockCompliance: true,
+  regionalCompliance: true,
+  processedAt: true,
+  completedAt: true,
+  metadata: true,
+});
+
+export const insertLoopPayVendorSchema = createInsertSchema(loopPayVendors).pick({
+  vendorCode: true,
+  companyName: true,
+  contactEmail: true,
+  contactPhone: true,
+  paymentMethod: true,
+  bankDetails: true,
+  cryptoWallet: true,
+  preferredCurrency: true,
+  region: true,
+  complianceStatus: true,
+  licenseId: true,
+  totalPayouts: true,
+  lastPayoutAt: true,
+  active: true,
+  metadata: true,
+});
+
+export const insertLoopPayCurrencyRateSchema = createInsertSchema(loopPayCurrencyRates).pick({
+  baseCurrency: true,
+  targetCurrency: true,
+  rate: true,
+  rateDate: true,
+  source: true,
+  active: true,
+  metadata: true,
+});
+
+export const insertLoopPayPayoutMeshSchema = createInsertSchema(loopPayPayoutMesh).pick({
+  meshId: true,
+  meshName: true,
+  pulseTradeEnabled: true,
+  cycleSeconds: true,
+  totalVendors: true,
+  totalTransactions: true,
+  totalVolumeUsd: true,
+  status: true,
+  lastCycleAt: true,
+  nextCycleAt: true,
+  sovereignLegalScroll: true,
+  metadata: true,
+});
+
+export const insertLoopPayAiAssistantSchema = createInsertSchema(loopPayAiAssistant).pick({
+  sessionId: true,
+  query: true,
+  response: true,
+  queryType: true,
+  aiProvider: true,
+  responseTime: true,
+  satisfaction: true,
+  metadata: true,
+});
+
+// LoopPay Type exports
+export type LoopPayLicense = typeof loopPayLicenses.$inferSelect;
+export type LoopPayTransaction = typeof loopPayTransactions.$inferSelect;
+export type LoopPayVendor = typeof loopPayVendors.$inferSelect;
+export type LoopPayCurrencyRate = typeof loopPayCurrencyRates.$inferSelect;
+export type LoopPayPayoutMesh = typeof loopPayPayoutMesh.$inferSelect;
+export type LoopPayAiAssistant = typeof loopPayAiAssistant.$inferSelect;
+
+// LoopPay Insert types
+export type InsertLoopPayLicense = z.infer<typeof insertLoopPayLicenseSchema>;
+export type InsertLoopPayTransaction = z.infer<typeof insertLoopPayTransactionSchema>;
+export type InsertLoopPayVendor = z.infer<typeof insertLoopPayVendorSchema>;
+export type InsertLoopPayCurrencyRate = z.infer<typeof insertLoopPayCurrencyRateSchema>;
+export type InsertLoopPayPayoutMesh = z.infer<typeof insertLoopPayPayoutMeshSchema>;
+export type InsertLoopPayAiAssistant = z.infer<typeof insertLoopPayAiAssistantSchema>;
