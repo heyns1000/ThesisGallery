@@ -43,6 +43,7 @@ import TeamOnboarding from "@/pages/team-onboarding";
 import ContactManagement from "@/pages/contact-management";
 import BanimalPlatform from "@/pages/banimal-platform";
 import SeedlingLanguageLearning from "@/pages/seedling-language-learning";
+import DataPipeline from "@/pages/data-pipeline";
 import NotificationSettings from "@/pages/notification-settings";
 import AdMobDashboard from "@/pages/admob-dashboard";
 import NotFound from "@/pages/not-found";
@@ -89,6 +90,7 @@ function Router() {
       <Route path="/contact-management" component={ContactManagement} />
       <Route path="/banimal-platform" component={BanimalPlatform} />
       <Route path="/seedling-language-learning" component={SeedlingLanguageLearning} />
+      <Route path="/data-pipeline" component={DataPipeline} />
       <Route path="/notifications/settings" component={NotificationSettings} />
       <Route path="/admob-dashboard" component={AdMobDashboard} />
       <Route component={NotFound} />

@@ -1,0 +1,101 @@
+awesome—let’s get a Gemini app running on Replit with a clean data pipeline. super short, copy-paste friendly.
+1) Create the Repl
+Template: Node.js
+Add a file .env with:
+GOOGLE_API_KEY=YOUR_GEMINI_API_KEY
+PORT=3000
+2) Install deps
+In the Replit shell:
+npm init -y
+npm i express cors @google/generative-ai
+3) Server (index.js)
+import express from "express";
+import cors from "cors";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+app.use(express.static("public"));
+
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+
+// chat/generate
+app.post("/api/generate", async (req, res) => {
+  try {
+    const { prompt, context } = req.body || {};
+    const result = await model.generateContent([
+      { text: context || "" },
+      { text: prompt || "" },
+    ]);
+    res.json({ ok: true, text: result.response.text() });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
+// simple data ingest (attach “last data” to context)
+let LAST_DATA = []; // swap with DB later
+app.post("/api/ingest", (req, res) => {
+  const { records = [] } = req.body || {};
+  LAST_DATA.push(...records);
+  res.json({ ok: true, count: LAST_DATA.length });
+});
+
+app.get("/api/context", (req, res) => {
+  res.json({ ok: true, context: JSON.stringify(LAST_DATA).slice(0, 5e5) });
+});
+
+app.listen(process.env.PORT || 3000, () =>
+  console.log("Server up on", process.env.PORT || 3000)
+);
+4) Minimal UI (public/index.html)
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Gemini on Replit</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <style>body{font:16px/1.4 system-ui;margin:24px} textarea{width:100%;height:120px}</style>
+</head>
+<body>
+  <h1>Gemini App</h1>
+  <button id="load">Load Last Data → Context</button>
+  <pre id="ctx" style="white-space:pre-wrap;background:#f6f6f6;padding:8px"></pre>
+  <textarea id="prompt" placeholder="Ask Gemini…"></textarea>
+  <button id="run">Generate</button>
+  <pre id="out" style="white-space:pre-wrap;background:#f6f6f6;padding:8px"></pre>
+<script>
+async function getJSON(u,opts){const r=await fetch(u,opts);return r.json()}
+document.getElementById('load').onclick=async()=>{
+  const j=await getJSON('/api/context'); document.getElementById('ctx').textContent=j.context||'';
+};
+document.getElementById('run').onclick=async()=>{
+  const prompt=document.getElementById('prompt').value;
+  const context=document.getElementById('ctx').textContent;
+  const j=await getJSON('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,context})});
+  document.getElementById('out').textContent=j.text||j.error;
+};
+</script>
+</body>
+</html>
+5) Feed your “last data”
+If it’s JSON/CSV, transform to an array of records and POST once:
+// in shell: node -e 'fetch...'? Easier from browser:
+fetch("/api/ingest",{
+  method:"POST",
+  headers:{"Content-Type":"application/json"},
+  body: JSON.stringify({ records: [ {id:1, title:"Example"}, {id:2, title:"…"} ] })
+});
+Click Load Last Data → Context, then generate.
+6) Make it public
+Replit: Run → copy the web URL → share.
+(Optional) Toggle Always On for uptime.
+7) Pipeline options (pick later; you’re unblocked now)
+Store data properly: swap LAST_DATA for a tiny DB (Replit DB, SQLite, or Supabase).
+BigQuery (later): add a GCP service account JSON, use @google-cloud/bigquery to stream logs/records.
+Auth / rate-limit: add a simple bearer token on /api/*.
+If you want, I can drop in:
+a /api/logs endpoint that writes prompts/responses to a table,
+or a Supabase quick-connect snippet for persistence.
