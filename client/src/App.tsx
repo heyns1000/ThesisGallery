@@ -46,6 +46,7 @@ import SeedlingLanguageLearning from "@/pages/seedling-language-learning";
 import DataPipeline from "@/pages/data-pipeline";
 import EmailSystemPage from "@/pages/email-system";
 import MultiChannelMessaging from "@/pages/multi-channel-messaging";
+import FAARealestatePlatform from "@/pages/faa-realestate-platform";
 import NotificationSettings from "@/pages/notification-settings";
 import AdMobDashboard from "@/pages/admob-dashboard";
 import NotFound from "@/pages/not-found";
@@ -73,6 +74,7 @@ function Router() {
       <Route path="/housing-dashboard" component={HousingDashboard} />
       <Route path="/cornex-platform" component={CornexPlatform} />
       <Route path="/realestate-platform" component={RealEstatePlatform} />
+      <Route path="/faa-realestate-platform" component={FAARealestatePlatform} />
       <Route path="/education-dashboard" component={EducationDashboard} />
       <Route path="/smart-toys-platform" component={SmartToysPlatform} />
       <Route path="/modular-view" component={ModularView} />
