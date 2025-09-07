@@ -49,6 +49,10 @@ import MultiChannelMessaging from "@/pages/multi-channel-messaging";
 import FAARealestatePlatform from "@/pages/faa-realestate-platform";
 import FAAGlobalIndustryIndex from "@/pages/faa-global-industry-index";
 import GitHubRepositoryBrowser from "@/pages/github-repository-browser";
+import FAAYouthEducationBrands from "@/pages/faa-youth-education-brands";
+import FruitfulGlobalPlatform from "@/pages/fruitful-global-platform";
+import FAATestisOmniRender from "@/pages/faa-tesis-omni-render";
+import AgricultureBiotechPlatform from "@/pages/agriculture-biotech-platform";
 import NotificationSettings from "@/pages/notification-settings";
 import AdMobDashboard from "@/pages/admob-dashboard";
 import NotFound from "@/pages/not-found";
@@ -79,6 +83,10 @@ function Router() {
       <Route path="/faa-realestate-platform" component={FAARealestatePlatform} />
       <Route path="/faa-global-industry-index" component={FAAGlobalIndustryIndex} />
       <Route path="/github-repository-browser" component={GitHubRepositoryBrowser} />
+      <Route path="/faa-youth-education-brands" component={FAAYouthEducationBrands} />
+      <Route path="/fruitful-global-platform" component={FruitfulGlobalPlatform} />
+      <Route path="/faa-tesis-omni-render" component={FAATestisOmniRender} />
+      <Route path="/agriculture-biotech-platform" component={AgricultureBiotechPlatform} />
       <Route path="/education-dashboard" component={EducationDashboard} />
       <Route path="/smart-toys-platform" component={SmartToysPlatform} />
       <Route path="/modular-view" component={ModularView} />
