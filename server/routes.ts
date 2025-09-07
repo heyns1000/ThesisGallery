@@ -24,13 +24,19 @@ import {
   insertBanimalCustomerSchema,
   insertLanguageLearningSchema,
   insertSeedlingLanguageProgressSchema,
-  insertLanguageLearningSessionSchema
+  insertLanguageLearningSessionSchema,
+  insertEmailProviderSchema,
+  insertEmailTemplateSchema,
+  insertEmailCampaignSchema,
+  insertEmailSendSchema,
+  insertEmailTrackingSchema
 } from "@shared/schema";
 import { ContactProcessingAI, BanimalChatbot, CurrencyAI, HolidayAI, generateFaaReference } from "./ai-services";
 import { GeminiContactProcessor, GeminiBanimalChatbot, GeminiProductAI, GeminiMarketingAI } from "./gemini-ai";
 import { languageLearningService } from "./language-learning-service";
 import { firebaseAdmin } from "./firebase-admin";
 import { abandonedCartService } from "./abandoned-cart-service";
+import { enterpriseEmailService } from "./email-service";
 
 // Configure multer for file uploads
 const upload = multer({
@@ -2170,6 +2176,460 @@ May this wisdom serve your journey well! 🌳✨`
     } catch (error) {
       console.error('AdMob performance analytics error:', error);
       res.status(500).json({ error: "Failed to fetch AdMob performance analytics" });
+    }
+  });
+
+  // ===============================
+  // ENTERPRISE EMAIL SYSTEM ROUTES
+  // ===============================
+
+  // Email Providers Routes
+  app.get("/api/email/providers", async (req, res) => {
+    try {
+      const providers = await storage.getEmailProviders();
+      res.json(providers);
+    } catch (error) {
+      console.error('Get email providers error:', error);
+      res.status(500).json({ error: "Failed to fetch email providers" });
+    }
+  });
+
+  app.get("/api/email/providers/:id", async (req, res) => {
+    try {
+      const provider = await storage.getEmailProvider(req.params.id);
+      if (!provider) {
+        return res.status(404).json({ error: "Email provider not found" });
+      }
+      res.json(provider);
+    } catch (error) {
+      console.error('Get email provider error:', error);
+      res.status(500).json({ error: "Failed to fetch email provider" });
+    }
+  });
+
+  app.post("/api/email/providers", async (req, res) => {
+    try {
+      const providerData = insertEmailProviderSchema.parse(req.body);
+      const provider = await enterpriseEmailService.createEmailProvider(providerData);
+      
+      broadcast({ 
+        type: 'email_provider_created', 
+        data: provider 
+      });
+      
+      res.status(201).json(provider);
+    } catch (error) {
+      console.error('Create email provider error:', error);
+      res.status(500).json({ error: "Failed to create email provider" });
+    }
+  });
+
+  app.patch("/api/email/providers/:id", async (req, res) => {
+    try {
+      const provider = await enterpriseEmailService.updateEmailProvider(req.params.id, req.body);
+      if (!provider) {
+        return res.status(404).json({ error: "Email provider not found" });
+      }
+      
+      broadcast({ 
+        type: 'email_provider_updated', 
+        data: provider 
+      });
+      
+      res.json(provider);
+    } catch (error) {
+      console.error('Update email provider error:', error);
+      res.status(500).json({ error: "Failed to update email provider" });
+    }
+  });
+
+  app.delete("/api/email/providers/:id", async (req, res) => {
+    try {
+      const success = await storage.deleteEmailProvider(req.params.id);
+      if (!success) {
+        return res.status(404).json({ error: "Email provider not found" });
+      }
+      
+      broadcast({ 
+        type: 'email_provider_deleted', 
+        data: { id: req.params.id } 
+      });
+      
+      res.json({ success: true, message: "Email provider deleted successfully" });
+    } catch (error) {
+      console.error('Delete email provider error:', error);
+      res.status(500).json({ error: "Failed to delete email provider" });
+    }
+  });
+
+  // Test email provider
+  app.post("/api/email/providers/:id/test", async (req, res) => {
+    try {
+      const { testEmail } = req.body;
+      if (!testEmail) {
+        return res.status(400).json({ error: "Test email address is required" });
+      }
+
+      const result = await enterpriseEmailService.testProvider(req.params.id, testEmail);
+      res.json(result);
+    } catch (error) {
+      console.error('Test email provider error:', error);
+      res.status(500).json({ error: "Failed to test email provider" });
+    }
+  });
+
+  // Email Templates Routes
+  app.get("/api/email/templates", async (req, res) => {
+    try {
+      const templates = await storage.getEmailTemplates();
+      res.json(templates);
+    } catch (error) {
+      console.error('Get email templates error:', error);
+      res.status(500).json({ error: "Failed to fetch email templates" });
+    }
+  });
+
+  app.get("/api/email/templates/:id", async (req, res) => {
+    try {
+      const template = await storage.getEmailTemplate(req.params.id);
+      if (!template) {
+        return res.status(404).json({ error: "Email template not found" });
+      }
+      res.json(template);
+    } catch (error) {
+      console.error('Get email template error:', error);
+      res.status(500).json({ error: "Failed to fetch email template" });
+    }
+  });
+
+  app.post("/api/email/templates", async (req, res) => {
+    try {
+      const templateData = insertEmailTemplateSchema.parse(req.body);
+      const template = await enterpriseEmailService.createEmailTemplate(templateData);
+      
+      broadcast({ 
+        type: 'email_template_created', 
+        data: template 
+      });
+      
+      res.status(201).json(template);
+    } catch (error) {
+      console.error('Create email template error:', error);
+      res.status(500).json({ error: "Failed to create email template" });
+    }
+  });
+
+  app.patch("/api/email/templates/:id", async (req, res) => {
+    try {
+      const template = await enterpriseEmailService.updateEmailTemplate(req.params.id, req.body);
+      if (!template) {
+        return res.status(404).json({ error: "Email template not found" });
+      }
+      
+      broadcast({ 
+        type: 'email_template_updated', 
+        data: template 
+      });
+      
+      res.json(template);
+    } catch (error) {
+      console.error('Update email template error:', error);
+      res.status(500).json({ error: "Failed to update email template" });
+    }
+  });
+
+  app.delete("/api/email/templates/:id", async (req, res) => {
+    try {
+      const success = await storage.deleteEmailTemplate(req.params.id);
+      if (!success) {
+        return res.status(404).json({ error: "Email template not found" });
+      }
+      
+      broadcast({ 
+        type: 'email_template_deleted', 
+        data: { id: req.params.id } 
+      });
+      
+      res.json({ success: true, message: "Email template deleted successfully" });
+    } catch (error) {
+      console.error('Delete email template error:', error);
+      res.status(500).json({ error: "Failed to delete email template" });
+    }
+  });
+
+  // Email Campaigns Routes
+  app.get("/api/email/campaigns", async (req, res) => {
+    try {
+      const campaigns = await storage.getEmailCampaigns();
+      res.json(campaigns);
+    } catch (error) {
+      console.error('Get email campaigns error:', error);
+      res.status(500).json({ error: "Failed to fetch email campaigns" });
+    }
+  });
+
+  app.get("/api/email/campaigns/:id", async (req, res) => {
+    try {
+      const campaign = await storage.getEmailCampaign(req.params.id);
+      if (!campaign) {
+        return res.status(404).json({ error: "Email campaign not found" });
+      }
+      res.json(campaign);
+    } catch (error) {
+      console.error('Get email campaign error:', error);
+      res.status(500).json({ error: "Failed to fetch email campaign" });
+    }
+  });
+
+  app.post("/api/email/campaigns", async (req, res) => {
+    try {
+      const campaignData = insertEmailCampaignSchema.parse(req.body);
+      const campaign = await enterpriseEmailService.createEmailCampaign(campaignData);
+      
+      broadcast({ 
+        type: 'email_campaign_created', 
+        data: campaign 
+      });
+      
+      res.status(201).json(campaign);
+    } catch (error) {
+      console.error('Create email campaign error:', error);
+      res.status(500).json({ error: "Failed to create email campaign" });
+    }
+  });
+
+  app.patch("/api/email/campaigns/:id", async (req, res) => {
+    try {
+      const campaign = await enterpriseEmailService.updateEmailCampaign(req.params.id, req.body);
+      if (!campaign) {
+        return res.status(404).json({ error: "Email campaign not found" });
+      }
+      
+      broadcast({ 
+        type: 'email_campaign_updated', 
+        data: campaign 
+      });
+      
+      res.json(campaign);
+    } catch (error) {
+      console.error('Update email campaign error:', error);
+      res.status(500).json({ error: "Failed to update email campaign" });
+    }
+  });
+
+  app.delete("/api/email/campaigns/:id", async (req, res) => {
+    try {
+      const success = await storage.deleteEmailCampaign(req.params.id);
+      if (!success) {
+        return res.status(404).json({ error: "Email campaign not found" });
+      }
+      
+      broadcast({ 
+        type: 'email_campaign_deleted', 
+        data: { id: req.params.id } 
+      });
+      
+      res.json({ success: true, message: "Email campaign deleted successfully" });
+    } catch (error) {
+      console.error('Delete email campaign error:', error);
+      res.status(500).json({ error: "Failed to delete email campaign" });
+    }
+  });
+
+  // Start campaign
+  app.post("/api/email/campaigns/:id/start", async (req, res) => {
+    try {
+      await enterpriseEmailService.startCampaign(req.params.id);
+      
+      const campaign = await storage.getEmailCampaign(req.params.id);
+      
+      broadcast({ 
+        type: 'email_campaign_started', 
+        data: campaign 
+      });
+      
+      res.json({ success: true, message: "Campaign started successfully", campaign });
+    } catch (error) {
+      console.error('Start email campaign error:', error);
+      res.status(500).json({ error: error.message || "Failed to start email campaign" });
+    }
+  });
+
+  // Get campaign analytics
+  app.get("/api/email/campaigns/:id/analytics", async (req, res) => {
+    try {
+      const analytics = await enterpriseEmailService.getCampaignAnalytics(req.params.id);
+      res.json(analytics);
+    } catch (error) {
+      console.error('Get campaign analytics error:', error);
+      res.status(500).json({ error: "Failed to fetch campaign analytics" });
+    }
+  });
+
+  // Email Sending Routes
+  app.post("/api/email/send", async (req, res) => {
+    try {
+      const { templateId, providerId, contactIds, campaignName } = req.body;
+      
+      if (!templateId || !providerId || !contactIds || !Array.isArray(contactIds)) {
+        return res.status(400).json({ error: "Template ID, provider ID, and contact IDs are required" });
+      }
+
+      const result = await enterpriseEmailService.sendBulkEmail(
+        templateId,
+        providerId,
+        contactIds,
+        campaignName
+      );
+
+      broadcast({ 
+        type: 'bulk_email_sent', 
+        data: result 
+      });
+
+      res.json(result);
+    } catch (error) {
+      console.error('Send bulk email error:', error);
+      res.status(500).json({ error: "Failed to send bulk email" });
+    }
+  });
+
+  // Email Tracking Routes
+  app.get("/api/email/track/:trackingId/open.gif", async (req, res) => {
+    try {
+      const { trackingId } = req.params;
+      const userAgent = req.get('User-Agent');
+      const ipAddress = req.ip;
+
+      await enterpriseEmailService.trackEmailOpen(trackingId, userAgent, ipAddress);
+
+      // Return a 1x1 transparent pixel
+      const pixel = Buffer.from('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', 'base64');
+      res.set({
+        'Content-Type': 'image/gif',
+        'Content-Length': pixel.length,
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      });
+      res.send(pixel);
+    } catch (error) {
+      console.error('Email tracking error:', error);
+      res.status(500).end();
+    }
+  });
+
+  app.get("/api/email/click/:trackingId", async (req, res) => {
+    try {
+      const { trackingId } = req.params;
+      const { url } = req.query;
+      const userAgent = req.get('User-Agent');
+      const ipAddress = req.ip;
+
+      if (url) {
+        await enterpriseEmailService.trackEmailClick(trackingId, url as string, userAgent, ipAddress);
+        res.redirect(url as string);
+      } else {
+        res.status(400).json({ error: "URL parameter is required" });
+      }
+    } catch (error) {
+      console.error('Email click tracking error:', error);
+      res.status(500).json({ error: "Failed to track email click" });
+    }
+  });
+
+  app.get("/api/email/unsubscribe/:trackingId", async (req, res) => {
+    try {
+      const { trackingId } = req.params;
+      const success = await enterpriseEmailService.unsubscribeContact(trackingId);
+
+      if (success) {
+        res.send(`
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>🌳 Sacred Baobab™ - Unsubscribed</title>
+            <style>
+              body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+                     margin: 0; padding: 40px; background: #f5f5f5; text-align: center; }
+              .container { max-width: 500px; margin: 0 auto; background: white; 
+                          padding: 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+              h1 { color: #2563eb; margin-bottom: 20px; }
+              p { color: #666; line-height: 1.6; }
+              .success { color: #059669; font-weight: 500; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <h1>🌳 Sacred Baobab™ Ecosystem</h1>
+              <p class="success">✅ You have been successfully unsubscribed</p>
+              <p>You will no longer receive emails from the Fruitful Global Master Hub.</p>
+              <p>If you change your mind, you can re-subscribe through our contact management system.</p>
+              <p><em>With wisdom from the Sacred Baobab tree</em></p>
+            </div>
+          </body>
+          </html>
+        `);
+      } else {
+        res.status(404).send(`
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>🌳 Sacred Baobab™ - Error</title>
+            <style>
+              body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+                     margin: 0; padding: 40px; background: #f5f5f5; text-align: center; }
+              .container { max-width: 500px; margin: 0 auto; background: white; 
+                          padding: 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+              h1 { color: #2563eb; margin-bottom: 20px; }
+              p { color: #666; line-height: 1.6; }
+              .error { color: #dc2626; font-weight: 500; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <h1>🌳 Sacred Baobab™ Ecosystem</h1>
+              <p class="error">❌ Unsubscribe link not found or already processed</p>
+              <p>This unsubscribe link may have expired or already been used.</p>
+            </div>
+          </body>
+          </html>
+        `);
+      }
+    } catch (error) {
+      console.error('Email unsubscribe error:', error);
+      res.status(500).json({ error: "Failed to process unsubscribe request" });
+    }
+  });
+
+  // Email Statistics and Dashboard
+  app.get("/api/email/statistics", async (req, res) => {
+    try {
+      const stats = await enterpriseEmailService.getEmailStatistics();
+      res.json(stats);
+    } catch (error) {
+      console.error('Get email statistics error:', error);
+      res.status(500).json({ error: "Failed to fetch email statistics" });
+    }
+  });
+
+  app.get("/api/email/sends", async (req, res) => {
+    try {
+      const sends = await storage.getEmailSends();
+      res.json(sends);
+    } catch (error) {
+      console.error('Get email sends error:', error);
+      res.status(500).json({ error: "Failed to fetch email sends" });
+    }
+  });
+
+  app.get("/api/email/tracking", async (req, res) => {
+    try {
+      const tracking = await storage.getEmailTrackings();
+      res.json(tracking);
+    } catch (error) {
+      console.error('Get email tracking error:', error);
+      res.status(500).json({ error: "Failed to fetch email tracking data" });
     }
   });
 
