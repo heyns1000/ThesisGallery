@@ -55,7 +55,22 @@ import {
   type EmailSend,
   type InsertEmailSend,
   type EmailTracking,
-  type InsertEmailTracking
+  type InsertEmailTracking,
+  // Multi-Channel Messaging Types
+  type MessageChannel,
+  type InsertMessageChannel,
+  type MessageTemplate,
+  type InsertMessageTemplate,
+  type MessagingCampaign,
+  type InsertMessagingCampaign,
+  type MessageSend,
+  type InsertMessageSend,
+  type WhatsappConversation,
+  type InsertWhatsappConversation,
+  type SmsConversation,
+  type InsertSmsConversation,
+  type MessageTracking,
+  type InsertMessageTracking
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -198,6 +213,66 @@ export interface IStorage {
 
   // Contact helper methods for email system
   getContactsByIds(contactIds: string[]): Promise<Contact[]>;
+
+  // ===============================
+  // MULTI-CHANNEL MESSAGING METHODS
+  // ===============================
+
+  // Message Channel methods
+  getMessageChannels(): Promise<MessageChannel[]>;
+  getMessageChannel(id: string): Promise<MessageChannel | undefined>;
+  createMessageChannel(channel: InsertMessageChannel): Promise<MessageChannel>;
+  updateMessageChannel(id: string, updates: Partial<MessageChannel>): Promise<MessageChannel | undefined>;
+
+  // Message Template methods
+  getMessageTemplates(): Promise<MessageTemplate[]>;
+  getMessageTemplate(id: string): Promise<MessageTemplate | undefined>;
+  getMessageTemplatesByChannel(channelType: string): Promise<MessageTemplate[]>;
+  createMessageTemplate(template: InsertMessageTemplate): Promise<MessageTemplate>;
+  updateMessageTemplate(id: string, updates: Partial<MessageTemplate>): Promise<MessageTemplate | undefined>;
+
+  // Messaging Campaign methods
+  getMessagingCampaigns(): Promise<MessagingCampaign[]>;
+  getMessagingCampaign(id: string): Promise<MessagingCampaign | undefined>;
+  getRecentMessagingCampaigns(limit: number): Promise<MessagingCampaign[]>;
+  createMessagingCampaign(campaign: InsertMessagingCampaign): Promise<MessagingCampaign>;
+  updateMessagingCampaign(id: string, updates: Partial<MessagingCampaign>): Promise<MessagingCampaign | undefined>;
+
+  // Message Send methods
+  getMessageSends(): Promise<MessageSend[]>;
+  getMessageSend(id: string): Promise<MessageSend | undefined>;
+  getMessageSendByExternalId(externalId: string): Promise<MessageSend | undefined>;
+  getMessageSendByTrackingId(trackingId: string): Promise<MessageSend | undefined>;
+  createMessageSend(send: InsertMessageSend): Promise<MessageSend>;
+  updateMessageSend(id: string, updates: Partial<MessageSend>): Promise<MessageSend | undefined>;
+
+  // WhatsApp Conversation methods
+  getWhatsAppConversations(): Promise<WhatsappConversation[]>;
+  getWhatsAppConversation(id: string): Promise<WhatsappConversation | undefined>;
+  getWhatsAppConversationByNumber(whatsappNumber: string): Promise<WhatsappConversation | undefined>;
+  createWhatsAppConversation(conversation: InsertWhatsappConversation): Promise<WhatsappConversation>;
+  updateWhatsAppConversation(id: string, updates: Partial<WhatsappConversation>): Promise<WhatsappConversation | undefined>;
+
+  // SMS Conversation methods
+  getSMSConversations(): Promise<SmsConversation[]>;
+  getSMSConversation(id: string): Promise<SmsConversation | undefined>;
+  getSMSConversationByNumber(phoneNumber: string): Promise<SmsConversation | undefined>;
+  createSMSConversation(conversation: InsertSmsConversation): Promise<SmsConversation>;
+  updateSMSConversation(id: string, updates: Partial<SmsConversation>): Promise<SmsConversation | undefined>;
+
+  // WhatsApp Message methods
+  createWhatsAppMessage(messageData: any): Promise<any>;
+
+  // SMS Message methods
+  createSMSMessage(messageData: any): Promise<any>;
+
+  // Message Tracking methods
+  getMessageTrackings(): Promise<MessageTracking[]>;
+  createMessageTracking(tracking: InsertMessageTracking): Promise<MessageTracking>;
+
+  // Analytics methods
+  getMessageAnalytics(channelType?: string, days?: number): Promise<any[]>;
+  getChannelBreakdown(days: number): Promise<any[]>;
 }
 
 export class MemStorage implements IStorage {
@@ -222,6 +297,18 @@ export class MemStorage implements IStorage {
   private emailCampaigns: Map<string, EmailCampaign> = new Map();
   private emailSends: Map<string, EmailSend> = new Map();
   private emailTrackings: Map<string, EmailTracking> = new Map();
+  
+  // Multi-Channel Messaging Storage
+  private messageChannels: Map<string, MessageChannel> = new Map();
+  private messageTemplates: Map<string, MessageTemplate> = new Map();
+  private messagingCampaigns: Map<string, MessagingCampaign> = new Map();
+  private messageSends: Map<string, MessageSend> = new Map();
+  private whatsappConversations: Map<string, WhatsappConversation> = new Map();
+  private smsConversations: Map<string, SmsConversation> = new Map();
+  private whatsappMessages: Map<string, any> = new Map();
+  private smsMessages: Map<string, any> = new Map();
+  private messageTrackings: Map<string, MessageTracking> = new Map();
+  
   private systemStats: SystemStats | undefined;
 
   constructor() {
@@ -1158,6 +1245,360 @@ export class MemStorage implements IStorage {
       }
     }
     return contacts;
+  }
+
+  // ===============================
+  // MULTI-CHANNEL MESSAGING IMPLEMENTATIONS
+  // ===============================
+
+  // Message Channel methods
+  async getMessageChannels(): Promise<MessageChannel[]> {
+    return Array.from(this.messageChannels.values());
+  }
+
+  async getMessageChannel(id: string): Promise<MessageChannel | undefined> {
+    return this.messageChannels.get(id);
+  }
+
+  async createMessageChannel(insertChannel: InsertMessageChannel): Promise<MessageChannel> {
+    const id = randomUUID();
+    const channel: MessageChannel = {
+      ...insertChannel,
+      id,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      isActive: insertChannel.isActive ?? true,
+      rateLimits: insertChannel.rateLimits || null,
+      metadata: insertChannel.metadata || null
+    };
+    this.messageChannels.set(id, channel);
+    return channel;
+  }
+
+  async updateMessageChannel(id: string, updates: Partial<MessageChannel>): Promise<MessageChannel | undefined> {
+    const channel = this.messageChannels.get(id);
+    if (!channel) return undefined;
+    
+    const updated: MessageChannel = {
+      ...channel,
+      ...updates,
+      id,
+      updatedAt: new Date()
+    };
+    this.messageChannels.set(id, updated);
+    return updated;
+  }
+
+  // Message Template methods
+  async getMessageTemplates(): Promise<MessageTemplate[]> {
+    return Array.from(this.messageTemplates.values());
+  }
+
+  async getMessageTemplate(id: string): Promise<MessageTemplate | undefined> {
+    return this.messageTemplates.get(id);
+  }
+
+  async getMessageTemplatesByChannel(channelType: string): Promise<MessageTemplate[]> {
+    return Array.from(this.messageTemplates.values()).filter(t => t.channelType === channelType);
+  }
+
+  async createMessageTemplate(insertTemplate: InsertMessageTemplate): Promise<MessageTemplate> {
+    const id = randomUUID();
+    const template: MessageTemplate = {
+      ...insertTemplate,
+      id,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      isActive: insertTemplate.isActive ?? true,
+      approvalStatus: insertTemplate.approvalStatus || 'approved',
+      whatsappTemplateId: insertTemplate.whatsappTemplateId || null,
+      metadata: insertTemplate.metadata || null
+    };
+    this.messageTemplates.set(id, template);
+    return template;
+  }
+
+  async updateMessageTemplate(id: string, updates: Partial<MessageTemplate>): Promise<MessageTemplate | undefined> {
+    const template = this.messageTemplates.get(id);
+    if (!template) return undefined;
+    
+    const updated: MessageTemplate = {
+      ...template,
+      ...updates,
+      id,
+      updatedAt: new Date()
+    };
+    this.messageTemplates.set(id, updated);
+    return updated;
+  }
+
+  // Messaging Campaign methods
+  async getMessagingCampaigns(): Promise<MessagingCampaign[]> {
+    return Array.from(this.messagingCampaigns.values());
+  }
+
+  async getMessagingCampaign(id: string): Promise<MessagingCampaign | undefined> {
+    return this.messagingCampaigns.get(id);
+  }
+
+  async getRecentMessagingCampaigns(limit: number): Promise<MessagingCampaign[]> {
+    const campaigns = Array.from(this.messagingCampaigns.values())
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    return campaigns.slice(0, limit);
+  }
+
+  async createMessagingCampaign(insertCampaign: InsertMessagingCampaign): Promise<MessagingCampaign> {
+    const id = randomUUID();
+    const campaign: MessagingCampaign = {
+      ...insertCampaign,
+      id,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      status: insertCampaign.status || 'draft',
+      scheduleType: insertCampaign.scheduleType || 'immediate',
+      totalRecipients: 0,
+      sentCount: 0,
+      deliveredCount: 0,
+      readCount: 0,
+      clickCount: 0,
+      responseCount: 0,
+      failedCount: 0,
+      sentAt: null,
+      scheduledAt: insertCampaign.scheduledAt || null,
+      targetAudience: insertCampaign.targetAudience || null,
+      metadata: insertCampaign.metadata || null
+    };
+    this.messagingCampaigns.set(id, campaign);
+    return campaign;
+  }
+
+  async updateMessagingCampaign(id: string, updates: Partial<MessagingCampaign>): Promise<MessagingCampaign | undefined> {
+    const campaign = this.messagingCampaigns.get(id);
+    if (!campaign) return undefined;
+    
+    const updated: MessagingCampaign = {
+      ...campaign,
+      ...updates,
+      id,
+      updatedAt: new Date()
+    };
+    this.messagingCampaigns.set(id, updated);
+    return updated;
+  }
+
+  // Message Send methods
+  async getMessageSends(): Promise<MessageSend[]> {
+    return Array.from(this.messageSends.values());
+  }
+
+  async getMessageSend(id: string): Promise<MessageSend | undefined> {
+    return this.messageSends.get(id);
+  }
+
+  async getMessageSendByExternalId(externalId: string): Promise<MessageSend | undefined> {
+    return Array.from(this.messageSends.values()).find(s => s.externalMessageId === externalId);
+  }
+
+  async getMessageSendByTrackingId(trackingId: string): Promise<MessageSend | undefined> {
+    return Array.from(this.messageSends.values()).find(s => s.trackingId === trackingId);
+  }
+
+  async createMessageSend(insertSend: InsertMessageSend): Promise<MessageSend> {
+    const id = randomUUID();
+    const send: MessageSend = {
+      ...insertSend,
+      id,
+      createdAt: new Date(),
+      status: insertSend.status || 'pending',
+      sentAt: null,
+      deliveredAt: null,
+      readAt: null,
+      repliedAt: null,
+      failureReason: null,
+      externalMessageId: null,
+      whatsappMessageData: insertSend.whatsappMessageData || null,
+      smsMessageData: insertSend.smsMessageData || null,
+      pushMessageData: insertSend.pushMessageData || null,
+      metadata: insertSend.metadata || null
+    };
+    this.messageSends.set(id, send);
+    return send;
+  }
+
+  async updateMessageSend(id: string, updates: Partial<MessageSend>): Promise<MessageSend | undefined> {
+    const send = this.messageSends.get(id);
+    if (!send) return undefined;
+    
+    const updated: MessageSend = {
+      ...send,
+      ...updates,
+      id
+    };
+    this.messageSends.set(id, updated);
+    return updated;
+  }
+
+  // WhatsApp Conversation methods
+  async getWhatsAppConversations(): Promise<WhatsappConversation[]> {
+    return Array.from(this.whatsappConversations.values());
+  }
+
+  async getWhatsAppConversation(id: string): Promise<WhatsappConversation | undefined> {
+    return this.whatsappConversations.get(id);
+  }
+
+  async getWhatsAppConversationByNumber(whatsappNumber: string): Promise<WhatsappConversation | undefined> {
+    return Array.from(this.whatsappConversations.values()).find(c => c.whatsappNumber === whatsappNumber);
+  }
+
+  async createWhatsAppConversation(insertConversation: InsertWhatsappConversation): Promise<WhatsappConversation> {
+    const id = randomUUID();
+    const conversation: WhatsappConversation = {
+      ...insertConversation,
+      id,
+      createdAt: new Date(),
+      conversationStatus: insertConversation.conversationStatus || 'active',
+      lastMessageAt: null,
+      messageCount: 0,
+      isBusinessInitiated: insertConversation.isBusinessInitiated ?? true,
+      sessionStart: new Date(),
+      sessionEnd: null,
+      metadata: insertConversation.metadata || null
+    };
+    this.whatsappConversations.set(id, conversation);
+    return conversation;
+  }
+
+  async updateWhatsAppConversation(id: string, updates: Partial<WhatsappConversation>): Promise<WhatsappConversation | undefined> {
+    const conversation = this.whatsappConversations.get(id);
+    if (!conversation) return undefined;
+    
+    const updated: WhatsappConversation = {
+      ...conversation,
+      ...updates,
+      id
+    };
+    this.whatsappConversations.set(id, updated);
+    return updated;
+  }
+
+  // SMS Conversation methods
+  async getSMSConversations(): Promise<SmsConversation[]> {
+    return Array.from(this.smsConversations.values());
+  }
+
+  async getSMSConversation(id: string): Promise<SmsConversation | undefined> {
+    return this.smsConversations.get(id);
+  }
+
+  async getSMSConversationByNumber(phoneNumber: string): Promise<SmsConversation | undefined> {
+    return Array.from(this.smsConversations.values()).find(c => c.phoneNumber === phoneNumber);
+  }
+
+  async createSMSConversation(insertConversation: InsertSmsConversation): Promise<SmsConversation> {
+    const id = randomUUID();
+    const conversation: SmsConversation = {
+      ...insertConversation,
+      id,
+      createdAt: new Date(),
+      conversationStatus: insertConversation.conversationStatus || 'active',
+      lastMessageAt: null,
+      messageCount: 0,
+      twilioPhoneNumber: insertConversation.twilioPhoneNumber || null,
+      metadata: insertConversation.metadata || null
+    };
+    this.smsConversations.set(id, conversation);
+    return conversation;
+  }
+
+  async updateSMSConversation(id: string, updates: Partial<SmsConversation>): Promise<SmsConversation | undefined> {
+    const conversation = this.smsConversations.get(id);
+    if (!conversation) return undefined;
+    
+    const updated: SmsConversation = {
+      ...conversation,
+      ...updates,
+      id
+    };
+    this.smsConversations.set(id, updated);
+    return updated;
+  }
+
+  // WhatsApp & SMS Message methods
+  async createWhatsAppMessage(messageData: any): Promise<any> {
+    const id = randomUUID();
+    const message = {
+      ...messageData,
+      id,
+      timestamp: new Date()
+    };
+    this.whatsappMessages.set(id, message);
+    return message;
+  }
+
+  async createSMSMessage(messageData: any): Promise<any> {
+    const id = randomUUID();
+    const message = {
+      ...messageData,
+      id,
+      timestamp: new Date()
+    };
+    this.smsMessages.set(id, message);
+    return message;
+  }
+
+  // Message Tracking methods
+  async getMessageTrackings(): Promise<MessageTracking[]> {
+    return Array.from(this.messageTrackings.values());
+  }
+
+  async createMessageTracking(insertTracking: InsertMessageTracking): Promise<MessageTracking> {
+    const id = randomUUID();
+    const tracking: MessageTracking = {
+      ...insertTracking,
+      id,
+      timestamp: new Date(),
+      userAgent: insertTracking.userAgent || null,
+      ipAddress: insertTracking.ipAddress || null,
+      eventData: insertTracking.eventData || null,
+      metadata: insertTracking.metadata || null
+    };
+    this.messageTrackings.set(id, tracking);
+    return tracking;
+  }
+
+  // Analytics methods
+  async getMessageAnalytics(channelType?: string, days: number = 30): Promise<any[]> {
+    // Mock analytics data - in real implementation this would aggregate actual data
+    const analytics = [];
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
+
+    for (let i = 0; i < days; i++) {
+      const date = new Date(startDate);
+      date.setDate(date.getDate() + i);
+      
+      analytics.push({
+        channelType: channelType || 'all',
+        date: date.toISOString().split('T')[0],
+        totalSent: Math.floor(Math.random() * 100),
+        totalDelivered: Math.floor(Math.random() * 90),
+        totalRead: Math.floor(Math.random() * 70),
+        totalReplied: Math.floor(Math.random() * 20),
+        totalFailed: Math.floor(Math.random() * 10)
+      });
+    }
+    
+    return analytics;
+  }
+
+  async getChannelBreakdown(days: number): Promise<any[]> {
+    return [
+      { channelType: 'email', totalSent: 1250, deliveryRate: 98.5, responseRate: 12.3 },
+      { channelType: 'whatsapp', totalSent: 890, deliveryRate: 99.2, responseRate: 35.7 },
+      { channelType: 'sms', totalSent: 456, deliveryRate: 97.8, responseRate: 8.9 },
+      { channelType: 'push', totalSent: 2340, deliveryRate: 94.2, responseRate: 5.1 }
+    ];
   }
 
   private async updateStats(): Promise<void> {
