@@ -54,6 +54,7 @@ import FruitfulGlobalPlatform from "@/pages/fruitful-global-platform";
 import FAATestisOmniRender from "@/pages/faa-tesis-omni-render";
 import AgricultureBiotechPlatform from "@/pages/agriculture-biotech-platform";
 import StrategicSellScroll from "@/pages/strategic-sell-scroll";
+import EurekaCloudflowDashboard from "@/pages/eureka-cloudflow-dashboard";
 import NotificationSettings from "@/pages/notification-settings";
 import AdMobDashboard from "@/pages/admob-dashboard";
 import NotFound from "@/pages/not-found";
@@ -89,6 +90,7 @@ function Router() {
       <Route path="/faa-tesis-omni-render" component={FAATestisOmniRender} />
       <Route path="/agriculture-biotech-platform" component={AgricultureBiotechPlatform} />
       <Route path="/strategic-sell-scroll" component={StrategicSellScroll} />
+      <Route path="/eureka-cloudflow-dashboard" component={EurekaCloudflowDashboard} />
       <Route path="/education-dashboard" component={EducationDashboard} />
       <Route path="/smart-toys-platform" component={SmartToysPlatform} />
       <Route path="/modular-view" component={ModularView} />

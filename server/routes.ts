@@ -52,6 +52,8 @@ import {
   insertGithubFileSchema,
   insertGithubSyncLogSchema
 } from "@shared/schema";
+import { eurekaGenerator } from "./eureka-generator";
+import { cloudflowAutomation } from "./cloudflow-automation";
 
 // Configure multer for file uploads
 const upload = multer({
@@ -3106,6 +3108,112 @@ May this wisdom serve your journey well! 🌳✨`
     } catch (error) {
       console.error('Sync Baobab repository error:', error);
       res.status(500).json({ error: "Failed to sync Baobab repository" });
+    }
+  });
+
+  // Eureka Page Generation API
+  app.post("/api/generate-pages", async (req, res) => {
+    try {
+      const { sector, page: template, count = 400 } = req.body;
+      
+      if (!sector || !template) {
+        return res.status(400).json({ error: "Sector and template are required" });
+      }
+
+      console.log(`🚀 API triggered: Generate ${count} pages for ${sector}/${template}`);
+      
+      const result = await eurekaGenerator.generatePages({
+        sector,
+        template,
+        count: Math.min(count, 1000), // Limit to 1000 pages per request
+        outputDir: 'generated_pages'
+      });
+
+      // Auto-deploy to CDN if requested
+      let deploymentResult = null;
+      if (req.body.autoDeploy) {
+        deploymentResult = await eurekaGenerator.deployToCDN(
+          result.outputPath, 
+          sector, 
+          template
+        );
+      }
+
+      res.json({
+        success: true,
+        generated: result.pages.length,
+        path: `generated_pages/${sector}/${template}/`,
+        sitemapPath: result.sitemapPath,
+        vaultHashes: result.pages.map(p => p.metadata.vaultHash),
+        deployment: deploymentResult,
+        timestamp: new Date().toISOString()
+      });
+
+    } catch (error) {
+      console.error("Eureka generation error:", error);
+      res.status(500).json({ 
+        error: "Page generation failed",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // Eureka Cloudflow Control API
+  app.post("/api/cloudflow/start", async (req, res) => {
+    try {
+      await cloudflowAutomation.startAutomation();
+      res.json({ 
+        success: true, 
+        message: "Eureka Cloudflow automation started",
+        status: cloudflowAutomation.getStatus()
+      });
+    } catch (error) {
+      console.error("Cloudflow start error:", error);
+      res.status(500).json({ error: "Failed to start Cloudflow automation" });
+    }
+  });
+
+  app.post("/api/cloudflow/stop", async (req, res) => {
+    try {
+      cloudflowAutomation.stopAutomation();
+      res.json({ 
+        success: true, 
+        message: "Eureka Cloudflow automation stopped" 
+      });
+    } catch (error) {
+      console.error("Cloudflow stop error:", error);
+      res.status(500).json({ error: "Failed to stop Cloudflow automation" });
+    }
+  });
+
+  app.get("/api/cloudflow/status", async (req, res) => {
+    try {
+      const status = cloudflowAutomation.getStatus();
+      res.json(status);
+    } catch (error) {
+      console.error("Cloudflow status error:", error);
+      res.status(500).json({ error: "Failed to get Cloudflow status" });
+    }
+  });
+
+  app.post("/api/cloudflow/bind-sector", async (req, res) => {
+    try {
+      const { sector, template } = req.body;
+      
+      if (!sector || !template) {
+        return res.status(400).json({ error: "Sector and template are required" });
+      }
+
+      await cloudflowAutomation.bindSectorToCDN(sector, template);
+      
+      res.json({ 
+        success: true, 
+        message: `Sector ${sector}/${template} bound to continuous CDN deployment`,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Sector binding error:", error);
+      res.status(500).json({ error: "Failed to bind sector to CDN" });
     }
   });
 
