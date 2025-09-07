@@ -91,11 +91,11 @@ export default function Dashboard() {
           changeType="positive"
         />
         <StatsCard
-          title="Sacred Foundation"
-          value="🌳 BAOBAB™"
-          icon="fas fa-seedling"
-          iconBg="bg-amber-400/10 text-amber-400"
-          change="Aug 7, 2021 - Kruger"
+          title={displayStats?.samFoxStudio ? "SamFox Studio™" : "Sacred Foundation"}
+          value={displayStats?.samFoxStudio ? `🦁 ${displayStats.samFoxStudio.totalLicenses} LICENSES` : "🌳 BAOBAB™"}
+          icon={displayStats?.samFoxStudio ? "fas fa-copyright" : "fas fa-seedling"}
+          iconBg={displayStats?.samFoxStudio ? "bg-yellow-400/10 text-yellow-400" : "bg-amber-400/10 text-amber-400"}
+          change={displayStats?.samFoxStudio ? `${displayStats.samFoxStudio.activeTreaties} Active Treaties` : "Aug 7, 2021 - Kruger"}
           changeType="positive"
         />
       </div>
@@ -120,6 +120,21 @@ export default function Dashboard() {
             <div className="flex justify-between items-center">
               <span className="text-sm">TreatySync Protocol</span>
               <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Synced</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <div className="flex items-center space-x-2">
+                <span className="text-sm">🦁 SamFox Studio™</span>
+                {displayStats?.samFoxStudio?.vaultLink && (
+                  <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
+                )}
+              </div>
+              <span className={`text-xs px-2 py-1 rounded-full ${
+                displayStats?.samFoxStudio?.globalStatus === "Open for Business" 
+                  ? "bg-green-100 text-green-800" 
+                  : "bg-gray-100 text-gray-800"
+              }`}>
+                {displayStats?.samFoxStudio?.globalStatus || "Initializing"}
+              </span>
             </div>
           </div>
         </div>
@@ -215,6 +230,30 @@ export default function Dashboard() {
                 </div>
                 <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full">Deployed</span>
               </div>
+
+              {displayStats?.samFoxStudio && (
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <div className="bg-yellow-400/10 p-2 rounded-lg mr-3">
+                      <i className="fas fa-copyright text-yellow-400"></i>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-foreground">🦁 SamFox Studio™ Platform</p>
+                      <p className="text-xs text-muted-foreground">
+                        {displayStats.samFoxStudio.totalLicenses} Licenses | {displayStats.samFoxStudio.activeTreaties} Active Treaties
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    {displayStats.samFoxStudio.vaultLink && (
+                      <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
+                    )}
+                    <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
+                      {displayStats.samFoxStudio.globalStatus}
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

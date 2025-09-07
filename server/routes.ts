@@ -103,6 +103,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/system/stats", async (req, res) => {
     try {
       const stats = await storage.getSystemStats();
+      
+      // Add SamFox Studio stats integration for FAA Vault sync
+      const samFoxStudio = await samFoxStudioService.getSamFoxStudio();
+      if (samFoxStudio) {
+        const samFoxStats = await samFoxStudioService.getDashboardStats(samFoxStudio.id);
+        stats.samFoxStudio = {
+          id: samFoxStudio.id,
+          brandName: samFoxStudio.brandName,
+          globalStatus: samFoxStudio.globalStatus,
+          vaultLink: samFoxStudio.vaultLink,
+          syncRate: samFoxStudio.syncRate,
+          treatyReady: samFoxStudio.treatyReady,
+          copyrightActive: samFoxStudio.copyrightActive,
+          signatory: samFoxStudio.signatory,
+          totalWorkspaces: samFoxStats.totalWorkspaces,
+          totalLicenses: samFoxStats.totalLicenses,
+          totalFiles: samFoxStats.totalFiles,
+          totalTreaties: samFoxStats.totalTreaties,
+          activeTreaties: samFoxStats.activeTreaties,
+          vaultSyncStatus: samFoxStats.vaultSyncStatus,
+          lastSync: new Date().toISOString()
+        };
+      }
+      
       res.json(stats || {});
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch system stats" });
