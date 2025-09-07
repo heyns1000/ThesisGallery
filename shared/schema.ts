@@ -1980,6 +1980,217 @@ export const insertGithubSyncLogSchema = createInsertSchema(githubSyncLogs).pick
   metadata: true,
 });
 
+// ===============================
+// SAMFOX STUDIO PLATFORM TABLES
+// ===============================
+
+// SamFox Studio Brand Management
+export const samFoxStudio = pgTable("samfox_studio", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  brandName: text("brand_name").notNull().default("SamFox Studio™"),
+  treatyClass: text("treaty_class").notNull().default("CreativeCommonsHybrid.Global"),
+  licenseType: text("license_type").notNull().default("FAA.Master.CreativeCommonsHybrid"),
+  vaultLink: boolean("vault_link").default(true),
+  storagePath: text("storage_path").notNull().default("FAA.SectorFileRoot/SamFox_Studio"),
+  syncRate: integer("sync_rate").default(9), // seconds
+  globalStatus: text("global_status").default("Open for Business"),
+  claimStatement: text("claim_statement").default("One-of-a-kind | Smart | Elegant | Globally Aligned"),
+  copyrightActive: boolean("copyright_active").default(true),
+  treatyReady: boolean("treaty_ready").default(true),
+  signatory: text("signatory").default("✨ H.S."),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+// Collaboration Workspaces
+export const collaborationWorkspaces = pgTable("collaboration_workspaces", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  workspaceName: text("workspace_name").notNull(),
+  workspaceType: text("workspace_type").notNull(), // shared-glyph, treaty-collaboration, ip-registry
+  brandId: varchar("brand_id").references(() => brands.id),
+  samFoxStudioId: varchar("samfox_studio_id").references(() => samFoxStudio.id),
+  accessLevel: text("access_level").notNull().default("editor"), // admin, editor, auditor, viewer
+  members: text("members").array(),
+  realTimeEnabled: boolean("real_time_enabled").default(true),
+  treatyProtected: boolean("treaty_protected").default(true),
+  vaultMeshLinked: boolean("vault_mesh_linked").default(true),
+  status: text("status").default("active"), // active, archived, suspended
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+// Global Master Licensing System
+export const globalMasterLicenses = pgTable("global_master_licenses", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  licenseKey: text("license_key").notNull().unique(),
+  brandId: varchar("brand_id").references(() => brands.id),
+  samFoxStudioId: varchar("samfox_studio_id").references(() => samFoxStudio.id),
+  licenseType: text("license_type").notNull(), // per-drop, per-channel, global-master
+  licenseMatrix: json("license_matrix").notNull(), // licensing rules and permissions
+  copyrightAssertion: boolean("copyright_assertion").default(true),
+  ipRegistryVerified: boolean("ip_registry_verified").default(true),
+  faaVerified: boolean("faa_verified").default(true),
+  treatyClass: text("treaty_class").notNull(),
+  globalScope: boolean("global_scope").default(true),
+  royaltyEnabled: boolean("royalty_enabled").default(false),
+  pulseTradeLinking: boolean("pulse_trade_linking").default(false),
+  status: text("status").default("active"), // active, suspended, expired
+  issuedAt: timestamp("issued_at").defaultNow().notNull(),
+  expiresAt: timestamp("expires_at"),
+  metadata: json("metadata"),
+});
+
+// SamFox Fileroom - Archive & Document Management
+export const samFoxFileroom = pgTable("samfox_fileroom", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  fileName: text("file_name").notNull(),
+  filePath: text("file_path").notNull(),
+  fileType: text("file_type").notNull(), // project-scroll, license-key, vault-payment-trail, creative-asset
+  brandId: varchar("brand_id").references(() => brands.id),
+  samFoxStudioId: varchar("samfox_studio_id").references(() => samFoxStudio.id),
+  workspaceId: varchar("workspace_id").references(() => collaborationWorkspaces.id),
+  licenseId: varchar("license_id").references(() => globalMasterLicenses.id),
+  accessControl: text("access_control").notNull().default("editor"), // admin, editor, auditor, viewer
+  copyrightProtected: boolean("copyright_protected").default(true),
+  treatyProtected: boolean("treaty_protected").default(true),
+  omniDropSynced: boolean("omni_drop_synced").default(true),
+  vaultTrail: text("vault_trail"), // reference to vault payment trail
+  uploadStream: text("upload_stream"), // secure upload stream reference
+  genesisCommit: boolean("genesis_commit").default(false), // since genesis treaty
+  autoFiled: boolean("auto_filed").default(true),
+  syncEngine: text("sync_engine").default("FAA OmniDrop Memory Feed"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+// Treaty-Protected Collaboration
+export const treatyCollaboration = pgTable("treaty_collaboration", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  treatyId: text("treaty_id").notNull().unique(),
+  samFoxStudioId: varchar("samfox_studio_id").references(() => samFoxStudio.id),
+  brandCoSigners: text("brand_co_signers").array(), // Fruitful x SamFox
+  collaboratorIds: text("collaborator_ids").array(),
+  workspaceId: varchar("workspace_id").references(() => collaborationWorkspaces.id),
+  treatyType: text("treaty_type").notNull(), // real-time-collaboration, ip-sharing, brand-partnership
+  sealedTreatyLaw: boolean("sealed_treaty_law").default(true),
+  treatyMessage: text("treaty_message"),
+  faaClassTag: text("faa_class_tag").default("✨ FAA-CLASS-BRND-321/SFS"),
+  globalVisibility: boolean("global_visibility").default(true),
+  copyrightProtected: boolean("copyright_protected").default(true),
+  vaultMeshNode: boolean("vault_mesh_node").default(true),
+  pulseTimer: integer("pulse_timer").default(9), // seconds
+  status: text("status").default("active"), // active, pending, signed, expired
+  signedAt: timestamp("signed_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+// Insert schemas for SamFox Studio
+export const insertSamFoxStudioSchema = createInsertSchema(samFoxStudio).pick({
+  brandName: true,
+  treatyClass: true,
+  licenseType: true,
+  vaultLink: true,
+  storagePath: true,
+  syncRate: true,
+  globalStatus: true,
+  claimStatement: true,
+  copyrightActive: true,
+  treatyReady: true,
+  signatory: true,
+  metadata: true,
+});
+
+export const insertCollaborationWorkspaceSchema = createInsertSchema(collaborationWorkspaces).pick({
+  workspaceName: true,
+  workspaceType: true,
+  brandId: true,
+  samFoxStudioId: true,
+  accessLevel: true,
+  members: true,
+  realTimeEnabled: true,
+  treatyProtected: true,
+  vaultMeshLinked: true,
+  status: true,
+  metadata: true,
+});
+
+export const insertGlobalMasterLicenseSchema = createInsertSchema(globalMasterLicenses).pick({
+  licenseKey: true,
+  brandId: true,
+  samFoxStudioId: true,
+  licenseType: true,
+  licenseMatrix: true,
+  copyrightAssertion: true,
+  ipRegistryVerified: true,
+  faaVerified: true,
+  treatyClass: true,
+  globalScope: true,
+  royaltyEnabled: true,
+  pulseTradeLinking: true,
+  status: true,
+  expiresAt: true,
+  metadata: true,
+});
+
+export const insertSamFoxFileroomSchema = createInsertSchema(samFoxFileroom).pick({
+  fileName: true,
+  filePath: true,
+  fileType: true,
+  brandId: true,
+  samFoxStudioId: true,
+  workspaceId: true,
+  licenseId: true,
+  accessControl: true,
+  copyrightProtected: true,
+  treatyProtected: true,
+  omniDropSynced: true,
+  vaultTrail: true,
+  uploadStream: true,
+  genesisCommit: true,
+  autoFiled: true,
+  syncEngine: true,
+  metadata: true,
+});
+
+export const insertTreatyCollaborationSchema = createInsertSchema(treatyCollaboration).pick({
+  treatyId: true,
+  samFoxStudioId: true,
+  brandCoSigners: true,
+  collaboratorIds: true,
+  workspaceId: true,
+  treatyType: true,
+  sealedTreatyLaw: true,
+  treatyMessage: true,
+  faaClassTag: true,
+  globalVisibility: true,
+  copyrightProtected: true,
+  vaultMeshNode: true,
+  pulseTimer: true,
+  status: true,
+  signedAt: true,
+  metadata: true,
+});
+
+// SamFox Studio Types
+export type InsertSamFoxStudio = z.infer<typeof insertSamFoxStudioSchema>;
+export type SamFoxStudio = typeof samFoxStudio.$inferSelect;
+
+export type InsertCollaborationWorkspace = z.infer<typeof insertCollaborationWorkspaceSchema>;
+export type CollaborationWorkspace = typeof collaborationWorkspaces.$inferSelect;
+
+export type InsertGlobalMasterLicense = z.infer<typeof insertGlobalMasterLicenseSchema>;
+export type GlobalMasterLicense = typeof globalMasterLicenses.$inferSelect;
+
+export type InsertSamFoxFileroom = z.infer<typeof insertSamFoxFileroomSchema>;
+export type SamFoxFileroom = typeof samFoxFileroom.$inferSelect;
+
+export type InsertTreatyCollaboration = z.infer<typeof insertTreatyCollaborationSchema>;
+export type TreatyCollaboration = typeof treatyCollaboration.$inferSelect;
+
 // GitHub Repository Types
 export type InsertGithubRepository = z.infer<typeof insertGithubRepositorySchema>;
 export type GithubRepository = typeof githubRepositories.$inferSelect;
