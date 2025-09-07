@@ -16,6 +16,7 @@ const navItems = [
   { href: "/mining-dashboard", label: "⛏️ Mining Ecosystem", icon: "fas fa-pickaxe", id: "mining-dashboard" },
   { href: "/housing-dashboard", label: "🏛️ Housing Sector", icon: "fas fa-home", id: "housing-dashboard" },
   { href: "/faa-realestate-platform", label: "🏠 FAA Real Estate AI™", icon: "fas fa-chart-area", id: "faa-realestate-platform" },
+  { href: "/github-repository-browser", label: "📂 GitHub Repository Browser", icon: "fab fa-github", id: "github-repository-browser" },
   { href: "/education-dashboard", label: "🧸 Education Sector", icon: "fas fa-graduation-cap", id: "education-dashboard" },
   { href: "/ai-logic-dashboard", label: "🧠 AI & Logic Grid", icon: "fas fa-brain", id: "ai-logic-dashboard" },
   { href: "/admin-portal", label: "🦁 Admin Portal", icon: "fas fa-shield-alt", id: "admin-portal" },
