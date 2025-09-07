@@ -46,6 +46,12 @@ import { firebaseAdmin } from "./firebase-admin";
 import { abandonedCartService } from "./abandoned-cart-service";
 import { enterpriseEmailService } from "./email-service";
 import { multiChannelMessagingService } from "./multi-channel-service";
+import { githubService } from "./github-service";
+import { 
+  insertGithubRepositorySchema,
+  insertGithubFileSchema,
+  insertGithubSyncLogSchema
+} from "@shared/schema";
 
 // Configure multer for file uploads
 const upload = multer({
@@ -2990,6 +2996,116 @@ May this wisdom serve your journey well! 🌳✨`
     } catch (error) {
       console.error('Send message error:', error);
       res.status(500).json({ error: "Failed to send messages" });
+    }
+  });
+
+  // GitHub Repository Routes
+  app.get("/api/github/repositories", async (req, res) => {
+    try {
+      const repositories = await githubService.getRepositories();
+      res.json(repositories);
+    } catch (error) {
+      console.error('Get repositories error:', error);
+      res.status(500).json({ error: "Failed to fetch repositories" });
+    }
+  });
+
+  app.post("/api/github/sync", async (req, res) => {
+    try {
+      const { owner, repo } = req.body;
+      
+      if (!owner || !repo) {
+        return res.status(400).json({ error: "Owner and repository name are required" });
+      }
+
+      const result = await githubService.syncRepository(owner, repo);
+      
+      if (result.success) {
+        broadcast({ 
+          type: 'github_sync_complete',
+          data: { repositoryId: result.repositoryId, owner, repo } 
+        });
+        
+        res.json({ 
+          success: true, 
+          repositoryId: result.repositoryId,
+          message: `Repository ${owner}/${repo} synced successfully` 
+        });
+      } else {
+        res.status(500).json({ 
+          success: false, 
+          error: result.error || "Failed to sync repository" 
+        });
+      }
+    } catch (error) {
+      console.error('Sync repository error:', error);
+      res.status(500).json({ error: "Failed to sync repository" });
+    }
+  });
+
+  app.get("/api/github/repositories/:repositoryId/files", async (req, res) => {
+    try {
+      const { repositoryId } = req.params;
+      const files = await githubService.getRepositoryFiles(repositoryId);
+      res.json(files);
+    } catch (error) {
+      console.error('Get repository files error:', error);
+      res.status(500).json({ error: "Failed to fetch repository files" });
+    }
+  });
+
+  app.get("/api/github/files/:fileId", async (req, res) => {
+    try {
+      const { fileId } = req.params;
+      const file = await githubService.getFileById(fileId);
+      
+      if (!file) {
+        return res.status(404).json({ error: "File not found" });
+      }
+      
+      res.json(file);
+    } catch (error) {
+      console.error('Get file error:', error);
+      res.status(500).json({ error: "Failed to fetch file" });
+    }
+  });
+
+  app.get("/api/github/sync-logs", async (req, res) => {
+    try {
+      const { repositoryId } = req.query;
+      const logs = await githubService.getSyncLogs(repositoryId as string);
+      res.json(logs);
+    } catch (error) {
+      console.error('Get sync logs error:', error);
+      res.status(500).json({ error: "Failed to fetch sync logs" });
+    }
+  });
+
+  // Quick sync for heyns1000/baobab repository
+  app.post("/api/github/sync-baobab", async (req, res) => {
+    try {
+      const result = await githubService.syncRepository('heyns1000', 'baobab');
+      
+      if (result.success) {
+        broadcast({ 
+          type: 'baobab_sync_complete',
+          data: { repositoryId: result.repositoryId } 
+        });
+        
+        res.json({ 
+          success: true, 
+          repositoryId: result.repositoryId,
+          message: "Baobab Security Network repository synced successfully!" 
+        });
+      } else {
+        res.status(500).json({ 
+          success: false, 
+          error: result.error || "Failed to sync Baobab repository" 
+        });
+      }
+    } catch (error) {
+      console.error('Sync Baobab repository error:', error);
+      res.status(500).json({ error: "Failed to sync Baobab repository" });
     }
   });
 
