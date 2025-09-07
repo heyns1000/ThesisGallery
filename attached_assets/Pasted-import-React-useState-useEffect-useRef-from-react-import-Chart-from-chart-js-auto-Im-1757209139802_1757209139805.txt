@@ -1,0 +1,1717 @@
+import React, { useState, useEffect, useRef } from 'react';
+import Chart from 'chart.js/auto'; // Import Chart.js
+
+// Data for all wildlife protocols, synthesized from the images and user input
+const protocolsData = {
+  EcoGuard: {
+    protocolName: "EcoGuard™ Core Protocol Overview",
+    tagline: "EcoGuard™ is an innovative FAA.ZONE protocol, specifically engineered for the demands of the Wildlife & Habitat industry. Its deep integration with the PulseGrid ensures secure, real-time data flows and enhanced decision-making.",
+    keyFeatures: [
+      "Direct integration with FAA Professional Services Mesh.",
+      "Advanced data sync with GuardEco.",
+      "Real-time compliance validation via VaultLink™ (wildlife specific).",
+      "Scalable architecture for x48 node expansion.",
+      "Predictive analytics module for EcoGuard performance.",
+      "API access for seamless interoperability.",
+      "Cross-sector data interoperability.",
+      "Self-optimizing node distribution for peak efficiency.",
+      "AI-driven anomaly detection and fraud prevention.",
+    ],
+    subNodes: ['GuardEco', 'LinkHabitat', 'TraceWild'],
+    metadata: {
+      productId: "ECO-WIL-2564",
+      vaultId: "VAULT-UXRD",
+      signalEchoLayer: "Layer Alpha v2.6",
+      deploymentZone: "Zone A 5",
+      securityRating: "FAA-SEC A+",
+      activeNodes: "2,856",
+      lastAudit: "2025-06-26",
+      complianceStatus: "Active & Certified",
+    },
+    metrics: {
+      currentPulseActivity: "98,839 pulses/sec",
+      dataVolumeProcessed: "98.71 TB",
+      latencyAverage: "96 ms",
+    },
+    ledgerEntries: [
+      "#4623 - ECOGU Pulse Tx - Pending",
+      "#6075 - WILDL Data Sync - Error",
+      "#2992 - Node Actuation Confirm - Offline",
+      "#231 - VaultTrace Audit - Passed",
+    ],
+  },
+  HabitatLink: {
+    protocolName: "HabitatLink™ Core Protocol Overview",
+    tagline: "HabitatLink™ is the premier FAA.ZONE platform, revolutionizing Wildlife & Habitat operations. Leveraging the global PulseGrid, it offers robust data synchronization and superior efficiency.",
+    keyFeatures: [
+      "Direct integration with FAA Professional Services Mesh.",
+      "Advanced data sync with NodeBio.",
+      "Real-time compliance validation via VaultLink™ (wildlife specific).",
+      "Scalable architecture for x42 node expansion.",
+      "Predictive analytics module for HabitatLink performance.",
+      "API access for seamless interoperability.",
+      "Cross-sector data interoperability.",
+      "Blockchain-secured data provenance.",
+      "Secure multi-party computation support.",
+    ],
+    subNodes: ['NodeBio', 'MeshConserv', 'SyncSpecies'],
+    metadata: {
+      productId: "HAB-WIL-6298",
+      vaultId: "VAULT-7VJ9",
+      signalEchoLayer: "Layer Alpha v1.7",
+      deploymentZone: "Zone E 10",
+      securityRating: "FAA-SEC B+",
+      activeNodes: "1,927",
+      lastAudit: "2025-06-20",
+      complianceStatus: "Active & Certified",
+    },
+    metrics: {
+      currentPulseActivity: "41,894 pulses/sec",
+      dataVolumeProcessed: "62.65 TB",
+      latencyAverage: "89 ms",
+    },
+    ledgerEntries: [
+      "#9832 - HABIT Pulse Tx - Confirmed",
+      "#8821 - WILDL Data Sync - Completed",
+      "#7296 - Node Actuation Confirm - Offline",
+      "#9639 - VaultTrace Audit - Passed",
+    ],
+  },
+  WildTrace: {
+    protocolName: "WildTrace™ Core Protocol Overview",
+    tagline: "WildTrace™ is a leading protocol for comprehensive wildlife tracking and behavior analysis. It provides granular data on species movement and ecosystem health.",
+    keyFeatures: [
+      "AI-driven movement pattern analysis.",
+      "Real-time anomaly detection for unauthorized activity.",
+      "Integration with Sentinel Ring™ fauna tags.",
+      "Predictive migration route forecasting.",
+      "Automated health and stress alerts for tagged animals.",
+    ],
+    subNodes: ['ProtectZone', 'FlowNature', 'GridPreserve'],
+    metadata: {
+      productId: "WLD-TRC-8711",
+      vaultId: "VAULT-K23L",
+      signalEchoLayer: "Layer Beta v3.1",
+      deploymentZone: "Zone C 7",
+      securityRating: "FAA-SEC A",
+      activeNodes: "1,450",
+      lastAudit: "2025-07-01",
+      complianceStatus: "Active & Certified",
+    },
+    metrics: {
+      currentPulseActivity: "35,123 pulses/sec",
+      dataVolumeProcessed: "21.45 TB",
+      latencyAverage: "105 ms",
+    },
+    ledgerEntries: [
+      "#3145 - WILDL Data Sync - Completed",
+      "#5890 - Node Actuation Confirm - Online",
+      "#7772 - VaultTrace Audit - Passed",
+    ],
+  },
+  BioNode: {
+    protocolName: "BioNode™ Core Protocol Overview",
+    tagline: "BioNode™ focuses on environmental and biological data collection. It provides critical insights into ecosystem health and biodiversity within conservation zones.",
+    keyFeatures: [
+      "Automated biosensor data collection.",
+      "Real-time air and soil quality monitoring.",
+      "Infrasound detection for poaching activity.",
+      "Integration with climate and weather APIs.",
+      "Data validation against VaultMesh™ ecological scrolls.",
+    ],
+    subNodes: ['VaultFauna', 'EcoID', 'HabitatScan'],
+    metadata: {
+      productId: "BIO-NOD-9002",
+      vaultId: "VAULT-L5P7",
+      signalEchoLayer: "Layer Gamma v1.0",
+      deploymentZone: "Zone B 3",
+      securityRating: "FAA-SEC B+",
+      activeNodes: "890",
+      lastAudit: "2025-07-05",
+      complianceStatus: "Active & Certified",
+    },
+    metrics: {
+      currentPulseActivity: "12,789 pulses/sec",
+      dataVolumeProcessed: "10.11 TB",
+      latencyAverage: "112 ms",
+    },
+    ledgerEntries: [
+      "#1021 - BIO-NOD Pulse Tx - Confirmed",
+      "#4489 - WILDL Data Sync - Completed",
+      "#6523 - VaultTrace Audit - Passed",
+    ],
+  },
+  ConservMesh: {
+    protocolName: "ConservMesh™ Core Protocol Overview",
+    tagline: "ConservMesh™ is designed for large-scale habitat conservation, providing tools for resource management and coordinated response to environmental changes.",
+    keyFeatures: [
+      "Multi-region data aggregation and analysis.",
+      "Predictive modeling for resource allocation.",
+      "Integration with drone and ground sensor networks.",
+      "Automated alert systems for environmental threats.",
+      "Blockchain-based verification of conservation efforts.",
+    ],
+    subNodes: ['WildMesh', 'NodeBio', 'ConservFlow'],
+    metadata: {
+      productId: "CON-MSH-7833",
+      vaultId: "VAULT-9QJ2",
+      signalEchoLayer: "Layer Delta v4.0",
+      deploymentZone: "Zone K 12",
+      securityRating: "FAA-SEC A+",
+      activeNodes: "3,501",
+      lastAudit: "2025-06-29",
+      complianceStatus: "Active & Certified",
+    },
+    metrics: {
+      currentPulseActivity: "78,561 pulses/sec",
+      dataVolumeProcessed: "88.92 TB",
+      latencyAverage: "85 ms",
+    },
+    ledgerEntries: [
+      "#7521 - CON-MSH Pulse Tx - Confirmed",
+      "#1142 - WILDL Data Sync - Completed",
+      "#3309 - VaultTrace Audit - Passed",
+    ],
+  },
+  SpeciesSync: {
+    protocolName: "SpeciesSync™ Core Protocol Overview",
+    tagline: "SpeciesSync™ is a specialized protocol for tracking and managing specific species populations. It provides detailed population metrics and health data.",
+    keyFeatures: [
+      "Population count and density analysis.",
+      "Behavioral pattern monitoring.",
+      "Health and mortality trend tracking.",
+      "Integration with Fauna Tag™ portals.",
+      "AI-driven species identification.",
+    ],
+    subNodes: ['SpeciesTrace', 'ZoneLink', 'NatureNode'],
+    metadata: {
+      productId: "SPC-SYN-4187",
+      vaultId: "VAULT-3G8F",
+      signalEchoLayer: "Layer Epsilon v1.2",
+      deploymentZone: "Zone R 6",
+      securityRating: "FAA-SEC B",
+      activeNodes: "985",
+      lastAudit: "2025-07-03",
+      complianceStatus: "Active & Certified",
+    },
+    metrics: {
+      currentPulseActivity: "22,543 pulses/sec",
+      dataVolumeProcessed: "15.34 TB",
+      latencyAverage: "110 ms",
+    },
+    ledgerEntries: [
+      "#8765 - SPC-SYN Pulse Tx - Confirmed",
+      "#9910 - WILDL Data Sync - Completed",
+      "#1245 - VaultTrace Audit - Passed",
+    ],
+  },
+  ZoneProtect: {
+    protocolName: "ZoneProtect™ Core Protocol Overview",
+    tagline: "ZoneProtect™ establishes secure digital perimeters around sensitive conservation zones, providing real-time threat detection and automated response protocols.",
+    keyFeatures: [
+      "Automated perimeter security alerts.",
+      "Integration with physical sensor networks and security drones.",
+      "AI-driven threat pattern recognition.",
+      "Automated lockdown and alert dispatch protocols.",
+      "Real-time GPS tracking of unauthorized entries.",
+    ],
+    subNodes: ['PreserveGrid', 'FaunaSync', 'EcoPulse'],
+    metadata: {
+      productId: "ZON-PRO-5566",
+      vaultId: "VAULT-8T7L",
+      signalEchoLayer: "Layer Zeta v2.1",
+      deploymentZone: "Zone W 9",
+      securityRating: "FAA-SEC A+",
+      activeNodes: "2,100",
+      lastAudit: "2025-06-25",
+      complianceStatus: "Active & Certified",
+    },
+    metrics: {
+      currentPulseActivity: "65,432 pulses/sec",
+      dataVolumeProcessed: "55.87 TB",
+      latencyAverage: "91 ms",
+    },
+    ledgerEntries: [
+      "#1123 - ZON-PRO Pulse Tx - Confirmed",
+      "#4567 - WILDL Data Sync - Completed",
+      "#9876 - VaultTrace Audit - Passed",
+    ],
+  },
+  NatureFlow: {
+    protocolName: "NatureFlow™ Core Protocol Overview",
+    tagline: "NatureFlow™ is an ecosystem monitoring and restoration protocol. It analyzes data from diverse sources to guide sustainable habitat management and re-wilding efforts.",
+    keyFeatures: [
+      "Ecosystem health score generation.",
+      "Biodiversity trend analysis.",
+      "Water and nutrient cycle monitoring.",
+      "Integration with environmental sensor networks.",
+      "Predictive modeling for restoration projects.",
+    ],
+    subNodes: ['HabitatFlow', 'WildTrace', 'BioNode'],
+    metadata: {
+      productId: "NAT-FLO-1010",
+      vaultId: "VAULT-2W3Y",
+      signalEchoLayer: "Layer Theta v1.5",
+      deploymentZone: "Zone S 4",
+      securityRating: "FAA-SEC B+",
+      activeNodes: "1,500",
+      lastAudit: "2025-07-08",
+      complianceStatus: "Active & Certified",
+    },
+    metrics: {
+      currentPulseActivity: "45,678 pulses/sec",
+      dataVolumeProcessed: "30.15 TB",
+      latencyAverage: "98 ms",
+    },
+    ledgerEntries: [
+      "#2345 - NAT-FLO Pulse Tx - Confirmed",
+      "#6789 - WILDL Data Sync - Completed",
+      "#1357 - VaultTrace Audit - Passed",
+    ],
+  },
+  PreserveGrid: {
+    protocolName: "PreserveGrid™ Core Protocol Overview",
+    tagline: "PreserveGrid™ provides a robust decentralized grid for coordinating conservation activities. It ensures that all conservation data is securely synchronized and shared.",
+    keyFeatures: [
+      "Decentralized data mesh for conservation teams.",
+      "Secure messaging and resource allocation tools.",
+      "Integration with PreserveGrid™ hardware.",
+      "Immutable log of all conservation actions.",
+      "Automated reporting for government and NGO compliance.",
+    ],
+    subNodes: ['ConservLink', 'SpeciesMesh', 'ZoneFlow'],
+    metadata: {
+      productId: "PRE-GRD-9900",
+      vaultId: "VAULT-4F5G",
+      signalEchoLayer: "Layer Iota v3.0",
+      deploymentZone: "Zone P 1",
+      securityRating: "FAA-SEC A",
+      activeNodes: "2,900",
+      lastAudit: "2025-07-11",
+      complianceStatus: "Active & Certified",
+    },
+    metrics: {
+      currentPulseActivity: "71,234 pulses/sec",
+      dataVolumeProcessed: "75.21 TB",
+      latencyAverage: "88 ms",
+    },
+    ledgerEntries: [
+      "#4112 - PRE-GRD Pulse Tx - Confirmed",
+      "#8923 - WILDL Data Sync - Completed",
+      "#5678 - VaultTrace Audit - Passed",
+    ],
+  },
+  FaunaVault: {
+    protocolName: "FaunaVault™ Core Protocol Overview",
+    tagline: "FaunaVault™ is the ultimate secure data vault for all wildlife and habitat-related information. It guarantees data integrity, privacy, and immutability.",
+    keyFeatures: [
+      "Homomorphic encryption for private data analysis.",
+      "Distributed ledger for immutable data storage.",
+      "Automated data backups to the VaultMesh™.",
+      "Access control via sovereign scrolls.",
+      "Auditable trail for all data modifications.",
+    ],
+    subNodes: ['NatureSync', 'PreserveTrace', 'FaunaNode'],
+    metadata: {
+      productId: "FAU-VLT-7755",
+      vaultId: "VAULT-9X9Z",
+      signalEchoLayer: "Layer Kappa v4.5",
+      deploymentZone: "Zone V 8",
+      securityRating: "FAA-SEC A+",
+      activeNodes: "3,120",
+      lastAudit: "2025-07-15",
+      complianceStatus: "Active & Certified",
+    },
+    metrics: {
+      currentPulseActivity: "85,678 pulses/sec",
+      dataVolumeProcessed: "99.01 TB",
+      latencyAverage: "80 ms",
+    },
+    ledgerEntries: [
+      "#5001 - FAU-VLT Pulse Tx - Confirmed",
+      "#7007 - WILDL Data Sync - Completed",
+      "#9009 - VaultTrace Audit - Passed",
+    ],
+  },
+};
+
+// Data for wildlife brands and sub-nodes
+const wildlifeBrands = ['EcoGuard', 'HabitatLink', 'WildTrace', 'BioNode', 'ConservMesh', 'SpeciesSync', 'ZoneProtect', 'NatureFlow', 'PreserveGrid', 'FaunaVault'];
+const wildlifeSubNodes = [
+  ['GuardEco', 'LinkHabitat', 'TraceWild'],
+  ['NodeBio', 'MeshConserv', 'SyncSpecies'],
+  ['ProtectZone', 'FlowNature', 'GridPreserve'],
+  ['VaultFauna', 'EcoID', 'HabitatScan'],
+  ['WildMesh', 'NodeBio', 'ConservFlow'],
+  ['SpeciesTrace', 'ZoneLink', 'NatureNode'],
+  ['PreserveGrid', 'FaunaSync', 'EcoPulse'],
+  ['HabitatFlow', 'WildTrace', 'BioNode'],
+  ['ConservLink', 'SpeciesMesh', 'ZoneFlow'],
+  ['NatureSync', 'PreserveTrace', 'FaunaNode']
+];
+
+// Combine into a more usable structure for brands
+const brandData = wildlifeBrands.map((brand, index) => ({
+  name: brand,
+  subNodes: wildlifeSubNodes[index] || [] // Ensure subNodes is an array
+}));
+
+
+// Data structure for navigation/content (hierarchical)
+const dashboardSections = [
+  {
+    category: "Wildlife Dashboard",
+    type: "link", // Direct links, no nested dropdown
+    items: [
+      {
+        icon: "🧭",
+        button: "View Map",
+        description: "Primary map interface with live hardware overlays",
+        component: "MapComponent"
+      },
+      {
+        icon: "🛰",
+        button: "View Drone Feeds",
+        description: "Real-time drone surveillance for reserves",
+        component: "DroneFeedsComponent"
+      },
+      {
+        icon: "🧬",
+        button: "View Tagged Species",
+        description: "View Sentinel Ring™ trackers by animal",
+        component: "TrackerComponent"
+      },
+      {
+        icon: "🔋",
+        button: "Power Monitor",
+        description: "Hardware battery view across deployments",
+        component: "PowerMonitorComponent"
+      },
+      {
+        icon: "🌡",
+        button: "Environment Data",
+        description: "Geo Lens™ readings for live biosensors",
+        component: "EnvironmentComponent"
+      },
+    ]
+  },
+  {
+    category: "Alerts & Risk",
+    type: "link",
+    items: [
+      {
+        icon: "🚨",
+        button: "Poacher Alerts",
+        description: "Poacher trigger zones and incident log",
+        component: "PoacherAlertsComponent"
+      },
+      {
+        icon: "🛑",
+        button: "Access Risk",
+        description: "Shows access attempts outside license",
+        component: "AccessRiskComponent"
+      },
+    ]
+  },
+  {
+    category: "Timeline",
+    type: "link",
+    items: [
+      {
+        icon: "🗓",
+        button: "Timeline View",
+        description: "Time-linked scroll data lifecycle view",
+        component: "TimelineComponent"
+      },
+    ]
+  },
+  {
+    category: "Scroll Heatmap",
+    type: "link",
+    items: [
+      {
+        icon: "🔥",
+        button: "Scroll Activity Heatmap",
+        description: "Map layer showing scroll intensity by km²",
+        component: "HeatmapComponent"
+      },
+    ]
+  },
+  {
+    category: "Deployment Tools",
+    type: "link",
+    items: [
+      {
+        icon: "🧮",
+        button: "Deployment Calculator",
+        description: "Estimate hardware + scroll needs",
+        component: "DeploymentCalculatorComponent"
+      },
+      {
+        icon: "🧠",
+        button: "AI Recommender",
+        description: "Auto tool for hardware/scroll pairing",
+        component: "AIRecommenderComponent"
+      },
+    ]
+  },
+  {
+    category: "Hardware Panel",
+    type: "link",
+    items: [
+      {
+        icon: "🛒",
+        button: "Storefront",
+        description: "Scroll-verified product listings",
+        component: "HardwareStorefrontComponent"
+      },
+      {
+        icon: "📦",
+        button: "Item Detail",
+        description: "Per-SKU breakdown with VaultLink",
+        component: "ItemDetailComponent"
+      },
+      {
+        icon: "🆚",
+        button: "Compare Products",
+        description: "Specs and scroll coverage comparison",
+        component: "CompareProductsComponent"
+      },
+      {
+        icon: "📄",
+        button: "Scroll Compatibility",
+        description: "Real-time compatibility validator",
+        component: "CompatibilityCheckComponent"
+      },
+      {
+        icon: "🔐",
+        button: "Warranty Scroll",
+        description: "Legal warranty linked to product",
+        component: "WarrantyComponent"
+      },
+    ]
+  },
+  {
+    category: "Licensing Panel",
+    type: "link",
+    items: [
+      {
+        icon: "📜",
+        button: "Scroll Manager",
+        description: "Master list of wildlife scrolls",
+        component: "ScrollManagerComponent"
+      },
+      {
+        icon: "✍️",
+        button: "Issue Scroll",
+        description: "Scroll creation with deployment sync",
+        component: "CreateLicenseComponent"
+      },
+      {
+        icon: "🧾",
+        button: "Generate Scroll PDF",
+        description: "PDF builder with scroll metadata",
+        component: "GeneratePDFComponent"
+      },
+      {
+        icon: "📊",
+        button: "Region View",
+        description: "Full licensed coverage viewer",
+        component: "LicenseMapComponent"
+      },
+    ]
+  },
+  {
+    category: "Vault Panel",
+    type: "link",
+    items: [
+      {
+        icon: "🔒",
+        button: "Sync Logs",
+        description: "Log of all license and node syncs",
+        component: "VaultLogsComponent"
+      },
+    ]
+  },
+  {
+    category: "Sector Core Brands",
+    type: "nested", // Indicates this category has sub-items that can be expanded
+    items: wildlifeBrands.map(brand => ({
+      icon: "🌱",
+      button: brand, // The name of the brand
+      component: "BrandDetailsComponent",
+      brandDetails: protocolsData[brand] // Pass the full protocol data for the brand
+    }))
+  },
+  {
+    category: "Legacy HTML Pages",
+    type: "nested",
+    items: [
+      {
+        icon: "📄",
+        button: "Wildlife Dashboard (HTML)",
+        description: "Original Wildlife Dashboard HTML page.",
+        component: "WildlifeDashboardHTMLComponent"
+      },
+      {
+        icon: "📄",
+        button: "Quick View (HTML)",
+        description: "Original Quick View HTML page.",
+        component: "QuickViewHTMLComponent"
+      },
+      {
+        icon: "📄",
+        button: "Kenya Deployment (HTML)",
+        description: "Original Kenya Deployment HTML page.",
+        component: "KenyaDeploymentHTMLComponent"
+      },
+      {
+        icon: "📄",
+        button: "Core Node (HTML)",
+        description: "Original Core Node HTML page.",
+        component: "CoreNodeHTMLComponent"
+      },
+    ]
+  }
+];
+
+
+// --- Placeholder Components for each section (Previous and New HTML Components) ---
+
+const MapComponent = ({ description }) => (
+  <div className="p-6 bg-white rounded-lg shadow-md">
+    <h3 className="text-2xl font-bold text-indigo-700 mb-4">🧭 Live Wildlife Map</h3>
+    <p className="text-gray-700">{description}</p>
+    <div className="mt-4 h-64 bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
+      [Placeholder for interactive map functionality]
+    </div>
+  </div>
+);
+
+const DroneFeedsComponent = ({ description }) => (
+  <div className="p-6 bg-white rounded-lg shadow-md">
+    <h3 className="text-2xl font-bold text-indigo-700 mb-4">🛰 Drone Surveillance Feeds</h3>
+    <p className="text-gray-700">{description}</p>
+    <div className="mt-4 h-64 bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
+      [Placeholder for live drone feeds]
+    </div>
+  </div>
+);
+
+const TrackerComponent = ({ description }) => (
+  <div className="p-6 bg-white rounded-lg shadow-md">
+    <h3 className="text-2xl font-bold text-indigo-700 mb-4">🧬 Tagged Species Tracker</h3>
+    <p className="text-gray-700">{description}</p>
+    <div className="mt-4 h-64 bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
+      [Placeholder for animal tracking interface]
+    </div>
+  </div>
+);
+
+const PowerMonitorComponent = ({ description }) => (
+  <div className="p-6 bg-white rounded-lg shadow-md">
+    <h3 className="text-2xl font-bold text-indigo-700 mb-4">🔋 Node Power Monitor</h3>
+    <p className="text-gray-700">{description}</p>
+    <div className="mt-4 h-64 bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
+      [Placeholder for power monitoring charts/data]
+    </div>
+  </div>
+);
+
+const EnvironmentComponent = ({ description }) => (
+  <div className="p-6 bg-white rounded-lg shadow-md">
+    <h3 className="text-2xl font-bold text-indigo-700 mb-4">🌡 Environmental Data</h3>
+    <p className="text-gray-700">{description}</p>
+    <div className="mt-4 h-64 bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
+      [Placeholder for environmental sensor data]
+    </div>
+  </div>
+);
+
+const PoacherAlertsComponent = ({ description }) => (
+  <div className="p-6 bg-white rounded-lg shadow-md">
+    <h3 className="text-2xl font-bold text-red-700 mb-4">🚨 Poacher Alerts</h3>
+    <p className="text-gray-700">{description}</p>
+    <div className="mt-4 h-64 bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
+      [Placeholder for poacher alert system]
+    </div>
+  </div>
+);
+
+const AccessRiskComponent = ({ description }) => (
+  <div className="p-6 bg-white rounded-lg shadow-md">
+    <h3 className="text-2xl font-bold text-red-700 mb-4">🛑 Access Risk Alerts</h3>
+    <p className="text-gray-700">{description}</p>
+    <div className="mt-4 h-64 bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
+      [Placeholder for access risk log]
+    </div>
+  </div>
+);
+
+const TimelineComponent = ({ description }) => (
+  <div className="p-6 bg-white rounded-lg shadow-md">
+    <h3 className="text-2xl font-bold text-indigo-700 mb-4">🗓 Scroll Lifecycles Timeline</h3>
+    <p className="text-gray-700">{description}</p>
+    <div className="mt-4 h-64 bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
+      [Placeholder for scroll lifecycle timeline]
+    </div>
+  </div>
+);
+
+const HeatmapComponent = ({ description }) => (
+  <div className="p-6 bg-white rounded-lg shadow-md">
+    <h3 className="text-2xl font-bold text-orange-700 mb-4">🔥 Scroll Activity Heatmap</h3>
+    <p className="text-gray-700">{description}</p>
+    <div className="mt-4 h-64 bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
+      [Placeholder for interactive heatmap]
+    </div>
+  </div>
+);
+
+const DeploymentCalculatorComponent = ({ description }) => (
+  <div className="p-6 bg-white rounded-lg shadow-md">
+    <h3 className="text-2xl font-bold text-purple-700 mb-4">🧮 Deployment Calculator</h3>
+    <p className="text-gray-700">{description}</p>
+    <div className="mt-4 h-64 bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
+      [Placeholder for deployment calculator UI]
+    </div>
+  </div>
+);
+
+const AIRecommenderComponent = ({ description }) => (
+  <div className="p-6 bg-white rounded-lg shadow-md">
+    <h3 className="text-2xl font-bold text-purple-700 mb-4">🧠 AI Product Recommender</h3>
+    <p className="text-gray-700">{description}</p>
+    <div className="mt-4 h-64 bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
+      [Placeholder for AI recommender UI]
+    </div>
+  </div>
+);
+
+const HardwareStorefrontComponent = ({ description }) => (
+  <div className="p-6 bg-white rounded-lg shadow-md">
+    <h3 className="text-2xl font-bold text-blue-700 mb-4">🛒 Wildlife Hardware Storefront</h3>
+    <p className="text-gray-700">{description}</p>
+    <div className="mt-4 h-64 bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
+      [Placeholder for hardware product listings]
+    </div>
+  </div>
+);
+
+const ItemDetailComponent = ({ description }) => (
+  <div className="p-6 bg-white rounded-lg shadow-md">
+    <h3 className="text-2xl font-bold text-blue-700 mb-4">📦 Item Detail View</h3>
+    <p className="text-gray-700">{description}</p>
+    <div className="mt-4 h-64 bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
+      [Placeholder for item detail page]
+    </div>
+  </div>
+);
+
+const CompareProductsComponent = ({ description }) => (
+  <div className="p-6 bg-white rounded-lg shadow-md">
+    <h3 className="text-2xl font-bold text-blue-700 mb-4">🆚 Product Comparison</h3>
+    <p className="text-gray-700">{description}</p>
+    <div className="mt-4 h-64 bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
+      [Placeholder for product comparison tool]
+    </div>
+  </div>
+);
+
+const CompatibilityCheckComponent = ({ description }) => (
+  <div className="p-6 bg-white rounded-lg shadow-md">
+    <h3 className="text-2xl font-bold text-blue-700 mb-4">📄 Scroll Compatibility Check</h3>
+    <p className="text-gray-700">{description}</p>
+    <div className="mt-4 h-64 bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
+      [Placeholder for compatibility checker]
+    </div>
+  </div>
+);
+
+const WarrantyComponent = ({ description }) => (
+  <div className="p-6 bg-white rounded-lg shadow-md">
+    <h3 className="text-2xl font-bold text-blue-700 mb-4">🔐 Warranty Scroll Viewer</h3>
+    <p className="text-gray-700">{description}</p>
+    <div className="mt-4 h-64 bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
+      [Placeholder for warranty details]
+    </div>
+  </div>
+);
+
+const ScrollManagerComponent = ({ description }) => (
+  <div className="p-6 bg-white rounded-lg shadow-md">
+    <h3 className="text-2xl font-bold text-green-700 mb-4">📜 Scroll Manager</h3>
+    <p className="text-gray-700">{description}</p>
+    <div className="mt-4 h-64 bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
+      [Placeholder for scroll management interface]
+    </div>
+  </div>
+);
+
+const CreateLicenseComponent = ({ description }) => (
+  <div className="p-6 bg-white rounded-lg shadow-md">
+    <h3 className="text-2xl font-bold text-green-700 mb-4">✍️ Create Wildlife License</h3>
+    <p className="text-gray-700">{description}</p>
+    <div className="mt-4 h-64 bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
+      [Placeholder for license creation form]
+    </div>
+  </div>
+);
+
+const GeneratePDFComponent = ({ description }) => (
+  <div className="p-6 bg-white rounded-lg shadow-md">
+    <h3 className="text-2xl font-bold text-green-700 mb-4">🧾 Generate Scroll Document PDF</h3>
+    <p className="text-gray-700">{description}</p>
+    <div className="mt-4 h-64 bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
+      [Placeholder for PDF generation tool]
+    </div>
+  </div>
+);
+
+const LicenseMapComponent = ({ description }) => (
+  <div className="p-6 bg-white rounded-lg shadow-md">
+    <h3 className="text-2xl font-bold text-green-700 mb-4">📊 Licensed Coverage Map</h3>
+    <p className="text-gray-700">{description}</p>
+    <div className="mt-4 h-64 bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
+      [Placeholder for interactive license map]
+    </div>
+  </div>
+);
+
+const VaultLogsComponent = ({ description }) => (
+  <div className="p-6 bg-white rounded-lg shadow-md">
+    <h3 className="text-2xl font-bold text-gray-700 mb-4">🔒 Vault Sync Logs</h3>
+    <p className="text-gray-700">{description}</p>
+    <div className="mt-4 h-64 bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
+      [Placeholder for vault logs display]
+    </div>
+  </div>
+);
+
+// Pricing Cards Component - now used directly within BrandDetailsComponent
+const PricingCardsComponent = () => {
+  // Define pricing plans based on the general wildlife pricing data
+  const pricingPlans = [
+    {
+      name: "Basic Plan",
+      monthly: "$35",
+      annual: "$380",
+      features: [
+        "Access to core wildlife protocols",
+        "Standard data sync",
+        "Tier B payout",
+        "Conservation Zone region access",
+        "Basic reporting",
+      ],
+      buttonText: "Select Basic",
+      buttonClass: "bg-blue-600 hover:bg-blue-700"
+    },
+    {
+      name: "Pro Plan",
+      monthly: "$80",
+      annual: "$850",
+      features: [
+        "All Basic Plan features",
+        "Enhanced data sync & analytics",
+        "Tier A payout",
+        "Priority support (email)",
+        "Multi-region access",
+        "Advanced threat detection",
+      ],
+      buttonText: "Select Pro",
+      buttonClass: "bg-green-600 hover:bg-green-700"
+    },
+    {
+      name: "Enterprise Plan",
+      monthly: "Custom",
+      annual: "Custom",
+      features: [
+        "All Pro Plan features",
+        "Dedicated infrastructure",
+        "Custom integrations",
+        "24/7 Premium support (phone, chat, email)",
+        "On-site deployment options",
+        "Customizable dashboards & alerts",
+        "Compliance auditing tools",
+      ],
+      buttonText: "Contact Sales",
+      buttonClass: "bg-purple-600 hover:bg-purple-700"
+    },
+  ];
+
+  return (
+    <div className="mt-8">
+      <h3 className="text-2xl font-bold text-indigo-700 mb-6 text-center">💰 Our Pricing Plans</h3>
+      <p className="text-gray-700 text-center mb-8">
+        Choose the plan that best fits your wildlife conservation and habitat management needs.
+      </p>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {pricingPlans.map((plan, index) => (
+          <div key={index} className="flex flex-col bg-gray-50 rounded-lg shadow-lg p-6 border border-gray-200">
+            <h4 className="text-xl font-bold text-gray-800 mb-3">{plan.name}</h4>
+            <div className="text-4xl font-extrabold text-green-600 mb-4">
+              {plan.monthly === "Custom" ? plan.monthly : `${plan.monthly}/mo`}
+            </div>
+            <ul className="flex-grow list-disc list-inside text-sm text-gray-600 space-y-2 mb-6">
+              {plan.features.map((feature, fIndex) => (
+                <li key={fIndex}>{feature}</li>
+              ))}
+            </ul>
+            <button
+              className={`mt-auto w-full py-3 px-6 rounded-md text-white font-semibold transition-colors duration-200 ${plan.buttonClass}`}
+            >
+              {plan.buttonText}
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+
+// Component to display Brand details and sub-nodes
+const BrandDetailsComponent = ({ brandDetails }) => {
+  if (!brandDetails) {
+    return (
+      <div className="p-6 bg-white rounded-lg shadow-md text-center text-gray-500">
+        <h3 className="text-2xl font-bold text-red-500 mb-4">Brand Data Not Found</h3>
+        <p>Please select a brand from the sidebar to view its details.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-6 bg-white rounded-lg shadow-md">
+      <h3 className="text-2xl font-bold text-green-700 mb-4">🌱 {brandDetails.protocolName}</h3>
+      <p className="text-gray-700 mb-4">{brandDetails.tagline}</p>
+
+      {/* Key Features */}
+      {brandDetails.keyFeatures && brandDetails.keyFeatures.length > 0 && (
+        <>
+          <h4 className="text-xl font-semibold text-gray-700 mb-2">Key Features:</h4>
+          <ul className="list-disc list-inside text-gray-600 space-y-1 pl-4 mb-4">
+            {brandDetails.keyFeatures.map((feature, index) => (
+              <li key={index}>{feature}</li>
+            ))}
+          </ul>
+        </>
+      )}
+
+      {/* Associated Sub-Nodes */}
+      {brandDetails.subNodes && brandDetails.subNodes.length > 0 && (
+        <>
+          <h4 className="text-xl font-semibold text-gray-700 mb-2">Associated Sub-Nodes:</h4>
+          <ul className="list-disc list-inside text-gray-600 space-y-1 pl-4 mb-4">
+            {brandDetails.subNodes.map((subNode, index) => (
+              <li key={index}>{subNode}</li>
+            ))}
+          </ul>
+        </>
+      )}
+
+      {/* FAA Metadata & Compliance */}
+      {brandDetails.metadata && Object.keys(brandDetails.metadata).length > 0 && (
+        <>
+          <h4 className="text-xl font-semibold text-gray-700 mb-2">FAA Metadata & Compliance:</h4>
+          <ul className="list-disc list-inside text-gray-600 space-y-1 pl-4 mb-4">
+            {Object.entries(brandDetails.metadata).map(([key, value]) => (
+              <li key={key}>
+                <strong>{key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}:</strong> {value}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+
+      {/* Real-Time Metrics Overview */}
+      {brandDetails.metrics && Object.keys(brandDetails.metrics).length > 0 && (
+        <>
+          <h4 className="text-xl font-semibold text-gray-700 mb-2">Real-Time Metrics Overview:</h4>
+          <ul className="list-disc list-inside text-gray-600 space-y-1 pl-4 mb-4">
+            {Object.entries(brandDetails.metrics).map(([key, value]) => (
+              <li key={key}>
+                <strong>{key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}:</strong> {value}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+
+      {/* VaultTrace™ Ledger Entries */}
+      {brandDetails.ledgerEntries && brandDetails.ledgerEntries.length > 0 && (
+        <>
+          <h4 className="text-xl font-semibold text-gray-700 mb-2">VaultTrace™ Ledger Entries:</h4>
+          <ul className="list-disc list-inside text-gray-600 space-y-1 pl-4 mb-4">
+            {brandDetails.ledgerEntries.map((entry, index) => (
+              <li key={index}>{entry}</li>
+            ))}
+          </ul>
+        </>
+      )}
+
+      {/* Pricing Structure - Now includes the PricingCardsComponent */}
+      <PricingCardsComponent />
+    </div>
+  );
+};
+
+// --- New Components for HTML Pages ---
+
+const WildlifeDashboardHTMLComponent = () => (
+  <div className="p-6 bg-white rounded-lg shadow-md">
+    <h3 className="text-2xl font-bold text-indigo-700 mb-4">Wildlife Dashboard – FAA.Zone (Original HTML)</h3>
+    <div className="text-gray-700 space-y-4">
+      {/* HEADER + NAV */}
+      <header className="bg-white shadow p-6 flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-extrabold text-indigo-700">🌳 Wildlife Sector Dashboard</h1>
+          <p className="text-sm text-gray-500">FAA.Zone Sovereign Scrolls · Wildlife Grid</p>
+        </div>
+        <div className="flex gap-3 text-sm">
+          <a href="#" className="px-4 py-2 bg-blue-500 text-white rounded glow-btn">Admin Login</a>
+          <a href="#" className="px-4 py-2 bg-gray-600 text-white rounded glow-btn">Node Setup</a>
+          <a href="#" className="px-4 py-2 bg-green-500 text-white rounded glow-btn">Distributor Portal</a>
+        </div>
+      </header>
+      {/* SUBNAV */}
+      <nav className="bg-gray-100 flex flex-col gap-3 px-6 py-3 text-sm overflow-x-auto whitespace-nowrap">
+        <div className="flex gap-6">
+          <a href="#" className="hover:text-indigo-600">Quick View</a>
+          <a href="#" className="hover:text-indigo-600">Pulse Monitor</a>
+          <a href="#" className="text-indigo-700 font-semibold">Sales Dashboard</a>
+          <a href="#" className="hover:text-indigo-600">Ethics</a>
+          <a href="#" className="hover:text-indigo-600">Node Reports</a>
+          <a href="#" className="hover:text-indigo-600">Licensing</a>
+          <a href="#" className="text-green-600 font-semibold">💰 Pricing</a>
+          <a href="#" className="text-blue-600 font-semibold">🇰🇪 Kenya Deployment</a>
+        </div>
+        <div className="text-xs text-gray-400 mt-2">
+          FAA.Zone Sovereign Scrolls · VaultMesh · TreatyMesh Validated
+        </div>
+      </nav>
+
+      {/* WILDLIFE DASHBOARD */}
+      <section className="max-w-7xl mx-auto px-6 py-8">
+        <div className="bg-white p-6 rounded shadow">
+          <h2 className="text-xl font-bold text-gray-700">📊 Wildlife Node Dashboard</h2>
+          <p className="text-sm text-gray-500">Explore node features and settings for optimal wildlife management.</p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+            <a href="#" className="block p-4 bg-gray-100 rounded shadow hover:bg-indigo-50 transition">
+              🌳 Core Node™<br/><span className="text-xs">Root-Sync™ AI Layer</span>
+            </a>
+            <a href="#" className="block p-4 bg-gray-100 rounded shadow hover:bg-indigo-50 transition">
+              🌍 Geo Lens™<br/><span className="text-xs">Geospatial LinkVision™</span>
+            </a>
+            <a href="#" className="block p-4 bg-gray-100 rounded shadow hover:bg-indigo-50 transition">
+              ⚡ Energy Beacon™<br/><span className="text-xs">EcoPulse Radiants™</span>
+            </a>
+            <a href="#" className="block p-4 bg-gray-100 rounded shadow hover:bg-indigo-50 transition">
+              🛡️ Security Perimeter™<br/><span className="text-xs">Baobab PermaFence™</span>
+            </a>
+            <a href="#" className="block p-4 bg-gray-100 rounded shadow hover:bg-indigo-50 transition">
+              🚁 Drone Sentinel™<br/><span className="text-xs">AetherNet Hawks™</span>
+            </a>
+            <a href="#" className="block p-4 bg-gray-100 rounded shadow hover:bg-indigo-50 transition">
+              🦁 Fauna Tag™<br/><span className="text-xs">Sentinel Ring™</span>
+            </a>
+            <a href="#" className="block p-4 bg-gray-100 rounded shadow hover:bg-indigo-50 transition">
+              🧍‍♂️ Human Input Port™<br/><span className="text-xs">SRI HoloBridge™</span>
+            </a>
+            <a href="#" className="block p-4 bg-gray-100 rounded shadow hover:bg-indigo-50 transition">
+              🌠 Celestial Aligner™<br/><span className="text-xs">AstroLattice™ Actuator</span>
+            </a>
+            <a href="#" className="block p-4 bg-gray-100 rounded shadow hover:bg-indigo-50 transition">
+              🌊 Plastic Crisis Node™<br/><span className="text-xs">Maritime Purifier™</span>
+            </a>
+            <a href="#" className="block p-4 bg-gray-100 rounded shadow hover:bg-indigo-50 transition">
+              🐬 Poacher Jammer™<br/><span className="text-xs">HunterBlackout Protocol™</span>
+            </a>
+            <a href="#" className="block p-4 bg-gray-100 rounded shadow hover:bg-green-50 transition">
+              🇰🇪 Kenya Deployment™<br/><span className="text-xs">Scroll-Licensed FAA Zone</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* PRODUCT DESCRIPTION SECTION */}
+      <section className="max-w-7xl mx-auto px-6 py-8 bg-white rounded shadow space-y-6">
+        <h2 className="text-2xl font-bold text-gray-800">🌍 Detailed Product Descriptions</h2>
+
+        {/* Core Node */}
+        <div className="node-description">
+          <h3 className="text-lg font-semibold text-indigo-600">Core Node 🌳🔗</h3>
+          <p><strong>Purpose:</strong> Centralized Baobab™ Seed Logic Node</p>
+          <p><strong>FAA™ Descriptor:</strong> Root-Sync™ AI Layer</p>
+          <p>This node acts as the central core of your system, managing and synchronizing the core AI logic for the Baobab™ network. It coordinates data flow and decision-making processes across all connected nodes.</p>
+          <p><strong>Hardware Requirements:</strong> 16GB RAM, 256GB SSD, 8-core CPU</p>
+          <p><strong>Model Number:</strong> Core-Node-MX12-256GB</p>
+          <p><strong>Integration:</strong> Supports AI synchronization across all nodes</p>
+          <p><strong>Setup:</strong> Easy setup via Cloud integration for seamless AI operations.</p>
+        </div>
+
+        {/* Geo Lens */}
+        <div className="node-description">
+          <h3 className="text-lg font-semibold text-blue-600">Geo Lens 🌍📡</h3>
+          <p><strong>Purpose:</strong> Global mapping with real-time eco-stream</p>
+          <p><strong>FAA™ Descriptor:</strong> Geospatial LinkVision™</p>
+          <p>This node provides real-time mapping and geospatial data streaming, useful for tracking environmental conditions, ecosystem health, and coordinating resources for wildlife monitoring.</p>
+          <p><strong>Hardware Requirements:</strong> 32GB RAM, 512GB SSD, 10-core CPU</p>
+          <p><strong>Model Number:</strong> GeoLens-Track-512</p>
+          <p><strong>Integration:</strong> Easily integrates with global satellite data streams</p>
+          <p><strong>Setup:</strong> Configurable through a web interface, ensuring rapid deployment.</p>
+        </div>
+
+        {/* Energy Beacon */}
+        <div className="node-description">
+          <h3 className="text-lg font-semibold text-yellow-600">Energy Beacon ⚡🔆</h3>
+          <p><strong>Purpose:</strong> AI-optimized solar + kinetic grid modules</p>
+          <p><strong>FAA™ Descriptor:</strong> EcoPulse Radiants™</p>
+          <p>This node represents a sustainable energy system that combines solar and kinetic energy sources, optimized through AI. It powers network nodes with eco-friendly energy sources.</p>
+          <p><strong>Hardware Requirements:</strong> 12V battery, Solar Panel 500W, Kinetic Generator</p>
+          <p><strong>Model Number:</strong> EnergyBeam-Solar-Kinet</p>
+          <p><strong>Integration:</strong> Seamlessly integrates with energy-efficient infrastructure for grid operations</p>
+          <p><strong>Setup:</strong> Simple setup with minimal configuration required, deployable in both urban and rural areas.</p>
+        </div>
+
+        {/* Security Perimeter */}
+        <div className="node-description">
+          <h3 className="text-lg font-semibold text-green-600">Security Perimeter 🛡️🌱</h3>
+          <p><strong>Purpose:</strong> Wildlife + data defense shell</p>
+          <p><strong>FAA™ Descriptor:</strong> Baobab PermaFence™</p>
+          <p>This node is designed as a security defense perimeter, both for protecting sensitive wildlife environments and ensuring data security. Likely integrates environmental monitoring to detect threats or breaches.</p>
+          <p><strong>Hardware Requirements:</strong> 32GB RAM, 512GB SSD, Network Antennas</p>
+          <p><strong>Model Number:</strong> PermaFence-Guard</p>
+          <p><strong>Integration:</strong> Integrates with remote surveillance systems and environmental sensors</p>
+          <p><strong>Setup:</strong> Quick deployment with cloud integration for remote monitoring.</p>
+        </div>
+
+        {/* Drone Sentinel */}
+        <div className="node-description">
+          <h3 className="text-lg font-semibold text-purple-600">Drone Sentinel 🚁👁️</h3>
+          <p><strong>Purpose:</strong> Sky-level pattern analyzers + threat dispatch</p>
+          <p><strong>FAA™ Descriptor:</strong> AetherNet Hawks™</p>
+          <p>This node includes drone-based systems for high-level pattern analysis in the sky, providing a sentinel role that monitors wildlife and environmental activity, as well as dispatching action in response to identified threats.</p>
+          <p><strong>Hardware Requirements:</strong> Drone Sensors, 16GB RAM, 256GB SSD</p>
+          <p><strong>Model Number:</strong> AetherNet-Drone-X</p>
+          <p><strong>Integration:</strong> Real-time flight and threat analysis, with automated threat response.</p>
+          <p><strong>Setup:</strong> Setup involves deploying drones and connecting them to the cloud control system.</p>
+        </div>
+
+        {/* Fauna Tag */}
+        <div className="node-description">
+          <h3 className="text-lg font-semibold text-orange-600">Fauna Tag 🦁🔘</h3>
+          <p><strong>Purpose:</strong> Animal-tracking energy portals</p>
+          <p><strong>FAA™ Descriptor:</strong> Sentinel Ring™</p>
+          <p>This node involves the use of energy portals for tracking wildlife, such as animal tagging and monitoring their movements in real-time. This could be vital for conservation efforts, tracking endangered species, and ensuring their safety.</p>
+          <p><strong>Hardware Requirements:</strong> Animal Tagging Devices, GPS Tracker, 16GB RAM</p>
+          <p><strong>Model Number:</strong> FaunaTrack-TagX</p>
+          <p><strong>Integration:</strong> Integrates with environmental databases and cloud analytics</p>
+          <p><strong>Setup:</strong> Fast deployment with minimal equipment and configuration required.</p>
+        </div>
+
+        {/* Human Input Port */}
+        <div className="node-description">
+          <h3 className="text-lg font-semibold text-red-600">Human Input Port 🧍‍♂️🌀</h3>
+          <p><strong>Purpose:</strong> Local participant interface with AI</p>
+          <p><strong>FAA™ Descriptor:</strong> SRI HoloBridge™</p>
+          <p>This node connects humans to the system via an interactive interface (potentially a holographic bridge or AR/VR interface). It allows human participants to directly interact with and guide the AI system for decision-making, resource allocation, or environmental management.</p>
+          <p><strong>Hardware Requirements:</strong> AR/VR Headset, 32GB RAM</p>
+          <p><strong>Model Number:</strong> HoloBridge-Input</p>
+          <p><strong>Integration:</strong> Allows human participants to interact directly with AI systems for decision-making</p>
+          <p><strong>Setup:</strong> Connects via a local interface or VR system for immersive experiences.</p>
+        </div>
+
+        {/* Celestial Aligner */}
+        <div className="node-description">
+          <h3 className="text-lg font-semibold text-teal-600">Celestial Aligner 🌠⛓</h3>
+          <p><strong>Purpose:</strong> Root ↔ Star lattice sync overlay</p>
+          <p><strong>FAA™ Descriptor:</strong> AstroLattice™ Actuator</p>
+          <p>This node involves lattice synchronization, aligning Earth-based systems with celestial objects or cosmic forces, creating a universal or planetary overlay. It might be involved in astrophysical monitoring or space-energy synchronization.</p>
+          <p><strong>Hardware Requirements:</strong> Celestial Synchronization Modules, 64GB RAM</p>
+          <p><strong>Model Number:</strong> AstroLattice-Align</p>
+          <p><strong>Integration:</strong> Links terrestrial systems with cosmic or celestial data streams.</p>
+          <p><strong>Setup:</strong> Setup involves configuring celestial data streams and connecting to cosmic observatories.</p>
+        </div>
+
+        {/* Plastic Crisis Node */}
+        <div className="node-description">
+          <h3 className="text-lg font-semibold text-blue-600">Plastic Crisis Node 🌊🚯</h3>
+          <p><strong>Purpose:</strong> Oceanic AI cleanup and detection</p>
+          <p><strong>FAA™ Descriptor:</strong> Maritime Purifier™</p>
+          <p>This node is designed to address the plastic pollution crisis in the oceans, using AI to detect and clean up plastic waste. It could employ robots, drones, or other tech to purify ocean waters and maintain ecological balance.</p>
+          <p><strong>Hardware Requirements:</strong> Oceanic Cleaners, AI Processing Units</p>
+          <p><strong>Model Number:</strong> MaritimeClean-X</p>
+          <p><strong>Integration:</strong> Integrates with AI-powered drones for real-time cleanup.</p>
+          <p><strong>Setup:</strong> Rapid deployment with AI-driven processes for automatic operation.</p>
+        </div>
+
+        {/* Poacher Jammer */}
+        <div className="node-description">
+          <h3 className="text-lg font-semibold text-purple-600">Poacher Jammer 🐬🚫📶</h3>
+          <p><strong>Purpose:</strong> Signal disruptor & interdiction AI</p>
+          <p><strong>FAA™ Descriptor:</strong> HunterBlackout Protocol™</p>
+          <p>This node represents an AI-driven system designed to disrupt poacher communications and interfere with illegal hunting activities. It could use signal jamming or AI-driven interdiction techniques to prevent harmful activities targeting wildlife.</p>
+          <p><strong>Hardware Requirements:</strong> Signal Jammer, 8-core CPU, 16GB RAM</p>
+          <p><strong>Model Number:</strong> PoacherJam-Block</p>
+          <p><strong>Integration:</strong> Real-time communication jamming and automated poacher tracking.</p>
+          <p><strong>Setup:</strong> Fast deployment with cloud-based control for remote activation.</p>
+        </div>
+      </section>
+      {/* FOOTER */}
+      <footer className="text-center text-xs text-gray-400 mt-16 py-6 border-t">
+        FAA.Zone Sovereign Scrolls · VaultMesh · TreatyMesh Validated
+      </footer>
+    </div>
+  </div>
+);
+
+const QuickViewHTMLComponent = () => (
+  <div className="p-6 bg-white rounded-lg shadow-md">
+    <h3 className="text-2xl font-bold text-indigo-700 mb-4">Quick View – FAA.Zone (Original HTML)</h3>
+    <div className="text-gray-700 space-y-4">
+      {/* HEADER */}
+      <header className="bg-white shadow p-6 flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-extrabold text-green-700">🌿 Quick View Dashboard</h1>
+          <p className="text-sm text-gray-500">FAA.Zone Wildlife Grid Snapshot</p>
+        </div>
+      </header>
+
+      {/* QUICK GRID STATS */}
+      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
+        <div className="bg-white p-5 rounded shadow">
+          <h2 className="text-lg font-bold">🧠 Active Core Nodes</h2>
+          <p className="text-2xl text-indigo-700 font-extrabold">12</p>
+          <p className="text-xs text-gray-500">Synced with VaultMesh · 99.9% uptime</p>
+          <p className="text-xs mt-2">These are your Root-Sync™ AI layers currently deployed, forming the logic backbone of the grid. Synced = ✅ Passed heartbeat & chain integrity.</p>
+        </div>
+        <div className="bg-white p-5 rounded shadow">
+          <h2 className="text-lg font-bold">📡 Geo Nodes Online</h2>
+          <p className="text-2xl text-green-600 font-extrabold">9</p>
+          <p className="text-xs text-gray-500">Real-time mapping nodes · Heatmap ready</p>
+          <p className="text-xs mt-2">Streaming environmental data, syncing fauna overlays and feeding drone mapping visuals.</p>
+        </div>
+        <div className="bg-white p-5 rounded shadow">
+          <h2 className="text-lg font-bold">⚡ Energy Nodes Operational</h2>
+          <p className="text-2xl text-yellow-600 font-extrabold">15</p>
+          <p className="text-xs text-gray-500">Solar/Kinetic Grid · Avg Yield: 780W</p>
+          <p className="text-xs mt-2">These provide renewable grid uptime and backup energy for remote wildlife node infrastructure.</p>
+        </div>
+        <div className="bg-white p-5 rounded shadow">
+          <h2 className="text-lg font-bold">🛡️ Secure Perimeter Nodes</h2>
+          <p className="text-2xl text-red-600 font-extrabold">8</p>
+          <p className="text-xs text-gray-500">GhostTrace™ perimeter · 3 threats in last 24h</p>
+          <p className="text-xs mt-2">Perimeter nodes monitor real-time breaches and activate defense protocols against illegal activity.</p>
+        </div>
+        <div className="bg-white p-5 rounded shadow">
+          <h2 className="text-lg font-bold">📦 Total Omnidrop Kits</h2>
+          <p className="text-2xl text-purple-600 font-extrabold">45</p>
+          <p className="text-xs text-gray-500">Issued · Node-match log available</p>
+          <p className="text-xs mt-2">Includes RootCable™, GlyphRouter™, SyncSphere™ · Foundation hardware for node claim and activation.</p>
+        </div>
+        <div className="bg-white p-5 rounded shadow">
+          <h2 className="text-lg font-bold">🌍 Deployment Regions</h2>
+          <p className="text-sm">RSA, Kenya, Namibia, Botswana</p>
+          <p className="text-xs text-gray-500 mt-1">Scroll-protected · Licensing linked</p>
+          <p className="text-xs mt-2">Territories under FAA TreatyMesh™ with deployed, scroll-licensed infrastructure. Color-coding suggested for legacy vs expansion nodes.</p>
+        </div>
+      </section>
+
+      {/* SUMMARY + LINKS */}
+      <section className="mt-12 bg-white p-6 rounded shadow">
+        <h3 className="text-xl font-bold text-indigo-700 mb-4">🧾 FAA Node Sync Summary</h3>
+        <ul className="list-disc list-inside text-sm text-gray-700 space-y-2">
+          <li>All Core Nodes synced every 9s via PulseGenesis™</li>
+          <li>AI interfaces monitored through ScrollStack™ overlay</li>
+          <li>Deployment expansion scheduled Q3 2025</li>
+          <li>VaultPay Node Class III · ClaimRoot™ Verified</li>
+          <li>Omnidrop Sync Kit: RootCable™, GlyphRouter™, SyncSphere™</li>
+          <li><a href="#" className="text-blue-600 underline">📈 Open Pulse Monitor</a></li>
+          <li><a href="#" className="text-blue-600 underline">📊 View Node Reports</a></li>
+          <li><a href="#" className="text-blue-600 underline">💰 View Licensing & Pricing</a></li>
+          <li><a href="#" className="text-blue-600 underline">🇰🇪 Kenya Wildlife Deployment</a></li>
+        </ul>
+        <div className="mt-6 text-right">
+         <a href="#" className="text-blue-600 underline font-semibold">🔙 Return to Wildlife Dashboard</a>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="text-center text-xs text-gray-400 mt-16 pt-6 border-t">
+        FAA.Zone Sovereign Scrolls · VaultMesh Synced · TreatyMesh Wildlife Grid
+      </footer>
+    </div>
+  </div>
+);
+
+const KenyaDeploymentHTMLComponent = () => {
+  useEffect(() => {
+    const now = new Date();
+    const mapUpdateTimeElement = document.getElementById("mapUpdateTime");
+    const geoLastSignalElement = document.getElementById("geoLastSignal");
+
+    if (mapUpdateTimeElement) {
+      mapUpdateTimeElement.textContent = now.toLocaleString();
+    }
+    if (geoLastSignalElement) {
+      geoLastSignalElement.textContent = now.toLocaleTimeString();
+    }
+  }, []);
+
+  return (
+    <div className="p-6 bg-white rounded-lg shadow-md">
+      <h3 className="text-2xl font-bold text-indigo-700 mb-4">Kenya Wildlife Deployment – FAA.Zone (Original HTML)</h3>
+      <div className="text-gray-700 space-y-4">
+        {/* HEADER */}
+        <header className="bg-white shadow p-6 flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-extrabold text-green-700">🇰🇪 Kenya Region Overview</h1>
+            <p className="text-sm text-gray-500">FAA.Zone Verified Scroll Deployment · TreatyMesh Linked</p>
+          </div>
+          <a href="#" className="text-sm text-blue-600 underline">← Back to Quick View</a>
+        </header>
+
+        {/* REGION DETAILS */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10">
+          <div className="bg-white p-6 rounded shadow">
+            <h2 className="text-lg font-bold">🧠 Core Nodes</h2>
+            <p className="text-2xl text-indigo-700 font-extrabold">3</p>
+            <ul className="text-xs mt-2 text-gray-800 list-disc list-inside">
+              <li>AI sync rate: every 9s via PulseGenesis™</li>
+              <li>Downstream nodes managed: 17</li>
+              <li>Manual intervention reduced: 93%</li>
+              <li>Tasks: Drone routing logic, FaunaTag™ data decisioning</li>
+            </ul>
+            <p className="text-xs mt-2 text-gray-500">Root-Sync™ Layer · ClaimRoot™ verified</p>
+          </div>
+
+          <div className="bg-white p-6 rounded shadow">
+            <h2 className="text-lg font-bold">🚱️ Geo Lenses Active</h2>
+            <p className="text-2xl text-green-600 font-extrabold">2</p>
+            <ul className="text-xs mt-2 text-gray-800 list-disc list-inside">
+              <li>Zones: Tsavo East + Samburu East</li>
+              <li>Avg pings/hour: 8,400 (Temp, Humidity, Terrain)</li>
+              <li>Uplink interval: every 15s to Core Node</li>
+              <li>Triggers this week: 3 migratory heatmap events</li>
+              <li>Drone reactions: 2 repositioning pings triggered</li>
+              <li>Overlays exported: ScrollStack™ FieldFeed™ Active</li>
+            </ul>
+            <p className="text-xs text-gray-500 mt-2">Geo Lens IDs: KEN-GL-34A, KEN-GL-34B · Last signal: <span id="geoLastSignal">--:--</span></p>
+          </div>
+
+          <div className="bg-white p-6 rounded shadow">
+            <h2 className="text-lg font-bold">⚡ Energy Beacon Units</h2>
+            <p className="text-2xl text-yellow-600 font-extrabold">4</p>
+            <p className="text-xs mt-2">What they do: Deliver grid-free solar + kinetic energy to sustain node operations during blackouts. Backup cycles are holding 810W avg, vital for uplink zones without infrastructure.</p>
+            <p className="text-xs mt-2 text-gray-500">EcoPulse Radiants™ · Avg Yield: 810W · Grid-buffered</p>
+          </div>
+
+          <div className="bg-white p-6 rounded shadow">
+            <h2 className="text-lg font-bold">🛡️ Secure Nodes</h2>
+            <p className="text-2xl text-red-600 font-extrabold">2</p>
+            <p className="text-xs mt-2">What they do: These run GhostTrace™ perimeter logic to detect illegal movement near buffer zones. Triggered 2 escalations and blocked a perimeter breach attempt this week.</p>
+            <p className="text-xs mt-2 text-gray-500">GhostTrace™ Enabled · 2 threats logged (last 48h)</p>
+          </div>
+
+          <div className="bg-white p-6 rounded shadow">
+            <h2 className="text-lg font-bold">📦 Omnidrop Kits Used</h2>
+            <p className="text-2xl text-purple-600 font-extrabold">6</p>
+            <p className="text-xs mt-2">What they do: Full kits deployed in conservation zones. Used to activate new scrolls and connect physical devices to VaultMesh™. Three assigned to RhinoTag™ and three to corridor Node-C5.</p>
+            <p className="text-xs mt-2 text-gray-500">Includes RootCable™, GlyphRouter™, SyncSphere™</p>
+          </div>
+
+          <div className="bg-white p-6 rounded shadow">
+            <h2 className="text-lg font-bold">🔗 Licensing & Scroll ID</h2>
+            <p className="text-sm">Scroll ID: KENYA-FAAZ-4312</p>
+            <p className="text-xs mt-2">What it means: This region is scroll-licensed. It ensures Kenya's deployment complies with FAA TreatyMesh™ and can access revenue from PulseTrade™ token emissions.</p>
+            <p className="text-xs mt-2 text-gray-500">TreatyMesh™ certified · FAA VaultMesh™ enabled</p>
+          </div>
+        </section>
+
+        {/* LIVE MAP DISPLAY */}
+        <section className="mt-12 bg-white p-6 rounded shadow">
+          <h3 className="text-xl font-bold text-indigo-700 mb-4">🛰️ Geo Lens Live Activity Map</h3>
+
+          <div className="w-full h-[500px] rounded overflow-hidden border border-indigo-100 shadow-inner">
+            <iframe
+              src="https://scrollmap.faa.zone/kenya/tsavo-samburu-live?overlay=ecozone&theme=light"
+              className="w-full h-full"
+              frameBorder="0"
+              title="FAA Kenya Wildlife Geo Lens Map"
+              loading="lazy"
+            ></iframe>
+          </div>
+
+          <p className="text-xs text-gray-500 mt-3 italic">
+            Powered by FAA.MapModule™ via ScrollFeed™ · Uplink from Geo Lens™ Nodes KEN-GL-34A / 34B · Last sync: 
+            <span id="mapUpdateTime">...</span>
+          </p>
+        </section>
+
+
+        {/* REGION FOOTPRINT */}
+        <section className="mt-12 bg-white p-6 rounded shadow">
+          <h3 className="text-xl font-bold text-green-700 mb-2">🩾 Operational Snapshot</h3>
+          <ul className="list-disc list-inside text-sm space-y-1 text-gray-700">
+            <li>3 Core Nodes managing Baobab™ AI logic and sync layers</li>
+            <li>Energy yield consistent across 4 solar + kinetic beacons</li>
+            <li>Geo Lens data streams live to ScrollStack™ every 15s — including active telemetry from Tsavo North and Samburu East. Lions tagged under Cluster K-3 are currently observed migrating northeast, triggering drone lens repositioning every 90s. AI overlays suggest high-density grazing patterns near river delta nodes.</li>
+            <li>2 Secure Perimeter nodes fencing southern conservation zones</li>
+            <li>Wildlife tag routes monitored via Fauna Tag™ uplinks</li>
+            <li>All nodes passed latest Scroll Echo validation</li>
+          </ul>
+        </section>
+
+        {/* FOOTER */}
+        <footer className="text-center text-xs text-gray-400 mt-16 pt-6 border-t">
+          FAA.Zone Kenya Node Index · ScrollStack™ Powered · TreatyMesh Wildlife Verified
+        </footer>
+      </div>
+    </div>
+  );
+};
+
+const CoreNodeHTMLComponent = () => {
+  const chartRef = useRef(null);
+  const chartInstance = useRef(null); // To store the Chart.js instance
+
+  useEffect(() => {
+    if (chartInstance.current) {
+      chartInstance.current.destroy(); // Destroy existing chart before creating a new one
+    }
+
+    const ctx = chartRef.current.getContext('2d');
+    chartInstance.current = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['T-0', 'T-1', 'T-2', 'T-3', 'T-4', 'T-5', 'T-6', 'T-7', 'T-8', 'T-9'],
+        datasets: [{
+          label: 'Core Node™ Pulse',
+          data: [1600, 1650, 1580, 1720, 1680, 1700, 1750, 1620, 1690, 1710],
+          borderColor: 'hsl(220, 70%, 50%)',
+          borderWidth: 2,
+          fill: false,
+          tension: 0.3
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: false
+          }
+        },
+        plugins: {
+          legend: {
+            position: 'bottom'
+          }
+        }
+      }
+    });
+
+    // Cleanup function to destroy chart on component unmount
+    return () => {
+      if (chartInstance.current) {
+        chartInstance.current.destroy();
+      }
+    };
+  }, []);
+
+  return (
+    <div className="p-6 bg-white rounded-lg shadow-md">
+      <h3 className="text-2xl font-bold text-indigo-700 mb-4">Core Node™ – FAA.Zone (Original HTML)</h3>
+      <div className="text-gray-700 space-y-4">
+        {/* HEADER + NAV */}
+        <header className="bg-white shadow p-6 flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-extrabold text-indigo-700">🌳 🌳 Core Node™ Dashboard</h1>
+            <p className="text-sm text-gray-500">FAA.Zone Sovereign Scrolls · Wildlife Grid</p>
+          </div>
+          <div className="flex gap-3 text-sm">
+            <a href="#" className="px-4 py-2 bg-blue-500 text-white rounded glow-btn">Admin Login</a>
+            <a href="#" className="px-4 py-2 bg-gray-600 text-white rounded glow-btn">Node Setup</a>
+            <a href="#" className="px-4 py-2 bg-green-500 text-white rounded glow-btn">Distributor Portal</a>
+          </div>
+        </header>
+
+        {/* SUBNAV */}
+        <nav className="bg-gray-100 flex flex-col gap-3 px-6 py-3 text-sm overflow-x-auto whitespace-nowrap">
+          <div className="flex gap-6">
+            <a href="#" className="hover:text-indigo-600">Quick View</a>
+            <a href="#" className="hover:text-indigo-600">Pulse Monitor</a>
+            <a href="#" className="text-indigo-700 font-semibold">Sales Dashboard</a>
+            <a href="#" className="hover:text-indigo-600">Ethics</a>
+            <a href="#" className="hover:text-indigo-600">Node Reports</a>
+            <a href="#" className="hover:text-indigo-600">Licensing</a>
+            <a href="#" className="hover:text-indigo-600">🇰🇪 Kenya Wildlife Deployment</a>
+            <a href="#" className="text-green-600 font-semibold">💰 Pricing</a>
+          </div>
+          <div className="text-xs text-gray-400 mt-2">
+            FAA.Zone Sovereign Scrolls · VaultMesh · TreatyMesh Validated
+          </div>
+        </nav>
+
+        {/* Node Details */}
+        <section className="mb-10 space-y-2 text-sm leading-relaxed">
+          <p><strong>Purpose:</strong> Centralized Baobab™ Seed Logic Node</p>
+          <p><strong>License:</strong> Master $85,000 · Monthly $1,500 · Royalty 4%</p>
+          <p><strong>PulseTrade™:</strong> 9-second payout logic</p>
+          <p><strong>ClaimRoot™:</strong> Verified via VaultMaster Authority</p>
+          <p><strong>VaultPay Tier:</strong> Node Class III</p>
+          <p><strong>Clone Protection:</strong> GhostTrace™ SHA-3 encryption enabled</p>
+          <p><strong>Deployment Regions:</strong> RSA · Namibia · Kenya</p>
+          <p><strong>Family Bundle:</strong> BaobabGrid v4 – 12 Nodes</p>
+          <p><strong>Hardware Requirements:</strong> 16GB RAM, 256GB SSD, 8-core CPU</p>
+          <p><strong>Model Number:</strong> Core-Node-MX12-256GB</p>
+          <p><strong>Omnidrop Kit:</strong> RootCable™, GlyphRouter™, SyncSphere™</p>
+          <p><strong>Setup:</strong> Cloud-linked installation with PulseGenesis chain sync</p>
+          <p><strong>FAA Links:</strong> <a href="#" className="text-blue-600 underline">VaultMesh</a> · <a href="#" className="text-blue-600 underline">ScrollStack</a> · <a href="#" className="text-blue-600 underline">AI Routing Logic</a></p>
+        </section>
+
+        {/* Chart Section */}
+        <section className="bg-white p-6 rounded shadow">
+          <h2 className="text-xl font-bold text-indigo-600 mb-4">📊 PulseGraph Metrics</h2>
+          <canvas id="pulseChart" ref={chartRef} height="100"></canvas>
+        </section>
+
+        {/* Footer */}
+        <footer className="mt-16 text-xs text-center text-gray-400 border-t pt-6">
+          FAA.Zone Sovereign Scrolls · VaultMesh Synced · TreatyMesh Validated
+        </footer>
+      </div>
+    </div>
+  );
+};
+
+
+// Mapping component names to actual components
+const componentMap = {
+  MapComponent,
+  DroneFeedsComponent,
+  TrackerComponent,
+  PowerMonitorComponent,
+  EnvironmentComponent,
+  PoacherAlertsComponent,
+  AccessRiskComponent,
+  TimelineComponent,
+  HeatmapComponent,
+  DeploymentCalculatorComponent,
+  AIRecommenderComponent,
+  HardwareStorefrontComponent,
+  ItemDetailComponent,
+  CompareProductsComponent,
+  CompatibilityCheckComponent,
+  WarrantyComponent,
+  ScrollManagerComponent,
+  CreateLicenseComponent,
+  GeneratePDFComponent,
+  LicenseMapComponent,
+  VaultLogsComponent,
+  BrandDetailsComponent,
+  PricingCardsComponent,
+  WildlifeDashboardHTMLComponent,
+  QuickViewHTMLComponent,
+  KenyaDeploymentHTMLComponent,
+  CoreNodeHTMLComponent,
+};
+
+// Main App Component
+const App = () => {
+  // State to manage the currently active content component and its props
+  const [activeContent, setActiveContent] = useState({
+    component: 'MapComponent',
+    props: { description: 'Primary map interface with live hardware overlays' }
+  });
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State for mobile sidebar
+  const [isRhsPanelOpen, setIsRhsPanelOpen] = useState(false); // State for right-hand side panel
+  const [openCategory, setOpenCategory] = useState(null); // State to manage open/closed nested categories
+
+  // Function to render the active component
+  const renderContent = () => {
+    const Component = componentMap[activeContent.component];
+    return Component ? <Component {...activeContent.props} /> : (
+      <div className="p-6 bg-white rounded-lg shadow-md text-center text-gray-500">
+        <h3 className="text-2xl font-bold text-red-500 mb-4">Content Not Found</h3>
+        <p>Please select a valid dashboard section from the sidebar.</p>
+      </div>
+    );
+  };
+
+  // Determine the title for the RHS panel based on active content
+  const rhsPanelTitle = activeContent.component.replace(/Component$/, '')
+    .replace(/([A-Z])/g, ' $1')
+    .trim() + " Info";
+
+  return (
+    <div className="min-h-screen bg-gray-100 flex flex-col lg:flex-row font-sans">
+      {/* Header for mobile */}
+      <header className="bg-white shadow p-4 flex items-center justify-between lg:hidden">
+        <h1 className="text-xl font-bold text-indigo-700">FAA Wildlife Dashboard</h1>
+        <button
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          className="p-2 rounded-md text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </header>
+
+      {/* Sidebar */}
+      <aside
+        className={`fixed inset-y-0 left-0 bg-gray-800 text-white w-64 p-6 overflow-y-auto z-40
+          transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0
+          transition-transform duration-300 ease-in-out lg:relative lg:flex-shrink-0`}
+      >
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-2xl font-bold text-green-400">🌳 FAA Wildlife</h2>
+          <button
+            onClick={() => setIsSidebarOpen(false)}
+            className="p-1 rounded-md text-gray-400 hover:bg-gray-700 lg:hidden focus:outline-none focus:ring-2 focus:ring-green-500"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+
+        <nav>
+          {dashboardSections.map((section, index) => (
+            <div key={index} className="mb-4">
+              {section.type === "link" ? (
+                // Direct link category header and items
+                <>
+                  <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                    {section.category}
+                  </h3>
+                  <ul>
+                    {section.items.map((item, itemIndex) => (
+                      <li key={itemIndex} className="mb-2">
+                        <button
+                          onClick={() => {
+                            setActiveContent({
+                              component: item.component,
+                              props: { description: item.description }
+                            });
+                            setIsSidebarOpen(false); // Close sidebar on mobile
+                          }}
+                          className={`flex items-center w-full p-2 rounded-md text-left transition-colors duration-200
+                            ${activeContent.component === item.component
+                              ? 'bg-green-600 text-white shadow-md'
+                              : 'hover:bg-gray-700 text-gray-200'
+                            }`}
+                        >
+                          <span className="mr-3 text-lg">{item.icon}</span>
+                          <span className="flex-grow">{item.button}</span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              ) : (
+                // Nested category with expandable items
+                <>
+                  <button
+                    onClick={() => setOpenCategory(openCategory === section.category ? null : section.category)}
+                    className="flex items-center justify-between w-full p-2 rounded-md text-left text-sm font-semibold text-gray-400 uppercase tracking-wider hover:bg-gray-700 transition-colors duration-200"
+                  >
+                    {section.category}
+                    <svg
+                      className={`w-4 h-4 transform transition-transform duration-200 ${
+                        openCategory === section.category ? 'rotate-90' : ''
+                      }`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                  </button>
+                  {openCategory === section.category && (
+                    <ul className="ml-4 mt-2">
+                      {section.items.map((item, itemIndex) => (
+                        <li key={itemIndex} className="mb-2">
+                          <button
+                            onClick={() => {
+                              setActiveContent({
+                                component: item.component,
+                                props: item.component === "BrandDetailsComponent" || item.component.endsWith("HTMLComponent") ? { brandDetails: item.brandDetails } : { description: item.description }
+                              });
+                              setIsSidebarOpen(false); // Close sidebar on mobile
+                            }}
+                            className={`flex items-center w-full p-2 rounded-md text-left text-gray-200 transition-colors duration-200
+                              ${activeContent.component === item.component && activeContent.props.brandDetails?.name === item.brandDetails?.name
+                                ? 'bg-green-600 text-white shadow-md'
+                                : 'hover:bg-gray-700'
+                              }`}
+                          >
+                            <span className="mr-3 text-lg">{item.icon}</span>
+                            <span className="flex-grow">{item.button}</span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </>
+              )}
+            </div>
+          ))}
+        </nav>
+      </aside>
+
+      {/* Main Content Area */}
+      <main className="flex-1 p-6 lg:p-8 overflow-auto">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-3xl font-extrabold text-gray-800 hidden lg:block">
+              📊 FAA Wildlife Dashboard
+            </h1>
+            {/* RHS Panel Toggle Button */}
+            <button
+              onClick={() => setIsRhsPanelOpen(!isRhsPanelOpen)}
+              className="p-2 rounded-md bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
+              </svg>
+              <span className="ml-2 hidden md:inline">Toggle Info Panel</span>
+            </button>
+          </div>
+          {renderContent()}
+        </div>
+      </main>
+
+      {/* Right-Hand Side Panel */}
+      <aside
+        className={`fixed inset-y-0 right-0 bg-gray-800 text-white w-64 p-6 overflow-y-auto z-40
+          transform ${isRhsPanelOpen ? 'translate-x-0' : 'translate-x-full'}
+          transition-transform duration-300 ease-in-out shadow-lg`}
+      >
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-xl font-bold text-blue-400">{rhsPanelTitle}</h2>
+          <button
+            onClick={() => setIsRhsPanelOpen(false)}
+            className="p-1 rounded-md text-gray-400 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        <div className="text-gray-300">
+          <p className="mb-4">This is a contextual information panel.</p>
+          <p className="text-sm">It can display quick stats, related links, or specific controls based on the main content area.</p>
+          <ul className="mt-4 list-disc list-inside text-xs">
+            <li>Dynamic content goes here.</li>
+            <li>Related data points.</li>
+            <li>Quick actions.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  );
+};
+
+export default App;
