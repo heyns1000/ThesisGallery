@@ -55,6 +55,7 @@ import {
 import { eurekaGenerator } from "./eureka-generator";
 import { cloudflowAutomation } from "./cloudflow-automation";
 import { contextTransferService } from "./context-transfer-service";
+import { dailySummaryExtractor } from "./daily-summary-extractor";
 
 // Configure multer for file uploads
 const upload = multer({
@@ -3284,6 +3285,118 @@ May this wisdom serve your journey well! 🌳✨`
     } catch (error) {
       console.error('Context optimization error:', error);
       res.status(500).json({ error: "Failed to optimize context" });
+    }
+  });
+
+  // Daily Summary Extractor API endpoints
+  app.post("/api/daily-summary/process", async (req, res) => {
+    try {
+      const { diaries } = req.body;
+      
+      if (!diaries || !Array.isArray(diaries)) {
+        return res.status(400).json({ 
+          error: "Diaries array is required" 
+        });
+      }
+
+      console.log(`📔 Processing ${diaries.length} diary collections`);
+      
+      const summary = await dailySummaryExtractor.processDiaryCollection(diaries);
+
+      broadcast({ 
+        type: 'daily_summary_processed',
+        data: { 
+          date: summary.date,
+          statistics: summary.statistics,
+          entries_processed: summary.statistics.total_entries_processed
+        } 
+      });
+
+      res.json({
+        success: true,
+        summary,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Daily summary processing error:', error);
+      res.status(500).json({ 
+        error: "Failed to process daily summary",
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  app.post("/api/daily-summary/process-single", async (req, res) => {
+    try {
+      const { diary } = req.body;
+      
+      if (!diary) {
+        return res.status(400).json({ 
+          error: "Diary object is required" 
+        });
+      }
+
+      const entries = await dailySummaryExtractor.processSingleDiary(diary);
+      const statistics = await dailySummaryExtractor.getStatistics(entries);
+
+      res.json({
+        success: true,
+        entries,
+        statistics,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Single diary processing error:', error);
+      res.status(500).json({ 
+        error: "Failed to process single diary",
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  app.get("/api/daily-summary/export/:format", async (req, res) => {
+    try {
+      const { format } = req.params;
+      const { diaries } = req.body;
+      
+      if (!diaries || !Array.isArray(diaries)) {
+        return res.status(400).json({ 
+          error: "Diaries array is required in request body" 
+        });
+      }
+
+      const summary = await dailySummaryExtractor.processDiaryCollection(diaries);
+      
+      let exportData: string;
+      let contentType: string;
+      
+      switch (format) {
+        case 'pa':
+          exportData = summary.pa_ready_format;
+          contentType = 'text/plain';
+          break;
+        case 'oldschool':
+          exportData = summary.old_school_compilation;
+          contentType = 'text/plain';
+          break;
+        case 'json':
+          exportData = JSON.stringify(summary, null, 2);
+          contentType = 'application/json';
+          break;
+        default:
+          return res.status(400).json({ error: "Invalid format. Use 'pa', 'oldschool', or 'json'" });
+      }
+
+      res.setHeader('Content-Type', contentType);
+      res.setHeader('Content-Disposition', `attachment; filename="daily-summary-${summary.date}.${format === 'json' ? 'json' : 'txt'}"`);
+      res.send(exportData);
+      
+    } catch (error) {
+      console.error('Daily summary export error:', error);
+      res.status(500).json({ 
+        error: "Failed to export daily summary",
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
     }
   });
 

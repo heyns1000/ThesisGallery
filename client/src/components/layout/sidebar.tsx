@@ -35,6 +35,7 @@ const navItems = [
   { href: "/agriculture-biotech-platform", label: "🌾 Agriculture-Biotech Platform", icon: "fas fa-seedling", id: "agriculture-biotech-platform" },
   { href: "/strategic-sell-scroll", label: "🌕 Strategic Sell Scroll", icon: "fas fa-moon", id: "strategic-sell-scroll" },
   { href: "/eureka-cloudflow-dashboard", label: "🌊 Eureka Cloudflow", icon: "fas fa-cloud", id: "eureka-cloudflow-dashboard" },
+  { href: "/daily-summary-extractor", label: "📔 Daily Summary Extractor", icon: "fas fa-book", id: "daily-summary-extractor" },
   { href: "/vault-payments", label: "💳 Vault Payments", icon: "fas fa-credit-card", id: "vault-payments" },
   { href: "/team-onboarding", label: "👥 Team Onboarding", icon: "fas fa-user-plus", id: "team-onboarding" },
   { href: "/contact-management", label: "📧 Contact Management", icon: "fas fa-address-book", id: "contact-management" },
