@@ -1,0 +1,49 @@
+Data Processing Platform
+Overview
+A Streamlit-based data processing platform designed to handle large-scale document processing (11M+ records) from mixed Excel and Word documents. The application provides a web interface for uploading, extracting, cleaning, and analyzing data with memory-efficient processing techniques and parallel execution capabilities.
+
+User Preferences
+Preferred communication style: Simple, everyday language.
+
+System Architecture
+Frontend Architecture
+Framework: Streamlit web application with responsive layout
+UI Components: File upload interface, progress tracking, configuration sidebar, and data visualization
+Session Management: Streamlit session state for maintaining processing status and configuration across interactions
+Backend Architecture
+Modular Design: Separated into distinct modules for file processing, data extraction, cleaning, and database management
+Memory-Efficient Processing: Chunk-based processing with configurable chunk sizes (1K-50K records)
+Parallel Execution: Multi-worker processing with configurable worker pools (1-8 workers)
+Progress Tracking: Real-time progress monitoring with task management and error handling
+Core Processing Pipeline
+File Processing: Validates and handles multiple file formats (Excel, Word, ZIP archives)
+Data Extraction: Extracts structured data from documents with format-specific parsers
+Data Cleaning: Standardizes formats, removes duplicates, handles missing values, and validates data integrity
+Database Storage: Temporary SQLite storage for intermediate processing results
+Data Storage Solutions
+Primary Storage: SQLite database with WAL mode for concurrent access
+Temporary Storage: File-based temporary directories for large file processing
+Memory Management: Configurable memory limits (1GB-8GB) with automatic chunk size optimization
+Error Handling and Logging
+Structured Logging: Module-specific loggers with standardized formatting
+Error Recovery: Graceful handling of processing errors with detailed error reporting
+Progress Persistence: Task state management with recovery capabilities
+External Dependencies
+Core Libraries
+Streamlit: Web application framework for the user interface
+Pandas: Data manipulation and analysis with chunk processing support
+NumPy: Numerical computing for data operations
+SQLite3: Embedded database for temporary data storage
+Document Processing
+python-docx: Word document (.docx) parsing and table extraction
+openpyxl/xlrd: Excel file processing for both .xlsx and .xls formats
+zipfile: Archive handling for bulk file processing
+System Libraries
+pathlib: Modern file path operations
+tempfile: Temporary file and directory management
+threading: Concurrent processing support
+logging: Application logging and debugging
+io: In-memory file operations for efficiency
+Optional Dependencies
+Document processing libraries with graceful fallback when unavailable
+Memory profiling tools for optimization (configurable)
