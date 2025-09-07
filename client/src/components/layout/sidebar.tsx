@@ -25,6 +25,7 @@ const navItems = [
   { href: "/seedling-language-learning", label: "💬 Seedling Languages", icon: "fas fa-heart", id: "seedling-language-learning" },
   { href: "/data-pipeline", label: "🌳 Data Pipeline", icon: "fas fa-database", id: "data-pipeline" },
   { href: "/email-system", label: "📧 Enterprise Email", icon: "fas fa-envelope", id: "email-system" },
+  { href: "/multi-channel-messaging", label: "💬 Multi-Channel Hub", icon: "fas fa-satellite-dish", id: "multi-channel-messaging" },
   { href: "/vault-payments", label: "💳 Vault Payments", icon: "fas fa-credit-card", id: "vault-payments" },
   { href: "/team-onboarding", label: "👥 Team Onboarding", icon: "fas fa-user-plus", id: "team-onboarding" },
   { href: "/contact-management", label: "📧 Contact Management", icon: "fas fa-address-book", id: "contact-management" },
