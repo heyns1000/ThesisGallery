@@ -12,7 +12,7 @@ import {
   Folder, 
   Download, 
   Search, 
-  Sync, 
+  RefreshCw, 
   Eye, 
   Clock,
   Star,
@@ -212,7 +212,7 @@ export default function GitHubRepositoryBrowser() {
             Database Integrated
           </Badge>
           <Badge variant="secondary" className="bg-green-600 text-white">
-            <Sync className="h-3 w-3 mr-1" />
+            <RefreshCw className="h-3 w-3 mr-1" />
             Auto-Sync Enabled
           </Badge>
         </div>
@@ -240,7 +240,7 @@ export default function GitHubRepositoryBrowser() {
                     disabled={syncBaobabMutation.isPending}
                     className="bg-green-600 hover:bg-green-700"
                   >
-                    <Sync className={`h-4 w-4 mr-2 ${syncBaobabMutation.isPending ? 'animate-spin' : ''}`} />
+                    <RefreshCw className={`h-4 w-4 mr-2 ${syncBaobabMutation.isPending ? 'animate-spin' : ''}`} />
                     {syncBaobabMutation.isPending ? 'Syncing...' : 'Sync Baobab™'}
                   </Button>
                 </CardTitle>
@@ -366,7 +366,7 @@ export default function GitHubRepositoryBrowser() {
                       </select>
                     </div>
                   </CardHeader>
-                </CardContent>
+                </Card>
 
                 {/* File List */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
