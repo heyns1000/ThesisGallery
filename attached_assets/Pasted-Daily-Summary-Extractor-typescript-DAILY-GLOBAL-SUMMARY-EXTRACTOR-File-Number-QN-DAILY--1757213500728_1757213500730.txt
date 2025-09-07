@@ -1,0 +1,101 @@
+Daily Summary Extractor
+· typescript
+/**
+ * DAILY GLOBAL SUMMARY EXTRACTOR
+ * File Number: QN-DAILY-GLOBAL-SUMMARY-063-2025
+ * Purpose: Extract daily global summary from 100's of diaries for Replit - old school way
+ */
+
+export interface DairyEntry {
+  id: string;
+  date: string;
+  content: string;
+  source: string;
+  importance_level: 'critical' | 'high' | 'medium' | 'low';
+  topics: string[];
+  replit_relevant: boolean;
+}
+
+export interface DailySummary {
+  date: string;
+  global_overview: string;
+  replit_highlights: string[];
+  key_developments: string[];
+  partnership_updates: string[];
+  technical_progress: string[];
+  business_milestones: string[];
+  truth_preservation: string[];
+  pa_ready_format: string;
+  old_school_compilation: string;
+}
+
+export class DailySummaryExtractor {
+  private diaryEntries: Map<string, DairyEntry[]> = new Map();
+  
+  constructor() {
+    console.log('📔 DAILY SUMMARY EXTRACTOR - OLD SCHOOL METHOD INITIALIZED');
+  }
+
+  async processDiaryCollection(diaries: any[]): Promise<DailySummary> {
+    const today = new Date().toISOString().split('T')[0];
+    const relevantEntries = this.extractRelevantEntries(diaries, today);
+    const globalSummary = await this.compileGlobalSummary(relevantEntries);
+    const paReadyFormat = this.formatForPADelivery(globalSummary);
+
+    return {
+      date: today,
+      global_overview: globalSummary.overview,
+      replit_highlights: globalSummary.replit_items,
+      key_developments: globalSummary.developments,
+      partnership_updates: globalSummary.partnerships,
+      technical_progress: globalSummary.technical,
+      business_milestones: globalSummary.business,
+      truth_preservation: globalSummary.truth_items,
+      pa_ready_format: paReadyFormat,
+      old_school_compilation: this.createOldSchoolFormat(globalSummary)
+    };
+  }
+
+  private extractRelevantEntries(diaries: any[], targetDate: string): DairyEntry[] {
+    const relevantEntries: DairyEntry[] = [];
+
+    for (const diary of diaries) {
+      const dayEntries = this.extractDayEntries(diary, targetDate);
+      const filteredEntries = dayEntries.filter(entry => 
+        entry.replit_relevant || 
+        entry.importance_level === 'critical' ||
+        this.containsKeyTopics(entry)
+      );
+      relevantEntries.push(...filteredEntries);
+    }
+
+    return this.deduplicateAndPrioritize(relevantEntries);
+  }
+
+  private async compileGlobalSummary(entries: DairyEntry[]): Promise<any> {
+    const grouped = this.groupEntriesByTopic(entries);
+    return {
+      overview: this.createGlobalOverview(grouped),
+      replit_items: this.extractReplitHighlights(grouped),
+      developments: this.extractKeyDevelopments(grouped),
+      partnerships: this.extractPartnershipUpdates(grouped),
+      technical: this.extractTechnicalProgress(grouped),
+      business: this.extractBusinessMilestones(grouped),
+      truth_items: this.extractTruthPreservation(grouped)
+    };
+  }
+
+  private formatForPADelivery(summary: any): string {
+    return `
+========================================
+DAILY GLOBAL SUMMARY FOR PA DELIVERY
+Date: ${new Date().toDateString()}
+========================================
+
+✅ The Daily Summary Extractor and ChatGPT Bridge code has been structured and loaded into the canvas. You're now set up to extract, format, and sync global diary summaries — and bridge them into cross-platform systems like Freedom Interface.
+Would you like me to:
+
+🔁 Add real-time diary ingestion?
+🧠 Expand the context parser for ChatGPTBridge?
+📤 Build a CLI or Web UI for PA-style exports?
+Let me know how you'd like to evolve this.

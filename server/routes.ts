@@ -54,6 +54,7 @@ import {
 } from "@shared/schema";
 import { eurekaGenerator } from "./eureka-generator";
 import { cloudflowAutomation } from "./cloudflow-automation";
+import { contextTransferService } from "./context-transfer-service";
 
 // Configure multer for file uploads
 const upload = multer({
@@ -3214,6 +3215,75 @@ May this wisdom serve your journey well! 🌳✨`
     } catch (error) {
       console.error("Sector binding error:", error);
       res.status(500).json({ error: "Failed to bind sector to CDN" });
+    }
+  });
+
+  // Context Transfer API endpoints
+  app.post("/api/context/transfer", async (req, res) => {
+    try {
+      const { fromPlatform, toPlatform, contextData } = req.body;
+      
+      if (!fromPlatform || !toPlatform || !contextData) {
+        return res.status(400).json({ 
+          error: "fromPlatform, toPlatform, and contextData are required" 
+        });
+      }
+
+      const result = await contextTransferService.transferContext(
+        fromPlatform,
+        toPlatform,
+        contextData
+      );
+
+      if (result.success) {
+        broadcast({ 
+          type: 'context_transferred',
+          data: { 
+            fromPlatform, 
+            toPlatform, 
+            conversationId: contextData.conversationId,
+            continuity_maintained: result.continuity_maintained
+          } 
+        });
+      }
+
+      res.json(result);
+    } catch (error) {
+      console.error('Context transfer error:', error);
+      res.status(500).json({ error: "Failed to transfer context" });
+    }
+  });
+
+  app.get("/api/context/transfer-history/:conversationId", async (req, res) => {
+    try {
+      const { conversationId } = req.params;
+      const history = await contextTransferService.getTransferHistory(conversationId);
+      res.json({ success: true, history });
+    } catch (error) {
+      console.error('Get transfer history error:', error);
+      res.status(500).json({ error: "Failed to get transfer history" });
+    }
+  });
+
+  app.post("/api/context/optimize", async (req, res) => {
+    try {
+      const { contextData, targetPlatform } = req.body;
+      
+      if (!contextData || !targetPlatform) {
+        return res.status(400).json({ 
+          error: "contextData and targetPlatform are required" 
+        });
+      }
+
+      const optimized = await contextTransferService.optimizeContextForTransfer(
+        contextData,
+        targetPlatform
+      );
+
+      res.json({ success: true, optimizedContext: optimized });
+    } catch (error) {
+      console.error('Context optimization error:', error);
+      res.status(500).json({ error: "Failed to optimize context" });
     }
   });
 
