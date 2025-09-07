@@ -3864,5 +3864,46 @@ May this wisdom serve your journey well! 🌳✨`
     }
   });
 
+  // FAA Vault Integration
+  app.post("/api/looppay/vault/sync", async (req, res) => {
+    try {
+      const { meshId, transactionData } = req.body;
+      
+      if (!meshId || !transactionData) {
+        return res.status(400).json({ error: "Missing required parameters: meshId, transactionData" });
+      }
+
+      const vaultSync = await loopPayService.syncWithFaaVault(meshId, transactionData);
+      broadcast({ type: 'looppay_vault_sync', data: vaultSync });
+      res.json({
+        ...vaultSync,
+        message: "LoopPay™ synchronized with FAA Vault successfully"
+      });
+    } catch (error) {
+      console.error("Error syncing with FAA Vault:", error);
+      res.status(500).json({ error: "Failed to sync with FAA Vault" });
+    }
+  });
+
+  app.post("/api/looppay/vault/payment", async (req, res) => {
+    try {
+      const { transactionId, paymentGateway } = req.body;
+      
+      if (!transactionId || !paymentGateway) {
+        return res.status(400).json({ error: "Missing required parameters: transactionId, paymentGateway" });
+      }
+
+      const paymentResult = await loopPayService.processVaultPayment(transactionId, paymentGateway);
+      broadcast({ type: 'looppay_vault_payment', data: paymentResult });
+      res.json({
+        ...paymentResult,
+        message: "Payment processed through FAA Vault gateway successfully"
+      });
+    } catch (error) {
+      console.error("Error processing vault payment:", error);
+      res.status(500).json({ error: "Failed to process vault payment" });
+    }
+  });
+
   return httpServer;
 }

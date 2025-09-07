@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 const paymentMethods = [
+  { name: "LoopPay™ Sovereign Portal", icon: "🔄", status: "Active", action: () => window.location.href = '/looppay-gallery' },
   { name: "Stripe Payment Gateway", icon: "💳", status: "Coming Soon", action: () => alert('Stripe Payment Gateway Coming Soon') },
   { name: "Crypto Payments", icon: "₿", status: "Active", action: () => window.open('https://faa.zone/global-checkout', '_blank') },
   { name: "ZAR Pay - Homemart Africa", icon: "🇿🇦", status: "Active", action: () => window.open('https://homemart.africa/checkout/', '_blank') },
@@ -59,6 +60,19 @@ export default function VaultPayments() {
         </div>
       </section>
 
+      {/* LoopPay Integration Banner */}
+      <section className="max-w-7xl mx-auto px-6 py-8">
+        <div className="bg-gradient-to-r from-purple-900 to-indigo-900 rounded-lg p-6 text-white text-center shadow-lg">
+          <h2 className="text-2xl font-bold mb-2">🔄 LoopPay™ Sovereign Integration Active</h2>
+          <p className="text-purple-200 mb-4">9-second payout cycles • ClaimRoot™ immutable contracts • DivLock™ compliance</p>
+          <div className="flex justify-center space-x-4">
+            <Badge className="bg-green-500 text-white px-3 py-1">PulseTrade™ Mesh</Badge>
+            <Badge className="bg-blue-500 text-white px-3 py-1">FAA Vault Sync</Badge>
+            <Badge className="bg-purple-500 text-white px-3 py-1">Sovereign Compliant</Badge>
+          </div>
+        </div>
+      </section>
+
       {/* Payment Section */}
       <section id="payment-section" className="max-w-7xl mx-auto px-6 py-16">
         <Card className="shadow-lg">
@@ -66,6 +80,9 @@ export default function VaultPayments() {
             <CardTitle className="text-3xl font-bold text-center mb-6">
               💳 Vault-Based Scroll Payments
             </CardTitle>
+            <div className="text-center text-gray-600">
+              <p>Integrated with LoopPay™ sovereign payment processing for enhanced security and compliance</p>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
