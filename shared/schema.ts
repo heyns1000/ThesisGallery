@@ -1878,3 +1878,114 @@ export type EmailSend = typeof emailSends.$inferSelect;
 
 export type InsertEmailTracking = z.infer<typeof insertEmailTrackingSchema>;
 export type EmailTracking = typeof emailTracking.$inferSelect;
+
+// GitHub Repository Integration
+export const githubRepositories = pgTable("github_repositories", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  fullName: text("full_name").notNull(), // owner/repo
+  description: text("description"),
+  htmlUrl: text("html_url").notNull(),
+  owner: text("owner").notNull(),
+  isPrivate: boolean("is_private").default(false),
+  defaultBranch: text("default_branch").default("main"),
+  language: text("language"),
+  starCount: integer("star_count").default(0),
+  forkCount: integer("fork_count").default(0),
+  topics: text("topics").array(), // repository topics/tags
+  lastSyncAt: timestamp("last_sync_at"),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata") // additional repository data
+});
+
+export const githubFiles = pgTable("github_files", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  repositoryId: varchar("repository_id").references(() => githubRepositories.id).notNull(),
+  fileName: text("file_name").notNull(),
+  filePath: text("file_path").notNull(),
+  fileType: text("file_type").notNull(), // html, md, mp4, txt, etc.
+  fileSize: integer("file_size"), // in bytes
+  content: text("content"), // file content for text files
+  rawUrl: text("raw_url"), // direct GitHub raw URL
+  htmlUrl: text("html_url"), // GitHub web view URL
+  sha: text("sha"), // Git SHA hash
+  encoding: text("encoding"), // base64, utf-8, etc.
+  isRenderable: boolean("is_renderable").default(false), // can display in browser
+  tags: text("tags").array(), // custom tags for categorization
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata") // additional file data
+});
+
+export const githubSyncLogs = pgTable("github_sync_logs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  repositoryId: varchar("repository_id").references(() => githubRepositories.id).notNull(),
+  syncType: text("sync_type").notNull(), // full, incremental, file-specific
+  status: text("status").notNull(), // success, error, in-progress
+  filesProcessed: integer("files_processed").default(0),
+  filesAdded: integer("files_added").default(0),
+  filesUpdated: integer("files_updated").default(0),
+  filesDeleted: integer("files_deleted").default(0),
+  errorMessage: text("error_message"),
+  startedAt: timestamp("started_at").defaultNow().notNull(),
+  completedAt: timestamp("completed_at"),
+  metadata: json("metadata") // sync details and statistics
+});
+
+// GitHub Repository Insert Schemas
+export const insertGithubRepositorySchema = createInsertSchema(githubRepositories).pick({
+  name: true,
+  fullName: true,
+  description: true,
+  htmlUrl: true,
+  owner: true,
+  isPrivate: true,
+  defaultBranch: true,
+  language: true,
+  starCount: true,
+  forkCount: true,
+  topics: true,
+  isActive: true,
+  metadata: true,
+});
+
+export const insertGithubFileSchema = createInsertSchema(githubFiles).pick({
+  repositoryId: true,
+  fileName: true,
+  filePath: true,
+  fileType: true,
+  fileSize: true,
+  content: true,
+  rawUrl: true,
+  htmlUrl: true,
+  sha: true,
+  encoding: true,
+  isRenderable: true,
+  tags: true,
+  metadata: true,
+});
+
+export const insertGithubSyncLogSchema = createInsertSchema(githubSyncLogs).pick({
+  repositoryId: true,
+  syncType: true,
+  status: true,
+  filesProcessed: true,
+  filesAdded: true,
+  filesUpdated: true,
+  filesDeleted: true,
+  errorMessage: true,
+  completedAt: true,
+  metadata: true,
+});
+
+// GitHub Repository Types
+export type InsertGithubRepository = z.infer<typeof insertGithubRepositorySchema>;
+export type GithubRepository = typeof githubRepositories.$inferSelect;
+
+export type InsertGithubFile = z.infer<typeof insertGithubFileSchema>;
+export type GithubFile = typeof githubFiles.$inferSelect;
+
+export type InsertGithubSyncLog = z.infer<typeof insertGithubSyncLogSchema>;
+export type GithubSyncLog = typeof githubSyncLogs.$inferSelect;
