@@ -69,15 +69,9 @@ import Landing from "@/pages/landing";
 import NotFound from "@/pages/not-found";
 
 function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
-
   return (
     <Switch>
-      {isLoading || !isAuthenticated ? (
-        <Route path="/" component={Landing} />
-      ) : (
-        <>
-          <Route path="/" component={Dashboard} />
+      <Route path="/" component={Dashboard} />
       <Route path="/documents" component={Documents} />
       <Route path="/gallery" component={GalleryPage} />
       <Route path="/conversations" component={Conversations} />
@@ -136,27 +130,42 @@ function Router() {
       <Route path="/ai-module/valuation-ai" component={ValuationAIModule} />
       <Route path="/ai-module/mortgage-risk" component={MortgageRiskModule} />
       <Route path="/ai-module/market-forecast" component={MarketForecastModule} />
-          <Route path="/ai-module/agent-insights" component={AgentInsightsModule} />
-          <Route component={NotFound} />
-        </>
-      )}
+      <Route path="/ai-module/agent-insights" component={AgentInsightsModule} />
+      <Route component={NotFound} />
     </Switch>
   );
 }
 
-function App() {
+function AuthWrapper() {
   const { isAuthenticated, isLoading } = useAuth();
 
+  if (isLoading) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Landing />;
+  }
+
+  return (
+    <div className="flex h-screen bg-background text-foreground">
+      <Sidebar />
+      <main className="flex-1 overflow-y-auto relative">
+        <Router />
+      </main>
+    </div>
+  );
+}
+
+function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <div className="flex h-screen bg-background text-foreground">
-          {/* Only show sidebar for authenticated users */}
-          {!isLoading && isAuthenticated && <Sidebar />}
-          <main className={`flex-1 overflow-y-auto relative ${!isLoading && isAuthenticated ? '' : 'w-full'}`}>
-            <Router />
-          </main>
-        </div>
+        <AuthWrapper />
         <Toaster />
       </TooltipProvider>
     </QueryClientProvider>
