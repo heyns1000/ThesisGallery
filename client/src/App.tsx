@@ -1,6 +1,7 @@
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
+import { useAuth } from "@/hooks/useAuth";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Sidebar } from "@/components/layout/sidebar";
@@ -64,12 +65,19 @@ import ValuationAIModule from "@/pages/ai-module-valuation";
 import MortgageRiskModule from "@/pages/ai-module-mortgage-risk";
 import MarketForecastModule from "@/pages/ai-module-market-forecast";
 import AgentInsightsModule from "@/pages/ai-module-agent-insights";
+import Landing from "@/pages/landing";
 import NotFound from "@/pages/not-found";
 
 function Router() {
+  const { isAuthenticated, isLoading } = useAuth();
+
   return (
     <Switch>
-      <Route path="/" component={Dashboard} />
+      {isLoading || !isAuthenticated ? (
+        <Route path="/" component={Landing} />
+      ) : (
+        <>
+          <Route path="/" component={Dashboard} />
       <Route path="/documents" component={Documents} />
       <Route path="/gallery" component={GalleryPage} />
       <Route path="/conversations" component={Conversations} />
@@ -128,19 +136,24 @@ function Router() {
       <Route path="/ai-module/valuation-ai" component={ValuationAIModule} />
       <Route path="/ai-module/mortgage-risk" component={MortgageRiskModule} />
       <Route path="/ai-module/market-forecast" component={MarketForecastModule} />
-      <Route path="/ai-module/agent-insights" component={AgentInsightsModule} />
-      <Route component={NotFound} />
+          <Route path="/ai-module/agent-insights" component={AgentInsightsModule} />
+          <Route component={NotFound} />
+        </>
+      )}
     </Switch>
   );
 }
 
 function App() {
+  const { isAuthenticated, isLoading } = useAuth();
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <div className="flex h-screen bg-background text-foreground">
-          <Sidebar />
-          <main className="flex-1 overflow-y-auto relative">
+          {/* Only show sidebar for authenticated users */}
+          {!isLoading && isAuthenticated && <Sidebar />}
+          <main className={`flex-1 overflow-y-auto relative ${!isLoading && isAuthenticated ? '' : 'w-full'}`}>
             <Router />
           </main>
         </div>

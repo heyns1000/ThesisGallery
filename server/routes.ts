@@ -65,6 +65,7 @@ import { eurekaGenerator } from "./eureka-generator";
 import { cloudflowAutomation } from "./cloudflow-automation";
 import { contextTransferService } from "./context-transfer-service";
 import { dailySummaryExtractor } from "./daily-summary-extractor";
+import { setupAuth, isAuthenticated } from "./replitAuth";
 
 // Configure multer for file uploads
 const upload = multer({
@@ -75,6 +76,9 @@ const upload = multer({
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Auth middleware setup
+  await setupAuth(app);
+
   const httpServer = createServer(app);
 
   // WebSocket server for real-time updates
@@ -106,6 +110,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     });
   }
+
+  // Auth routes
+  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
 
   // System stats endpoint
   app.get("/api/system/stats", async (req, res) => {
