@@ -7,6 +7,21 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Enforce domain recognition for happyfruitful.com
+app.use((req, res, next) => {
+  // Set proper headers for happyfruitful.com domain
+  const host = req.get('host');
+  if (host && host.includes('happyfruitful.com')) {
+    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+    res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+    res.setHeader('X-Domain-Verified', 'happyfruitful.com');
+  }
+  next();
+});
+
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
