@@ -1,5 +1,8 @@
 import { Link, useLocation } from "wouter";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
+import { LogOut, User } from "lucide-react";
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: "fas fa-tachometer-alt", id: "dashboard" },
@@ -46,6 +49,11 @@ const navItems = [
 
 export function Sidebar() {
   const [location] = useLocation();
+  const { user } = useAuth();
+
+  const handleLogout = () => {
+    window.location.href = "/api/logout";
+  };
 
   return (
     <aside className="w-64 min-w-[16rem] bg-card border-r border-border flex flex-col relative z-10">
@@ -81,7 +89,48 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="p-4">
+      <div className="p-4 space-y-3">
+        {/* User Info */}
+        {user && (
+          <div className="bg-muted rounded-lg p-3">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                {user.profileImageUrl ? (
+                  <img 
+                    src={user.profileImageUrl} 
+                    alt="Profile" 
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
+                ) : (
+                  <User className="w-4 h-4 text-primary-foreground" />
+                )}
+              </div>
+              <div className="flex-1">
+                <p className="text-xs font-medium">
+                  {user.firstName || user.lastName 
+                    ? `${user.firstName || ''} ${user.lastName || ''}`.trim()
+                    : user.email || 'User'
+                  }
+                </p>
+                {user.email && (user.firstName || user.lastName) && (
+                  <p className="text-xs text-muted-foreground">{user.email}</p>
+                )}
+              </div>
+            </div>
+            <Button 
+              onClick={handleLogout}
+              variant="outline" 
+              size="sm" 
+              className="w-full text-xs"
+              data-testid="button-logout"
+            >
+              <LogOut className="w-3 h-3 mr-1" />
+              Sign Out
+            </Button>
+          </div>
+        )}
+
+        {/* System Status */}
         <div className="bg-muted rounded-lg p-3">
           <div className="flex items-center justify-between">
             <span className="text-xs text-muted-foreground">System Status</span>
