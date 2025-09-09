@@ -48,7 +48,7 @@ export function Sidebar() {
   const [location] = useLocation();
 
   return (
-    <aside className="w-64 bg-card border-r border-border flex flex-col">
+    <aside className="w-64 min-w-[16rem] bg-card border-r border-border flex flex-col relative z-10">
       <div className="p-6">
         <div className="gradient-border">
           <div className="gradient-border-inner p-4 text-center">
