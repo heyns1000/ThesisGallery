@@ -4,6 +4,14 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { LogOut, User } from "lucide-react";
 
+type UserProfile = {
+  id: string;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  profileImageUrl?: string;
+};
+
 const navItems = [
   { href: "/", label: "Dashboard", icon: "fas fa-tachometer-alt", id: "dashboard" },
   { href: "/documents", label: "Documents & Articles", icon: "fas fa-file-alt", id: "documents" },
@@ -55,6 +63,8 @@ export function Sidebar() {
     window.location.href = "/api/logout";
   };
 
+  const userProfile = user as UserProfile | undefined;
+
   return (
     <aside className="w-64 min-w-[16rem] bg-card border-r border-border flex flex-col relative z-10">
       <div className="p-6">
@@ -72,9 +82,9 @@ export function Sidebar() {
           
           return (
             <Link key={item.id} href={item.href}>
-              <a 
+              <div 
                 className={cn(
-                  "flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors",
+                  "flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors cursor-pointer",
                   isActive 
                     ? "bg-primary text-primary-foreground" 
                     : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -83,7 +93,7 @@ export function Sidebar() {
               >
                 <i className={`${item.icon} mr-3`}></i>
                 {item.label}
-              </a>
+              </div>
             </Link>
           );
         })}
@@ -91,13 +101,13 @@ export function Sidebar() {
 
       <div className="p-4 space-y-3">
         {/* User Info */}
-        {user && (
+        {userProfile && (
           <div className="bg-muted rounded-lg p-3">
             <div className="flex items-center gap-2 mb-2">
               <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                {user.profileImageUrl ? (
+                {userProfile.profileImageUrl ? (
                   <img 
-                    src={user.profileImageUrl} 
+                    src={userProfile.profileImageUrl} 
                     alt="Profile" 
                     className="w-8 h-8 rounded-full object-cover"
                   />
@@ -107,13 +117,13 @@ export function Sidebar() {
               </div>
               <div className="flex-1">
                 <p className="text-xs font-medium">
-                  {user.firstName || user.lastName 
-                    ? `${user.firstName || ''} ${user.lastName || ''}`.trim()
-                    : user.email || 'User'
+                  {userProfile.firstName || userProfile.lastName 
+                    ? `${userProfile.firstName || ''} ${userProfile.lastName || ''}`.trim()
+                    : userProfile.email || 'User'
                   }
                 </p>
-                {user.email && (user.firstName || user.lastName) && (
-                  <p className="text-xs text-muted-foreground">{user.email}</p>
+                {userProfile.email && (userProfile.firstName || userProfile.lastName) && (
+                  <p className="text-xs text-muted-foreground">{userProfile.email}</p>
                 )}
               </div>
             </div>
