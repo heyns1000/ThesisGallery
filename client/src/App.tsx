@@ -5,6 +5,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Sidebar } from "@/components/layout/sidebar";
+import ErrorBoundary from "@/components/ErrorBoundary";
+import LoadingFallback from "@/components/LoadingFallback";
 import Dashboard from "@/pages/dashboard";
 import Documents from "@/pages/documents";
 import GalleryPage from "@/pages/gallery";
@@ -70,8 +72,9 @@ import NotFound from "@/pages/not-found";
 
 function Router() {
   return (
-    <Switch>
-      <Route path="/" component={Dashboard} />
+    <ErrorBoundary>
+      <Switch>
+        <Route path="/" component={Dashboard} />
       <Route path="/documents" component={Documents} />
       <Route path="/gallery" component={GalleryPage} />
       <Route path="/conversations" component={Conversations} />
@@ -130,9 +133,10 @@ function Router() {
       <Route path="/ai-module/valuation-ai" component={ValuationAIModule} />
       <Route path="/ai-module/mortgage-risk" component={MortgageRiskModule} />
       <Route path="/ai-module/market-forecast" component={MarketForecastModule} />
-      <Route path="/ai-module/agent-insights" component={AgentInsightsModule} />
-      <Route component={NotFound} />
-    </Switch>
+        <Route path="/ai-module/agent-insights" component={AgentInsightsModule} />
+        <Route component={NotFound} />
+      </Switch>
+    </ErrorBoundary>
   );
 }
 
@@ -140,22 +144,26 @@ function AuthWrapper() {
   const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
-    return (
-      <div className="h-screen flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
-      </div>
-    );
+    return <LoadingFallback message="Initializing Fruitful Global Master Hub..." className="h-screen" />;
   }
 
   if (!isAuthenticated) {
-    return <Landing />;
+    return (
+      <ErrorBoundary>
+        <Landing />
+      </ErrorBoundary>
+    );
   }
 
   return (
     <div className="flex h-screen bg-background text-foreground">
-      <Sidebar />
+      <ErrorBoundary>
+        <Sidebar />
+      </ErrorBoundary>
       <main className="flex-1 overflow-y-auto relative">
-        <Router />
+        <ErrorBoundary>
+          <Router />
+        </ErrorBoundary>
       </main>
     </div>
   );
