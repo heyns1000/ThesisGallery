@@ -31,9 +31,26 @@ export default function Dashboard() {
 
   const displayStats = realtimeStats || stats;
 
+  // Show loading state if no data yet
+  if (!displayStats && !stats) {
+    return (
+      <div className="min-h-screen bg-background text-foreground p-6">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center space-y-4">
+            <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto"></div>
+            <p className="text-muted-foreground">Loading Fruitful Global Master Hub...</p>
+            <div className="text-xs text-muted-foreground">
+              🌳 Initializing Sacred Baobab™ Foundation Systems
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="p-6">
-      <header className="bg-card border-b border-border px-6 py-4 -mx-6 -mt-6 mb-6">
+    <div className="min-h-screen bg-background text-foreground p-6">
+      <header className="bg-card border-b border-border px-6 py-4 -mx-6 -mt-6 mb-6 rounded-lg">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-foreground">🌳 Fruitful Global Command Center</h2>
@@ -57,7 +74,7 @@ export default function Dashboard() {
       </header>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8 relative z-10">
         <StatsCard
           title="Protected Brands"
           value={displayStats?.totalBrands || 9000}
