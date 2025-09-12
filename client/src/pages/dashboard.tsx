@@ -313,8 +313,8 @@ export default function Dashboard() {
                     <i className="fas fa-coins text-yellow-400"></i>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-foreground">ABSA Verification Complete</p>
-                    <p className="text-xs text-muted-foreground">H Schoeman - Account 9393313084</p>
+                    <p className="text-sm font-medium text-foreground">Banking Verification Complete</p>
+                    <p className="text-xs text-muted-foreground">Secure account integration verified</p>
                   </div>
                 </div>
                 <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">Verified</span>
