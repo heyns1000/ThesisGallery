@@ -3,10 +3,36 @@ import { getMessaging, Message, MulticastMessage, BatchResponse } from 'firebase
 
 // Initialize Firebase Admin SDK with proper error handling
 let isFirebaseInitialized = false;
+let initializationLogged = false;
+
+// Module-level throttling for Firebase warnings to prevent spam
+let lastFirebaseWarningTime = 0;
+const FIREBASE_WARNING_THROTTLE_MS = 300000; // 5 minutes for testing (was 1 hour)
+
+// Centralized throttled warning helper for all Firebase issues
+const logFirebaseWarningThrottled = (message: string): void => {
+  const now = Date.now();
+  if (now - lastFirebaseWarningTime > FIREBASE_WARNING_THROTTLE_MS) {
+    console.warn(message);
+    console.warn(`[Debug] Setting last warning time to ${now}, throttling for ${FIREBASE_WARNING_THROTTLE_MS/1000/60} minutes`);
+    lastFirebaseWarningTime = now;
+  } else {
+    // Debug: Show when throttling is active
+    const timeUntilNext = Math.ceil((FIREBASE_WARNING_THROTTLE_MS - (now - lastFirebaseWarningTime)) / 1000 / 60);
+    console.log(`[Debug] Firebase warning throttled. Next warning allowed in ${timeUntilNext} minutes.`);
+  }
+};
+
+// Check if all required Firebase environment variables are present
+const hasFirebaseCredentials = (): boolean => {
+  return !!(process.env.FIREBASE_PRIVATE_KEY && 
+           process.env.FIREBASE_CLIENT_EMAIL && 
+           process.env.FIREBASE_PROJECT_ID);
+};
 
 try {
   // Only initialize if we have proper credentials
-  if (process.env.FIREBASE_PRIVATE_KEY && process.env.FIREBASE_CLIENT_EMAIL && process.env.FIREBASE_PROJECT_ID) {
+  if (hasFirebaseCredentials()) {
     const serviceAccount = {
       type: "service_account",
       project_id: process.env.FIREBASE_PROJECT_ID,
@@ -30,13 +56,21 @@ try {
     
     isFirebaseInitialized = true;
     console.log('Firebase Admin SDK initialized successfully');
+    initializationLogged = true;
   } else {
-    console.warn('Firebase credentials not provided. Push notifications will be disabled.');
-    console.warn('To enable Firebase notifications, provide: FIREBASE_PRIVATE_KEY, FIREBASE_CLIENT_EMAIL, FIREBASE_PROJECT_ID');
+    if (!initializationLogged) {
+      console.warn('Firebase Admin not configured: Missing required environment variables');
+      console.warn('Push notifications are disabled. Configure Firebase credentials in .env to enable notifications');
+      console.warn('Required: FIREBASE_PRIVATE_KEY, FIREBASE_CLIENT_EMAIL, FIREBASE_PROJECT_ID');
+      initializationLogged = true;
+    }
   }
 } catch (error) {
-  console.error('Failed to initialize Firebase Admin SDK:', error);
-  console.warn('Push notifications will be disabled. Please check your Firebase credentials.');
+  if (!initializationLogged) {
+    console.error('Failed to initialize Firebase Admin SDK:', error);
+    console.warn('Push notifications will be disabled. Please check your Firebase credentials.');
+    initializationLogged = true;
+  }
 }
 
 export interface NotificationPayload {
@@ -80,7 +114,7 @@ export class FirebaseAdminService {
 
   private checkFirebaseInitialized(): boolean {
     if (!isFirebaseInitialized || !this.messaging) {
-      console.warn('Firebase Admin not initialized. Push notifications are disabled.');
+      logFirebaseWarningThrottled('Firebase Admin not initialized. Push notifications are disabled.');
       return false;
     }
     return true;

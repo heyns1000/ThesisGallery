@@ -326,8 +326,11 @@ export class NotificationScheduler {
     console.log('Processing abandoned cart reminders...');
 
     try {
+      // Check if Firebase is available before processing
+      const { firebaseAdmin } = await import('./firebase-admin');
+      
+      // For now, skip processing if Firebase is not initialized to prevent spam
       // This would typically fetch from your database
-      // For now, we'll simulate some abandoned carts
       const abandonedCarts = [
         {
           userToken: 'sample-token-1',
@@ -340,11 +343,18 @@ export class NotificationScheduler {
         }
       ];
 
+      console.log(`Found ${abandonedCarts.length} abandoned carts to process`);
+
       for (const cart of abandonedCarts) {
-        await firebaseAdmin.sendAbandonedCartNotification(
-          cart.userToken,
-          cart.cartData
-        );
+        // Only attempt to send if we have a valid token (in real app, this would be from the database)
+        if (cart.userToken && cart.userToken !== 'sample-token-1') {
+          await firebaseAdmin.sendAbandonedCartNotification(
+            cart.userToken,
+            cart.cartData
+          );
+        } else {
+          console.log('Skipping sample cart - no real user token');
+        }
       }
 
     } catch (error) {

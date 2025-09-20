@@ -16,7 +16,21 @@ class WebSocketManager {
     }
 
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const wsUrl = `${protocol}//${window.location.host}/ws`;
+    
+    // Use window.location.host by default (correct for production)
+    // Only fallback to localhost:5000 when host is actually missing or contains undefined
+    let wsUrl: string;
+    const host = window.location.host;
+    
+    if (!host || host === 'undefined' || host.includes('undefined') || host === '') {
+      // Only use localhost:5000 when host is truly missing/undefined
+      wsUrl = `${protocol}//localhost:5000/ws`;
+    } else {
+      // For production and normal cases, use the actual host (with or without port)
+      // Don't modify the host - use it exactly as provided by the browser
+      wsUrl = `${protocol}//${host}/ws`;
+    }
+    console.log('Connecting to WebSocket:', wsUrl);
 
     this.ws = new WebSocket(wsUrl);
 

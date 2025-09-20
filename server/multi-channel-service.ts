@@ -510,35 +510,34 @@ export class MultiChannelMessagingService {
     rendered: any, 
     trackingId: string
   ): Promise<MessageSendResult> {
-    // Use existing Firebase messaging from firebase-admin.ts
     const deviceToken = contact.deviceToken || contact.fcmToken;
     if (!deviceToken) {
       throw new Error('No device token for push notification');
     }
 
     try {
-      // Import Firebase messaging
-      const { getMessaging } = await import('firebase-admin/messaging');
-      const messaging = getMessaging();
-
-      const message = {
-        token: deviceToken,
-        notification: {
-          title: rendered.subject || '🌳 Sacred Baobab™ Ecosystem',
-          body: rendered.content,
-        },
+      // Use the safe Firebase admin service instead of direct messaging
+      const { firebaseAdmin } = await import('./firebase-admin');
+      
+      const payload = {
+        title: rendered.subject || '🌳 Sacred Baobab™ Ecosystem',
+        body: rendered.content,
         data: {
           trackingId,
           channelType: 'push',
           timestamp: new Date().toISOString()
-        },
+        }
       };
 
-      const response = await messaging.send(message);
+      const success = await firebaseAdmin.sendToDevice(deviceToken, payload);
+      
+      if (!success) {
+        throw new Error('Firebase service not available or send failed');
+      }
 
       return {
         success: true,
-        externalMessageId: response, // Firebase message ID
+        externalMessageId: `push-${trackingId}`,
         trackingId,
         deliveredAt: new Date()
       };
