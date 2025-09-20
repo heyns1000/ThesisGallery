@@ -222,11 +222,28 @@ export default function AdminAccessPortal() {
         <section className="max-w-3xl mx-auto text-center">
           <Card>
             <CardContent className="p-8">
-              <div className="text-4xl mb-4">🎉</div>
-              <h2 className="text-2xl font-bold text-green-700 mb-4">Registration Submitted Successfully!</h2>
+              <div className="text-4xl mb-4">🦁</div>
+              <h2 className="text-2xl font-bold text-orange-600 mb-4">Access Real SamFox Studio Gallery!</h2>
               <p className="text-gray-600 mb-6">
-                Your access request has been received. You will get an activation email from <strong>vault@faa.zone</strong> shortly.
+                Skip the placeholder forms and view your <strong>actual gallery with real data</strong> from your 1.8GB business ecosystem!
               </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <Link href="/gallery">
+                  <Button className="w-full bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600">
+                    📸 Visual Gallery
+                  </Button>
+                </Link>
+                <Link href="/samfox-studio-platform">
+                  <Button className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600">
+                    🦁 SamFox Studio
+                  </Button>
+                </Link>
+                <Link href="/documents">
+                  <Button className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600">
+                    📜 Project Scrolls
+                  </Button>
+                </Link>
+              </div>
               <div className="flex gap-4 justify-center">
                 <Button 
                   onClick={() => {
@@ -234,13 +251,13 @@ export default function AdminAccessPortal() {
                     setSelectedForm(null);
                     setFormData({});
                   }}
-                  className="bg-indigo-600 hover:bg-indigo-700"
+                  variant="outline"
                 >
                   Submit Another Request
                 </Button>
-                <Link href="/admin-portal">
-                  <Button variant="outline">
-                    Return to Admin Portal
+                <Link href="/dashboard">
+                  <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white">
+                    🏡 Go to Dashboard
                   </Button>
                 </Link>
               </div>
