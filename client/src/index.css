@@ -3,25 +3,25 @@
 @tailwind utilities;
 
 :root {
-  --background: hsl(222, 84%, 4%);
-  --foreground: hsl(210, 40%, 98%);
-  --card: hsl(222, 84%, 5%);
-  --card-foreground: hsl(210, 40%, 98%);
-  --popover: hsl(222, 84%, 5%);
-  --popover-foreground: hsl(210, 40%, 98%);
-  --primary: hsl(239, 84%, 67%);
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(222, 84%, 4%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(222, 84%, 4%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(222, 84%, 4%);
+  --primary: hsl(221, 83%, 53%);
   --primary-foreground: hsl(0, 0%, 98%);
-  --secondary: hsl(215, 32%, 27%);
-  --secondary-foreground: hsl(210, 40%, 98%);
-  --muted: hsl(215, 32%, 15%);
-  --muted-foreground: hsl(217, 32%, 65%);
-  --accent: hsl(84, 81%, 44%);
+  --secondary: hsl(210, 40%, 96%);
+  --secondary-foreground: hsl(222, 84%, 4%);
+  --muted: hsl(210, 40%, 96%);
+  --muted-foreground: hsl(215, 16%, 47%);
+  --accent: hsl(210, 40%, 96%);
   --accent-foreground: hsl(222, 84%, 4%);
   --destructive: hsl(0, 84%, 60%);
   --destructive-foreground: hsl(210, 40%, 98%);
-  --border: hsl(215, 32%, 27%);
-  --input: hsl(215, 32%, 27%);
-  --ring: hsl(239, 84%, 67%);
+  --border: hsl(214, 32%, 91%);
+  --input: hsl(214, 32%, 91%);
+  --ring: hsl(221, 83%, 53%);
   --chart-1: hsl(239, 84%, 67%);
   --chart-2: hsl(159, 100%, 36%);
   --chart-3: hsl(42, 93%, 56%);
@@ -52,25 +52,25 @@
 }
 
 .dark {
-  --background: hsl(222, 84%, 4%);
-  --foreground: hsl(210, 40%, 98%);
-  --card: hsl(222, 84%, 5%);
-  --card-foreground: hsl(210, 40%, 98%);
-  --popover: hsl(222, 84%, 5%);
-  --popover-foreground: hsl(210, 40%, 98%);
-  --primary: hsl(239, 84%, 67%);
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(222, 84%, 4%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(222, 84%, 4%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(222, 84%, 4%);
+  --primary: hsl(221, 83%, 53%);
   --primary-foreground: hsl(0, 0%, 98%);
-  --secondary: hsl(215, 32%, 27%);
-  --secondary-foreground: hsl(210, 40%, 98%);
-  --muted: hsl(215, 32%, 15%);
-  --muted-foreground: hsl(217, 32%, 65%);
-  --accent: hsl(84, 81%, 44%);
+  --secondary: hsl(210, 40%, 96%);
+  --secondary-foreground: hsl(222, 84%, 4%);
+  --muted: hsl(210, 40%, 96%);
+  --muted-foreground: hsl(215, 16%, 47%);
+  --accent: hsl(210, 40%, 96%);
   --accent-foreground: hsl(222, 84%, 4%);
   --destructive: hsl(0, 84%, 60%);
   --destructive-foreground: hsl(210, 40%, 98%);
-  --border: hsl(215, 32%, 27%);
-  --input: hsl(215, 32%, 27%);
-  --ring: hsl(239, 84%, 67%);
+  --border: hsl(214, 32%, 91%);
+  --input: hsl(214, 32%, 91%);
+  --ring: hsl(221, 83%, 53%);
   --chart-1: hsl(239, 84%, 67%);
   --chart-2: hsl(159, 100%, 36%);
   --chart-3: hsl(42, 93%, 56%);
@@ -105,7 +105,7 @@
 
   body {
     @apply font-sans antialiased bg-background text-foreground;
-    background: linear-gradient(135deg, hsl(222, 84%, 2%) 0%, hsl(215, 32%, 8%) 50%, hsl(222, 84%, 4%) 100%);
+    background: linear-gradient(135deg, hsl(0, 0%, 100%) 0%, hsl(210, 40%, 98%) 50%, hsl(220, 14%, 96%) 100%);
     background-attachment: fixed;
     min-height: 100vh;
     line-height: 1.6;
@@ -125,12 +125,12 @@
   }
 
   .glow-effect {
-    box-shadow: 0 0 20px hsla(239, 84%, 67%, 0.4), 0 0 40px hsla(239, 84%, 67%, 0.1);
+    box-shadow: 0 0 20px hsla(221, 83%, 53%, 0.2), 0 0 40px hsla(221, 83%, 53%, 0.05);
     transition: all 0.3s ease;
   }
 
   .glow-effect:hover {
-    box-shadow: 0 0 30px hsla(239, 84%, 67%, 0.6), 0 0 60px hsla(239, 84%, 67%, 0.2);
+    box-shadow: 0 0 30px hsla(221, 83%, 53%, 0.3), 0 0 60px hsla(221, 83%, 53%, 0.1);
     transform: scale(1.02);
   }
 
@@ -139,10 +139,9 @@
   }
 
   .document-preview {
-    background: linear-gradient(145deg, hsl(222, 84%, 8%) 0%, hsl(215, 32%, 22%) 100%);
-    border: 1px solid hsl(215, 32%, 35%);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    background: linear-gradient(145deg, hsl(0, 0%, 100%) 0%, hsl(210, 40%, 98%) 100%);
+    border: 1px solid hsl(214, 32%, 91%);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
   }
 
   .status-indicator {
@@ -162,16 +161,16 @@
   }
 
   .brand-card {
-    background: radial-gradient(circle at top right, hsl(222, 84%, 12%), hsl(222, 84%, 6%));
-    border: 1px solid hsl(215, 32%, 35%);
+    background: radial-gradient(circle at top right, hsl(0, 0%, 100%), hsl(210, 40%, 98%));
+    border: 1px solid hsl(214, 32%, 91%);
     transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   }
 
   .brand-card:hover {
     transform: translateY(-4px);
-    border-color: hsl(239, 84%, 67%);
-    box-shadow: 0 8px 24px rgba(156, 163, 255, 0.2);
+    border-color: hsl(221, 83%, 53%);
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.15);
   }
 }
 
@@ -199,17 +198,17 @@
 
   /* Enhanced preview display utilities */
   .enhanced-contrast {
-    background: linear-gradient(135deg, hsl(222, 84%, 8%) 0%, hsl(215, 32%, 20%) 100%);
-    border: 1px solid hsl(215, 32%, 40%);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(135deg, hsl(0, 0%, 100%) 0%, hsl(210, 40%, 98%) 100%);
+    border: 1px solid hsl(214, 32%, 91%);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 
   .text-enhanced {
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
   }
 
   .status-enhanced {
-    background: linear-gradient(90deg, hsl(84, 81%, 44%) 0%, hsl(147, 79%, 42%) 100%);
+    background: linear-gradient(90deg, hsl(142, 76%, 36%) 0%, hsl(158, 64%, 52%) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -217,16 +216,15 @@
   }
 
   .card-enhanced {
-    backdrop-filter: blur(12px);
     background: linear-gradient(135deg, 
-      hsla(222, 84%, 8%, 0.9) 0%, 
-      hsla(215, 32%, 15%, 0.8) 50%, 
-      hsla(222, 84%, 6%, 0.9) 100%
+      hsl(0, 0%, 100%) 0%, 
+      hsl(210, 40%, 98%) 50%, 
+      hsl(220, 14%, 96%) 100%
     );
-    border: 1px solid hsla(215, 32%, 40%, 0.6);
+    border: 1px solid hsl(214, 32%, 91%);
     box-shadow: 
-      0 8px 32px rgba(0, 0, 0, 0.4),
-      inset 0 1px 0 hsla(210, 40%, 98%, 0.1);
+      0 8px 32px rgba(0, 0, 0, 0.08),
+      inset 0 1px 0 hsl(0, 0%, 100%);
   }
 }
 
