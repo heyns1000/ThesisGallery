@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Sidebar } from "@/components/layout/sidebar";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import LoadingFallback from "@/components/LoadingFallback";
+import { AppContextProvider } from "@/context/AppContext";
 import Dashboard from "@/pages/dashboard";
 import Documents from "@/pages/documents";
 import GalleryPage from "@/pages/gallery";
@@ -173,8 +174,10 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <AuthWrapper />
-        <Toaster />
+        <AppContextProvider>
+          <AuthWrapper />
+          <Toaster />
+        </AppContextProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

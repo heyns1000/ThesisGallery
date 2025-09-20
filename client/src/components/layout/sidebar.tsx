@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { LogOut, User } from "lucide-react";
+import { useAppContext } from "@/context/AppContext";
 
 type UserProfile = {
   id: string;
@@ -58,6 +59,7 @@ const navItems = [
 export function Sidebar() {
   const [location] = useLocation();
   const { user } = useAuth();
+  const { user: contextUser } = useAppContext();
 
   const handleLogout = () => {
     window.location.href = "/api/logout";
@@ -73,6 +75,14 @@ export function Sidebar() {
             <h1 className="text-xl font-bold text-primary">🌳 Fruitful Global</h1>
             <p className="text-xs text-muted-foreground mt-1">Master Hub & Ecosystem Platform</p>
           </div>
+        </div>
+        
+        {/* Welcome Message from AppContext */}
+        <div className="mt-4 p-3 bg-primary/10 rounded-lg border border-primary/20">
+          <p className="text-sm font-medium text-primary" data-testid="text-welcome-message">
+            Welcome, {contextUser.name}
+          </p>
+          <p className="text-xs text-muted-foreground mt-1">{contextUser.email}</p>
         </div>
       </div>
 
