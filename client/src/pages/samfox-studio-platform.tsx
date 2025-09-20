@@ -75,14 +75,14 @@ function FileroomGallery() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Fetch gallery data for fileroom assets
+  // Fetch SamFox Studio fileroom data
   const { data: galleryItems = [], isLoading: galleryLoading } = useQuery({
-    queryKey: ["/api/gallery"],
+    queryKey: ["/api/samfox-studio/fileroom"],
   });
 
-  // Fetch documents for project scrolls
+  // Fetch SamFox Studio workspaces as documents/scrolls
   const { data: documents = [], isLoading: documentsLoading } = useQuery({
-    queryKey: ["/api/documents"],
+    queryKey: ["/api/samfox-studio/workspaces"],
   });
 
   // Mock data for license keys and vault trails (would be real API calls)
@@ -105,9 +105,9 @@ function FileroomGallery() {
       return await apiRequest("POST", endpoint, formData);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/gallery"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
-      toast({ description: "Asset uploaded successfully! ✨" });
+      queryClient.invalidateQueries({ queryKey: ["/api/samfox-studio/fileroom"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/samfox-studio/workspaces"] });
+      toast({ description: "Asset uploaded to SamFox Studio! ✨" });
       setUploadingType(null);
     },
     onError: (error: Error) => {
@@ -129,7 +129,7 @@ function FileroomGallery() {
     formData.append('title', file.name);
     formData.append('type', type);
     
-    const endpoint = type === 'document' ? '/api/documents' : '/api/gallery';
+    const endpoint = '/api/samfox-studio/fileroom';
     uploadMutation.mutate({ formData, endpoint });
   };
 
