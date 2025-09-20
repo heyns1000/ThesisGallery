@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { SamFoxGalleryStrip } from "@/components/samfox-gallery";
 import { ArrowLeft, TrendingUp, Calendar, Target, BarChart3 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -129,6 +130,22 @@ export default function MarketForecastModule() {
               </div>
             </CardContent>
           </Card>
+        </section>
+
+        {/* SamFox Market Assets Strip */}
+        <section className="bg-gradient-to-r from-blue-900/20 to-purple-900/20 rounded-lg border border-blue-500/30 p-6">
+          <div className="mb-4">
+            <h3 className="text-xl font-bold text-blue-400 flex items-center">
+              🦁 Market Analysis Assets
+            </h3>
+            <p className="text-gray-400 mt-1">Charts, forecasts, and market trend visualizations</p>
+          </div>
+          <SamFoxGalleryStrip 
+            filterType="roadmap,screenshot,ai-generated"
+            title="Market Forecast Visuals"
+            readOnly={true}
+            showFullScreen={true}
+          />
         </section>
       </div>
     </div>

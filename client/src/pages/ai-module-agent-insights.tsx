@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { SamFoxGalleryStrip } from "@/components/samfox-gallery";
 import { ArrowLeft, Users, Target, Trophy, BarChart3 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -129,6 +130,22 @@ export default function AgentInsightsModule() {
               </div>
             </CardContent>
           </Card>
+        </section>
+
+        {/* SamFox Agent Performance Assets Strip */}
+        <section className="bg-gradient-to-r from-indigo-900/20 to-cyan-900/20 rounded-lg border border-indigo-500/30 p-6">
+          <div className="mb-4">
+            <h3 className="text-xl font-bold text-indigo-400 flex items-center">
+              🦁 Agent Intelligence Assets
+            </h3>
+            <p className="text-gray-400 mt-1">Performance dashboards, client insights, and agent tools</p>
+          </div>
+          <SamFoxGalleryStrip 
+            filterType="screenshot,brand-asset,concept"
+            title="Agent Performance Visuals"
+            readOnly={true}
+            showFullScreen={true}
+          />
         </section>
       </div>
     </div>

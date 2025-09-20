@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { SamFoxGalleryStrip } from "@/components/samfox-gallery";
 import { ArrowLeft, TrendingUp, Target, BarChart3, Activity } from "lucide-react";
 import { Link } from "wouter";
 
@@ -129,6 +130,22 @@ export default function ValuationAIModule() {
               </div>
             </CardContent>
           </Card>
+        </section>
+
+        {/* SamFox Visual Assets Strip */}
+        <section className="bg-gradient-to-r from-yellow-900/20 to-orange-900/20 rounded-lg border border-yellow-500/30 p-6">
+          <div className="mb-4">
+            <h3 className="text-xl font-bold text-yellow-400 flex items-center">
+              🦁 Related Visual Assets
+            </h3>
+            <p className="text-gray-400 mt-1">Property analysis assets and AI-generated content</p>
+          </div>
+          <SamFoxGalleryStrip 
+            filterType="ai-generated,screenshot"
+            title="AI Valuation Assets"
+            readOnly={true}
+            showFullScreen={true}
+          />
         </section>
       </div>
     </div>

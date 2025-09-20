@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { SamFoxGalleryStrip } from "@/components/samfox-gallery";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { useState, useEffect } from "react";
@@ -454,6 +455,22 @@ export default function AILogicDashboard() {
               🌍 Explore All 188 AI Brands
             </Button>
           </div>
+        </section>
+
+        {/* SamFox AI Grid Assets Strip */}
+        <section className="bg-gradient-to-r from-yellow-900/10 to-purple-900/10 rounded-lg border border-yellow-500/30 p-6 mx-6">
+          <div className="mb-4">
+            <h3 className="text-xl font-bold text-yellow-400 flex items-center">
+              🦁 AI Logic System Assets
+            </h3>
+            <p className="text-gray-400 mt-1">Visual documentation and AI-generated system diagrams</p>
+          </div>
+          <SamFoxGalleryStrip 
+            filterType="ai-generated,architecture,roadmap"
+            title="AI System Visuals"
+            readOnly={true}
+            showFullScreen={true}
+          />
         </section>
       </div>
 

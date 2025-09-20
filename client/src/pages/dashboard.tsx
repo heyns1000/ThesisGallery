@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useWebSocket } from "@/hooks/use-websocket";
 import { StatsCard } from "@/components/ui/stats-card";
+import { SamFoxGalleryWidget } from "@/components/samfox-gallery";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -238,8 +239,8 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Recent Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Recent Activity & Assets */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
         <div className="bg-card rounded-lg border border-border">
           <div className="px-6 py-4 border-b border-border">
             <h3 className="text-lg font-semibold text-foreground">Ecosystem Progress</h3>
@@ -358,6 +359,15 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
+        </div>
+        
+        {/* SamFox Gallery Widget */}
+        <div className="xl:col-span-1 lg:col-span-2">
+          <SamFoxGalleryWidget 
+            title="🦁 SamFox Visual Assets"
+            limit={4}
+            showUpload={true}
+          />
         </div>
       </div>
     </div>
