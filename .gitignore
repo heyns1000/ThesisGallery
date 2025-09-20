@@ -4,3 +4,19 @@ dist
 server/public
 vite.config.ts.*
 *.tar.gz
+
+# Security: Prevent credential files from being committed
+*.env
+.env.*
+client_secret_*.json
+*client_secret*.json
+*credentials*.json
+*oauth*.json
+*service-account*.json
+*firebase-adminsdk*.json
+
+# Prevent any files containing sensitive data
+*secret*
+*password*
+*token*
+*key*.json

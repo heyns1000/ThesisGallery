@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import { 
   Shield, 
   Globe, 
@@ -13,10 +14,15 @@ import {
   BarChart3,
   MessageSquare
 } from "lucide-react";
+import { SiGoogle } from "react-icons/si";
 
 export default function Landing() {
   const handleLogin = () => {
     window.location.href = "/api/login";
+  };
+
+  const handleGoogleLogin = () => {
+    window.location.href = "/api/auth/google";
   };
 
   return (
@@ -36,16 +42,38 @@ export default function Landing() {
             Complete business ecosystem integration platform featuring sacred Baobab™ foundation, 
             LoopPay™ sovereign payment system, and comprehensive AI-powered management across 72 applications.
           </p>
-          <div className="flex justify-center mt-6">
-            <Button 
-              onClick={handleLogin}
-              size="lg"
-              className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 px-8"
-              data-testid="button-login"
-            >
-              <Shield className="w-5 h-5 mr-2" />
-              Sign In to Access Hub
-            </Button>
+          <div className="flex flex-col items-center gap-4 mt-6">
+            <div className="flex flex-col sm:flex-row gap-3 items-center">
+              <Button 
+                onClick={handleLogin}
+                size="lg"
+                className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 px-8"
+                data-testid="button-login"
+              >
+                <Shield className="w-5 h-5 mr-2" />
+                Sign In with Replit
+              </Button>
+              
+              <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                <Separator className="w-8" />
+                <span className="text-sm font-medium">OR</span>
+                <Separator className="w-8" />
+              </div>
+              
+              <Button 
+                onClick={handleGoogleLogin}
+                size="lg"
+                variant="outline"
+                className="border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 px-8"
+                data-testid="button-google-login"
+              >
+                <SiGoogle className="w-4 h-4 mr-2 text-red-500" />
+                Sign In with Google
+              </Button>
+            </div>
+            <p className="text-sm text-gray-600 dark:text-gray-400 max-w-md text-center">
+              Choose your preferred authentication method to access the Fruitful Global Master Hub
+            </p>
           </div>
         </div>
 
@@ -202,14 +230,25 @@ export default function Landing() {
               entire business ecosystem, providing wisdom-driven guidance across all 72 applications 
               and 56+ brands in our global operations.
             </p>
-            <Button 
-              onClick={handleLogin}
-              variant="outline"
-              className="border-amber-600 text-amber-700 hover:bg-amber-50 dark:border-amber-400 dark:text-amber-400 dark:hover:bg-amber-950"
-              data-testid="button-login-secondary"
-            >
-              Begin Your Journey
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Button 
+                onClick={handleLogin}
+                variant="outline"
+                className="border-amber-600 text-amber-700 hover:bg-amber-50 dark:border-amber-400 dark:text-amber-400 dark:hover:bg-amber-950"
+                data-testid="button-login-secondary"
+              >
+                Begin Your Journey (Replit)
+              </Button>
+              <Button 
+                onClick={handleGoogleLogin}
+                variant="outline"
+                className="border-amber-600 text-amber-700 hover:bg-amber-50 dark:border-amber-400 dark:text-amber-400 dark:hover:bg-amber-950"
+                data-testid="button-google-login-secondary"
+              >
+                <SiGoogle className="w-4 h-4 mr-2" />
+                Begin with Google
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>

@@ -1,5 +1,6 @@
 import * as client from "openid-client";
 import { Strategy, type VerifyFunction } from "openid-client/passport";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 
 import passport from "passport";
 import session from "express-session";
@@ -39,6 +40,7 @@ export function getSession() {
     cookie: {
       httpOnly: true,
       secure: true,
+      sameSite: 'lax',
       maxAge: sessionTtl,
     },
   });
@@ -66,6 +68,29 @@ async function upsertUser(
   });
 }
 
+// Google OAuth user mapping function
+async function upsertGoogleUser(
+  profile: any
+) {
+  await storage.upsertUser({
+    id: `google_${profile.id}`,
+    email: profile.emails?.[0]?.value,
+    firstName: profile.name?.givenName,
+    lastName: profile.name?.familyName,
+    profileImageUrl: profile.photos?.[0]?.value,
+  });
+  
+  return {
+    id: `google_${profile.id}`,
+    email: profile.emails?.[0]?.value,
+    firstName: profile.name?.givenName,
+    lastName: profile.name?.familyName,
+    profileImageUrl: profile.photos?.[0]?.value,
+    provider: 'google'
+    // accessToken removed for security - not stored in session
+  };
+}
+
 export async function setupAuth(app: Express) {
   app.set("trust proxy", 1);
   app.use(getSession());
@@ -84,6 +109,7 @@ export async function setupAuth(app: Express) {
     verified(null, user);
   };
 
+  // Setup Replit OAuth strategies
   for (const domain of process.env
     .REPLIT_DOMAINS!.split(",")) {
     const strategy = new Strategy(
@@ -96,6 +122,29 @@ export async function setupAuth(app: Express) {
       verify,
     );
     passport.use(strategy);
+  }
+
+  // Setup Google OAuth strategy
+  if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+    const googleStrategy = new GoogleStrategy(
+      {
+        clientID: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        callbackURL: "/api/auth/google/callback",
+        scope: ["profile", "email"],
+        state: true  // Enable CSRF protection
+      },
+      async (accessToken: string, refreshToken: string, profile: any, done: any) => {
+        try {
+          // Remove accessToken from session for security - only store user data
+          const user = await upsertGoogleUser(profile);
+          return done(null, user);
+        } catch (error) {
+          return done(error, null);
+        }
+      }
+    );
+    passport.use(googleStrategy);
   }
 
   passport.serializeUser((user: Express.User, cb) => cb(null, user));
@@ -115,14 +164,35 @@ export async function setupAuth(app: Express) {
     })(req, res, next);
   });
 
+  // Google OAuth routes
+  app.get("/api/auth/google", 
+    passport.authenticate("google", { scope: ["profile", "email"] })
+  );
+
+  app.get("/api/auth/google/callback",
+    passport.authenticate("google", { 
+      successRedirect: "/",
+      failureRedirect: "/api/login"
+    })
+  );
+
   app.get("/api/logout", (req, res) => {
+    const user = req.user as any;
+    
     req.logout(() => {
-      res.redirect(
-        client.buildEndSessionUrl(config, {
-          client_id: process.env.REPL_ID!,
-          post_logout_redirect_uri: `${req.protocol}://${req.hostname}`,
-        }).href
-      );
+      // Handle logout correctly based on the provider
+      if (user && user.provider === 'google') {
+        // For Google users, simple redirect without Replit end-session
+        res.redirect('/');
+      } else {
+        // For Replit OAuth users, use proper end-session
+        res.redirect(
+          client.buildEndSessionUrl(config, {
+            client_id: process.env.REPL_ID!,
+            post_logout_redirect_uri: `${req.protocol}://${req.hostname}`,
+          }).href
+        );
+      }
     });
   });
 }
@@ -130,7 +200,17 @@ export async function setupAuth(app: Express) {
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
   const user = req.user as any;
 
-  if (!req.isAuthenticated() || !user.expires_at) {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  // Handle Google OAuth users (they don't have expires_at)
+  if (user.provider === 'google') {
+    return next();
+  }
+
+  // Handle Replit OAuth users with token refresh
+  if (!user.expires_at) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
