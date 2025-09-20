@@ -3210,7 +3210,7 @@ May this wisdom serve your journey well! 🌳✨`
       const result = await eurekaGenerator.generatePages({
         sector,
         template,
-        count: Math.min(count, 1000), // Limit to 1000 pages per request
+        count: Math.min(count, 10000), // Limit to 10,000 pages per request for enterprise usage
         outputDir: 'generated_pages'
       });
 

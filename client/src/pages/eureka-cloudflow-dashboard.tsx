@@ -42,8 +42,24 @@ export default function EurekaCloudflowDashboard() {
   const [autoDeploy, setAutoDeploy] = useState(true);
   const [lastGeneration, setLastGeneration] = useState<GenerationResult | null>(null);
 
-  const sectors = ['agriculture', 'education', 'housing', 'wildlife', 'fintech', 'healthcare', 'energy'];
-  const templates = ['croplink', 'smart-toys', 'real-estate', 'grid-nodes', 'payment-hub', 'medical-ai', 'solar-grid'];
+  // Dynamic sectors from your actual business ecosystem
+  const sectors = [
+    'agriculture-biotech', 'education-smart-toys', 'housing-sector', 'wildlife-grid', 
+    'fintech-vault', 'ai-logic-systems', 'mining-ecosystem', 'real-estate',
+    'fruitful-america', 'samfox-studio', 'banimal-platform', 'looppay-sovereign',
+    'seedling-languages', 'data-pipeline', 'enterprise-email', 'multi-channel',
+    'youth-education', 'global-platform', 'tesis-omni', 'strategic-sell',
+    'cloudflow-eureka', 'daily-summary', 'vault-payments', 'team-onboarding'
+  ];
+  
+  // Dynamic templates based on your platform types
+  const templates = [
+    'croplink', 'smart-toys', 'real-estate', 'grid-nodes', 'payment-hub', 
+    'ai-dashboard', 'mining-ops', 'vault-portal', 'studio-gallery', 
+    'brand-showcase', 'language-learning', 'data-analytics', 'email-campaigns',
+    'messaging-hub', 'project-scrolls', 'treaty-platform', 'omni-render',
+    'sovereign-portal', 'cloudflow-engine', 'summary-extract'
+  ];
 
   useEffect(() => {
     fetchCloudflowStatus();
@@ -98,7 +114,7 @@ export default function EurekaCloudflowDashboard() {
         body: JSON.stringify({ 
           sector, 
           page: template, 
-          count: Math.min(count, 1000),
+          count: Math.min(count, 10000),
           autoDeploy 
         })
       });
@@ -143,13 +159,41 @@ export default function EurekaCloudflowDashboard() {
             Eureka Cloudflow Dashboard
           </h1>
           <p className="text-lg md:text-xl opacity-90 max-w-3xl mx-auto">
-            High-speed page generation engine with automated CDN deployment and 
-            continuous sector synchronization across the FAA™ ecosystem.
+            Enterprise-scale page generation engine supporting up to 10,000 pages per deployment
+            with automated CDN integration across your 1.8GB business ecosystem.
           </p>
         </div>
       </div>
 
       <div className="container mx-auto p-4 md:p-8">
+        {/* Business Ecosystem Overview */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+          <Card className="bg-gradient-to-br from-orange-50 to-yellow-50 dark:from-orange-900 dark:to-yellow-900">
+            <CardContent className="p-6 text-center">
+              <div className="text-3xl font-bold text-orange-600">24</div>
+              <p className="text-sm text-orange-800 dark:text-orange-300">Active Business Sectors</p>
+            </CardContent>
+          </Card>
+          <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900 dark:to-indigo-900">
+            <CardContent className="p-6 text-center">
+              <div className="text-3xl font-bold text-blue-600">20</div>
+              <p className="text-sm text-blue-800 dark:text-blue-300">Template Variations</p>
+            </CardContent>
+          </Card>
+          <Card className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900 dark:to-emerald-900">
+            <CardContent className="p-6 text-center">
+              <div className="text-3xl font-bold text-green-600">10K</div>
+              <p className="text-sm text-green-800 dark:text-green-300">Max Pages Per Deploy</p>
+            </CardContent>
+          </Card>
+          <Card className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-900 dark:to-violet-900">
+            <CardContent className="p-6 text-center">
+              <div className="text-3xl font-bold text-purple-600">1.8GB</div>
+              <p className="text-sm text-purple-800 dark:text-purple-300">Business Ecosystem</p>
+            </CardContent>
+          </Card>
+        </div>
+
         {/* Status Overview */}
         <Card className="mb-8">
           <CardHeader>
@@ -260,7 +304,8 @@ export default function EurekaCloudflowDashboard() {
                   value={count} 
                   onChange={(e) => setCount(Number(e.target.value))}
                   min="1" 
-                  max="1000"
+                  max="10000"
+                  placeholder="Up to 10,000 pages"
                 />
               </div>
               
