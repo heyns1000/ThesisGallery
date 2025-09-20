@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { 
   Moon, Zap, TrendingDown, Globe, Calendar, Clock, 
   Shield, AlertTriangle, Target, BarChart3, 
-  ArrowDown, Sparkles, Database, Radio
+  ArrowDown, Sparkles, Database, Radio, Broadcast
 } from "lucide-react";
 
 // Strategic Sell Scroll Data - "Feb the Moon" Blast Light
