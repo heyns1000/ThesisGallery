@@ -1,7 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 
 const smartToysModules = [
@@ -164,10 +163,6 @@ const getColorClasses = (color: string) => {
 };
 
 export default function EducationDashboard() {
-  const { data: systemStats } = useQuery({
-    queryKey: ["/api/system/stats"],
-  });
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 text-white">
       {/* Header */}
