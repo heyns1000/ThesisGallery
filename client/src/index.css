@@ -105,8 +105,10 @@
 
   body {
     @apply font-sans antialiased bg-background text-foreground;
-    background: linear-gradient(135deg, hsl(222, 84%, 4%) 0%, hsl(215, 32%, 15%) 100%);
+    background: linear-gradient(135deg, hsl(222, 84%, 2%) 0%, hsl(215, 32%, 8%) 50%, hsl(222, 84%, 4%) 100%);
+    background-attachment: fixed;
     min-height: 100vh;
+    line-height: 1.6;
   }
 }
 
@@ -123,12 +125,13 @@
   }
 
   .glow-effect {
-    box-shadow: 0 0 20px hsla(239, 84%, 67%, 0.3);
-    transition: box-shadow 0.3s ease;
+    box-shadow: 0 0 20px hsla(239, 84%, 67%, 0.4), 0 0 40px hsla(239, 84%, 67%, 0.1);
+    transition: all 0.3s ease;
   }
 
   .glow-effect:hover {
-    box-shadow: 0 0 30px hsla(239, 84%, 67%, 0.5);
+    box-shadow: 0 0 30px hsla(239, 84%, 67%, 0.6), 0 0 60px hsla(239, 84%, 67%, 0.2);
+    transform: scale(1.02);
   }
 
   .chat-bubble {
@@ -136,8 +139,10 @@
   }
 
   .document-preview {
-    background: linear-gradient(145deg, hsl(222, 84%, 5%) 0%, hsl(215, 32%, 18%) 100%);
-    border: 1px solid hsl(215, 32%, 27%);
+    background: linear-gradient(145deg, hsl(222, 84%, 8%) 0%, hsl(215, 32%, 22%) 100%);
+    border: 1px solid hsl(215, 32%, 35%);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
   }
 
   .status-indicator {
@@ -157,14 +162,16 @@
   }
 
   .brand-card {
-    background: radial-gradient(circle at top right, hsl(222, 84%, 8%), hsl(222, 84%, 4%));
-    border: 1px solid hsl(215, 32%, 27%);
+    background: radial-gradient(circle at top right, hsl(222, 84%, 12%), hsl(222, 84%, 6%));
+    border: 1px solid hsl(215, 32%, 35%);
     transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
 
   .brand-card:hover {
-    transform: translateY(-2px);
+    transform: translateY(-4px);
     border-color: hsl(239, 84%, 67%);
+    box-shadow: 0 8px 24px rgba(156, 163, 255, 0.2);
   }
 }
 
@@ -188,6 +195,38 @@
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
+  }
+
+  /* Enhanced preview display utilities */
+  .enhanced-contrast {
+    background: linear-gradient(135deg, hsl(222, 84%, 8%) 0%, hsl(215, 32%, 20%) 100%);
+    border: 1px solid hsl(215, 32%, 40%);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  }
+
+  .text-enhanced {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+
+  .status-enhanced {
+    background: linear-gradient(90deg, hsl(84, 81%, 44%) 0%, hsl(147, 79%, 42%) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 600;
+  }
+
+  .card-enhanced {
+    backdrop-filter: blur(12px);
+    background: linear-gradient(135deg, 
+      hsla(222, 84%, 8%, 0.9) 0%, 
+      hsla(215, 32%, 15%, 0.8) 50%, 
+      hsla(222, 84%, 6%, 0.9) 100%
+    );
+    border: 1px solid hsla(215, 32%, 40%, 0.6);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 hsla(210, 40%, 98%, 0.1);
   }
 }
 

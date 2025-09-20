@@ -20,21 +20,21 @@ export function StatsCard({
   className 
 }: StatsCardProps) {
   return (
-    <div className={cn("bg-card rounded-lg p-6 border border-border glow-effect", className)}>
+    <div className={cn("card-enhanced rounded-lg p-6 border border-border glow-effect hover:scale-[1.02] transition-all duration-300", className)}>
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-muted-foreground text-sm">{title}</p>
-          <p className="text-3xl font-bold text-foreground">{value}</p>
+          <p className="text-muted-foreground text-sm font-medium">{title}</p>
+          <p className="text-3xl font-bold text-foreground text-enhanced">{value}</p>
         </div>
-        <div className={cn("p-3 rounded-lg", iconBg)}>
+        <div className={cn("p-3 rounded-lg shadow-lg", iconBg)}>
           <i className={`${icon} text-xl`}></i>
         </div>
       </div>
       {change && (
         <div className="mt-4">
           <span className={cn(
-            "text-sm",
-            changeType === "positive" ? "text-accent" :
+            "text-sm font-semibold",
+            changeType === "positive" ? "status-enhanced" :
             changeType === "negative" ? "text-destructive" :
             "text-muted-foreground"
           )}>

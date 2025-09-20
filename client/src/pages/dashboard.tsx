@@ -50,18 +50,18 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background text-foreground p-6">
-      <header className="bg-card border-b border-border px-6 py-4 -mx-6 -mt-6 mb-6 rounded-lg">
+      <header className="card-enhanced border-b border-border px-6 py-4 -mx-6 -mt-6 mb-6 rounded-lg">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-foreground">🌳 Fruitful Global Command Center</h2>
+            <h2 className="text-2xl font-bold text-foreground text-enhanced">🌳 Fruitful Global Command Center</h2>
             <p className="text-muted-foreground">Master Hub for Business Ecosystem Integration - Sacred Baobab™ Foundation</p>
           </div>
           <div className="flex items-center space-x-4">
-            <div className="status-indicator bg-secondary rounded-lg px-3 py-2">
-              <span className="text-xs text-secondary-foreground">🟢 VaultMesh™: Active</span>
+            <div className="status-indicator enhanced-contrast rounded-lg px-3 py-2">
+              <span className="text-xs status-enhanced">🟢 VaultMesh™: Active</span>
             </div>
-            <div className="status-indicator bg-accent/10 rounded-lg px-3 py-2">
-              <span className="text-xs text-accent">⚡ TreatySync: Online</span>
+            <div className="status-indicator enhanced-contrast rounded-lg px-3 py-2">
+              <span className="text-xs status-enhanced">⚡ TreatySync: Online</span>
             </div>
             <button 
               className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:opacity-90 transition-opacity"
