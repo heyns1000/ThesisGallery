@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { useInteractivity } from "@/lib/useInteractivity";
 
 interface Contact {
   id: string;
@@ -71,6 +72,7 @@ export default function ContactManagementPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { trigger } = useInteractivity();
 
   // Fetch contacts with filters
   const { data: contacts = [], isLoading: contactsLoading } = useQuery({
@@ -223,7 +225,14 @@ export default function ContactManagementPage() {
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
-                <Card className="border-dashed border-2 border-gray-300 dark:border-gray-600">
+                <Card 
+                  className="border-dashed border-2 border-gray-300 dark:border-gray-600 cursor-pointer hover:border-blue-400 transition-colors"
+                  onClick={() => {
+                    trigger('Contact Management file upload area clicked');
+                    fileInputRef.current?.click();
+                  }}
+                  data-testid="card-file-upload"
+                >
                   <CardContent className="p-6 text-center">
                     <Upload className="h-12 w-12 mx-auto text-gray-400 mb-4" />
                     <div className="space-y-2">
@@ -249,19 +258,35 @@ export default function ContactManagementPage() {
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold">Processing Features</h3>
                   <div className="space-y-3">
-                    <div className="flex items-center gap-3">
+                    <div 
+                      className="flex items-center gap-3 cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900/20 p-2 rounded transition-colors"
+                      onClick={() => trigger('Contact Management - FAA Unique Reference Generation clicked')}
+                      data-testid="feature-unique-reference"
+                    >
                       <Database className="h-5 w-5 text-blue-500" />
                       <span>FAA™ Unique Reference Generation</span>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div 
+                      className="flex items-center gap-3 cursor-pointer hover:bg-green-50 dark:hover:bg-green-900/20 p-2 rounded transition-colors"
+                      onClick={() => trigger('Contact Management - Automatic Data Deduplication clicked')}
+                      data-testid="feature-deduplication"
+                    >
                       <Users className="h-5 w-5 text-green-500" />
                       <span>Automatic Data Deduplication</span>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div 
+                      className="flex items-center gap-3 cursor-pointer hover:bg-purple-50 dark:hover:bg-purple-900/20 p-2 rounded transition-colors"
+                      onClick={() => trigger('Contact Management - Flexible Schema Mapping clicked')}
+                      data-testid="feature-schema-mapping"
+                    >
                       <FileSpreadsheet className="h-5 w-5 text-purple-500" />
                       <span>Flexible Schema Mapping</span>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div 
+                      className="flex items-center gap-3 cursor-pointer hover:bg-orange-50 dark:hover:bg-orange-900/20 p-2 rounded transition-colors"
+                      onClick={() => trigger('Contact Management - Lead Scoring & Classification clicked')}
+                      data-testid="feature-lead-scoring"
+                    >
                       <BarChart3 className="h-5 w-5 text-orange-500" />
                       <span>Lead Scoring & Classification</span>
                     </div>
