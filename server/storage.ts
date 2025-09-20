@@ -1625,6 +1625,278 @@ export class MemStorage implements IStorage {
       this.systemStats.lastUpdated = new Date();
     }
   }
+
+  // Check if storage is empty (for automatic initialization)
+  async isStorageEmpty(): Promise<boolean> {
+    const totalData = this.documents.size + this.brands.size + this.conversations.size + this.galleries.size;
+    return totalData === 0;
+  }
+
+  // Idempotency check to prevent duplicate initialization
+  private initializationInProgress = false;
+  private initializationCompleted = false;
+
+  async isInitializationCompleted(): Promise<boolean> {
+    return this.initializationCompleted;
+  }
+
+  // Comprehensive sample data initialization for 1.8GB ecosystem showcase
+  async initializeComprehensiveSampleData(): Promise<void> {
+    // Prevent duplicate initialization
+    if (this.initializationInProgress) {
+      console.log("🔄 Data initialization already in progress, skipping...");
+      return;
+    }
+    
+    if (this.initializationCompleted) {
+      console.log("✅ Data initialization already completed, skipping...");
+      return;
+    }
+
+    this.initializationInProgress = true;
+    
+    try {
+      console.log("🚀 Starting comprehensive sample data initialization...");
+      
+      // Initialize core system stats first
+      await this.updateSystemStats({
+      totalDocuments: 0,
+      totalConversations: 0,
+      totalBrands: 0,
+      totalWildlifeNodes: 45,
+      totalAmericanStates: 13,
+      vaultMeshStatus: "active",
+      totalTeamMembers: 0,
+      totalProjects: 0,
+      samFoxStudio: {
+        totalLicenses: 847,
+        activeTreaties: 34,
+        globalStatus: "Open for Business",
+        vaultLink: true
+      },
+      lastUpdated: new Date()
+    });
+
+    // 1. POPULATE COMPREHENSIVE BRAND ECOSYSTEM (56+ brands)
+    const brandCategories = [
+      { category: "core", brands: ["Fruitful Global™", "FAA™ System", "Baobab Security™", "VaultMesh™", "TreatySync™", "Sacred Baobab™ Foundation", "Atom-Level Verification™"] },
+      { category: "entertainment", brands: ["VIBE PRO™", "FAA VIBE™", "SamFox Studio™", "Crate Dance™ Africa", "VIBE ULTRA™", "SONIC VIBE™", "DIGITAL VIBE™", "VIBE MASTERS™"] },
+      { category: "mining", brands: ["Mining Grid™", "Quantum Nexus™", "PulseGrid Trading™", "Resource Intelligence™", "Mining Analytics™", "Extraction Pro™", "Mineral Vision™"] },
+      { category: "technology", brands: ["AI Logic Grid™", "Global View GPT™", "CodeNest Platform™", "GitHub Repository Browser™", "Eureka Cloudflow™", "Data Pipeline™", "Minerva Platform™"] },
+      { category: "real-estate", brands: ["FAA Real Estate AI™", "Property Intelligence™", "Market Forecasting™", "Valuation AI™", "Agent Insights™", "Mortgage Risk Grid™", "Real Estate Pro™"] },
+      { category: "agriculture", brands: ["Agriculture-Biotech Platform™", "Seedling Languages™", "Playing with the Seed™", "Fruitful America™", "Harvest Intelligence™", "Crop Vision™", "Farm Analytics™"] },
+      { category: "education", brands: ["FAA Youth & Education Brands™", "Education Sector™", "Smart Toys Platform™", "Learning Grid™", "Knowledge Hub™", "Academic Intelligence™", "Study Pro™"] },
+      { category: "ecommerce", brands: ["Banimal™ FAA Platform", "LoopPay™ Sovereign Portal", "Vault Payments™", "Global Checkout™", "Payment Intelligence™", "Commerce Grid™", "Trade Pro™"] },
+      { category: "communication", brands: ["Enterprise Email™", "Multi-Channel Hub™", "WhatsApp Business™", "SMS Grid™", "Push Notifications™", "Message Intelligence™", "Communication Pro™"] },
+      { category: "housing", brands: ["Housing Sector™", "Payroll OS™", "Team Onboarding™", "Contact Management™", "Workforce Intelligence™", "HR Grid™", "People Pro™"] }
+    ];
+
+    for (const categoryGroup of brandCategories) {
+      for (const brandName of categoryGroup.brands) {
+        await this.createBrand({
+          name: brandName,
+          category: categoryGroup.category,
+          status: "protected",
+          description: `Advanced ${categoryGroup.category} solution under FAA™ Atom-Level Verification™`,
+          valuation: `$${(Math.random() * 50 + 10).toFixed(1)}M`,
+          protectionLevel: "Atom-Level Verification™",
+          registrationDate: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000)
+        });
+      }
+    }
+
+    // 2. POPULATE BUSINESS DOCUMENTS (5-10 comprehensive docs)
+    const businessDocuments = [
+      { title: "FAA™ Global Master Hub Architecture", type: "architecture", content: "Comprehensive system architecture documentation for the 1.8GB Fruitful Global ecosystem, including Sacred Baobab™ Foundation integration, VaultMesh™ protocols, and TreatySync™ implementation. This document outlines the complete technical infrastructure supporting 56+ brands across multiple sectors." },
+      { title: "Sacred Baobab™ Foundation - Business Charter", type: "legal", content: "Official business charter and founding documents for the Sacred Baobab™ Foundation, established August 7, 2021 in Kruger. Outlines the mission, vision, and strategic objectives for global ecosystem expansion across entertainment, mining, technology, real estate, agriculture, education, ecommerce, communication, and housing sectors." },
+      { title: "VaultMesh™ Protocol Documentation", type: "technical", content: "Technical specifications and implementation guide for VaultMesh™ Diamond Tier security protocols. Includes Atom-Level Verification™ processes, TreatySync™ integration patterns, and cross-system authentication mechanisms supporting the entire FAA™ ecosystem infrastructure." },
+      { title: "Fruitful America™ - 50 State Expansion Strategy", type: "strategy", content: "Comprehensive expansion strategy for Fruitful America™ operations across all 50 US states. Currently operational in 13 states with Quantum Nexus™ technology deployment. Document includes market analysis, regulatory compliance, and local manufacturing partnerships." },
+      { title: "SamFox Studio™ - 847 License Portfolio Report", type: "portfolio", content: "Complete portfolio analysis of SamFox Studio™ intellectual property holdings including 847 active licenses, 34 active treaties, and global business status. Covers entertainment industry partnerships, licensing agreements, and revenue projections across international markets." },
+      { title: "Mining Ecosystem - Resource Intelligence Report", type: "mining", content: "Comprehensive analysis of mining operations powered by PulseGrid Trading™ and Resource Intelligence™ systems. Covers 45 wildlife nodes integration, environmental compliance, and sustainable extraction methodologies across multiple geographic regions." },
+      { title: "AI & Logic Grid - Machine Learning Infrastructure", type: "ai", content: "Technical documentation for AI Logic Grid™ systems including Global View GPT™ integration, machine learning model architectures, and intelligent automation workflows. Covers natural language processing, predictive analytics, and decision support systems." },
+      { title: "Real Estate AI™ - Property Intelligence Platform", type: "realestate", content: "Platform documentation for FAA Real Estate AI™ including Valuation AI™, Market Forecasting™, Agent Insights™, and Mortgage Risk Grid™ modules. Covers 95% prediction accuracy systems, instant processing capabilities, and comprehensive market analysis tools." },
+      { title: "Enterprise Communication Hub - Multi-Channel Integration", type: "communication", content: "System documentation for Enterprise Email™ and Multi-Channel Hub™ platforms. Includes WhatsApp Business™ integration, SMS Grid™ capabilities, push notification systems, and comprehensive message intelligence analytics across all communication channels." },
+      { title: "Compliance & Automation - Regulatory Framework", type: "compliance", content: "Complete regulatory compliance framework documentation covering all FAA™ ecosystem operations. Includes automated compliance monitoring, audit trails, regulatory reporting, and cross-jurisdictional compliance management across all operational sectors." }
+    ];
+
+    for (const doc of businessDocuments) {
+      await this.createDocument({
+        title: doc.title,
+        content: doc.content,
+        type: doc.type,
+        tags: ["faa", "ecosystem", "business", doc.type],
+        author: "FAA™ System",
+        status: "published"
+      });
+    }
+
+    // 3. POPULATE VISUAL GALLERY (roadmaps, AI-generated assets)
+    const visualAssets = [
+      { title: "FAA™ Global Ecosystem Roadmap 2025", type: "roadmap", description: "Comprehensive visual roadmap showing all 56+ brands integration timeline and milestone achievements" },
+      { title: "Sacred Baobab™ Foundation - AI Generated Concept Art", type: "ai-generated", description: "AI-generated conceptual artwork representing the Sacred Baobab™ Foundation spiritual and technological integration" },
+      { title: "VaultMesh™ Diamond Tier Architecture Diagram", type: "architecture", description: "Technical architecture visualization showing VaultMesh™ security protocols and system integration points" },
+      { title: "Fruitful America™ - 50 States Expansion Map", type: "roadmap", description: "Geographic visualization of Fruitful America™ expansion strategy across all US states with current 13-state operational status" },
+      { title: "SamFox Studio™ - Global Entertainment Network", type: "brand-asset", description: "Visual representation of SamFox Studio™ global entertainment partnerships and 847 active license portfolio" },
+      { title: "Mining Ecosystem - Wildlife Integration Concept", type: "ai-generated", description: "AI-generated visualization showing sustainable mining operations integrated with 45 wildlife conservation nodes" },
+      { title: "AI Logic Grid™ - Neural Network Architecture", type: "architecture", description: "Technical diagram showing AI Logic Grid™ neural network architecture and machine learning pipeline integration" },
+      { title: "Real Estate AI™ - Prediction Model Visualization", type: "screenshot", description: "Dashboard screenshot showing Real Estate AI™ 95% prediction accuracy systems and market analysis tools" },
+      { title: "Crate Dance™ Africa - Event Concept Art", type: "ai-generated", description: "AI-generated promotional artwork for Crate Dance™ Africa events and community engagement initiatives" },
+      { title: "Global View GPT™ - System Integration Map", type: "architecture", description: "Comprehensive system map showing Global View GPT™ integration across all FAA™ ecosystem platforms and services" }
+    ];
+
+    for (const asset of visualAssets) {
+      await this.createGalleryItem({
+        title: asset.title,
+        type: asset.type,
+        imageUrl: `/placeholder-images/${asset.type}-${Math.floor(Math.random() * 1000)}.jpg`,
+        description: asset.description,
+        tags: ["faa", "ecosystem", asset.type],
+        createdBy: "FAA™ Design System"
+      });
+    }
+
+    // 4. POPULATE AI CONVERSATION HISTORY
+    const aiConversations = [
+      {
+        title: "Brand Protection Strategy Discussion",
+        aiProvider: "ChatGPT",
+        messages: [
+          { role: "user", content: "Help me develop a comprehensive brand protection strategy for the 56+ brands in the FAA™ ecosystem." },
+          { role: "assistant", content: "I'll help you create a multi-layered brand protection strategy. For your FAA™ ecosystem with 56+ brands, I recommend: 1) Atom-Level Verification™ protocols for each brand, 2) VaultMesh™ Diamond Tier security implementation, 3) TreatySync™ cross-brand protection, 4) Global trademark registration, 5) Continuous monitoring systems. Let's start with the Sacred Baobab™ Foundation as the umbrella protection entity..." }
+        ],
+        messageCount: 12,
+        status: "archived"
+      },
+      {
+        title: "Global Ecosystem Architecture Planning",
+        aiProvider: "Gemini",
+        messages: [
+          { role: "user", content: "Design the technical architecture for a 1.8GB global business ecosystem with multiple integrated platforms." },
+          { role: "assistant", content: "For a 1.8GB global ecosystem, I recommend a microservices architecture with: 1) Central VaultMesh™ security layer, 2) TreatySync™ for cross-system communication, 3) Sacred Baobab™ Foundation as the core orchestration hub, 4) Individual platform APIs for each business sector, 5) Global View GPT™ for intelligent coordination. The architecture should support entertainment, mining, technology, real estate, agriculture, education, ecommerce, communication, and housing sectors..." }
+        ],
+        messageCount: 8,
+        status: "active"
+      },
+      {
+        title: "SamFox Studio™ Licensing Strategy",
+        aiProvider: "ChatGPT",
+        messages: [
+          { role: "user", content: "Optimize the licensing strategy for SamFox Studio™ with 847 active licenses and 34 treaties." },
+          { role: "assistant", content: "For SamFox Studio™ licensing optimization: 1) Categorize the 847 licenses by revenue potential and strategic value, 2) Analyze the 34 active treaties for renewal and expansion opportunities, 3) Implement automated license management through the FAA™ system, 4) Create tiered licensing structures for different market segments, 5) Establish global partnerships for international expansion..." }
+        ],
+        messageCount: 15,
+        status: "archived"
+      },
+      {
+        title: "AI Integration Across FAA™ Platforms",
+        aiProvider: "Gemini",
+        messages: [
+          { role: "user", content: "How can we integrate AI capabilities across all FAA™ ecosystem platforms for maximum efficiency?" },
+          { role: "assistant", content: "For comprehensive AI integration across your FAA™ ecosystem: 1) Deploy Global View GPT™ as the central intelligence hub, 2) Implement AI Logic Grid™ for cross-platform decision making, 3) Use Valuation AI™ for real estate intelligence, 4) Apply predictive analytics in Mining Ecosystem, 5) Integrate natural language processing in Enterprise Communication systems..." }
+        ],
+        messageCount: 10,
+        status: "active"
+      },
+      {
+        title: "Fruitful America™ Expansion Strategy",
+        aiProvider: "ChatGPT",
+        messages: [
+          { role: "user", content: "Create a detailed expansion plan for Fruitful America™ to reach all 50 US states from the current 13." },
+          { role: "assistant", content: "For Fruitful America™ nationwide expansion: 1) Priority states analysis based on market potential and regulatory environment, 2) Quantum Nexus™ technology deployment timeline, 3) Local manufacturing partnership strategies, 4) State-by-state compliance requirements, 5) Regional hub establishment for operational efficiency..." }
+        ],
+        messageCount: 18,
+        status: "archived"
+      }
+    ];
+
+    for (const conv of aiConversations) {
+      await this.createConversation({
+        title: conv.title,
+        aiProvider: conv.aiProvider,
+        messages: conv.messages,
+        messageCount: conv.messageCount,
+        status: conv.status,
+        createdAt: new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000)
+      });
+    }
+
+    // 5. POPULATE COMPLIANCE LOGS AND AUTOMATION DATA
+    const complianceLogs = [
+      { type: "brand-protection", message: "Atom-Level Verification™ completed for all 56+ brands in ecosystem", severity: "info" },
+      { type: "security", message: "VaultMesh™ Diamond Tier security protocols successfully deployed across all platforms", severity: "info" },
+      { type: "sync", message: "TreatySync™ protocol synchronization completed for SamFox Studio™ 34 active treaties", severity: "info" },
+      { type: "expansion", message: "Fruitful America™ regulatory compliance verified for 13 active states", severity: "info" },
+      { type: "ai", message: "Global View GPT™ intelligence systems operational with 99.7% uptime", severity: "info" },
+      { type: "mining", message: "Mining Ecosystem environmental compliance audit completed across 45 wildlife nodes", severity: "info" },
+      { type: "realestate", message: "Real Estate AI™ prediction accuracy maintained at 95% across all market segments", severity: "info" },
+      { type: "communication", message: "Multi-Channel Hub™ message delivery rate optimized to 98.5% across all channels", severity: "info" },
+      { type: "automation", message: "Enterprise Email™ automated campaigns deployed with 35.7% response rate", severity: "info" },
+      { type: "monitoring", message: "Comprehensive ecosystem health monitoring active across all 56+ brands", severity: "info" }
+    ];
+
+    for (const log of complianceLogs) {
+      await this.createComplianceLog({
+        type: log.type,
+        message: log.message,
+        severity: log.severity,
+        source: "FAA™ Automated Compliance System",
+        metadata: { ecosystem: "comprehensive", automated: true }
+      });
+    }
+
+    // 6. POPULATE PROCESSING QUEUE WITH ACTIVE OPERATIONS
+    const processingItems = [
+      { type: "brand-verification", title: "Verifying new VIBE™ brand variations", status: "processing" },
+      { type: "treaty-sync", title: "Synchronizing SamFox Studio™ international treaties", status: "completed" },
+      { type: "document-analysis", title: "AI analysis of business charter documents", status: "pending" },
+      { type: "gallery-optimization", title: "Optimizing visual assets for global distribution", status: "processing" },
+      { type: "compliance-audit", title: "Automated compliance check across all platforms", status: "completed" },
+      { type: "data-migration", title: "Migrating legacy data to VaultMesh™ secured storage", status: "processing" }
+    ];
+
+    for (const item of processingItems) {
+      await this.createProcessingQueueItem({
+        type: item.type,
+        title: item.title,
+        status: item.status,
+        priority: "high",
+        metadata: { ecosystem: "comprehensive", automated: true }
+      });
+    }
+
+    console.log("✅ Comprehensive sample data initialization completed!");
+    console.log("📊 Populated:", {
+      brands: this.brands.size,
+      documents: this.documents.size,
+      gallery: this.galleries.size,
+      conversations: this.conversations.size,
+      complianceLogs: this.complianceLogs.size,
+      processingItems: this.processingQueue.size
+    });
+    
+    this.initializationCompleted = true;
+    } finally {
+      this.initializationInProgress = false;
+    }
+  }
 }
 
 export const storage = new MemStorage();
+
+// Initialize sample data automatically on server startup if storage is empty
+(async () => {
+  try {
+    // Wait a moment for storage to be fully initialized
+    setTimeout(async () => {
+      if (await storage.isStorageEmpty()) {
+        console.log("🌱 Storage is empty, automatically initializing comprehensive sample data...");
+        await storage.initializeComprehensiveSampleData();
+        console.log("✅ Automatic sample data initialization completed on server startup!");
+      } else {
+        console.log("📊 Storage contains data, skipping automatic initialization");
+      }
+    }, 1000);
+  } catch (error) {
+    console.error("❌ Error during automatic initialization:", error);
+  }
+})();

@@ -1,12 +1,38 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useWebSocket } from "@/hooks/use-websocket";
 import { StatsCard } from "@/components/ui/stats-card";
 import { useEffect, useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 import type { SystemStats, Document, ComplianceLog } from "@shared/schema";
 
 export default function Dashboard() {
   const { subscribe } = useWebSocket();
   const [realtimeStats, setRealtimeStats] = useState<SystemStats | null>(null);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  
+  const loadSampleDataMutation = useMutation({
+    mutationFn: async () => {
+      return await apiRequest("POST", "/api/system/initialize-sample-data", {});
+    },
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/system/stats"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/compliance/logs"] });
+      toast({ description: data.message || "Sample data loaded successfully!" });
+    },
+    onError: (error: Error) => {
+      toast({ 
+        variant: "destructive",
+        description: `Failed to load sample data: ${error.message}` 
+      });
+    },
+  });
+  
+  const handleLoadSampleData = () => {
+    loadSampleDataMutation.mutate();
+  };
 
   const { data: stats } = useQuery<SystemStats>({
     queryKey: ["/api/system/stats"],
@@ -63,6 +89,17 @@ export default function Dashboard() {
             <div className="status-indicator enhanced-contrast rounded-lg px-3 py-2">
               <span className="text-xs status-enhanced">⚡ TreatySync: Online</span>
             </div>
+            {(!displayStats || (displayStats.totalBrands < 10 && displayStats.totalDocuments < 5)) && (
+              <button 
+                className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity font-semibold"
+                onClick={handleLoadSampleData}
+                disabled={loadSampleDataMutation.isPending}
+                data-testid="button-load-sample-data"
+              >
+                <i className={`fas ${loadSampleDataMutation.isPending ? 'fa-spinner fa-spin' : 'fa-seedling'} mr-2`}></i>
+                {loadSampleDataMutation.isPending ? 'Loading...' : 'Load Sample Data'}
+              </button>
+            )}
             <button 
               className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:opacity-90 transition-opacity"
               data-testid="button-new-upload"

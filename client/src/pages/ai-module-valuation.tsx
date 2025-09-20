@@ -9,7 +9,7 @@ export default function ValuationAIModule() {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
       {/* Header */}
       <div className="bg-gradient-to-r from-green-900 to-green-700 p-6">
-        <div className="max-w-6xl mx-auto">
+        <div className="w-full px-6">
           <div className="flex items-center gap-4 mb-4">
             <Link href="/faa-realestate-platform">
               <Button variant="outline" size="sm" className="bg-transparent border-green-300 text-green-300 hover:bg-green-800">
@@ -25,7 +25,7 @@ export default function ValuationAIModule() {
       </div>
 
       {/* Content */}
-      <div className="max-w-6xl mx-auto p-6 space-y-8">
+      <div className="w-full p-6 space-y-8">
         {/* Performance Metrics */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card className="bg-gray-950 border-green-500">

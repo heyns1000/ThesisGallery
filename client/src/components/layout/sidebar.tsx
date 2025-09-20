@@ -66,7 +66,7 @@ export function Sidebar() {
   const userProfile = user as UserProfile | undefined;
 
   return (
-    <aside className="w-64 min-w-[16rem] bg-card border-r border-border flex flex-col relative z-10">
+    <aside className="w-80 min-w-[20rem] bg-card border-r border-border flex flex-col relative z-10">
       <div className="p-6">
         <div className="gradient-border">
           <div className="gradient-border-inner p-4 text-center">

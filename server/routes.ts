@@ -157,6 +157,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Initialize comprehensive sample data for the 1.8GB ecosystem showcase
+  // Security: Admin-only endpoint in production
+  app.post("/api/system/initialize-sample-data", isAuthenticated, async (req, res) => {
+    // For now, allow all authenticated users. In production, add role check:
+    // if (!req.user?.role || req.user.role !== 'admin') {
+    //   return res.status(403).json({ error: "Admin access required" });
+    // }
+    try {
+      console.log("🚀 Starting comprehensive sample data initialization...");
+      await storage.initializeComprehensiveSampleData();
+      
+      // Get updated stats
+      const stats = await storage.getSystemStats();
+      
+      // Broadcast the system stats update so Dashboard refreshes automatically
+      broadcast({ type: 'system_stats', data: stats });
+      
+      res.json({ 
+        message: "✅ Comprehensive sample data initialization completed successfully!",
+        stats: {
+          brands: (await storage.getBrands()).length,
+          documents: (await storage.getDocuments()).length,
+          gallery: (await storage.getGalleryItems()).length,
+          conversations: (await storage.getConversations()).length,
+          complianceLogs: (await storage.getComplianceLogs()).length,
+          processingItems: (await storage.getProcessingQueue()).length
+        }
+      });
+    } catch (error) {
+      console.error("❌ Error initializing sample data:", error);
+      res.status(500).json({ error: "Failed to initialize sample data", details: error.message });
+    }
+  });
+
   // Document routes
   app.get("/api/documents", async (req, res) => {
     try {
