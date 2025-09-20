@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -15,9 +15,9 @@ import {
 } from "lucide-react";
 
 const PlayingWithTheSeed = () => {
-  const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
-  const [intentionVerified, setIntentionVerified] = useState(false);
-  const [atomLevelView, setAtomLevelView] = useState(false);
+  // Static values - no dynamic state needed
+  const intentionVerified = true;
+  const atomLevelView = false;
 
   // FAA™ Global Monitoring Data - 10 Core Brands
   const globalBrands = [
@@ -182,12 +182,6 @@ const PlayingWithTheSeed = () => {
     { name: "Worm Castings", purity: 99.1, atomicStructure: "Bio-Available NPK", source: "Red Wiggler Process" }
   ];
 
-  const intentionVerification = () => {
-    // Simple good intentions verification
-    const verification = Math.random() > 0.1; // 90% pass rate for good intentions
-    setIntentionVerified(verification);
-    return verification;
-  };
 
   const AtomLevelProgress = ({ value, label }: { value: number; label: string }) => (
     <div className="space-y-2">
@@ -236,7 +230,6 @@ const PlayingWithTheSeed = () => {
               <Button 
                 className="bg-white text-green-600 hover:bg-gray-100"
                 size="lg"
-                onClick={intentionVerification}
                 data-testid="button-verify-intentions"
               >
                 <Eye className="h-5 w-5 mr-2" />
@@ -267,7 +260,6 @@ const PlayingWithTheSeed = () => {
                 Please verify your commitment to positive impact.
               </p>
               <Button 
-                onClick={intentionVerification}
                 className="bg-gradient-to-r from-green-500 to-blue-500"
                 size="lg"
                 data-testid="button-verify-access"
@@ -745,7 +737,6 @@ const PlayingWithTheSeed = () => {
                         
                         <Button
                           variant="outline"
-                          onClick={() => setSelectedBrand(brand.id.toString())}
                           data-testid={`button-view-brand-${brand.id}`}
                         >
                           Atom View
