@@ -1,0 +1,156 @@
+The Replit Agent Prompting Playbook: Building VaultKey A-to-Z
+The Golden Rule: Be the Architect, Not the Client
+Your Replit agent is a world-class coder, but it is not a mind reader. It doesn't understand vague requests like "make it better" or "build the app." Your job is to be the architect who provides the blueprints. The more detailed the blueprint (your prompt), the better the result.
+
+The "17,000 Page" Problem: You don't prompt for 17,000 individual pages. You prompt for a single, perfect Application Core that handles routing, layout, and global state. All pages will plug into this core, inheriting its consistency. This is the core principle.
+
+Strategy for Max Autonomy Agents
+The screenshot you provided shows your agent's Autonomy Level is set to "Max." This enables a "long-running, hands-off building experience." We can leverage this by combining multiple phases of the playbook into a single, high-level Meta Prompt. Instead of giving the agent one instruction at a time, you give it the entire architectural plan and let it generate and execute the full task list.
+
+Meta Prompt for Foundation & Core Components (Phases 1 & 2 Combined)
+
+"Agent, your objective is to build the complete architectural foundation and core component library for the 'VaultKey for Elementor' React application.
+
+Execution Plan:
+
+Project Initialization: Initialize a new React project using Vite and JavaScript. Set up Tailwind CSS and create the standard src directory structure (components, pages, assets, lib).
+
+Design System: Create the tailwind.config.js and index.css files, defining the global styles, colors (grays), and fonts ('Inter') based on the previously supplied HTML files.
+
+Firebase Integration: Create the src/lib/firebase.js configuration file to initialize and export Firebase services.
+
+Application Core & Routing:
+
+Install react-router-dom.
+
+Build the MainLayout.jsx component with the shared header and footer, containing an <Outlet />.
+
+Convert all static HTML files (index.html, products.html, etc.) into page components within src/pages/.
+
+Implement the full routing system in App.jsx as defined in the playbook.
+
+Core Component Library:
+
+Build the VaultKeyButton.jsx component with props for children, onClick, variant, and disabled.
+
+Build the ProductCard.jsx component with props for icon, title, and description.
+
+Your Mandate: Generate a detailed task list to complete all of the above steps. Execute the plan autonomously. Review your code for issues and ensure the application is running without errors before you report completion. This entire process constitutes a single, unified task."
+
+Phase 1: Foundation & Architecture (Prompts A-D)
+This phase is about setting up the project so it's scalable and easy to manage.
+
+Objective: Create a clean, professional project structure and connect it to essential services.
+
+Example Prompt A: Initializing the Project
+
+"Initialize a new React project using Vite. Use JavaScript, not TypeScript. Set up Tailwind CSS for styling. Create a standard src directory with subdirectories for components, pages, assets, and lib."
+
+Example Prompt B: Establishing the Design System
+
+"Based on the products.html file, create a tailwind.config.js theme extension. Extract the primary colors (grays), fonts ('Inter'), and border-radius values and define them as reusable Tailwind classes. Create a src/index.css file to import the base Tailwind styles and define global body styles matching the HTML files."
+
+Example Prompt C: Setting up Firebase
+
+"Using the firebase library, create a configuration file at src/lib/firebase.js. It should initialize the Firebase app and export the Firestore database and Auth instances. Use environment variables for the Firebase config details."
+
+Example Prompt D: The Dynamic App Core (MASTER PROMPT)
+
+"Now, we will architect the core of the application to ensure all pages are dynamic and globally aligned.
+
+Install Router: Install react-router-dom.
+
+Create Master Layout: Create a new component src/components/MainLayout.jsx.
+
+This component will contain the common structure for ALL pages.
+
+Copy the <header> and <footer> sections from index.html and place them inside this component's main div.
+
+Between the header and footer, render an <Outlet /> component from react-router-dom. This is where the content of each individual page will be injected.
+
+Create Page Components: For each of the following HTML files (index.html, products.html, pricing.html, dashboard.html, about.html, features.html, licensing.html, terms.html, auth.html, metrics.html, vaultkey-vision.html), create a corresponding React component in the src/pages/ directory (e.g., HomePage.jsx, ProductsPage.jsx). For each component, copy only the content inside the <main> tag from the respective HTML file.
+
+Implement Routing: Open src/App.jsx.
+
+Import BrowserRouter, Routes, and Route from react-router-dom.
+
+Import your MainLayout component and all the page components you just created.
+
+Set up the routing structure like this:
+
+<BrowserRouter>
+  <Routes>
+    <Route element={<MainLayout />}>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/products" element={<ProductsPage />} />
+      <Route path="/pricing" element={<PricingPage />} />
+      <Route path="/dashboard" element={<DashboardPage />} />
+      <Route path="/about" element={<AboutPage />} />
+      <Route path="/features" element={<FeaturesPage />} />
+      <Route path="/licensing" element={<LicensingPage />} />
+      <Route path="/terms" element={<TermsPage />} />
+      <Route path="/auth" element={<AuthPage />} />
+      <Route path="/metrics" element={<MetricsPage />} />
+      <Route path="/vision" element={<VaultkeyVisionPage />} />
+    </Route>
+  </Routes>
+</BrowserRouter>
+
+Agent's Mandate: For all future requests to create new pages, you MUST follow this pattern: create the page component, import it into App.jsx, and add a new <Route> for it inside the MainLayout route. This ensures 100% consistency."
+
+Phase 2: Component-Driven Development (Prompts E-K)
+This is where we build the individual Lego bricks of our application. Start with the smallest, most common elements and build up.
+
+Objective: Create a library of reusable, styled, and functional UI components.
+
+Example Prompt E: The Atomic Button Component
+
+"Create a reusable React button component named VaultKeyButton in src/components/VaultKeyButton.jsx.
+Props: It must accept children (for the text), onClick (a function), variant (a string: 'primary', 'secondary', or 'danger'), and disabled (a boolean).
+Styling: Use Tailwind CSS. The 'primary' variant should match the main gray call-to-action buttons in products.html. The 'secondary' variant should have a darker gray, outlined style. The 'danger' variant should be red. Add hover and focus states. The disabled state should be grayed out and have a 'not-allowed' cursor."
+
+Example Prompt F: The Complex Card Component
+
+"Create a ProductCard component in src/components/ProductCard.jsx.
+Structure: It should mirror the layout of a product card from products.html. It needs an icon, a title, and a description.
+Props: It should accept icon (SVG or emoji), title, and description.
+Functionality: The card should have a main VaultKeyButton at the bottom with the text 'View Details'."
+
+Phase 3: Feature & Page Implementation (Prompts L-S)
+Now that you have the building blocks, you assemble them into full pages and add the business logic from your plan.
+
+Objective: Build the functional pages of the application by composing components and implementing the logic defined in business_plan.md.
+
+Example Prompt L: Building the Pricing Page
+
+"Refactor the PricingPage component in src/pages/PricingPage.jsx.
+Layout: Recreate the layout of pricing.html using a responsive Tailwind CSS grid.
+Content: Use the ProductCard component to display the 'Starter' and 'Pro' plans as defined in business_plan.md. Use the VaultKeyButton for the purchase CTAs on each card. Hard-code the pricing and feature data for now."
+
+Example Prompt M: Implementing License Activation Logic
+
+"Create a new page component src/pages/LicensePage.jsx.
+Functionality:
+
+Add an input field for the user to enter their license key.
+
+Add a VaultKeyButton with the text 'Activate License'.
+
+When the button is clicked, implement the vaultkey_check_license_status logic from the PHP example in business_plan.md as a client-side JavaScript function.
+
+This function should make an asynchronous fetch call to https://licensing.faa.zone/api/validate.
+
+Display a success message if the API returns a 'valid' status, and an error message otherwise."
+
+Phase 4: Testing, Deployment & Iteration (Prompts T-Z)
+An application is never truly "done." This ensures it's robust and can be easily updated.
+
+Objective: Ensure the application is bug-free, live, and maintainable.
+
+Example Prompt T: Writing Tests
+
+"Using Jest and React Testing Library, write a unit test for the VaultKeyButton component. The test should verify that the onClick handler is called when the button is clicked, and that it is NOT called when the button is disabled."
+
+Example Prompt Z: Refactoring
+
+"The PricingPage.jsx component currently has hard-coded data. Refactor it. Move the pricing plan data into a separate JSON file at src/data/pricingPlans.js. Import this data into the PricingPage component and use the .map() function to render the ProductCard components dynamically."
