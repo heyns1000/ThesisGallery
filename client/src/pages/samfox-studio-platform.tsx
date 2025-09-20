@@ -67,6 +67,587 @@ interface TreatyCollaboration {
   createdAt: string;
 }
 
+// Enhanced Fileroom Gallery Component
+function FileroomGallery() {
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [uploadingType, setUploadingType] = useState<string | null>(null);
+  const [previewAsset, setPreviewAsset] = useState<any | null>(null);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  // Fetch gallery data for fileroom assets
+  const { data: galleryItems = [], isLoading: galleryLoading } = useQuery({
+    queryKey: ["/api/gallery"],
+  });
+
+  // Fetch documents for project scrolls
+  const { data: documents = [], isLoading: documentsLoading } = useQuery({
+    queryKey: ["/api/documents"],
+  });
+
+  // Mock data for license keys and vault trails (would be real API calls)
+  const licenseKeys = [
+    { id: "1", key: "SFS-MSTR-2024-001", type: "Global Master", status: "active", issuedDate: "2024-01-15", expiryDate: "2025-01-15" },
+    { id: "2", key: "SFS-TRTY-2024-002", type: "Treaty Bound", status: "active", issuedDate: "2024-03-20", expiryDate: "2025-03-20" },
+    { id: "3", key: "SFS-CRTV-2024-003", type: "Creative Asset", status: "pending", issuedDate: "2024-09-01", expiryDate: "2025-09-01" }
+  ];
+
+  const vaultTrails = [
+    { id: "1", action: "Asset Synchronized", timestamp: "2024-09-20 14:30", type: "sync", details: "Digital prints updated via FAA OmniDrop" },
+    { id: "2", action: "Treaty Sealed", timestamp: "2024-09-20 12:15", type: "treaty", details: "Brand collaboration treaty activated" },
+    { id: "3", action: "License Generated", timestamp: "2024-09-20 10:45", type: "license", details: "New creative asset license issued" },
+    { id: "4", action: "Vault Backup", timestamp: "2024-09-20 08:00", type: "backup", details: "Automated vault backup completed" }
+  ];
+
+  // Upload mutation
+  const uploadMutation = useMutation({
+    mutationFn: async ({ formData, endpoint }: { formData: FormData; endpoint: string }) => {
+      return await apiRequest("POST", endpoint, formData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/gallery"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
+      toast({ description: "Asset uploaded successfully! ✨" });
+      setUploadingType(null);
+    },
+    onError: (error: Error) => {
+      toast({ 
+        variant: "destructive",
+        description: `Upload failed: ${error.message}` 
+      });
+      setUploadingType(null);
+    },
+  });
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>, type: string) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setUploadingType(type);
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('title', file.name);
+    formData.append('type', type);
+    
+    const endpoint = type === 'document' ? '/api/documents' : '/api/gallery';
+    uploadMutation.mutate({ formData, endpoint });
+  };
+
+  // Filter assets by category
+  const digitalPrints = galleryItems.filter(item => 
+    item.type === 'ai-generated' || item.type === 'brand-asset'
+  );
+  const creativeAssets = galleryItems.filter(item => 
+    item.type === 'screenshot' || item.type === 'concept' || item.type === 'uploaded'
+  );
+  const projectScrolls = documents.slice(0, 6); // Show recent documents as scrolls
+
+  const getStatusBadge = (status: string) => {
+    const statusClasses = {
+      active: 'bg-green-500/10 text-green-400 border-green-500/20',
+      pending: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
+      expired: 'bg-red-500/10 text-red-400 border-red-500/20',
+      sync: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+      treaty: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
+      license: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+      backup: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20'
+    };
+    return statusClasses[status as keyof typeof statusClasses] || statusClasses.active;
+  };
+
+  return (
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div>
+          <h3 className="text-2xl font-bold text-foreground flex items-center">
+            <div className="w-8 h-8 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center mr-3">
+              <i className="fas fa-archive text-white text-sm"></i>
+            </div>
+            SamFox Master Fileroom
+          </h3>
+          <p className="text-muted-foreground mt-1">
+            Archive Sync: FAA OmniDrop Memory Feed | Auto-filed since Genesis Treaty
+          </p>
+        </div>
+        
+        <div className="flex items-center space-x-2">
+          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+            <SelectTrigger className="w-48" data-testid="select-fileroom-category">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Categories</SelectItem>
+              <SelectItem value="prints">Digital Prints</SelectItem>
+              <SelectItem value="scrolls">Project Scrolls</SelectItem>
+              <SelectItem value="assets">Creative Assets</SelectItem>
+              <SelectItem value="licenses">License Keys</SelectItem>
+              <SelectItem value="trails">Vault Trails</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* Stats Overview */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <Card className="bg-gradient-to-br from-yellow-400/10 to-orange-500/10 border-yellow-400/20">
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold text-yellow-400">{projectScrolls.length}</div>
+            <div className="text-sm text-muted-foreground">Project Scrolls</div>
+          </CardContent>
+        </Card>
+        <Card className="bg-gradient-to-br from-emerald-400/10 to-green-500/10 border-emerald-400/20">
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold text-emerald-400">{licenseKeys.length}</div>
+            <div className="text-sm text-muted-foreground">License Keys</div>
+          </CardContent>
+        </Card>
+        <Card className="bg-gradient-to-br from-blue-400/10 to-cyan-500/10 border-blue-400/20">
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold text-blue-400">{vaultTrails.length}</div>
+            <div className="text-sm text-muted-foreground">Vault Trails</div>
+          </CardContent>
+        </Card>
+        <Card className="bg-gradient-to-br from-purple-400/10 to-pink-500/10 border-purple-400/20">
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold text-purple-400">{creativeAssets.length + digitalPrints.length}</div>
+            <div className="text-sm text-muted-foreground">Creative Assets</div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Digital Print Gallery */}
+      {(selectedCategory === "all" || selectedCategory === "prints") && (
+        <Card className="overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-yellow-400/20 to-orange-500/20 border-b border-yellow-400/20">
+            <CardTitle className="flex items-center justify-between">
+              <div className="flex items-center">
+                <i className="fas fa-image text-yellow-400 mr-2"></i>
+                Digital Print Gallery
+                <Badge className="ml-2 bg-yellow-400/20 text-yellow-400 border-yellow-400/30">
+                  {digitalPrints.length} prints
+                </Badge>
+              </div>
+              <div className="relative">
+                <input
+                  type="file"
+                  id="upload-digital-print"
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  accept="image/*"
+                  onChange={(e) => handleFileUpload(e, 'brand-asset')}
+                  data-testid="input-upload-digital-print"
+                />
+                <Button size="sm" disabled={uploadingType === 'brand-asset'}>
+                  {uploadingType === 'brand-asset' ? (
+                    <i className="fas fa-spinner fa-spin mr-2"></i>
+                  ) : (
+                    <i className="fas fa-plus mr-2"></i>
+                  )}
+                  Add Print
+                </Button>
+              </div>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            {galleryLoading ? (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="aspect-square bg-muted rounded-lg animate-pulse"></div>
+                ))}
+              </div>
+            ) : digitalPrints.length === 0 ? (
+              <div className="text-center py-8">
+                <i className="fas fa-image text-muted-foreground text-4xl mb-3"></i>
+                <p className="text-muted-foreground">No digital prints available</p>
+                <Button 
+                  className="mt-4"
+                  onClick={() => document.getElementById('upload-digital-print')?.click()}
+                >
+                  <i className="fas fa-plus mr-2"></i>
+                  Upload First Print
+                </Button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                {digitalPrints.map((item) => (
+                  <div 
+                    key={item.id}
+                    className="group relative aspect-square rounded-lg overflow-hidden cursor-pointer 
+                              hover:scale-105 transition-all duration-300 hover:shadow-lg
+                              border-2 border-transparent hover:border-yellow-400/30"
+                    onClick={() => setPreviewAsset(item)}
+                    data-testid={`digital-print-${item.id}`}
+                  >
+                    <img 
+                      src={item.imageUrl} 
+                      alt={item.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent 
+                                    opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="absolute bottom-2 left-2 right-2">
+                        <p className="text-white text-xs font-medium truncate">{item.title}</p>
+                        <Badge className="text-xs bg-yellow-400/20 text-yellow-300 border-yellow-400/30">
+                          {item.type}
+                        </Badge>
+                      </div>
+                    </div>
+                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button size="sm" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm">
+                        <i className="fas fa-eye"></i>
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Project Scrolls */}
+      {(selectedCategory === "all" || selectedCategory === "scrolls") && (
+        <Card className="overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-blue-400/20 to-indigo-500/20 border-b border-blue-400/20">
+            <CardTitle className="flex items-center justify-between">
+              <div className="flex items-center">
+                <i className="fas fa-scroll text-blue-400 mr-2"></i>
+                Project Scrolls
+                <Badge className="ml-2 bg-blue-400/20 text-blue-400 border-blue-400/30">
+                  {projectScrolls.length} scrolls
+                </Badge>
+              </div>
+              <div className="relative">
+                <input
+                  type="file"
+                  id="upload-project-scroll"
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  accept=".pdf,.doc,.docx,.txt"
+                  onChange={(e) => handleFileUpload(e, 'document')}
+                  data-testid="input-upload-project-scroll"
+                />
+                <Button size="sm" disabled={uploadingType === 'document'}>
+                  {uploadingType === 'document' ? (
+                    <i className="fas fa-spinner fa-spin mr-2"></i>
+                  ) : (
+                    <i className="fas fa-plus mr-2"></i>
+                  )}
+                  Add Scroll
+                </Button>
+              </div>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            {documentsLoading ? (
+              <div className="space-y-3">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="h-16 bg-muted rounded-lg animate-pulse"></div>
+                ))}
+              </div>
+            ) : projectScrolls.length === 0 ? (
+              <div className="text-center py-8">
+                <i className="fas fa-scroll text-muted-foreground text-4xl mb-3"></i>
+                <p className="text-muted-foreground">No project scrolls available</p>
+                <Button 
+                  className="mt-4"
+                  onClick={() => document.getElementById('upload-project-scroll')?.click()}
+                >
+                  <i className="fas fa-plus mr-2"></i>
+                  Upload First Scroll
+                </Button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {projectScrolls.map((doc) => (
+                  <Card 
+                    key={doc.id}
+                    className="group cursor-pointer hover:scale-105 transition-all duration-300 
+                              hover:shadow-lg border-2 border-transparent hover:border-blue-400/30
+                              bg-gradient-to-br from-blue-400/5 to-indigo-500/5"
+                    data-testid={`project-scroll-${doc.id}`}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-start space-x-3">
+                        <div className="w-10 h-10 bg-blue-400/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <i className="fas fa-file-alt text-blue-400"></i>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-medium text-foreground truncate group-hover:text-blue-400 transition-colors">
+                            {doc.title}
+                          </h4>
+                          <p className="text-sm text-muted-foreground mb-2">
+                            {doc.type} • {new Date(doc.uploadedAt).toLocaleDateString()}
+                          </p>
+                          <Badge className="text-xs bg-blue-400/20 text-blue-400 border-blue-400/30">
+                            {doc.status}
+                          </Badge>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Creative Assets Grid */}
+      {(selectedCategory === "all" || selectedCategory === "assets") && (
+        <Card className="overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-purple-400/20 to-pink-500/20 border-b border-purple-400/20">
+            <CardTitle className="flex items-center justify-between">
+              <div className="flex items-center">
+                <i className="fas fa-palette text-purple-400 mr-2"></i>
+                Creative Assets
+                <Badge className="ml-2 bg-purple-400/20 text-purple-400 border-purple-400/30">
+                  {creativeAssets.length} assets
+                </Badge>
+              </div>
+              <div className="relative">
+                <input
+                  type="file"
+                  id="upload-creative-asset"
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  accept="image/*,video/*,.psd,.ai,.sketch"
+                  onChange={(e) => handleFileUpload(e, 'uploaded')}
+                  data-testid="input-upload-creative-asset"
+                />
+                <Button size="sm" disabled={uploadingType === 'uploaded'}>
+                  {uploadingType === 'uploaded' ? (
+                    <i className="fas fa-spinner fa-spin mr-2"></i>
+                  ) : (
+                    <i className="fas fa-plus mr-2"></i>
+                  )}
+                  Add Asset
+                </Button>
+              </div>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            {galleryLoading ? (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="aspect-video bg-muted rounded-lg animate-pulse"></div>
+                ))}
+              </div>
+            ) : creativeAssets.length === 0 ? (
+              <div className="text-center py-8">
+                <i className="fas fa-palette text-muted-foreground text-4xl mb-3"></i>
+                <p className="text-muted-foreground">No creative assets available</p>
+                <Button 
+                  className="mt-4"
+                  onClick={() => document.getElementById('upload-creative-asset')?.click()}
+                >
+                  <i className="fas fa-plus mr-2"></i>
+                  Upload First Asset
+                </Button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {creativeAssets.map((item) => (
+                  <Card 
+                    key={item.id}
+                    className="group cursor-pointer hover:scale-105 transition-all duration-300 
+                              hover:shadow-lg border-2 border-transparent hover:border-purple-400/30 overflow-hidden"
+                    onClick={() => setPreviewAsset(item)}
+                    data-testid={`creative-asset-${item.id}`}
+                  >
+                    <div className="aspect-video relative">
+                      <img 
+                        src={item.imageUrl} 
+                        alt={item.title}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent 
+                                      opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <div className="absolute top-2 right-2">
+                          <Button size="sm" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm">
+                            <i className="fas fa-expand-alt"></i>
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                    <CardContent className="p-3">
+                      <h4 className="font-medium text-foreground truncate text-sm group-hover:text-purple-400 transition-colors">
+                        {item.title}
+                      </h4>
+                      <div className="flex items-center justify-between mt-2">
+                        <Badge className="text-xs bg-purple-400/20 text-purple-400 border-purple-400/30">
+                          {item.type}
+                        </Badge>
+                        <span className="text-xs text-muted-foreground">
+                          {new Date(item.uploadedAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* License Keys Management */}
+      {(selectedCategory === "all" || selectedCategory === "licenses") && (
+        <Card className="overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-emerald-400/20 to-green-500/20 border-b border-emerald-400/20">
+            <CardTitle className="flex items-center justify-between">
+              <div className="flex items-center">
+                <i className="fas fa-key text-emerald-400 mr-2"></i>
+                License Keys
+                <Badge className="ml-2 bg-emerald-400/20 text-emerald-400 border-emerald-400/30">
+                  {licenseKeys.length} keys
+                </Badge>
+              </div>
+              <Button size="sm" data-testid="button-generate-license">
+                <i className="fas fa-plus mr-2"></i>
+                Generate Key
+              </Button>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {licenseKeys.map((license) => (
+                <Card 
+                  key={license.id}
+                  className={`group cursor-pointer hover:scale-105 transition-all duration-300 
+                            hover:shadow-lg border-2 ${getStatusBadge(license.status)}`}
+                  data-testid={`license-key-${license.id}`}
+                >
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center space-x-2">
+                        <i className="fas fa-certificate text-emerald-400"></i>
+                        <Badge className={`text-xs ${getStatusBadge(license.status)}`}>
+                          {license.status}
+                        </Badge>
+                      </div>
+                      <Button size="sm" variant="ghost" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                        <i className="fas fa-copy"></i>
+                      </Button>
+                    </div>
+                    <div className="space-y-2">
+                      <h4 className="font-medium text-foreground">{license.type}</h4>
+                      <p className="font-mono text-xs text-muted-foreground bg-muted p-2 rounded">
+                        {license.key}
+                      </p>
+                      <div className="text-xs text-muted-foreground space-y-1">
+                        <div>Issued: {new Date(license.issuedDate).toLocaleDateString()}</div>
+                        <div>Expires: {new Date(license.expiryDate).toLocaleDateString()}</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Vault Trails Timeline */}
+      {(selectedCategory === "all" || selectedCategory === "trails") && (
+        <Card className="overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-cyan-400/20 to-blue-500/20 border-b border-cyan-400/20">
+            <CardTitle className="flex items-center">
+              <i className="fas fa-history text-cyan-400 mr-2"></i>
+              Vault Trails
+              <Badge className="ml-2 bg-cyan-400/20 text-cyan-400 border-cyan-400/30">
+                {vaultTrails.length} activities
+              </Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            <div className="space-y-4">
+              {vaultTrails.map((trail, index) => (
+                <div 
+                  key={trail.id}
+                  className="flex items-start space-x-4 group hover:bg-card/50 p-3 rounded-lg transition-colors"
+                  data-testid={`vault-trail-${trail.id}`}
+                >
+                  <div className="relative flex items-center justify-center">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${getStatusBadge(trail.type)}`}>
+                      <i className={`fas ${
+                        trail.type === 'sync' ? 'fa-sync-alt' :
+                        trail.type === 'treaty' ? 'fa-handshake' :
+                        trail.type === 'license' ? 'fa-key' :
+                        'fa-database'
+                      } text-xs`}></i>
+                    </div>
+                    {index < vaultTrails.length - 1 && (
+                      <div className="absolute top-8 left-1/2 w-px h-8 bg-border -translate-x-1/2"></div>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-medium text-foreground group-hover:text-cyan-400 transition-colors">
+                        {trail.action}
+                      </h4>
+                      <span className="text-xs text-muted-foreground">
+                        {new Date(trail.timestamp).toLocaleString()}
+                      </span>
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-1">{trail.details}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Asset Preview Modal */}
+      {previewAsset && (
+        <div 
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={() => setPreviewAsset(null)}
+          data-testid="asset-preview-modal"
+        >
+          <div 
+            className="bg-card rounded-lg p-6 max-w-4xl max-h-[90vh] overflow-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold">{previewAsset.title}</h3>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => setPreviewAsset(null)}
+                data-testid="button-close-preview"
+              >
+                <i className="fas fa-times"></i>
+              </Button>
+            </div>
+            <div className="mb-4">
+              <img 
+                src={previewAsset.imageUrl} 
+                alt={previewAsset.title}
+                className="w-full max-h-96 object-contain rounded-lg"
+              />
+            </div>
+            {previewAsset.description && (
+              <p className="text-muted-foreground mb-4">{previewAsset.description}</p>
+            )}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Badge>{previewAsset.type}</Badge>
+                <span className="text-sm text-muted-foreground">
+                  {new Date(previewAsset.uploadedAt).toLocaleDateString()}
+                </span>
+              </div>
+              <Button data-testid="button-download-asset">
+                <i className="fas fa-download mr-2"></i>
+                Download
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function SamFoxStudioPlatform() {
   const [selectedTab, setSelectedTab] = useState("overview");
   const [pulseInterval, setPulseInterval] = useState<NodeJS.Timeout | null>(null);
@@ -572,41 +1153,7 @@ export default function SamFoxStudioPlatform() {
 
         {/* Fileroom Tab */}
         <TabsContent value="fileroom" className="space-y-6">
-          <div className="flex justify-between items-center">
-            <h3 className="text-lg font-semibold">SamFox Fileroom</h3>
-            <Button data-testid="button-upload-file">
-              <i className="fas fa-upload mr-2"></i>
-              Upload File
-            </Button>
-          </div>
-          
-          <Card>
-            <CardContent className="p-12 text-center">
-              <i className="fas fa-archive text-muted-foreground text-4xl mb-4"></i>
-              <h4 className="text-lg font-semibold mb-2">Master Fileroom</h4>
-              <p className="text-muted-foreground mb-4">
-                Archive Sync: FAA OmniDrop Memory Feed | Auto-filed since Genesis Treaty
-              </p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                <div className="text-center">
-                  <div className="text-lg font-bold">0</div>
-                  <div className="text-muted-foreground">Project Scrolls</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-lg font-bold">0</div>
-                  <div className="text-muted-foreground">License Keys</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-lg font-bold">0</div>
-                  <div className="text-muted-foreground">Vault Trails</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-lg font-bold">0</div>
-                  <div className="text-muted-foreground">Creative Assets</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <FileroomGallery />
         </TabsContent>
       </Tabs>
     </div>
