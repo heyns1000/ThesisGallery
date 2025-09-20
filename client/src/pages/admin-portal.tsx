@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Link } from "wouter";
+import { getContent } from "@/lib/appData";
 
 const sectorIndex = [
   {
@@ -197,6 +198,7 @@ const sectorList = {
 };
 
 export default function AdminPortal() {
+  const content = getContent('admin-portal');
   const [activeTab, setActiveTab] = useState("dashboard");
   const [selectedSector, setSelectedSector] = useState("ai-logic");
   const [brandName, setBrandName] = useState("");
@@ -228,8 +230,8 @@ export default function AdminPortal() {
       <header className="bg-indigo-700 text-white py-6 shadow">
         <div className="container mx-auto px-6 flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold">🦁 Seedwave™ Admin Portal</h1>
-            <p className="text-sm opacity-80 mt-2">✿ Corebrands management & AI logic deployment center</p>
+            <h1 className="text-3xl font-bold" data-testid="text-admin-title">{content.sections.header.title}</h1>
+            <p className="text-sm opacity-80 mt-2" data-testid="text-admin-subtitle">{content.sections.header.description}</p>
           </div>
           
           {/* Access Control Buttons */}
@@ -285,7 +287,7 @@ export default function AdminPortal() {
           <div className="space-y-8">
             <Card>
               <CardHeader>
-                <CardTitle>🍇 Fruitful™ Master Pulse Dashboard</CardTitle>
+                <CardTitle data-testid="text-dashboard-pulse-title">{content.sections.dashboard.title}</CardTitle>
                 <p className="text-sm text-gray-500">VaultMesh Actuarial Grid · Real-Time Scroll Activity</p>
               </CardHeader>
               <CardContent>

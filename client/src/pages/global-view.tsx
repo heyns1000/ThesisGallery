@@ -2,8 +2,10 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getContent } from "@/lib/appData";
 
 export default function GlobalView() {
+  const content = getContent('global-view');
   const [prompt, setPrompt] = useState("");
   const [response, setResponse] = useState("🌍 Global View GPT ACTIVATED\n\n✅ VaultBridge connection established\n✅ FAA.Zone sync protocols online\n✅ Sector-wide intelligence ready\n✅ OmniDrop fallback systems armed\n\n> Ready to receive global sync commands...");
   const [isLoading, setIsLoading] = useState(false);
@@ -73,11 +75,11 @@ export default function GlobalView() {
       <div className="max-w-4xl mx-auto pt-12">
         <Card className="bg-gray-900 border-blue-500 border-2 shadow-2xl">
           <CardHeader className="text-center">
-            <CardTitle className="text-4xl font-extrabold text-blue-400 flex items-center justify-center gap-2">
-              🌍 Global View GPT
+            <CardTitle className="text-4xl font-extrabold text-blue-400 flex items-center justify-center gap-2" data-testid="text-global-view-title">
+              {content.title}
             </CardTitle>
             <p className="text-gray-400">
-              Sector-wide global intelligence synchronizer for FAA.Zone deployments.
+              <span data-testid="text-global-view-subtitle">{content.subtitle}</span>
             </p>
           </CardHeader>
           

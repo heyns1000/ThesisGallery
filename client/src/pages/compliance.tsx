@@ -5,9 +5,11 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useWebSocket } from "@/hooks/use-websocket";
 import { useEffect } from "react";
+import { getContent } from "@/lib/appData";
 import type { ComplianceLog } from "@shared/schema";
 
 export default function Compliance() {
+  const content = getContent('compliance');
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { subscribe } = useWebSocket();
@@ -79,8 +81,8 @@ export default function Compliance() {
       <div className="mb-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h3 className="text-xl font-bold text-foreground">Compliance Monitor</h3>
-            <p className="text-muted-foreground">Real-time monitoring of Atom-Level Verification™ processes</p>
+            <h3 className="text-xl font-bold text-foreground" data-testid="text-compliance-title">{content.sections.header.title}</h3>
+            <p className="text-muted-foreground" data-testid="text-compliance-subtitle">{content.sections.header.description}</p>
           </div>
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">

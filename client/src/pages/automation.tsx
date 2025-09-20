@@ -5,9 +5,11 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useWebSocket } from "@/hooks/use-websocket";
 import { useEffect } from "react";
+import { getContent } from "@/lib/appData";
 import type { ProcessingQueue } from "@shared/schema";
 
 export default function Automation() {
+  const content = getContent('automation');
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { subscribe } = useWebSocket();
@@ -138,8 +140,8 @@ export default function Automation() {
       <div className="mb-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h3 className="text-xl font-bold text-foreground">Automation Engine</h3>
-            <p className="text-muted-foreground">AI-powered automation for document processing and brand management</p>
+            <h3 className="text-xl font-bold text-foreground" data-testid="text-automation-title">{content.sections.header.title}</h3>
+            <p className="text-muted-foreground" data-testid="text-automation-subtitle">{content.sections.header.description}</p>
           </div>
           <div className="flex items-center space-x-4">
             <Button 
@@ -149,7 +151,7 @@ export default function Automation() {
               className="bg-primary text-primary-foreground hover:opacity-90"
             >
               <i className="fas fa-play mr-2"></i>
-              {mailProcessMutation.isPending ? 'Starting...' : 'Start Processing'}
+              {mailProcessMutation.isPending ? 'Starting...' : content.buttons.newWorkflow}
             </Button>
             <Button 
               onClick={handleConfigureAutomation}
@@ -158,7 +160,7 @@ export default function Automation() {
               data-testid="button-configure-automation"
             >
               <i className="fas fa-cog mr-2"></i>
-              {createQueueItemMutation.isPending ? 'Configuring...' : 'Configure'}
+              {createQueueItemMutation.isPending ? 'Configuring...' : content.buttons.settings}
             </Button>
           </div>
         </div>

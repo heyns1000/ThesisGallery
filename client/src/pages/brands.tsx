@@ -3,9 +3,11 @@ import { Button } from "@/components/ui/button";
 import { BrandCard } from "@/components/ui/brand-card";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { getContent } from "@/lib/appData";
 import type { Brand } from "@shared/schema";
 
 export default function Brands() {
+  const content = getContent('brands');
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -87,8 +89,8 @@ export default function Brands() {
       <div className="mb-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h3 className="text-xl font-bold text-foreground">Brand Management</h3>
-            <p className="text-muted-foreground">Manage and monitor all FAA™ brands under Atom-Level Verification™</p>
+            <h3 className="text-xl font-bold text-foreground" data-testid="text-brands-title">{content.sections.header.title}</h3>
+            <p className="text-muted-foreground" data-testid="text-brands-subtitle">{content.sections.header.description}</p>
           </div>
           <div className="flex items-center space-x-4">
             <Button 
@@ -98,7 +100,7 @@ export default function Brands() {
               className="bg-primary text-primary-foreground hover:opacity-90"
             >
               <i className="fas fa-plus mr-2"></i>
-              {seedBrandsMutation.isPending ? 'Seeding...' : 'Water the Seed'}
+              {seedBrandsMutation.isPending ? 'Seeding...' : content.buttons.waterSeed}
             </Button>
             <Button 
               onClick={handleRevealBrands}
@@ -107,7 +109,7 @@ export default function Brands() {
               className="bg-accent text-accent-foreground hover:opacity-90"
             >
               <i className="fas fa-eye mr-2"></i>
-              {exposeBrandsMutation.isPending ? 'Revealing...' : 'Reveal Brands'}
+              {exposeBrandsMutation.isPending ? 'Revealing...' : content.buttons.revealBrands}
             </Button>
           </div>
         </div>

@@ -7,9 +7,11 @@ import { ConversationThread } from "@/components/ui/conversation-thread";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useInteractivity } from "@/lib/useInteractivity";
+import { getContent } from "@/lib/appData";
 import type { Conversation } from "@shared/schema";
 
 export default function Conversations() {
+  const content = getContent('conversations');
   const [searchTerm, setSearchTerm] = useState("");
   const [filterProvider, setFilterProvider] = useState("all");
   const [expandedConversation, setExpandedConversation] = useState<string | null>(null);
@@ -74,8 +76,8 @@ export default function Conversations() {
       <div className="mb-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h3 className="text-xl font-bold text-foreground">AI Conversations</h3>
-            <p className="text-muted-foreground">ChatGPT and Gemini conversation history</p>
+            <h3 className="text-xl font-bold text-foreground" data-testid="text-conversations-title">{content.title}</h3>
+            <p className="text-muted-foreground" data-testid="text-conversations-subtitle">{content.subtitle}</p>
           </div>
           <div className="flex items-center space-x-4">
             <Select value={filterProvider} onValueChange={setFilterProvider}>
@@ -92,7 +94,7 @@ export default function Conversations() {
             <div className="relative">
               <Input
                 type="text"
-                placeholder="Search conversations..."
+                placeholder={content.sections?.search?.placeholder || 'Search conversations...'}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -106,7 +108,7 @@ export default function Conversations() {
               data-testid="button-import-conversation"
             >
               <i className="fas fa-plus mr-2"></i>
-              {createConversationMutation.isPending ? 'Importing...' : 'Import Chat'}
+              {createConversationMutation.isPending ? 'Importing...' : content.buttons?.newChat || 'Import Chat'}
             </Button>
           </div>
         </div>

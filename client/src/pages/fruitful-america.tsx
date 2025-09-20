@@ -1,7 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { getContent } from "@/lib/appData";
 
 export default function FruitfulAmerica() {
+  const content = getContent('fruitful-america');
   const states = [
     {
       id: "alabama",
@@ -40,11 +42,11 @@ export default function FruitfulAmerica() {
       {/* Header */}
       <header className="bg-indigo-900 py-8 shadow-2xl">
         <div className="container mx-auto px-6">
-          <h1 className="text-5xl font-bold tracking-wide text-center">
-            🇺🇸 Fruitful.America™ Dashboard
+          <h1 className="text-5xl font-bold tracking-wide text-center" data-testid="text-america-title">
+            {content.title}
           </h1>
           <p className="text-xl text-center mt-4">
-            50 Brands. 50 States. Zero Outsourcing. Water The Seed™.
+            <span data-testid="text-america-subtitle">{content.subtitle}</span>
           </p>
         </div>
       </header>

@@ -5,6 +5,7 @@ import { SamFoxGalleryStrip } from "@/components/samfox-gallery";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { useState, useEffect } from "react";
+import { getContent } from "@/lib/appData";
 
 const aiGridSystems = [
   {
@@ -135,6 +136,7 @@ const getColorClasses = (color: string) => {
 };
 
 export default function AILogicDashboard() {
+  const content = getContent('ai-logic-dashboard');
   const { data: systemStats } = useQuery({
     queryKey: ["/api/system/stats"],
   });
@@ -165,11 +167,11 @@ export default function AILogicDashboard() {
       <header className="bg-gray-950 border-b border-yellow-500 px-6 py-4">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-black text-yellow-400 flex items-center gap-2">
-              🧠 AI, Logic & Grid Systems Hub
+            <h1 className="text-3xl font-black text-yellow-400 flex items-center gap-2" data-testid="text-ai-logic-title">
+              {content.title}
             </h1>
             <p className="text-gray-400 text-sm mt-1">
-              188 FAA-Certified Core Scroll Brands • Sector Pulse: Active @ 9s • SignalGPT Engine
+              <span data-testid="text-ai-logic-subtitle">{content.subtitle}</span>
             </p>
           </div>
           <div className="flex gap-3">

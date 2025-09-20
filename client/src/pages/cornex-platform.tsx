@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { useInteractivity } from "@/lib/useInteractivity";
+import { getContent } from "@/lib/appData";
 
 const factorySetupPhases = [
   {
@@ -60,6 +61,7 @@ const productPricing = [
 ];
 
 export default function CornexPlatform() {
+  const content = getContent('cornex-platform');
   const { trigger } = useInteractivity();
   
   return (
@@ -68,11 +70,11 @@ export default function CornexPlatform() {
       <header className="bg-gray-950 border-b border-indigo-500 px-6 py-4">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-black text-indigo-400">
-              🏗️ Cornex™ AI Systems & Automation
+            <h1 className="text-3xl font-black text-indigo-400" data-testid="text-cornex-title">
+              {content.title}
             </h1>
             <p className="text-gray-400 text-sm mt-1">
-              FAA.Zone Sovereign Scrolls • Housing Infrastructure Grid • Private Label Manufacturing
+              <span data-testid="text-cornex-subtitle">{content.subtitle}</span>
             </p>
           </div>
           <div className="flex gap-3">

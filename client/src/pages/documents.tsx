@@ -10,6 +10,7 @@ import { SamFoxUploadButton } from "@/components/samfox-gallery";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useInteractivity } from "@/lib/useInteractivity";
+import { getContent } from "@/lib/appData";
 import type { Document } from "@shared/schema";
 
 // SamFox Studio color constants for Project Scrolls
@@ -131,6 +132,7 @@ function ProjectScrollCard({ document, onClick }: ProjectScrollCardProps) {
 }
 
 export default function Documents() {
+  const content = getContent('documents');
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all");
   const [previewDocument, setPreviewDocument] = useState<Document | null>(null);
@@ -196,9 +198,9 @@ export default function Documents() {
               <div className={`w-8 h-8 bg-gradient-to-r ${SCROLL_COLORS.primary} rounded-lg flex items-center justify-center mr-3`}>
                 <i className="fas fa-scroll text-white text-sm"></i>
               </div>
-              📜 SamFox Project Scrolls Library
+              <span data-testid="text-documents-title">{content.sections.header.title}</span>
             </h3>
-            <p className="text-muted-foreground">Sacred archives of FAA™ documents, treatises, and knowledge scrolls</p>
+            <p className="text-muted-foreground" data-testid="text-documents-subtitle">{content.sections.header.description}</p>
           </div>
           
           <div className="flex items-center space-x-4">
@@ -255,25 +257,25 @@ export default function Documents() {
         <Card className={`${SCROLL_COLORS.background} ${SCROLL_COLORS.border}`}>
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-amber-400">{filterCounts.all || 0}</div>
-            <div className="text-sm text-muted-foreground">Total Scrolls</div>
+            <div className="text-sm text-muted-foreground" data-testid="text-total-scrolls">{content.sections.stats.total}</div>
           </CardContent>
         </Card>
         <Card className={`${SCROLL_COLORS.background} ${SCROLL_COLORS.border}`}>
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-red-400">{filterCounts.pdf || 0}</div>
-            <div className="text-sm text-muted-foreground">PDF Scrolls</div>
+            <div className="text-sm text-muted-foreground" data-testid="text-pdf-scrolls">{content.sections.stats.pdf}</div>
           </CardContent>
         </Card>
         <Card className={`${SCROLL_COLORS.background} ${SCROLL_COLORS.border}`}>
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-blue-400">{filterCounts.docx || 0}</div>
-            <div className="text-sm text-muted-foreground">Word Scrolls</div>
+            <div className="text-sm text-muted-foreground" data-testid="text-word-scrolls">{content.sections.stats.word}</div>
           </CardContent>
         </Card>
         <Card className={`${SCROLL_COLORS.background} ${SCROLL_COLORS.border}`}>
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-green-400">{filterCounts.article || 0}</div>
-            <div className="text-sm text-muted-foreground">Articles</div>
+            <div className="text-sm text-muted-foreground" data-testid="text-articles">{content.sections.stats.articles}</div>
           </CardContent>
         </Card>
       </div>

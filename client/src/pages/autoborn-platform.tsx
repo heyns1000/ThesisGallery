@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { useInteractivity } from "@/lib/useInteractivity";
+import { getContent } from "@/lib/appData";
 
 const scrollsData = [
   {
@@ -110,6 +111,7 @@ const pricingPlans = [
 ];
 
 export default function AutoBornPlatform() {
+  const content = getContent('autoborn-platform');
   const { trigger } = useInteractivity();
   
   return (
@@ -118,11 +120,11 @@ export default function AutoBornPlatform() {
       <header className="bg-gray-950 border-b border-yellow-500 px-6 py-4">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-black text-yellow-400">
-              🚗 AutoBorn™ Master Sync Grid
+            <h1 className="text-3xl font-black text-yellow-400" data-testid="text-autoborn-title">
+              {content.title}
             </h1>
             <p className="text-gray-400 text-sm mt-1">
-              The Self-Driving Mining Ecosystem • Real-time AI • 9-second fleet sync
+              <span data-testid="text-autoborn-subtitle">{content.subtitle}</span>
             </p>
           </div>
           <div className="flex gap-3">

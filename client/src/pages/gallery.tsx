@@ -1,11 +1,13 @@
 import SamFoxGallery from "@/components/samfox-gallery";
+import { getContent } from "@/lib/appData";
 
 export default function GalleryPage() {
+  const content = getContent('gallery');
   return (
     <div className="p-6 space-y-12">
       {/* Main SamFox Gallery */}
       <SamFoxGallery 
-        title="🦁 SamFox Studio Visual Gallery"
+        title={content.title}
         showUpload={true}
         showFilter={true}
       />
@@ -16,10 +18,10 @@ export default function GalleryPage() {
           <div className="w-6 h-6 bg-gradient-to-r from-green-500 to-emerald-400 rounded-lg flex items-center justify-center mr-2">
             <i className="fab fa-spotify text-white text-sm"></i>
           </div>
-          FAA™ Audio Experience
+          <span data-testid="text-audio-experience">{content.sections?.audio?.title || 'FAA™ Audio Experience'}</span>
         </h4>
         <p className="text-muted-foreground mb-4">
-          Enhance your Fruitful journey with curated musical elements designed for the Sacred Baobab™ ecosystem
+          <span data-testid="text-audio-description">{content.sections?.audio?.description || 'Enhance your Fruitful journey with curated musical elements designed for the Sacred Baobab™ ecosystem'}</span>
         </p>
         <div className="bg-card rounded-lg overflow-hidden border border-border/50">
           <iframe 

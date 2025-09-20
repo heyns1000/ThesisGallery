@@ -35,6 +35,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useInteractivity } from "@/lib/useInteractivity";
+import { getContent } from "@/lib/appData";
 
 interface BanimalProduct {
   id: string;
@@ -77,6 +78,7 @@ interface BanimalCustomer {
 }
 
 export default function BanimalPlatformPage() {
+  const content = getContent('banimal-platform');
   const [selectedCurrency, setSelectedCurrency] = useState("ZAR");
   const [chatMessages, setChatMessages] = useState<Array<{role: string, message: string}>>([]);
   const [chatInput, setChatInput] = useState("");
@@ -186,8 +188,8 @@ export default function BanimalPlatformPage() {
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Banimal™ FAA Platform</h1>
-          <p className="text-gray-600 dark:text-gray-300">AI-Powered E-Commerce & Customer Management</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white" data-testid="text-banimal-title">{content.title}</h1>
+          <p className="text-gray-600 dark:text-gray-300" data-testid="text-banimal-subtitle">{content.subtitle}</p>
         </div>
         <div className="flex items-center gap-4">
           <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
@@ -228,7 +230,7 @@ export default function BanimalPlatformPage() {
               <CardContent className="p-6 text-center">
                 <Package className="h-8 w-8 mx-auto text-blue-500 mb-2" />
                 <p className="text-2xl font-bold">{products.length}</p>
-                <p className="text-sm text-gray-600">Products</p>
+                <p className="text-sm text-gray-600" data-testid="text-products-label">{content.sections.products.title}</p>
               </CardContent>
             </Card>
             
@@ -236,7 +238,7 @@ export default function BanimalPlatformPage() {
               <CardContent className="p-6 text-center">
                 <ShoppingCart className="h-8 w-8 mx-auto text-green-500 mb-2" />
                 <p className="text-2xl font-bold">{orders.length}</p>
-                <p className="text-sm text-gray-600">Orders</p>
+                <p className="text-sm text-gray-600" data-testid="text-orders-label">{content.sections.orders.title}</p>
               </CardContent>
             </Card>
             
@@ -244,7 +246,7 @@ export default function BanimalPlatformPage() {
               <CardContent className="p-6 text-center">
                 <Users className="h-8 w-8 mx-auto text-purple-500 mb-2" />
                 <p className="text-2xl font-bold">{customers.length}</p>
-                <p className="text-sm text-gray-600">Customers</p>
+                <p className="text-sm text-gray-600" data-testid="text-customers-label">{content.sections.customers.title}</p>
               </CardContent>
             </Card>
             

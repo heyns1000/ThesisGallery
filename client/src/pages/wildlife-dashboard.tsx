@@ -20,6 +20,7 @@ import {
   Wifi,
   HardDrive
 } from "lucide-react";
+import { getContent } from "@/lib/appData";
 
 // Comprehensive Wildlife Protocols Data
 const protocolsData = {
@@ -206,6 +207,7 @@ const protocolsData = {
 };
 
 const WildlifeDashboard = () => {
+  const content = getContent('wildlife-dashboard');
   const [selectedProtocol, setSelectedProtocol] = useState('EcoGuard');
   const [activeTab, setActiveTab] = useState('overview');
   const chartRef = useRef(null);
@@ -281,11 +283,11 @@ const WildlifeDashboard = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-green-50 dark:from-slate-900 dark:to-green-900" data-testid="wildlife-dashboard">
       {/* Header */}
       <div className="bg-gradient-to-r from-green-800 to-emerald-900 text-white p-8 text-center">
-        <h1 className="text-4xl md:text-5xl font-black flex items-center justify-center">
-          🌳 FAA™ Wildlife Grid Ecosystem
+        <h1 className="text-4xl md:text-5xl font-black flex items-center justify-center" data-testid="text-wildlife-title">
+          {content.title}
         </h1>
         <p className="mt-2 text-lg md:text-xl text-green-200">
-          Sacred Baobab™ Foundation • Advanced Conservation Intelligence
+          <span data-testid="text-wildlife-subtitle">{content.subtitle}</span>
         </p>
         <div className="mt-4 flex justify-center space-x-2">
           <Badge variant="secondary" className="bg-emerald-600 text-white">

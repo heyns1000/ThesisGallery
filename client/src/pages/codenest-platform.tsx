@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Link } from "wouter";
 import { useInteractivity } from "@/lib/useInteractivity";
+import { getContent } from "@/lib/appData";
 
 const activeProjects = [
   {
@@ -105,6 +106,7 @@ const scrollBuilderFeatures = [
 ];
 
 export default function CodeNestPlatform() {
+  const content = getContent('codenest-platform');
   const [activeTab, setActiveTab] = useState("dashboard");
   const { trigger } = useInteractivity();
 
@@ -114,11 +116,11 @@ export default function CodeNestPlatform() {
       <header className="bg-gray-950 border-b border-yellow-500 px-6 py-4">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-black text-yellow-400 flex items-center gap-2">
-              💻 CodeNest™ Web Dev Scroll Studio
+            <h1 className="text-3xl font-black text-yellow-400 flex items-center gap-2" data-testid="text-codenest-title">
+              {content.title}
             </h1>
             <p className="text-gray-400 text-sm mt-1">
-              Build modern sites • Claim your code • Empower your scroll economy • FAA-Certified Platform
+              <span data-testid="text-codenest-subtitle">{content.subtitle}</span>
             </p>
           </div>
           <div className="flex gap-3">

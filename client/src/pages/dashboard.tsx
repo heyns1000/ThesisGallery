@@ -6,9 +6,11 @@ import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useInteractivity } from "@/lib/useInteractivity";
+import { getContent } from "@/lib/appData";
 import type { SystemStats, Document, ComplianceLog } from "@shared/schema";
 
 export default function Dashboard() {
+  const content = getContent('dashboard');
   const { subscribe } = useWebSocket();
   const [realtimeStats, setRealtimeStats] = useState<SystemStats | null>(null);
   const { toast } = useToast();
@@ -67,7 +69,7 @@ export default function Dashboard() {
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center space-y-4">
             <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto"></div>
-            <p className="text-muted-foreground">Loading Fruitful Global Master Hub...</p>
+            <p className="text-muted-foreground">Loading {content.sections.header.title}...</p>
             <div className="text-xs text-muted-foreground">
               🌳 Initializing Sacred Baobab™ Foundation Systems
             </div>
@@ -82,8 +84,8 @@ export default function Dashboard() {
       <header className="card-enhanced border-b border-border px-6 py-4 -mx-6 -mt-6 mb-6 rounded-lg">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-foreground text-enhanced">🌳 Fruitful Global Command Center</h2>
-            <p className="text-muted-foreground">Master Hub for Business Ecosystem Integration - Sacred Baobab™ Foundation</p>
+            <h2 className="text-2xl font-bold text-foreground text-enhanced" data-testid="text-dashboard-title">{content.sections.header.title}</h2>
+            <p className="text-muted-foreground" data-testid="text-dashboard-subtitle">{content.sections.header.description}</p>
           </div>
           <div className="flex items-center space-x-4">
             <div className="status-indicator enhanced-contrast rounded-lg px-3 py-2">
@@ -100,7 +102,7 @@ export default function Dashboard() {
                 data-testid="button-load-sample-data"
               >
                 <i className={`fas ${loadSampleDataMutation.isPending ? 'fa-spinner fa-spin' : 'fa-seedling'} mr-2`}></i>
-                {loadSampleDataMutation.isPending ? 'Loading...' : 'Load Sample Data'}
+                {loadSampleDataMutation.isPending ? 'Loading...' : content.buttons.loadSample}
               </button>
             )}
             <button 
@@ -108,7 +110,7 @@ export default function Dashboard() {
               onClick={() => trigger('Dashboard new upload action triggered!')}
               data-testid="button-new-upload"
             >
-              <i className="fas fa-plus mr-2"></i>New Upload
+              <i className="fas fa-plus mr-2"></i>{content.buttons.newUpload}
             </button>
           </div>
         </div>
