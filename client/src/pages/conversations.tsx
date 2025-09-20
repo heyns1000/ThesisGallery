@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ConversationThread } from "@/components/ui/conversation-thread";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { useInteractivity } from "@/lib/useInteractivity";
 import type { Conversation } from "@shared/schema";
 
 export default function Conversations() {
@@ -14,6 +15,7 @@ export default function Conversations() {
   const [expandedConversation, setExpandedConversation] = useState<string | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { trigger } = useInteractivity();
 
   const { data: conversations = [], isLoading } = useQuery<Conversation[]>({
     queryKey: ["/api/conversations"],
@@ -156,7 +158,11 @@ export default function Conversations() {
           </div>
 
           <div className="mt-8 text-center">
-            <Button variant="secondary" data-testid="button-load-more-conversations">
+            <Button 
+              variant="secondary" 
+              onClick={() => trigger('Conversations load more action triggered!')}
+              data-testid="button-load-more-conversations"
+            >
               Load More Conversations
             </Button>
           </div>

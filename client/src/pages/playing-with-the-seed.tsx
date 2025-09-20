@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useInteractivity } from "@/lib/useInteractivity";
 import { 
   Sprout, Globe, Atom, Heart, Target, Zap, Sparkles, Leaf,
   Trees, Sun, Droplets, MapPin, Clock, TrendingUp,
@@ -15,6 +16,7 @@ import {
 } from "lucide-react";
 
 const PlayingWithTheSeed = () => {
+  const { trigger } = useInteractivity();
   // Static values - no dynamic state needed
   const intentionVerified = true;
   const atomLevelView = false;
@@ -501,13 +503,18 @@ const PlayingWithTheSeed = () => {
                         </div>
 
                         <div className="space-y-3">
-                          <Button className="w-full bg-blue-500 hover:bg-blue-600" data-testid="button-gentle-water">
+                          <Button 
+                            className="w-full bg-blue-500 hover:bg-blue-600" 
+                            onClick={() => trigger('Playing with the seed - gentle watering action triggered!')}
+                            data-testid="button-gentle-water"
+                          >
                             <Droplets className="h-4 w-4 mr-2" />
                             Water Like Ouma Taught - Gently
                           </Button>
                           
                           <Button 
                             className="w-full bg-yellow-500 hover:bg-yellow-600" 
+                            onClick={() => trigger('Playing with the seed - gratitude meditation action triggered!')}
                             data-testid="button-gratitude-meditation"
                           >
                             <Heart className="h-4 w-4 mr-2" />

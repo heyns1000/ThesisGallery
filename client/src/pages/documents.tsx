@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { SamFoxUploadButton } from "@/components/samfox-gallery";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { useInteractivity } from "@/lib/useInteractivity";
 import type { Document } from "@shared/schema";
 
 // SamFox Studio color constants for Project Scrolls
@@ -59,6 +60,7 @@ interface ProjectScrollCardProps {
 
 function ProjectScrollCard({ document, onClick }: ProjectScrollCardProps) {
   const typeInfo = getDocumentTypeInfo(document.type);
+  const { trigger } = useInteractivity();
   
   return (
     <Card 
@@ -97,10 +99,28 @@ function ProjectScrollCard({ document, onClick }: ProjectScrollCardProps) {
         </div>
         <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
           <div className="flex items-center space-x-1">
-            <Button size="sm" variant="outline" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm border-amber-400/30">
+            <Button 
+              size="sm" 
+              variant="outline" 
+              className="bg-white/20 hover:bg-white/30 backdrop-blur-sm border-amber-400/30"
+              onClick={(e) => {
+                e.stopPropagation();
+                trigger('Document view action triggered!');
+              }}
+              data-testid="button-view-document"
+            >
               <i className="fas fa-eye text-xs"></i>
             </Button>
-            <Button size="sm" variant="outline" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm border-amber-400/30">
+            <Button 
+              size="sm" 
+              variant="outline" 
+              className="bg-white/20 hover:bg-white/30 backdrop-blur-sm border-amber-400/30"
+              onClick={(e) => {
+                e.stopPropagation();
+                trigger('Document download action triggered!');
+              }}
+              data-testid="button-download-document"
+            >
               <i className="fas fa-download text-xs"></i>
             </Button>
           </div>

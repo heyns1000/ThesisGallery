@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
+import { useInteractivity } from "@/lib/useInteractivity";
 
 const aiEngines = [
   {
@@ -127,6 +128,7 @@ const saasPlans = [
 ];
 
 export default function SmartToysPlatform() {
+  const { trigger } = useInteractivity();
   const [liveMetrics, setLiveMetrics] = useState({
     activeChildren: 1247,
     learningHours: 12543,
@@ -166,7 +168,11 @@ export default function SmartToysPlatform() {
                 🧸 Education Hub
               </Button>
             </Link>
-            <Button className="bg-white text-black hover:bg-gray-200">
+            <Button 
+              className="bg-white text-black hover:bg-gray-200"
+              onClick={() => trigger('Smart Toys book demo action triggered!')}
+              data-testid="button-book-demo"
+            >
               📞 Book Demo
             </Button>
           </div>

@@ -6,6 +6,7 @@ import {
   Globe, Leaf, ShieldCheck, ShoppingCart, Palette, Baby,
   BarChart, FlaskConical, MountainSnow, Users, Smartphone
 } from "lucide-react";
+import { useInteractivity } from "@/lib/useInteractivity";
 
 const scrollBrands = [
   {
@@ -145,6 +146,8 @@ const pipelineProjects = [
 ];
 
 export default function CrateDanceSmartGrid() {
+  const { trigger } = useInteractivity();
+  
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       {/* Header */}
@@ -254,10 +257,19 @@ export default function CrateDanceSmartGrid() {
                   </div>
 
                   <div className="flex gap-2">
-                    <Button className="flex-1 bg-blue-600 hover:bg-blue-700" data-testid={`button-deploy-${brand.name}`}>
+                    <Button 
+                      className="flex-1 bg-blue-600 hover:bg-blue-700" 
+                      onClick={() => trigger(`${brand.name} deploy action triggered!`)}
+                      data-testid={`button-deploy-${brand.name}`}
+                    >
                       🚀 Deploy Now
                     </Button>
-                    <Button variant="outline" className="flex-1" data-testid={`button-license-${brand.name}`}>
+                    <Button 
+                      variant="outline" 
+                      className="flex-1" 
+                      onClick={() => trigger(`${brand.name} license info action triggered!`)}
+                      data-testid={`button-license-${brand.name}`}
+                    >
                       📄 License Info
                     </Button>
                   </div>
@@ -347,7 +359,12 @@ export default function CrateDanceSmartGrid() {
                     <Badge variant="secondary">{module.count}</Badge>
                   </div>
                   <p className="text-gray-600 text-sm">{module.description}</p>
-                  <Button className="w-full mt-4" variant="outline">
+                  <Button 
+                    className="w-full mt-4" 
+                    variant="outline"
+                    onClick={() => trigger(`${module.type} modules action triggered!`)}
+                    data-testid={`button-view-modules-${idx}`}
+                  >
                     View Modules
                   </Button>
                 </CardContent>

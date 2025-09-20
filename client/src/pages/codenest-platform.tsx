@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Link } from "wouter";
+import { useInteractivity } from "@/lib/useInteractivity";
 
 const activeProjects = [
   {
@@ -105,6 +106,7 @@ const scrollBuilderFeatures = [
 
 export default function CodeNestPlatform() {
   const [activeTab, setActiveTab] = useState("dashboard");
+  const { trigger } = useInteractivity();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-yellow-900 to-orange-900 text-white">
@@ -125,7 +127,11 @@ export default function CodeNestPlatform() {
                 🧠 AI Hub
               </Button>
             </Link>
-            <Button className="bg-white text-black hover:bg-gray-200">
+            <Button 
+              className="bg-white text-black hover:bg-gray-200"
+              onClick={() => trigger('CodeNest get license action triggered!')}
+              data-testid="button-get-license"
+            >
               📞 Get License
             </Button>
           </div>

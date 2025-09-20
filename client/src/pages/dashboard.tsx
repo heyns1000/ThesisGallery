@@ -5,6 +5,7 @@ import { SamFoxGalleryWidget } from "@/components/samfox-gallery";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { useInteractivity } from "@/lib/useInteractivity";
 import type { SystemStats, Document, ComplianceLog } from "@shared/schema";
 
 export default function Dashboard() {
@@ -12,6 +13,7 @@ export default function Dashboard() {
   const [realtimeStats, setRealtimeStats] = useState<SystemStats | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { trigger } = useInteractivity();
   
   const loadSampleDataMutation = useMutation({
     mutationFn: async () => {
@@ -103,6 +105,7 @@ export default function Dashboard() {
             )}
             <button 
               className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:opacity-90 transition-opacity"
+              onClick={() => trigger('Dashboard new upload action triggered!')}
               data-testid="button-new-upload"
             >
               <i className="fas fa-plus mr-2"></i>New Upload

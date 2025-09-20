@@ -34,6 +34,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { useInteractivity } from "@/lib/useInteractivity";
 
 interface BanimalProduct {
   id: string;
@@ -81,6 +82,7 @@ export default function BanimalPlatformPage() {
   const [chatInput, setChatInput] = useState("");
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { trigger } = useInteractivity();
 
   // Fetch products
   const { data: products = [], isLoading: productsLoading } = useQuery({
@@ -200,7 +202,11 @@ export default function BanimalPlatformPage() {
               <SelectItem value="AUD">🇦🇺 AUD</SelectItem>
             </SelectContent>
           </Select>
-          <Button variant="outline" data-testid="button-settings">
+          <Button 
+            variant="outline" 
+            onClick={() => trigger('Banimal platform settings action triggered!')}
+            data-testid="button-settings"
+          >
             <Settings className="h-4 w-4" />
           </Button>
         </div>

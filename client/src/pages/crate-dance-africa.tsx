@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useInteractivity } from "@/lib/useInteractivity";
 import { 
   Trophy, Users, Calendar, MapPin, Star, Music, Award, 
   TrendingUp, Heart, Target, Zap, Sparkles, Crown, Globe,
@@ -17,6 +18,7 @@ import {
 } from "lucide-react";
 
 const CrateDanceAfrica = () => {
+  const { trigger } = useInteractivity();
   const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
   const [registrationOpen, setRegistrationOpen] = useState(false);
 
@@ -518,7 +520,11 @@ const CrateDanceAfrica = () => {
               <Button variant="outline" onClick={() => setRegistrationOpen(false)}>
                 Cancel
               </Button>
-              <Button className="bg-gradient-to-r from-orange-500 to-red-500" data-testid="button-submit-registration">
+              <Button 
+                className="bg-gradient-to-r from-orange-500 to-red-500" 
+                onClick={() => trigger('Crate Dance Africa registration submitted!')}
+                data-testid="button-submit-registration"
+              >
                 Submit Registration
               </Button>
             </div>

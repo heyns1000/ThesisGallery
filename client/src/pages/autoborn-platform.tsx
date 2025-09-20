@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
+import { useInteractivity } from "@/lib/useInteractivity";
 
 const scrollsData = [
   {
@@ -109,6 +110,8 @@ const pricingPlans = [
 ];
 
 export default function AutoBornPlatform() {
+  const { trigger } = useInteractivity();
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-indigo-900 text-white">
       {/* Header */}
@@ -128,7 +131,11 @@ export default function AutoBornPlatform() {
                 ⛏️ Mining Hub
               </Button>
             </Link>
-            <Button className="bg-white text-black hover:bg-gray-200">
+            <Button 
+              className="bg-white text-black hover:bg-gray-200"
+              onClick={() => trigger('AutoBorn book demo action triggered!')}
+              data-testid="button-book-demo"
+            >
               📞 Book Demo
             </Button>
           </div>

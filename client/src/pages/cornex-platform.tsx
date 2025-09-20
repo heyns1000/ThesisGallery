@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
+import { useInteractivity } from "@/lib/useInteractivity";
 
 const factorySetupPhases = [
   {
@@ -59,6 +60,8 @@ const productPricing = [
 ];
 
 export default function CornexPlatform() {
+  const { trigger } = useInteractivity();
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-indigo-900 text-white">
       {/* Header */}
@@ -78,7 +81,11 @@ export default function CornexPlatform() {
                 🏛️ Housing Hub
               </Button>
             </Link>
-            <Button className="bg-white text-black hover:bg-gray-200">
+            <Button 
+              className="bg-white text-black hover:bg-gray-200"
+              onClick={() => trigger('Cornex contact sales action triggered!')}
+              data-testid="button-contact-sales"
+            >
               📞 Contact Sales
             </Button>
           </div>

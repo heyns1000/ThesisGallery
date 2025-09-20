@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { useInteractivity } from "@/lib/useInteractivity";
 
 interface SamFoxStudio {
   id: string;
@@ -649,6 +650,7 @@ function FileroomGallery() {
 }
 
 export default function SamFoxStudioPlatform() {
+  const { trigger } = useInteractivity();
   const [selectedTab, setSelectedTab] = useState("overview");
   const [pulseInterval, setPulseInterval] = useState<NodeJS.Timeout | null>(null);
   const { toast } = useToast();

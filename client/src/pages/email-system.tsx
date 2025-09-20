@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
+import { useInteractivity } from '@/lib/useInteractivity';
 import {
   Dialog,
   DialogContent,
@@ -94,6 +95,7 @@ interface EmailStatistics {
 }
 
 export default function EmailSystemPage() {
+  const { trigger } = useInteractivity();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState('dashboard');
