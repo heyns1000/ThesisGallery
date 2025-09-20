@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { 
   Moon, Zap, TrendingDown, Globe, Calendar, Clock, 
   Shield, AlertTriangle, Target, BarChart3, 
-  ArrowDown, Sparkles, Database, Radio, Broadcast
+  ArrowDown, Sparkles, Database, Radio
 } from "lucide-react";
 
 // Strategic Sell Scroll Data - "Feb the Moon" Blast Light
@@ -379,7 +379,7 @@ export default function StrategicSellScroll() {
                 className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full"
                 disabled={isActive}
               >
-                <Broadcast className="h-5 w-5 mr-2" />
+                <Radio className="h-5 w-5 mr-2" />
                 {isActive ? 'Broadcasting...' : 'Broadcast Moon Pulse'}
               </Button>
               <Button 
