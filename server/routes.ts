@@ -5,7 +5,9 @@ import { z } from "zod";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import { eq, desc, and } from "drizzle-orm";
 import { storage } from "./storage";
+import { db } from "./db";
 import { samFoxStudioService } from "./samfox-studio-service";
 import { loopPayService } from "./loop-pay-service";
 import { EmailProcessor, type EmailParsingResult } from "./email-processor";
@@ -49,7 +51,17 @@ import {
   insertLoopPayVendorSchema,
   insertLoopPayCurrencyRateSchema,
   insertLoopPayPayoutMeshSchema,
-  insertLoopPayAiAssistantSchema
+  insertLoopPayAiAssistantSchema,
+  // Ecosystem Integration Schemas
+  insertEcosystemSystemSchema,
+  insertEcosystemAppSchema,
+  insertEcosystemSyncLogSchema,
+  updateEcosystemSystemSchema,
+  updateEcosystemAppSchema,
+  updateEcosystemSyncLogSchema,
+  ecosystemSystems,
+  ecosystemApps,
+  ecosystemSyncLogs
 } from "@shared/schema";
 import { ContactProcessingAI, BanimalChatbot, CurrencyAI, HolidayAI, generateFaaReference } from "./ai-services";
 import { GeminiContactProcessor, GeminiBanimalChatbot, GeminiProductAI, GeminiMarketingAI } from "./gemini-ai";
@@ -4321,6 +4333,254 @@ May this wisdom serve your journey well! 🌳✨`
     } catch (error) {
       console.error('Error syncing product:', error);
       res.status(500).json({ error: 'Failed to sync product' });
+    }
+  });
+
+  // ===============================
+  // ECOSYSTEM INTEGRATION ROUTES
+  // ===============================
+
+  // Ecosystem Systems Routes
+  
+  // GET /api/ecosystem/systems - List all systems with optional filtering by systemType
+  app.get("/api/ecosystem/systems", isAuthenticated, async (req, res) => {
+    try {
+      const { systemType } = req.query;
+      
+      let query = db.select().from(ecosystemSystems);
+      
+      if (systemType) {
+        query = query.where(eq(ecosystemSystems.systemType, systemType as string)) as any;
+      }
+      
+      const systems = await query.orderBy(desc(ecosystemSystems.updatedAt));
+      
+      res.json(systems);
+    } catch (error) {
+      console.error('Error fetching ecosystem systems:', error);
+      res.status(500).json({ error: 'Failed to fetch ecosystem systems' });
+    }
+  });
+
+  // POST /api/ecosystem/systems - Create new system
+  app.post("/api/ecosystem/systems", isAuthenticated, async (req, res) => {
+    try {
+      const validatedData = insertEcosystemSystemSchema.parse(req.body);
+      
+      const [newSystem] = await db
+        .insert(ecosystemSystems)
+        .values(validatedData)
+        .returning();
+      
+      broadcast({ type: 'ecosystem_system_created', data: newSystem });
+      res.status(201).json(newSystem);
+    } catch (error) {
+      console.error('Error creating ecosystem system:', error);
+      res.status(400).json({ 
+        error: 'Failed to create ecosystem system',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // PATCH /api/ecosystem/systems/:id - Update system
+  app.patch("/api/ecosystem/systems/:id", isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const validatedUpdates = updateEcosystemSystemSchema.parse(req.body);
+      
+      const [updatedSystem] = await db
+        .update(ecosystemSystems)
+        .set({ ...validatedUpdates, updatedAt: new Date() })
+        .where(eq(ecosystemSystems.id, id))
+        .returning();
+      
+      if (!updatedSystem) {
+        return res.status(404).json({ error: 'Ecosystem system not found' });
+      }
+      
+      broadcast({ type: 'ecosystem_system_updated', data: updatedSystem });
+      res.json(updatedSystem);
+    } catch (error) {
+      console.error('Error updating ecosystem system:', error);
+      res.status(500).json({ error: 'Failed to update ecosystem system' });
+    }
+  });
+
+  // DELETE /api/ecosystem/systems/:id - Delete system
+  app.delete("/api/ecosystem/systems/:id", isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      
+      const [deletedSystem] = await db
+        .delete(ecosystemSystems)
+        .where(eq(ecosystemSystems.id, id))
+        .returning();
+      
+      if (!deletedSystem) {
+        return res.status(404).json({ error: 'Ecosystem system not found' });
+      }
+      
+      broadcast({ type: 'ecosystem_system_deleted', data: { id } });
+      res.json({ success: true, message: 'Ecosystem system deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting ecosystem system:', error);
+      res.status(500).json({ error: 'Failed to delete ecosystem system' });
+    }
+  });
+
+  // Ecosystem Apps Routes
+  
+  // GET /api/ecosystem/apps - List all Replit apps with optional category filtering
+  app.get("/api/ecosystem/apps", isAuthenticated, async (req, res) => {
+    try {
+      const { category } = req.query;
+      
+      let query = db.select().from(ecosystemApps);
+      
+      if (category) {
+        query = query.where(eq(ecosystemApps.category, category as string)) as any;
+      }
+      
+      const apps = await query.orderBy(desc(ecosystemApps.updatedAt));
+      
+      res.json(apps);
+    } catch (error) {
+      console.error('Error fetching ecosystem apps:', error);
+      res.status(500).json({ error: 'Failed to fetch ecosystem apps' });
+    }
+  });
+
+  // POST /api/ecosystem/apps - Create/import app
+  app.post("/api/ecosystem/apps", isAuthenticated, async (req, res) => {
+    try {
+      const validatedData = insertEcosystemAppSchema.parse(req.body);
+      
+      const [newApp] = await db
+        .insert(ecosystemApps)
+        .values(validatedData)
+        .returning();
+      
+      broadcast({ type: 'ecosystem_app_created', data: newApp });
+      res.status(201).json(newApp);
+    } catch (error) {
+      console.error('Error creating ecosystem app:', error);
+      res.status(400).json({ 
+        error: 'Failed to create ecosystem app',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // PATCH /api/ecosystem/apps/:id - Update app
+  app.patch("/api/ecosystem/apps/:id", isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const validatedUpdates = updateEcosystemAppSchema.parse(req.body);
+      
+      const [updatedApp] = await db
+        .update(ecosystemApps)
+        .set({ ...validatedUpdates, updatedAt: new Date() })
+        .where(eq(ecosystemApps.id, id))
+        .returning();
+      
+      if (!updatedApp) {
+        return res.status(404).json({ error: 'Ecosystem app not found' });
+      }
+      
+      broadcast({ type: 'ecosystem_app_updated', data: updatedApp });
+      res.json(updatedApp);
+    } catch (error) {
+      console.error('Error updating ecosystem app:', error);
+      res.status(500).json({ error: 'Failed to update ecosystem app' });
+    }
+  });
+
+  // DELETE /api/ecosystem/apps/:id - Delete app
+  app.delete("/api/ecosystem/apps/:id", isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      
+      const [deletedApp] = await db
+        .delete(ecosystemApps)
+        .where(eq(ecosystemApps.id, id))
+        .returning();
+      
+      if (!deletedApp) {
+        return res.status(404).json({ error: 'Ecosystem app not found' });
+      }
+      
+      broadcast({ type: 'ecosystem_app_deleted', data: { id } });
+      res.json({ success: true, message: 'Ecosystem app deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting ecosystem app:', error);
+      res.status(500).json({ error: 'Failed to delete ecosystem app' });
+    }
+  });
+
+  // Ecosystem Sync Logs Routes
+  
+  // GET /api/ecosystem/sync-logs - List sync logs with optional limit query parameter
+  app.get("/api/ecosystem/sync-logs", isAuthenticated, async (req, res) => {
+    try {
+      const { limit } = req.query;
+      const limitNum = limit ? parseInt(limit as string) : 100;
+      
+      const logs = await db
+        .select()
+        .from(ecosystemSyncLogs)
+        .orderBy(desc(ecosystemSyncLogs.startedAt))
+        .limit(limitNum);
+      
+      res.json(logs);
+    } catch (error) {
+      console.error('Error fetching ecosystem sync logs:', error);
+      res.status(500).json({ error: 'Failed to fetch ecosystem sync logs' });
+    }
+  });
+
+  // POST /api/ecosystem/sync-logs - Create sync log
+  app.post("/api/ecosystem/sync-logs", isAuthenticated, async (req, res) => {
+    try {
+      const validatedData = insertEcosystemSyncLogSchema.parse(req.body);
+      
+      const [newLog] = await db
+        .insert(ecosystemSyncLogs)
+        .values(validatedData)
+        .returning();
+      
+      broadcast({ type: 'ecosystem_sync_log_created', data: newLog });
+      res.status(201).json(newLog);
+    } catch (error) {
+      console.error('Error creating ecosystem sync log:', error);
+      res.status(400).json({ 
+        error: 'Failed to create ecosystem sync log',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // PATCH /api/ecosystem/sync-logs/:id - Update sync log (for updating status/completion)
+  app.patch("/api/ecosystem/sync-logs/:id", isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const validatedUpdates = updateEcosystemSyncLogSchema.parse(req.body);
+      
+      const [updatedLog] = await db
+        .update(ecosystemSyncLogs)
+        .set(validatedUpdates)
+        .where(eq(ecosystemSyncLogs.id, id))
+        .returning();
+      
+      if (!updatedLog) {
+        return res.status(404).json({ error: 'Ecosystem sync log not found' });
+      }
+      
+      broadcast({ type: 'ecosystem_sync_log_updated', data: updatedLog });
+      res.json(updatedLog);
+    } catch (error) {
+      console.error('Error updating ecosystem sync log:', error);
+      res.status(500).json({ error: 'Failed to update ecosystem sync log' });
     }
   });
 

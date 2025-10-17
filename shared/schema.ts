@@ -2577,6 +2577,11 @@ export const insertEcosystemSyncLogSchema = createInsertSchema(ecosystemSyncLogs
   metadata: true,
 });
 
+// Update schemas for Ecosystem Integration (partial)
+export const updateEcosystemSystemSchema = insertEcosystemSystemSchema.partial();
+export const updateEcosystemAppSchema = insertEcosystemAppSchema.partial();
+export const updateEcosystemSyncLogSchema = insertEcosystemSyncLogSchema.partial();
+
 // Auth Type exports (Required for Replit Auth)
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
