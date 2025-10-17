@@ -14,6 +14,7 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Textarea } from '@/components/ui/textarea';
+import InteractiveSectorMapping from '@/components/InteractiveSectorMapping';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -35,7 +36,8 @@ import {
   AlertCircle,
   Loader2,
   PlayCircle,
-  Package
+  Package,
+  Network
 } from 'lucide-react';
 import {
   Collapsible,
@@ -861,7 +863,7 @@ export default function EcosystemManager() {
         <Card className="energetic-card">
           <CardContent className="pt-6">
             <Tabs defaultValue="replit" className="w-full">
-              <TabsList className="grid w-full grid-cols-5">
+              <TabsList className="grid w-full grid-cols-6">
                 <TabsTrigger value="replit" data-testid="tab-replit-apps">
                   🔬 Replit Apps
                 </TabsTrigger>
@@ -876,6 +878,10 @@ export default function EcosystemManager() {
                 <TabsTrigger value="hotstack" data-testid="tab-hotstack">
                   <Cloud className="w-4 h-4 mr-2" />
                   HotStack™
+                </TabsTrigger>
+                <TabsTrigger value="heatmap" data-testid="tab-heatmap">
+                  <Network className="w-4 h-4 mr-2" />
+                  Network Heatmap
                 </TabsTrigger>
                 <TabsTrigger value="logs" data-testid="tab-logs">
                   <Activity className="w-4 h-4 mr-2" />
@@ -1949,7 +1955,20 @@ export default function EcosystemManager() {
                 </Card>
               </TabsContent>
 
-              {/* Tab 5: Sync Logs */}
+              {/* Tab 5: Network Heatmap */}
+              <TabsContent value="heatmap" className="space-y-4">
+                <div className="mb-4">
+                  <h3 className="text-xl font-bold bg-gradient-to-r from-[hsl(203,93%,68%)] via-[hsl(142,76%,36%)] to-[hsl(43,96%,56%)] text-transparent bg-clip-text">
+                    Interactive Sector Network Heatmap
+                  </h3>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Visualize sector relationships, dependencies, and network connections across the global ecosystem
+                  </p>
+                </div>
+                <InteractiveSectorMapping />
+              </TabsContent>
+
+              {/* Tab 6: Sync Logs */}
               <TabsContent value="logs" className="space-y-4">
                 <div className="flex justify-between items-center">
                   <h3 className="text-lg font-semibold">Sync Logs</h3>
