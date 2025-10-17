@@ -1,31 +1,29 @@
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { 
   Github, 
-  File, 
-  Folder, 
-  Download, 
-  Search, 
   RefreshCw, 
+  Download, 
   Eye, 
-  Clock,
-  Star,
-  GitFork,
-  CheckCircle,
-  XCircle,
+  Sync, 
+  Star, 
+  GitFork, 
+  Clock, 
+  CheckCircle2,
   AlertCircle,
-  FileText,
-  Code,
-  Video,
-  Image,
-  Database
+  Loader2,
+  FileCode,
+  Folder,
+  Code
 } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
 
 interface Repository {
   id: string;
@@ -34,34 +32,23 @@ interface Repository {
   description: string;
   htmlUrl: string;
   owner: string;
-  isPrivate: boolean;
-  defaultBranch: string;
   language: string;
   starCount: number;
   forkCount: number;
   topics: string[];
-  lastSyncAt: string;
+  lastSyncAt: string | null;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
 }
 
-interface RepositoryFile {
-  id: string;
-  repositoryId: string;
-  fileName: string;
-  filePath: string;
-  fileType: string;
-  fileSize: number;
-  content: string;
-  rawUrl: string;
-  htmlUrl: string;
-  sha: string;
-  encoding: string;
-  isRenderable: boolean;
-  tags: string[];
-  createdAt: string;
-  updatedAt: string;
+interface FileTreeItem {
+  name: string;
+  path: string;
+  type: 'file' | 'dir';
+  size?: number;
+  sha?: string;
+  children?: FileTreeItem[];
 }
 
 interface SyncLog {
@@ -73,491 +60,500 @@ interface SyncLog {
   filesAdded: number;
   filesUpdated: number;
   filesDeleted: number;
-  errorMessage: string;
+  errorMessage?: string;
   startedAt: string;
-  completedAt: string;
+  completedAt?: string;
+}
+
+interface RepositoryStats {
+  totalRepos: number;
+  totalStars: number;
+  totalForks: number;
+  languages: Record<string, number>;
 }
 
 export default function GitHubRepositoryBrowser() {
-  const [selectedRepository, setSelectedRepository] = useState<Repository | null>(null);
-  const [selectedFile, setSelectedFile] = useState<RepositoryFile | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [fileTypeFilter, setFileTypeFilter] = useState('all');
+  const [activeTab, setActiveTab] = useState("repositories");
+  const [selectedRepo, setSelectedRepo] = useState<{ owner: string; repo: string } | null>(null);
+  const [showFileTreeModal, setShowFileTreeModal] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Fetch repositories
-  const { data: repositories = [], isLoading: repositoriesLoading } = useQuery({
-    queryKey: ['/api/github/repositories'],
-    refetchInterval: 10000
+  // Fetch repositories from database
+  const { data: dbRepositories = [], isLoading: isLoadingDb } = useQuery<Repository[]>({
+    queryKey: ["/api/github/repositories"],
   });
 
-  // Fetch files for selected repository
-  const { data: files = [], isLoading: filesLoading } = useQuery({
-    queryKey: ['/api/github/repositories', selectedRepository?.id, 'files'],
-    enabled: !!selectedRepository?.id
+  // Fetch repository stats
+  const { data: stats } = useQuery<RepositoryStats>({
+    queryKey: ["/api/github/repository-stats"],
   });
 
   // Fetch sync logs
-  const { data: syncLogs = [] } = useQuery({
-    queryKey: ['/api/github/sync-logs'],
-    refetchInterval: 5000
+  const { data: syncLogs = [] } = useQuery<SyncLog[]>({
+    queryKey: ["/api/github/sync-logs"],
   });
 
-  // Sync Baobab repository mutation
-  const syncBaobabMutation = useMutation({
-    mutationFn: async () => {
-      const response = await fetch('/api/github/sync-baobab', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
-      });
-      
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to sync repository');
-      }
-      
+  // Fetch file tree for selected repository
+  const { data: fileTreeData, isLoading: isLoadingFileTree } = useQuery({
+    queryKey: ["/api/github/repositories", selectedRepo?.owner, selectedRepo?.repo, "file-tree"],
+    queryFn: async () => {
+      if (!selectedRepo) return null;
+      const response = await fetch(
+        `/api/github/repositories/${selectedRepo.owner}/${selectedRepo.repo}/file-tree`
+      );
       return response.json();
     },
-    onSuccess: (data) => {
-      toast({
-        title: "✅ Sync Complete!",
-        description: data.message
+    enabled: !!selectedRepo && showFileTreeModal,
+  });
+
+  // Refresh all repositories mutation
+  const refreshMutation = useMutation({
+    mutationFn: async () => {
+      return await apiRequest("/api/github/repositories/refresh", {
+        method: "POST",
+        body: JSON.stringify({ username: "heyns1000" }),
       });
-      queryClient.invalidateQueries({ queryKey: ['/api/github/repositories'] });
+    },
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/github/repositories"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/github/repository-stats"] });
+      toast({
+        title: "✅ Repositories Refreshed",
+        description: `Successfully refreshed ${data.count} repositories from GitHub`,
+      });
     },
     onError: (error: Error) => {
       toast({
-        title: "❌ Sync Failed",
+        title: "❌ Refresh Failed",
         description: error.message,
-        variant: "destructive"
+        variant: "destructive",
       });
-    }
+    },
   });
 
-  // Filter files based on search and type
-  const filteredFiles = files.filter((file: RepositoryFile) => {
-    const matchesSearch = file.fileName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         file.filePath.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesType = fileTypeFilter === 'all' || file.fileType === fileTypeFilter;
-    return matchesSearch && matchesType;
+  // Clone repository mutation
+  const cloneMutation = useMutation({
+    mutationFn: async ({ owner, repo }: { owner: string; repo: string }) => {
+      return await apiRequest(`/api/github/repositories/${owner}/${repo}/clone`, {
+        method: "POST",
+      });
+    },
+    onSuccess: (data: any, variables) => {
+      toast({
+        title: "✅ Repository Cloned",
+        description: `${variables.owner}/${variables.repo} cloned to ${data.path}`,
+      });
+    },
+    onError: (error: Error, variables) => {
+      toast({
+        title: "❌ Clone Failed",
+        description: `Failed to clone ${variables.owner}/${variables.repo}: ${error.message}`,
+        variant: "destructive",
+      });
+    },
   });
 
-  // Get unique file types for filter
-  const fileTypes = [...new Set(files.map((file: RepositoryFile) => file.fileType))];
+  // Sync repository mutation
+  const syncMutation = useMutation({
+    mutationFn: async ({ owner, repo }: { owner: string; repo: string }) => {
+      return await apiRequest("/api/github/sync", {
+        method: "POST",
+        body: JSON.stringify({ owner, repo }),
+      });
+    },
+    onSuccess: (data: any, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/github/repositories"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/github/sync-logs"] });
+      toast({
+        title: "✅ Repository Synced",
+        description: `${variables.owner}/${variables.repo} synced successfully`,
+      });
+    },
+    onError: (error: Error, variables) => {
+      toast({
+        title: "❌ Sync Failed",
+        description: `Failed to sync ${variables.owner}/${variables.repo}: ${error.message}`,
+        variant: "destructive",
+      });
+    },
+  });
 
-  const getFileIcon = (fileType: string) => {
-    switch (fileType) {
-      case 'html':
-      case 'markdown':
-        return <FileText className="h-4 w-4" />;
-      case 'javascript':
-      case 'typescript':
-      case 'python':
-        return <Code className="h-4 w-4" />;
-      case 'video':
-        return <Video className="h-4 w-4" />;
-      case 'image':
-        return <Image className="h-4 w-4" />;
-      default:
-        return <File className="h-4 w-4" />;
+  const handleViewFiles = (repo: Repository) => {
+    setSelectedRepo({ owner: repo.owner, repo: repo.name });
+    setShowFileTreeModal(true);
+  };
+
+  const handleClone = (repo: Repository) => {
+    cloneMutation.mutate({ owner: repo.owner, repo: repo.name });
+  };
+
+  const handleSync = (repo: Repository) => {
+    syncMutation.mutate({ owner: repo.owner, repo: repo.name });
+  };
+
+  const getStatusBadge = (repo: Repository) => {
+    if (syncMutation.isPending) {
+      return (
+        <Badge variant="secondary" className="gap-1">
+          <Loader2 className="h-3 w-3 animate-spin" />
+          Syncing
+        </Badge>
+      );
     }
-  };
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'success':
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case 'error':
-        return <XCircle className="h-4 w-4 text-red-500" />;
-      case 'in-progress':
-        return <AlertCircle className="h-4 w-4 text-yellow-500" />;
-      default:
-        return <Clock className="h-4 w-4 text-gray-500" />;
+    if (repo.isActive) {
+      return (
+        <Badge variant="default" className="bg-green-600 gap-1">
+          <CheckCircle2 className="h-3 w-3" />
+          Active
+        </Badge>
+      );
     }
+    return (
+      <Badge variant="secondary" className="gap-1">
+        <AlertCircle className="h-3 w-3" />
+        Inactive
+      </Badge>
+    );
   };
 
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  };
+  const renderFileTree = (items: FileTreeItem[], level = 0) => {
+    if (!items || items.length === 0) return null;
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+    return (
+      <div className={`space-y-1 ${level > 0 ? 'ml-4 border-l pl-2' : ''}`}>
+        {items.map((item, index) => (
+          <div key={`${item.path}-${index}`}>
+            <div className="flex items-center gap-2 py-1 px-2 hover:bg-accent rounded text-sm">
+              {item.type === 'dir' ? (
+                <Folder className="h-4 w-4 text-blue-500" />
+              ) : (
+                <FileCode className="h-4 w-4 text-gray-500" />
+              )}
+              <span className="flex-1">{item.name}</span>
+              {item.size && (
+                <span className="text-xs text-muted-foreground">
+                  {(item.size / 1024).toFixed(1)} KB
+                </span>
+              )}
+            </div>
+            {item.children && item.children.length > 0 && renderFileTree(item.children, level + 1)}
+          </div>
+        ))}
+      </div>
+    );
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900" data-testid="github-repository-browser">
+    <div className="container mx-auto py-8 px-4">
       {/* Header */}
-      <div className="bg-gradient-to-r from-slate-800 to-blue-900 text-white p-8 text-center">
-        <h1 className="text-4xl md:text-5xl font-black flex items-center justify-center">
-          <Github className="h-12 w-12 mr-4" />
-          GitHub Repository Browser
-        </h1>
-        <p className="mt-2 text-lg md:text-xl text-blue-200">
-          Sacred Baobab™ Security Network • File Management System
-        </p>
-        <div className="mt-4 flex justify-center space-x-2">
-          <Badge variant="secondary" className="bg-blue-600 text-white">
-            <Database className="h-3 w-3 mr-1" />
-            Database Integrated
-          </Badge>
-          <Badge variant="secondary" className="bg-green-600 text-white">
-            <RefreshCw className="h-3 w-3 mr-1" />
-            Auto-Sync Enabled
-          </Badge>
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <Github className="h-10 w-10 text-primary" />
+            <div>
+              <h1 className="text-3xl font-bold" data-testid="heading-github-browser">
+                GitHub Repository Browser
+              </h1>
+              <p className="text-muted-foreground">
+                Sacred Baobab™ Security Network + File Management System
+              </p>
+            </div>
+          </div>
+          <Button
+            onClick={() => refreshMutation.mutate()}
+            disabled={refreshMutation.isPending}
+            size="lg"
+            data-testid="button-refresh-all"
+            className="gap-2"
+          >
+            {refreshMutation.isPending ? (
+              <>
+                <Loader2 className="h-5 w-5 animate-spin" />
+                Refreshing...
+              </>
+            ) : (
+              <>
+                <RefreshCw className="h-5 w-5" />
+                Refresh All
+              </>
+            )}
+          </Button>
+        </div>
+
+        {/* Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium">Total Repositories</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold" data-testid="text-repo-count">
+                {stats?.totalRepos || dbRepositories.length}
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium">Total Stars</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold flex items-center gap-2">
+                <Star className="h-6 w-6 text-yellow-500" />
+                {stats?.totalStars || 0}
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium">Total Forks</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold flex items-center gap-2">
+                <GitFork className="h-6 w-6 text-blue-500" />
+                {stats?.totalForks || 0}
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium">Languages</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">
+                {stats?.languages ? Object.keys(stats.languages).length : 0}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
 
-      <div className="container mx-auto p-4 md:p-8">
-        <Tabs defaultValue="repositories" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="repositories">Repositories</TabsTrigger>
-            <TabsTrigger value="files">File Browser</TabsTrigger>
-            <TabsTrigger value="sync-logs">Sync Logs</TabsTrigger>
-          </TabsList>
+      {/* Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-3 mb-6">
+          <TabsTrigger value="repositories" data-testid="tab-repositories">
+            <Code className="h-4 w-4 mr-2" />
+            Repositories
+          </TabsTrigger>
+          <TabsTrigger value="file-browser" data-testid="tab-file-browser">
+            <Folder className="h-4 w-4 mr-2" />
+            File Browser
+          </TabsTrigger>
+          <TabsTrigger value="sync-logs" data-testid="tab-sync-logs">
+            <Clock className="h-4 w-4 mr-2" />
+            Sync Logs
+          </TabsTrigger>
+        </TabsList>
 
-          {/* Repositories Tab */}
-          <TabsContent value="repositories" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <span className="flex items-center">
-                    <Github className="h-5 w-5 mr-2" />
-                    GitHub Repositories
-                  </span>
-                  <Button 
-                    onClick={() => syncBaobabMutation.mutate()}
-                    disabled={syncBaobabMutation.isPending}
-                    className="bg-green-600 hover:bg-green-700"
-                  >
-                    <RefreshCw className={`h-4 w-4 mr-2 ${syncBaobabMutation.isPending ? 'animate-spin' : ''}`} />
-                    {syncBaobabMutation.isPending ? 'Syncing...' : 'Sync Baobab™'}
-                  </Button>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {repositoriesLoading ? (
-                  <div className="text-center py-8">Loading repositories...</div>
-                ) : repositories.length === 0 ? (
-                  <div className="text-center py-8">
-                    <Github className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <p className="text-muted-foreground">No repositories synced yet.</p>
-                    <p className="text-sm text-muted-foreground mt-2">
-                      Click "Sync Baobab™" to import your repository.
-                    </p>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {repositories.map((repo: Repository) => (
-                      <Card 
-                        key={repo.id}
-                        className={`cursor-pointer transition-all hover:shadow-lg ${
-                          selectedRepository?.id === repo.id ? 'ring-2 ring-blue-500 bg-blue-50 dark:bg-blue-900/20' : ''
-                        }`}
-                        onClick={() => setSelectedRepository(repo)}
-                        data-testid={`repository-card-${repo.name}`}
-                      >
-                        <CardContent className="p-6">
-                          <div className="flex items-start justify-between mb-4">
-                            <div>
-                              <h3 className="font-bold text-lg">{repo.name}</h3>
-                              <p className="text-sm text-muted-foreground">{repo.fullName}</p>
-                            </div>
-                            <Badge variant="outline" className="bg-green-50 dark:bg-green-900/20">
-                              {repo.isActive ? 'Active' : 'Inactive'}
-                            </Badge>
-                          </div>
-                          
-                          <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-                            {repo.description || 'No description available'}
-                          </p>
-
-                          <div className="flex items-center space-x-4 text-xs text-muted-foreground mb-4">
-                            <span className="flex items-center">
-                              <Star className="h-3 w-3 mr-1" />
-                              {repo.starCount}
-                            </span>
-                            <span className="flex items-center">
-                              <GitFork className="h-3 w-3 mr-1" />
-                              {repo.forkCount}
-                            </span>
-                            {repo.language && (
-                              <Badge variant="secondary" className="text-xs">
-                                {repo.language}
-                              </Badge>
-                            )}
-                          </div>
-
-                          {repo.topics && repo.topics.length > 0 && (
-                            <div className="flex flex-wrap gap-1 mb-4">
-                              {repo.topics.slice(0, 3).map((topic) => (
-                                <Badge key={topic} variant="outline" className="text-xs">
-                                  {topic}
-                                </Badge>
-                              ))}
-                              {repo.topics.length > 3 && (
-                                <Badge variant="outline" className="text-xs">
-                                  +{repo.topics.length - 3} more
-                                </Badge>
-                              )}
-                            </div>
-                          )}
-
-                          <div className="text-xs text-muted-foreground">
-                            Last synced: {repo.lastSyncAt ? formatDate(repo.lastSyncAt) : 'Never'}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Files Tab */}
-          <TabsContent value="files" className="space-y-6">
-            {!selectedRepository ? (
-              <Card>
-                <CardContent className="text-center py-12">
-                  <Folder className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <p className="text-muted-foreground">Select a repository to browse files</p>
-                </CardContent>
-              </Card>
-            ) : (
-              <>
-                {/* File Browser Header */}
-                <Card>
+        {/* Repositories Tab */}
+        <TabsContent value="repositories">
+          {isLoadingDb ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {dbRepositories.map((repo) => (
+                <Card key={repo.id} className="hover:shadow-lg transition-shadow" data-testid={`card-repo-${repo.name}`}>
                   <CardHeader>
-                    <CardTitle className="flex items-center">
-                      <Folder className="h-5 w-5 mr-2" />
-                      {selectedRepository.name} Files
-                    </CardTitle>
-                    <div className="flex space-x-4">
+                    <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <Input
-                          placeholder="Search files..."
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                          className="w-full"
-                        />
+                        <CardTitle className="text-lg mb-1">
+                          <a
+                            href={repo.htmlUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="hover:underline flex items-center gap-2"
+                          >
+                            <Github className="h-5 w-5" />
+                            {repo.name}
+                          </a>
+                        </CardTitle>
+                        <CardDescription className="line-clamp-2">
+                          {repo.description || "No description available"}
+                        </CardDescription>
                       </div>
-                      <select
-                        value={fileTypeFilter}
-                        onChange={(e) => setFileTypeFilter(e.target.value)}
-                        className="px-3 py-2 border rounded-md"
-                      >
-                        <option value="all">All Types</option>
-                        {fileTypes.map((type) => (
-                          <option key={type} value={type}>
-                            {type.charAt(0).toUpperCase() + type.slice(1)}
-                          </option>
-                        ))}
-                      </select>
+                      {getStatusBadge(repo)}
                     </div>
                   </CardHeader>
-                </Card>
-
-                {/* File List */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* File List Panel */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-lg">Files ({filteredFiles.length})</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      {filesLoading ? (
-                        <div className="text-center py-8">Loading files...</div>
-                      ) : filteredFiles.length === 0 ? (
-                        <div className="text-center py-8">
-                          <File className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
-                          <p className="text-muted-foreground">No files found</p>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {/* Language and Stats */}
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        {repo.language && (
+                          <Badge variant="outline">{repo.language}</Badge>
+                        )}
+                        <div className="flex items-center gap-1">
+                          <Star className="h-4 w-4" />
+                          {repo.starCount}
                         </div>
-                      ) : (
-                        <div className="space-y-2 max-h-96 overflow-y-auto">
-                          {filteredFiles.map((file: RepositoryFile) => (
-                            <div
-                              key={file.id}
-                              className={`p-3 border rounded-lg cursor-pointer transition-colors hover:bg-slate-50 dark:hover:bg-slate-800 ${
-                                selectedFile?.id === file.id ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-300' : ''
-                              }`}
-                              onClick={() => setSelectedFile(file)}
-                              data-testid={`file-item-${file.fileName}`}
-                            >
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center space-x-2">
-                                  {getFileIcon(file.fileType)}
-                                  <span className="font-medium text-sm">{file.fileName}</span>
-                                </div>
-                                <Badge variant="outline" className="text-xs">
-                                  {file.fileType}
-                                </Badge>
-                              </div>
-                              <div className="text-xs text-muted-foreground mt-1">
-                                {file.filePath} • {formatFileSize(file.fileSize)}
-                              </div>
-                              {file.tags && file.tags.length > 0 && (
-                                <div className="flex flex-wrap gap-1 mt-2">
-                                  {file.tags.slice(0, 3).map((tag) => (
-                                    <Badge key={tag} variant="secondary" className="text-xs">
-                                      {tag}
-                                    </Badge>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
+                        <div className="flex items-center gap-1">
+                          <GitFork className="h-4 w-4" />
+                          {repo.forkCount}
+                        </div>
+                      </div>
+
+                      {/* Last Sync */}
+                      {repo.lastSyncAt && (
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <Clock className="h-3 w-3" />
+                          Last synced {formatDistanceToNow(new Date(repo.lastSyncAt))} ago
+                        </div>
+                      )}
+
+                      {/* Topics */}
+                      {repo.topics && repo.topics.length > 0 && (
+                        <div className="flex flex-wrap gap-1">
+                          {repo.topics.slice(0, 3).map((topic, i) => (
+                            <Badge key={i} variant="secondary" className="text-xs">
+                              {topic}
+                            </Badge>
                           ))}
                         </div>
                       )}
-                    </CardContent>
-                  </Card>
 
-                  {/* File Content Panel */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center justify-between">
-                        <span className="flex items-center">
-                          <Eye className="h-5 w-5 mr-2" />
-                          File Preview
-                        </span>
-                        {selectedFile && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => window.open(selectedFile.htmlUrl, '_blank')}
-                          >
-                            <Github className="h-4 w-4 mr-2" />
-                            View on GitHub
-                          </Button>
-                        )}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      {!selectedFile ? (
-                        <div className="text-center py-12">
-                          <Eye className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
-                          <p className="text-muted-foreground">Select a file to preview</p>
-                        </div>
-                      ) : (
-                        <div className="space-y-4">
-                          <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
-                            <h4 className="font-medium">{selectedFile.fileName}</h4>
-                            <p className="text-sm text-muted-foreground">{selectedFile.filePath}</p>
-                            <div className="flex items-center space-x-4 mt-2 text-xs text-muted-foreground">
-                              <span>Size: {formatFileSize(selectedFile.fileSize)}</span>
-                              <span>Type: {selectedFile.fileType}</span>
-                              <span>Updated: {formatDate(selectedFile.updatedAt)}</span>
-                            </div>
-                          </div>
-
-                          {selectedFile.isRenderable && selectedFile.content ? (
-                            <div className="border rounded-lg p-4 bg-white dark:bg-slate-900">
-                              <div className="mb-2 text-sm text-muted-foreground">File Content:</div>
-                              <pre className="text-xs whitespace-pre-wrap max-h-96 overflow-y-auto bg-slate-50 dark:bg-slate-800 p-3 rounded">
-                                {selectedFile.content}
-                              </pre>
-                            </div>
+                      {/* Action Buttons */}
+                      <div className="flex gap-2 pt-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleViewFiles(repo)}
+                          className="flex-1 gap-1"
+                          data-testid={`button-view-${repo.name}`}
+                        >
+                          <Eye className="h-4 w-4" />
+                          View
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleClone(repo)}
+                          disabled={cloneMutation.isPending}
+                          className="flex-1 gap-1"
+                          data-testid={`button-clone-${repo.name}`}
+                        >
+                          {cloneMutation.isPending ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
                           ) : (
-                            <div className="text-center py-8 border rounded-lg">
-                              <File className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
-                              <p className="text-muted-foreground">Preview not available</p>
-                              <p className="text-xs text-muted-foreground mt-1">
-                                {selectedFile.fileType === 'video' ? 'Video files' : 
-                                 selectedFile.fileType === 'image' ? 'Image files' : 
-                                 'Binary files'} cannot be previewed
-                              </p>
-                            </div>
+                            <Download className="h-4 w-4" />
                           )}
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                </div>
-              </>
-            )}
-          </TabsContent>
+                          Clone
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleSync(repo)}
+                          disabled={syncMutation.isPending}
+                          className="flex-1 gap-1"
+                          data-testid={`button-sync-${repo.name}`}
+                        >
+                          {syncMutation.isPending ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Sync className="h-4 w-4" />
+                          )}
+                          Sync
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </TabsContent>
 
-          {/* Sync Logs Tab */}
-          <TabsContent value="sync-logs" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Clock className="h-5 w-5 mr-2" />
-                  Synchronization Logs
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+        {/* File Browser Tab */}
+        <TabsContent value="file-browser">
+          <Card>
+            <CardHeader>
+              <CardTitle>File Browser</CardTitle>
+              <CardDescription>
+                Select a repository from the Repositories tab and click "View" to browse its files
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        </TabsContent>
+
+        {/* Sync Logs Tab */}
+        <TabsContent value="sync-logs">
+          <Card>
+            <CardHeader>
+              <CardTitle>Sync Operation Logs</CardTitle>
+              <CardDescription>Track all repository synchronization operations</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
                 {syncLogs.length === 0 ? (
-                  <div className="text-center py-8">
-                    <Clock className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
-                    <p className="text-muted-foreground">No sync logs available</p>
-                  </div>
+                  <p className="text-muted-foreground text-center py-8">
+                    No sync operations yet. Click "Sync" on any repository to start.
+                  </p>
                 ) : (
-                  <div className="space-y-4">
-                    {syncLogs.map((log: SyncLog) => (
-                      <div key={log.id} className="p-4 border rounded-lg">
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center space-x-2">
-                            {getStatusIcon(log.status)}
-                            <span className="font-medium">
-                              {log.syncType.charAt(0).toUpperCase() + log.syncType.slice(1)} Sync
-                            </span>
-                            <Badge variant="outline">{log.status}</Badge>
-                          </div>
-                          <span className="text-sm text-muted-foreground">
-                            {formatDate(log.startedAt)}
-                          </span>
+                  syncLogs.map((log) => (
+                    <div
+                      key={log.id}
+                      className="flex items-center justify-between p-4 border rounded-lg"
+                      data-testid={`log-entry-${log.id}`}
+                    >
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-medium">{log.syncType} sync</span>
+                          <Badge
+                            variant={
+                              log.status === "success"
+                                ? "default"
+                                : log.status === "error"
+                                ? "destructive"
+                                : "secondary"
+                            }
+                          >
+                            {log.status}
+                          </Badge>
                         </div>
-
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                        <div className="text-sm text-muted-foreground">
                           <div>
-                            <span className="text-muted-foreground">Processed:</span>
-                            <p className="font-medium">{log.filesProcessed}</p>
+                            Processed: {log.filesProcessed} | Added: {log.filesAdded} | Updated:{" "}
+                            {log.filesUpdated}
                           </div>
-                          <div>
-                            <span className="text-muted-foreground">Added:</span>
-                            <p className="font-medium text-green-600">{log.filesAdded}</p>
-                          </div>
-                          <div>
-                            <span className="text-muted-foreground">Updated:</span>
-                            <p className="font-medium text-blue-600">{log.filesUpdated}</p>
-                          </div>
-                          <div>
-                            <span className="text-muted-foreground">Deleted:</span>
-                            <p className="font-medium text-red-600">{log.filesDeleted}</p>
+                          <div className="flex items-center gap-2 mt-1">
+                            <Clock className="h-3 w-3" />
+                            {formatDistanceToNow(new Date(log.startedAt))} ago
                           </div>
                         </div>
-
                         {log.errorMessage && (
-                          <div className="mt-3 p-2 bg-red-50 dark:bg-red-900/20 rounded text-sm text-red-600">
-                            Error: {log.errorMessage}
-                          </div>
-                        )}
-
-                        {log.completedAt && (
-                          <div className="mt-2 text-xs text-muted-foreground">
-                            Completed: {formatDate(log.completedAt)}
-                          </div>
+                          <div className="text-sm text-destructive mt-1">{log.errorMessage}</div>
                         )}
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  ))
                 )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+
+      {/* File Tree Modal */}
+      <Dialog open={showFileTreeModal} onOpenChange={setShowFileTreeModal}>
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Github className="h-5 w-5" />
+              {selectedRepo?.owner}/{selectedRepo?.repo}
+            </DialogTitle>
+            <DialogDescription>Browse repository files and structure</DialogDescription>
+          </DialogHeader>
+          {isLoadingFileTree ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          ) : fileTreeData?.tree ? (
+            <div className="mt-4">{renderFileTree(fileTreeData.tree)}</div>
+          ) : (
+            <p className="text-muted-foreground text-center py-8">No files found</p>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

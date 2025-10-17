@@ -3394,6 +3394,129 @@ May this wisdom serve your journey well! 🌳✨`
     }
   });
 
+  // Fetch ALL repositories from GitHub for a specific user (e.g., heyns1000)
+  app.get("/api/github/repositories/all/:username", async (req, res) => {
+    try {
+      const { username } = req.params;
+      const repositories = await githubService.fetchAllUserRepositories(username);
+      
+      res.json({ 
+        success: true,
+        count: repositories.length, 
+        repositories 
+      });
+    } catch (error) {
+      console.error('Fetch all repositories error:', error);
+      res.status(500).json({ error: "Failed to fetch all repositories from GitHub" });
+    }
+  });
+
+  // Refresh repository list from GitHub and update database
+  app.post("/api/github/repositories/refresh", async (req, res) => {
+    try {
+      const { username } = req.body;
+      
+      if (!username) {
+        return res.status(400).json({ error: "Username is required" });
+      }
+
+      const result = await githubService.refreshAllRepositories(username);
+      
+      if (result.success) {
+        broadcast({ 
+          type: 'github_repositories_refreshed',
+          data: { username, count: result.count } 
+        });
+        
+        res.json({ 
+          success: true, 
+          count: result.count,
+          message: `Successfully refreshed ${result.count} repositories for ${username}` 
+        });
+      } else {
+        res.status(500).json({ 
+          success: false, 
+          error: result.error || "Failed to refresh repositories" 
+        });
+      }
+    } catch (error) {
+      console.error('Refresh repositories error:', error);
+      res.status(500).json({ error: "Failed to refresh repositories" });
+    }
+  });
+
+  // Get file tree for a repository without cloning
+  app.get("/api/github/repositories/:owner/:repo/file-tree", async (req, res) => {
+    try {
+      const { owner, repo } = req.params;
+      const { path } = req.query;
+      
+      const fileTree = await githubService.getFileTree(owner, repo, path as string);
+      
+      res.json({ 
+        success: true,
+        owner,
+        repo,
+        path: path || '',
+        tree: fileTree 
+      });
+    } catch (error) {
+      console.error('Get file tree error:', error);
+      res.status(500).json({ error: "Failed to fetch file tree" });
+    }
+  });
+
+  // Clone repository to workspace
+  app.post("/api/github/repositories/:owner/:repo/clone", async (req, res) => {
+    try {
+      const { owner, repo } = req.params;
+      
+      broadcast({ 
+        type: 'github_clone_started',
+        data: { owner, repo } 
+      });
+
+      const result = await githubService.cloneRepository(owner, repo);
+      
+      if (result.success) {
+        broadcast({ 
+          type: 'github_clone_complete',
+          data: { owner, repo, path: result.path } 
+        });
+        
+        res.json({ 
+          success: true, 
+          path: result.path,
+          message: `Repository ${owner}/${repo} cloned successfully to ${result.path}` 
+        });
+      } else {
+        broadcast({ 
+          type: 'github_clone_error',
+          data: { owner, repo, error: result.error } 
+        });
+        
+        res.status(500).json({ 
+          success: false, 
+          error: result.error || "Failed to clone repository" 
+        });
+      }
+    } catch (error) {
+      console.error('Clone repository error:', error);
+      res.status(500).json({ error: "Failed to clone repository" });
+    }
+  });
+
+  // Get repository statistics
+  app.get("/api/github/repository-stats", async (req, res) => {
+    try {
+      const stats = await githubService.getRepositoryStats();
+      res.json(stats);
+    } catch (error) {
+      console.error('Get repository stats error:', error);
+      res.status(500).json({ error: "Failed to fetch repository statistics" });
+    }
+  });
+
   // Eureka Page Generation API
   app.post("/api/generate-pages", async (req, res) => {
     try {
