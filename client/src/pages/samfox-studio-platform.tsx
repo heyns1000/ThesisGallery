@@ -69,6 +69,26 @@ interface TreatyCollaboration {
   createdAt: string;
 }
 
+interface GitHubRepository {
+  id: string;
+  name: string;
+  fullName: string;
+  description: string | null;
+  htmlUrl: string;
+  owner: string;
+  isPrivate: boolean;
+  defaultBranch: string;
+  language: string | null;
+  starCount: number;
+  forkCount: number;
+  topics: string[];
+  lastSyncAt: string | null;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  metadata: any;
+}
+
 // Enhanced Fileroom Gallery Component
 function FileroomGallery() {
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -681,6 +701,23 @@ export default function SamFoxStudioPlatform() {
     queryKey: ["/api/samfox-studio/vault-trails"],
   });
 
+  // Fetch GitHub repositories
+  const { data: repositories = [], isLoading: repositoriesLoading } = useQuery<GitHubRepository[]>({
+    queryKey: ["/api/github/repositories"],
+  });
+
+  // Repository search and filter state
+  const [repositorySearch, setRepositorySearch] = useState("");
+  const [repositoryLanguageFilter, setRepositoryLanguageFilter] = useState("all");
+
+  // Get statistics from data
+  const stats = {
+    activeWorkspaces: workspaces.filter(w => w.status === "active").length,
+    totalLicenses: licenses.length,
+    totalAssets: vaultTrails.length,
+    activeTreaties: treaties.filter(t => t.status === "signed").length,
+    totalRepositories: repositories.length
+  };
 
   return (
     <div className="p-6">
@@ -739,11 +776,12 @@ export default function SamFoxStudioPlatform() {
 
       {/* Main Content Tabs */}
       <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="overview" data-testid="tab-overview">Overview</TabsTrigger>
           <TabsTrigger value="workspaces" data-testid="tab-workspaces">Workspaces</TabsTrigger>
           <TabsTrigger value="licenses" data-testid="tab-licenses">Licenses</TabsTrigger>
           <TabsTrigger value="treaties" data-testid="tab-treaties">Treaties</TabsTrigger>
+          <TabsTrigger value="repositories" data-testid="tab-repositories">Repositories</TabsTrigger>
           <TabsTrigger value="fileroom" data-testid="tab-fileroom">Fileroom</TabsTrigger>
         </TabsList>
 
@@ -1026,6 +1064,306 @@ export default function SamFoxStudioPlatform() {
                 </Card>
               ))}
             </div>
+          )}
+        </TabsContent>
+
+        {/* Repositories Tab */}
+        <TabsContent value="repositories" className="space-y-6">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+            <div>
+              <h3 className="text-2xl font-bold text-foreground flex items-center">
+                <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mr-3">
+                  <i className="fab fa-github text-white text-sm"></i>
+                </div>
+                Global Repositories
+              </h3>
+              <p className="text-muted-foreground mt-1">
+                Complete heyns1000 GitHub ecosystem integration • {stats.totalRepositories} repositories synced
+              </p>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Input
+                placeholder="Search repositories..."
+                value={repositorySearch}
+                onChange={(e) => setRepositorySearch(e.target.value)}
+                className="w-64"
+                data-testid="input-repository-search"
+              />
+              <Select value={repositoryLanguageFilter} onValueChange={setRepositoryLanguageFilter}>
+                <SelectTrigger className="w-40" data-testid="select-repository-language">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Languages</SelectItem>
+                  <SelectItem value="TypeScript">TypeScript</SelectItem>
+                  <SelectItem value="JavaScript">JavaScript</SelectItem>
+                  <SelectItem value="Python">Python</SelectItem>
+                  <SelectItem value="HTML">HTML</SelectItem>
+                  <SelectItem value="CSS">CSS</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {repositoriesLoading ? (
+            <div className="space-y-6">
+              {[...Array(3)].map((_, i) => (
+                <Card key={i} className="animate-pulse">
+                  <CardContent className="p-6">
+                    <div className="h-6 bg-muted rounded w-1/3 mb-4"></div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {[...Array(6)].map((_, j) => (
+                        <div key={j} className="h-32 bg-muted rounded-lg"></div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <>
+              {/* Repository Statistics */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <Card className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-purple-500/20">
+                  <CardContent className="p-4 text-center">
+                    <div className="text-2xl font-bold text-purple-400">{stats.totalRepositories}</div>
+                    <div className="text-sm text-muted-foreground">Total Repositories</div>
+                  </CardContent>
+                </Card>
+                <Card className="bg-gradient-to-br from-yellow-400/10 to-orange-500/10 border-yellow-400/20">
+                  <CardContent className="p-4 text-center">
+                    <div className="text-2xl font-bold text-yellow-400">
+                      {repositories.filter(r => r.name.includes('seedwave')).length}
+                    </div>
+                    <div className="text-sm text-muted-foreground">Seedwave Sectors</div>
+                  </CardContent>
+                </Card>
+                <Card className="bg-gradient-to-br from-emerald-400/10 to-green-500/10 border-emerald-400/20">
+                  <CardContent className="p-4 text-center">
+                    <div className="text-2xl font-bold text-emerald-400">
+                      {repositories.filter(r => ['faa.zone', 'banimal', 'baobab', 'samfox', 'vaultmesh', 'noodle.juice'].includes(r.name)).length}
+                    </div>
+                    <div className="text-sm text-muted-foreground">Core Systems</div>
+                  </CardContent>
+                </Card>
+                <Card className="bg-gradient-to-br from-blue-400/10 to-cyan-500/10 border-blue-400/20">
+                  <CardContent className="p-4 text-center">
+                    <div className="text-2xl font-bold text-blue-400">
+                      {repositories.reduce((sum, r) => sum + r.starCount, 0)}
+                    </div>
+                    <div className="text-sm text-muted-foreground">Total Stars</div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {(() => {
+                // Filter repositories
+                const filteredRepos = repositories.filter(repo => {
+                  const matchesSearch = repositorySearch === "" || 
+                    repo.name.toLowerCase().includes(repositorySearch.toLowerCase()) ||
+                    (repo.description && repo.description.toLowerCase().includes(repositorySearch.toLowerCase()));
+                  
+                  const matchesLanguage = repositoryLanguageFilter === "all" || 
+                    repo.language === repositoryLanguageFilter;
+                  
+                  return matchesSearch && matchesLanguage;
+                });
+
+                // Categorize repositories
+                const coreSystemRepos = filteredRepos.filter(r => 
+                  ['faa.zone', 'banimal', 'baobab', 'samfox', 'vaultmesh', 'noodle.juice'].includes(r.name)
+                );
+                
+                const seedwaveSectorRepos = filteredRepos.filter(r => 
+                  r.name.includes('seedwave')
+                );
+                
+                const infrastructureRepos = filteredRepos.filter(r => 
+                  !['faa.zone', 'banimal', 'baobab', 'samfox', 'vaultmesh', 'noodle.juice'].includes(r.name) &&
+                  !r.name.includes('seedwave')
+                );
+
+                const getLanguageColor = (language: string | null) => {
+                  const colors: Record<string, string> = {
+                    'TypeScript': 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+                    'JavaScript': 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
+                    'Python': 'bg-green-500/20 text-green-400 border-green-500/30',
+                    'HTML': 'bg-orange-500/20 text-orange-400 border-orange-500/30',
+                    'CSS': 'bg-purple-500/20 text-purple-400 border-purple-500/30',
+                    'Java': 'bg-red-500/20 text-red-400 border-red-500/30',
+                  };
+                  return language ? (colors[language] || 'bg-gray-500/20 text-gray-400 border-gray-500/30') : 'bg-muted text-muted-foreground';
+                };
+
+                const renderRepositoryCard = (repo: GitHubRepository) => (
+                  <Card 
+                    key={repo.id}
+                    className="group cursor-pointer hover:scale-105 transition-all duration-300 
+                              hover:shadow-lg border-2 border-transparent hover:border-purple-400/30
+                              bg-gradient-to-br from-card to-card/50"
+                    data-testid={`repository-card-${repo.name}`}
+                  >
+                    <CardHeader className="pb-3">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1 min-w-0">
+                          <a 
+                            href={repo.htmlUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="group/link"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <CardTitle className="text-sm font-mono flex items-center space-x-2 group-hover/link:text-purple-400 transition-colors">
+                              <i className="fab fa-github text-muted-foreground group-hover/link:text-purple-400"></i>
+                              <span className="truncate">{repo.name}</span>
+                              <i className="fas fa-external-link-alt text-xs text-muted-foreground opacity-0 group-hover/link:opacity-100 transition-opacity"></i>
+                            </CardTitle>
+                          </a>
+                        </div>
+                        {repo.language && (
+                          <Badge className={`text-xs ml-2 ${getLanguageColor(repo.language)}`}>
+                            {repo.language}
+                          </Badge>
+                        )}
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground mb-3 line-clamp-2 h-10">
+                        {repo.description || 'No description available'}
+                      </p>
+                      
+                      {repo.topics && repo.topics.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mb-3">
+                          {repo.topics.slice(0, 3).map((topic, idx) => (
+                            <Badge 
+                              key={idx} 
+                              variant="outline" 
+                              className="text-xs bg-background/50"
+                            >
+                              {topic}
+                            </Badge>
+                          ))}
+                          {repo.topics.length > 3 && (
+                            <Badge variant="outline" className="text-xs bg-background/50">
+                              +{repo.topics.length - 3}
+                            </Badge>
+                          )}
+                        </div>
+                      )}
+                      
+                      <div className="flex items-center justify-between text-xs text-muted-foreground">
+                        <div className="flex items-center space-x-3">
+                          <span className="flex items-center space-x-1">
+                            <i className="fas fa-star text-yellow-400"></i>
+                            <span>{repo.starCount}</span>
+                          </span>
+                          <span className="flex items-center space-x-1">
+                            <i className="fas fa-code-branch text-blue-400"></i>
+                            <span>{repo.forkCount}</span>
+                          </span>
+                        </div>
+                        <span className="text-xs">
+                          {new Date(repo.updatedAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+
+                return (
+                  <div className="space-y-8">
+                    {/* Core Systems */}
+                    {coreSystemRepos.length > 0 && (
+                      <Card className="overflow-hidden">
+                        <CardHeader className="bg-gradient-to-r from-emerald-400/20 to-green-500/20 border-b border-emerald-400/20">
+                          <CardTitle className="flex items-center justify-between">
+                            <div className="flex items-center">
+                              <i className="fas fa-cube text-emerald-400 mr-2"></i>
+                              Core Systems
+                              <Badge className="ml-2 bg-emerald-400/20 text-emerald-400 border-emerald-400/30">
+                                {coreSystemRepos.length} repositories
+                              </Badge>
+                            </div>
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-6">
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {coreSystemRepos.map(renderRepositoryCard)}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )}
+
+                    {/* Seedwave Sectors */}
+                    {seedwaveSectorRepos.length > 0 && (
+                      <Card className="overflow-hidden">
+                        <CardHeader className="bg-gradient-to-r from-yellow-400/20 to-orange-500/20 border-b border-yellow-400/20">
+                          <CardTitle className="flex items-center justify-between">
+                            <div className="flex items-center">
+                              <i className="fas fa-seedling text-yellow-400 mr-2"></i>
+                              Seedwave Sectors
+                              <Badge className="ml-2 bg-yellow-400/20 text-yellow-400 border-yellow-400/30">
+                                {seedwaveSectorRepos.length} repositories
+                              </Badge>
+                            </div>
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-6">
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {seedwaveSectorRepos.map(renderRepositoryCard)}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )}
+
+                    {/* Infrastructure */}
+                    {infrastructureRepos.length > 0 && (
+                      <Card className="overflow-hidden">
+                        <CardHeader className="bg-gradient-to-r from-blue-400/20 to-cyan-500/20 border-b border-blue-400/20">
+                          <CardTitle className="flex items-center justify-between">
+                            <div className="flex items-center">
+                              <i className="fas fa-server text-blue-400 mr-2"></i>
+                              Infrastructure & Tools
+                              <Badge className="ml-2 bg-blue-400/20 text-blue-400 border-blue-400/30">
+                                {infrastructureRepos.length} repositories
+                              </Badge>
+                            </div>
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-6">
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {infrastructureRepos.map(renderRepositoryCard)}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )}
+
+                    {/* No Results */}
+                    {filteredRepos.length === 0 && (
+                      <Card>
+                        <CardContent className="p-12 text-center">
+                          <i className="fab fa-github text-muted-foreground text-4xl mb-4"></i>
+                          <h4 className="text-lg font-semibold mb-2">No Repositories Found</h4>
+                          <p className="text-muted-foreground mb-4">
+                            Try adjusting your search or filter criteria
+                          </p>
+                          <Button 
+                            onClick={() => {
+                              setRepositorySearch("");
+                              setRepositoryLanguageFilter("all");
+                            }}
+                            data-testid="button-reset-filters"
+                          >
+                            Reset Filters
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </div>
+                );
+              })()}
+            </>
           )}
         </TabsContent>
 
