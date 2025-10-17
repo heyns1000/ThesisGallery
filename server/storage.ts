@@ -74,7 +74,14 @@ import {
   type SmsConversation,
   type InsertSmsConversation,
   type MessageTracking,
-  type InsertMessageTracking
+  type InsertMessageTracking,
+  // Ecosystem Integration Types
+  type EcosystemSystem,
+  type InsertEcosystemSystem,
+  type EcosystemApp,
+  type InsertEcosystemApp,
+  type EcosystemSyncLog,
+  type InsertEcosystemSyncLog
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -288,6 +295,29 @@ export interface IStorage {
   // Analytics methods
   getMessageAnalytics(channelType?: string, days?: number): Promise<any[]>;
   getChannelBreakdown(days: number): Promise<any[]>;
+
+  // ===============================
+  // ECOSYSTEM INTEGRATION METHODS
+  // ===============================
+
+  // Ecosystem System methods
+  getEcosystemSystems(): Promise<EcosystemSystem[]>;
+  getEcosystemSystem(id: string): Promise<EcosystemSystem | undefined>;
+  createEcosystemSystem(system: InsertEcosystemSystem): Promise<EcosystemSystem>;
+  updateEcosystemSystem(id: string, updates: Partial<EcosystemSystem>): Promise<EcosystemSystem | undefined>;
+  deleteEcosystemSystem(id: string): Promise<boolean>;
+
+  // Ecosystem App methods
+  getEcosystemApps(): Promise<EcosystemApp[]>;
+  getEcosystemApp(id: string): Promise<EcosystemApp | undefined>;
+  createEcosystemApp(app: InsertEcosystemApp): Promise<EcosystemApp>;
+  updateEcosystemApp(id: string, updates: Partial<EcosystemApp>): Promise<EcosystemApp | undefined>;
+  deleteEcosystemApp(id: string): Promise<boolean>;
+
+  // Ecosystem Sync Log methods
+  getEcosystemSyncLogs(limit?: number): Promise<EcosystemSyncLog[]>;
+  createEcosystemSyncLog(log: InsertEcosystemSyncLog): Promise<EcosystemSyncLog>;
+  updateEcosystemSyncLog(id: string, updates: Partial<EcosystemSyncLog>): Promise<EcosystemSyncLog | undefined>;
 }
 
 export class MemStorage implements IStorage {
@@ -325,6 +355,11 @@ export class MemStorage implements IStorage {
   private whatsappMessages: Map<string, any> = new Map();
   private smsMessages: Map<string, any> = new Map();
   private messageTrackings: Map<string, MessageTracking> = new Map();
+  
+  // Ecosystem Integration Storage
+  private ecosystemSystems: Map<string, EcosystemSystem> = new Map();
+  private ecosystemApps: Map<string, EcosystemApp> = new Map();
+  private ecosystemSyncLogs: Map<string, EcosystemSyncLog> = new Map();
   
   private systemStats: SystemStats | undefined;
 
@@ -1733,6 +1768,134 @@ export class MemStorage implements IStorage {
       { channelType: 'sms', totalSent: 456, deliveryRate: 97.8, responseRate: 8.9 },
       { channelType: 'push', totalSent: 2340, deliveryRate: 94.2, responseRate: 5.1 }
     ];
+  }
+
+  // ===============================
+  // ECOSYSTEM INTEGRATION IMPLEMENTATIONS
+  // ===============================
+
+  // Ecosystem System methods
+  async getEcosystemSystems(): Promise<EcosystemSystem[]> {
+    return Array.from(this.ecosystemSystems.values()).sort(
+      (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+    );
+  }
+
+  async getEcosystemSystem(id: string): Promise<EcosystemSystem | undefined> {
+    return this.ecosystemSystems.get(id);
+  }
+
+  async createEcosystemSystem(insertSystem: InsertEcosystemSystem): Promise<EcosystemSystem> {
+    const id = randomUUID();
+    const now = new Date();
+    const system: EcosystemSystem = {
+      ...insertSystem,
+      id,
+      createdAt: now,
+      updatedAt: now,
+      status: insertSystem.status || "inactive",
+      category: insertSystem.category || null,
+      apiEndpoint: insertSystem.apiEndpoint || null,
+      apiKey: insertSystem.apiKey || null,
+      connectionData: insertSystem.connectionData || null,
+      lastSynced: insertSystem.lastSynced || null,
+      metadata: insertSystem.metadata || null
+    };
+    this.ecosystemSystems.set(id, system);
+    return system;
+  }
+
+  async updateEcosystemSystem(id: string, updates: Partial<EcosystemSystem>): Promise<EcosystemSystem | undefined> {
+    const existing = this.ecosystemSystems.get(id);
+    if (!existing) return undefined;
+    
+    const updated = { ...existing, ...updates, updatedAt: new Date() };
+    this.ecosystemSystems.set(id, updated);
+    return updated;
+  }
+
+  async deleteEcosystemSystem(id: string): Promise<boolean> {
+    return this.ecosystemSystems.delete(id);
+  }
+
+  // Ecosystem App methods
+  async getEcosystemApps(): Promise<EcosystemApp[]> {
+    return Array.from(this.ecosystemApps.values()).sort(
+      (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+    );
+  }
+
+  async getEcosystemApp(id: string): Promise<EcosystemApp | undefined> {
+    return this.ecosystemApps.get(id);
+  }
+
+  async createEcosystemApp(insertApp: InsertEcosystemApp): Promise<EcosystemApp> {
+    const now = new Date();
+    const app: EcosystemApp = {
+      ...insertApp,
+      createdAt: now,
+      updatedAt: now,
+      status: insertApp.status || "not deployed",
+      lastUpdated: insertApp.lastUpdated || now,
+      deploymentUrl: insertApp.deploymentUrl || null,
+      metadata: insertApp.metadata || null
+    };
+    this.ecosystemApps.set(insertApp.id, app);
+    return app;
+  }
+
+  async updateEcosystemApp(id: string, updates: Partial<EcosystemApp>): Promise<EcosystemApp | undefined> {
+    const existing = this.ecosystemApps.get(id);
+    if (!existing) return undefined;
+    
+    const updated = { ...existing, ...updates, updatedAt: new Date() };
+    this.ecosystemApps.set(id, updated);
+    return updated;
+  }
+
+  async deleteEcosystemApp(id: string): Promise<boolean> {
+    return this.ecosystemApps.delete(id);
+  }
+
+  // Ecosystem Sync Log methods
+  async getEcosystemSyncLogs(limit?: number): Promise<EcosystemSyncLog[]> {
+    const logs = Array.from(this.ecosystemSyncLogs.values()).sort(
+      (a, b) => new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime()
+    );
+    
+    if (limit !== undefined && limit > 0) {
+      return logs.slice(0, limit);
+    }
+    
+    return logs;
+  }
+
+  async createEcosystemSyncLog(insertLog: InsertEcosystemSyncLog): Promise<EcosystemSyncLog> {
+    const id = randomUUID();
+    const now = new Date();
+    const log: EcosystemSyncLog = {
+      ...insertLog,
+      id,
+      startedAt: insertLog.startedAt || now,
+      status: insertLog.status || "pending",
+      recordsSynced: insertLog.recordsSynced || 0,
+      systemId: insertLog.systemId || null,
+      appId: insertLog.appId || null,
+      errorMessage: insertLog.errorMessage || null,
+      completedAt: insertLog.completedAt || null,
+      metadata: insertLog.metadata || null
+    };
+    this.ecosystemSyncLogs.set(id, log);
+    return log;
+  }
+
+  async updateEcosystemSyncLog(id: string, updates: Partial<EcosystemSyncLog>): Promise<EcosystemSyncLog | undefined> {
+    const existing = this.ecosystemSyncLogs.get(id);
+    if (!existing) return undefined;
+    
+    const updated = { ...existing, ...updates };
+    this.ecosystemSyncLogs.set(id, updated);
+    return updated;
   }
 
   private async updateStats(): Promise<void> {
