@@ -92,6 +92,57 @@ type BanimalConnection = {
   failedSyncs: number;
 };
 
+type HotstackWorker = {
+  id: string;
+  workerId: string;
+  name: string;
+  scriptName: string;
+  status: string;
+  accountId: string;
+  deploymentUrl?: string;
+  lastDeployedAt?: string;
+  createdAt: string;
+};
+
+type HotstackDeployment = {
+  id: string;
+  workerId?: string;
+  deploymentId: string;
+  version?: string;
+  status: string;
+  duration?: number;
+  deployedAt: string;
+};
+
+type HotstackR2Storage = {
+  id: string;
+  bucketName: string;
+  objectCount: number;
+  storageSize: number;
+  publicUrl?: string;
+  status: string;
+  lastSyncedAt?: string;
+};
+
+type HotstackStation = {
+  id: string;
+  stationName: string;
+  location: string;
+  region: string;
+  status: string;
+  workersCount: number;
+  deploymentUrl?: string;
+};
+
+type HotstackStats = {
+  totalWorkers: number;
+  totalDeployments: number;
+  totalR2Buckets: number;
+  totalStations: number;
+  totalStorageBytes: number;
+  recentDeployments: HotstackDeployment[];
+};
+
 // Add system schema
 const addSystemSchema = z.object({
   systemType: z.string().min(1, 'System type is required'),
@@ -137,6 +188,27 @@ export default function EcosystemManager() {
   // Fetch banimal connections
   const { data: banimalConnections = [], isLoading: loadingConnections } = useQuery<BanimalConnection[]>({
     queryKey: ['/api/banimal/connections'],
+  });
+
+  // HotStack queries
+  const { data: hotstackStats, isLoading: loadingHotstackStats } = useQuery<HotstackStats>({
+    queryKey: ['/api/hotstack/stats'],
+  });
+
+  const { data: hotstackWorkers = [], isLoading: loadingWorkers } = useQuery<HotstackWorker[]>({
+    queryKey: ['/api/hotstack/workers'],
+  });
+
+  const { data: hotstackDeployments = [], isLoading: loadingDeployments } = useQuery<HotstackDeployment[]>({
+    queryKey: ['/api/hotstack/deployments'],
+  });
+
+  const { data: hotstackR2Storage = [], isLoading: loadingR2 } = useQuery<HotstackR2Storage[]>({
+    queryKey: ['/api/hotstack/r2-storage'],
+  });
+
+  const { data: hotstackStations = [], isLoading: loadingStations } = useQuery<HotstackStation[]>({
+    queryKey: ['/api/hotstack/stations'],
   });
 
   // WebSocket connection for real-time updates
@@ -208,6 +280,36 @@ export default function EcosystemManager() {
             variant: "destructive",
           });
         }
+      }
+
+      // HotStack WebSocket events
+      if (message.type === 'hotstack_sync_started') {
+        queryClient.invalidateQueries({ queryKey: ['/api/hotstack/stats'] });
+        toast({
+          title: "HotStack Sync Started",
+          description: `Syncing ${message.data?.type || 'resources'}...`,
+        });
+      }
+
+      if (message.type === 'hotstack_sync_completed') {
+        queryClient.invalidateQueries({ queryKey: ['/api/hotstack/stats'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/hotstack/workers'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/hotstack/r2-storage'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/hotstack/deployments'] });
+        const data = message.data;
+        toast({
+          title: "HotStack Sync Completed",
+          description: `${data?.synced || 0} ${data?.type} synced successfully`,
+        });
+      }
+
+      if (message.type === 'hotstack_sync_error') {
+        queryClient.invalidateQueries({ queryKey: ['/api/hotstack/stats'] });
+        toast({
+          title: "HotStack Sync Failed",
+          description: message.data?.error || "Sync operation failed",
+          variant: "destructive",
+        });
       }
     };
 
@@ -385,6 +487,63 @@ export default function EcosystemManager() {
     }
   });
 
+  // HotStack mutations
+  const syncWorkersMutation = useMutation({
+    mutationFn: () => apiRequest('/api/hotstack/sync/workers', { method: 'POST' }),
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/hotstack/workers'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/hotstack/stats'] });
+      toast({
+        title: "Workers Synced",
+        description: `Successfully synced ${data.synced} Cloudflare Workers`,
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Sync Failed",
+        description: error.message || "Failed to sync workers",
+        variant: "destructive"
+      });
+    }
+  });
+
+  const syncR2Mutation = useMutation({
+    mutationFn: () => apiRequest('/api/hotstack/sync/r2', { method: 'POST' }),
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/hotstack/r2-storage'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/hotstack/stats'] });
+      toast({
+        title: "R2 Buckets Synced",
+        description: `Successfully synced ${data.synced} R2 buckets`,
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Sync Failed",
+        description: error.message || "Failed to sync R2 buckets",
+        variant: "destructive"
+      });
+    }
+  });
+
+  const testCloudflareConnectionMutation = useMutation({
+    mutationFn: () => apiRequest('/api/hotstack/test-connection'),
+    onSuccess: (data: any) => {
+      toast({
+        title: data.success ? "Connection Successful" : "Connection Failed",
+        description: data.message + (data.latency ? ` (${data.latency}ms)` : ''),
+        variant: data.success ? "default" : "destructive"
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Connection Test Failed",
+        description: error.message || "Failed to test connection",
+        variant: "destructive"
+      });
+    }
+  });
+
   // Calculate stats
   const stats = useMemo(() => {
     const categoryBreakdown: Record<string, number> = {};
@@ -550,7 +709,7 @@ export default function EcosystemManager() {
         <Card className="energetic-card">
           <CardContent className="pt-6">
             <Tabs defaultValue="apps" className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
+              <TabsList className="grid w-full grid-cols-5">
                 <TabsTrigger value="apps" data-testid="tab-apps">
                   <Package className="w-4 h-4 mr-2" />
                   Replit Apps
@@ -562,6 +721,10 @@ export default function EcosystemManager() {
                 <TabsTrigger value="sync" data-testid="tab-sync">
                   <RefreshCw className="w-4 h-4 mr-2" />
                   Sync Operations
+                </TabsTrigger>
+                <TabsTrigger value="hotstack" data-testid="tab-hotstack">
+                  <Cloud className="w-4 h-4 mr-2" />
+                  HotStack™
                 </TabsTrigger>
                 <TabsTrigger value="logs" data-testid="tab-logs">
                   <Activity className="w-4 h-4 mr-2" />
@@ -1127,7 +1290,268 @@ export default function EcosystemManager() {
                 </div>
               </TabsContent>
 
-              {/* Tab 4: Sync Logs */}
+              {/* Tab 4: HotStack™ Cloudflare Integration */}
+              <TabsContent value="hotstack" className="space-y-4">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-xl font-bold bg-gradient-to-r from-[hsl(203,93%,68%)] via-[hsl(142,76%,36%)] to-[hsl(43,96%,56%)] text-transparent bg-clip-text">
+                    HotStack™ Cloudflare Dashboard
+                  </h3>
+                  <Button 
+                    onClick={() => testCloudflareConnectionMutation.mutate()}
+                    disabled={testCloudflareConnectionMutation.isPending}
+                    size="sm"
+                    data-testid="button-test-cloudflare"
+                  >
+                    {testCloudflareConnectionMutation.isPending ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Testing...
+                      </>
+                    ) : (
+                      <>
+                        <Activity className="w-4 h-4 mr-2" />
+                        Test Connection
+                      </>
+                    )}
+                  </Button>
+                </div>
+
+                {/* HotStack Stats Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <Card className="energetic-card">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-sm font-medium text-muted-foreground">Workers</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center justify-between">
+                        <div className="text-2xl font-bold text-foreground" data-testid="text-total-workers">
+                          {loadingHotstackStats ? '...' : hotstackStats?.totalWorkers || 0}
+                        </div>
+                        <div className="p-3 rounded-full bg-[hsl(203,93%,68%)]/20">
+                          <Cloud className="w-6 h-6 text-[hsl(203,93%,68%)]" />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="energetic-card">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-sm font-medium text-muted-foreground">Deployments</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center justify-between">
+                        <div className="text-2xl font-bold text-foreground" data-testid="text-total-deployments">
+                          {loadingHotstackStats ? '...' : hotstackStats?.totalDeployments || 0}
+                        </div>
+                        <div className="p-3 rounded-full bg-[hsl(142,76%,36%)]/20">
+                          <PlayCircle className="w-6 h-6 text-[hsl(142,76%,36%)]" />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="energetic-card">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-sm font-medium text-muted-foreground">R2 Buckets</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center justify-between">
+                        <div className="text-2xl font-bold text-foreground" data-testid="text-total-r2-buckets">
+                          {loadingHotstackStats ? '...' : hotstackStats?.totalR2Buckets || 0}
+                        </div>
+                        <div className="p-3 rounded-full bg-[hsl(43,96%,56%)]/20">
+                          <Database className="w-6 h-6 text-[hsl(43,96%,56%)]" />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="energetic-card">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-sm font-medium text-muted-foreground">Storage</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center justify-between">
+                        <div className="text-2xl font-bold text-foreground" data-testid="text-total-storage">
+                          {loadingHotstackStats ? '...' : `${((hotstackStats?.totalStorageBytes || 0) / (1024 * 1024)).toFixed(1)} MB`}
+                        </div>
+                        <div className="p-3 rounded-full bg-[hsl(203,93%,68%)]/20">
+                          <Server className="w-6 h-6 text-[hsl(203,93%,68%)]" />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Sync Operations */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Card className="energetic-card">
+                    <CardHeader>
+                      <CardTitle className="text-lg">Sync Workers</CardTitle>
+                      <CardDescription>Sync Cloudflare Workers from your account</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Button 
+                        onClick={() => syncWorkersMutation.mutate()}
+                        disabled={syncWorkersMutation.isPending}
+                        className="w-full"
+                        data-testid="button-sync-workers"
+                      >
+                        {syncWorkersMutation.isPending ? (
+                          <>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            Syncing Workers...
+                          </>
+                        ) : (
+                          <>
+                            <RefreshCw className="w-4 h-4 mr-2" />
+                            Sync Workers
+                          </>
+                        )}
+                      </Button>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="energetic-card">
+                    <CardHeader>
+                      <CardTitle className="text-lg">Sync R2 Storage</CardTitle>
+                      <CardDescription>Sync R2 bucket stats from Cloudflare</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Button 
+                        onClick={() => syncR2Mutation.mutate()}
+                        disabled={syncR2Mutation.isPending}
+                        className="w-full"
+                        data-testid="button-sync-r2"
+                      >
+                        {syncR2Mutation.isPending ? (
+                          <>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            Syncing R2...
+                          </>
+                        ) : (
+                          <>
+                            <RefreshCw className="w-4 h-4 mr-2" />
+                            Sync R2 Buckets
+                          </>
+                        )}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Workers Table */}
+                <Card className="energetic-card">
+                  <CardHeader>
+                    <CardTitle>Cloudflare Workers</CardTitle>
+                    <CardDescription>All deployed Cloudflare Workers</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    {loadingWorkers ? (
+                      <div className="flex justify-center py-8">
+                        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+                      </div>
+                    ) : hotstackWorkers.length === 0 ? (
+                      <div className="text-center py-8 text-muted-foreground">
+                        No workers found. Click "Sync Workers" to fetch from Cloudflare.
+                      </div>
+                    ) : (
+                      <div className="border rounded-lg">
+                        <Table data-testid="table-workers">
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>Name</TableHead>
+                              <TableHead>Script</TableHead>
+                              <TableHead>Status</TableHead>
+                              <TableHead>Last Deployed</TableHead>
+                              <TableHead>Actions</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {hotstackWorkers.map((worker) => (
+                              <TableRow key={worker.id} data-testid={`row-worker-${worker.id}`}>
+                                <TableCell className="font-medium">{worker.name}</TableCell>
+                                <TableCell className="text-muted-foreground">{worker.scriptName}</TableCell>
+                                <TableCell>
+                                  <Badge className={worker.status === 'active' ? 'gradient-badge-green' : 'gradient-badge-amber'}>
+                                    {worker.status}
+                                  </Badge>
+                                </TableCell>
+                                <TableCell className="text-muted-foreground">
+                                  {worker.lastDeployedAt ? formatDistanceToNow(new Date(worker.lastDeployedAt), { addSuffix: true }) : 'Never'}
+                                </TableCell>
+                                <TableCell>
+                                  {worker.deploymentUrl && (
+                                    <a href={worker.deploymentUrl} target="_blank" rel="noopener noreferrer">
+                                      <Button variant="ghost" size="sm" data-testid={`button-view-worker-${worker.id}`}>
+                                        <ExternalLink className="w-4 h-4" />
+                                      </Button>
+                                    </a>
+                                  )}
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                {/* R2 Storage Table */}
+                <Card className="energetic-card">
+                  <CardHeader>
+                    <CardTitle>R2 Storage Buckets</CardTitle>
+                    <CardDescription>Cloudflare R2 object storage</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    {loadingR2 ? (
+                      <div className="flex justify-center py-8">
+                        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+                      </div>
+                    ) : hotstackR2Storage.length === 0 ? (
+                      <div className="text-center py-8 text-muted-foreground">
+                        No R2 buckets found. Click "Sync R2 Buckets" to fetch from Cloudflare.
+                      </div>
+                    ) : (
+                      <div className="border rounded-lg">
+                        <Table data-testid="table-r2-storage">
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>Bucket Name</TableHead>
+                              <TableHead>Objects</TableHead>
+                              <TableHead>Size</TableHead>
+                              <TableHead>Status</TableHead>
+                              <TableHead>Last Synced</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {hotstackR2Storage.map((bucket) => (
+                              <TableRow key={bucket.id} data-testid={`row-r2-${bucket.id}`}>
+                                <TableCell className="font-medium">{bucket.bucketName}</TableCell>
+                                <TableCell className="text-muted-foreground">{bucket.objectCount}</TableCell>
+                                <TableCell className="text-muted-foreground">
+                                  {(bucket.storageSize / (1024 * 1024)).toFixed(2)} MB
+                                </TableCell>
+                                <TableCell>
+                                  <Badge className={bucket.status === 'active' ? 'gradient-badge-green' : 'gradient-badge-amber'}>
+                                    {bucket.status}
+                                  </Badge>
+                                </TableCell>
+                                <TableCell className="text-muted-foreground">
+                                  {bucket.lastSyncedAt ? formatDistanceToNow(new Date(bucket.lastSyncedAt), { addSuffix: true }) : 'Never'}
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              {/* Tab 5: Sync Logs */}
               <TabsContent value="logs" className="space-y-4">
                 <div className="flex justify-between items-center">
                   <h3 className="text-lg font-semibold">Sync Logs</h3>
