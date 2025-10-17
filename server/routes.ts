@@ -4974,6 +4974,82 @@ May this wisdom serve your journey well! 🌳✨`
   });
 
   // ===============================
+  // DEPLOYMENT ORCHESTRATION ROUTES
+  // ===============================
+
+  // GET /api/orchestrate/jobs - Get all deployment jobs
+  app.get("/api/orchestrate/jobs", isAuthenticated, async (req, res) => {
+    try {
+      const jobs = await db
+        .select()
+        .from(deploymentJobs)
+        .orderBy(desc(deploymentJobs.createdAt));
+      
+      // Transform jobs to include r2Url from result
+      const transformedJobs = jobs.map(job => ({
+        ...job,
+        r2Url: job.result?.deploymentUrl || job.result?.url || null,
+      }));
+      
+      res.json(transformedJobs);
+    } catch (error) {
+      console.error('Error fetching deployment jobs:', error);
+      res.status(500).json({ error: 'Failed to fetch deployment jobs' });
+    }
+  });
+
+  // GET /api/orchestrate/r2-files - List files in hotstack-bucket
+  app.get("/api/orchestrate/r2-files", isAuthenticated, async (req, res) => {
+    try {
+      const { CloudflareService } = await import('./cloudflare-service');
+      const cloudflareService = new CloudflareService();
+      
+      const bucketName = 'hotstack-bucket';
+      const result = await cloudflareService.listR2Files(bucketName);
+      
+      if (result.success) {
+        res.json(result.files || []);
+      } else {
+        res.status(500).json({ error: result.error || 'Failed to list R2 files' });
+      }
+    } catch (error) {
+      console.error('Error listing R2 files:', error);
+      res.status(500).json({ error: 'Failed to list R2 files' });
+    }
+  });
+
+  // DELETE /api/orchestrate/r2-files/:objectKey - Delete R2 file (admin only)
+  app.delete("/api/orchestrate/r2-files/:objectKey(*)", isAdmin, async (req, res) => {
+    try {
+      const { CloudflareService } = await import('./cloudflare-service');
+      const cloudflareService = new CloudflareService();
+      
+      const bucketName = 'hotstack-bucket';
+      const objectKey = req.params.objectKey;
+      
+      broadcast({
+        type: 'r2_file_deleting',
+        data: { bucket: bucketName, objectKey }
+      });
+      
+      const result = await cloudflareService.deleteFileFromR2(bucketName, objectKey);
+      
+      if (result.success) {
+        broadcast({
+          type: 'r2_file_deleted',
+          data: { bucket: bucketName, objectKey }
+        });
+        res.json({ success: true, message: 'File deleted successfully' });
+      } else {
+        res.status(500).json({ error: result.error || 'Failed to delete file' });
+      }
+    } catch (error) {
+      console.error('Error deleting R2 file:', error);
+      res.status(500).json({ error: 'Failed to delete R2 file' });
+    }
+  });
+
+  // ===============================
   // HOTSTACK CLOUDFLARE ROUTES
   // ===============================
 
