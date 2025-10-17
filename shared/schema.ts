@@ -2799,6 +2799,56 @@ export const insertSectorSchema = createInsertSchema(sectors).omit({
 export type Sector = typeof sectors.$inferSelect;
 export type InsertSector = z.infer<typeof insertSectorSchema>;
 
+// Interactive Sector Mapping System - Relationship tracking
+export const sectorRelationships = pgTable("sector_relationships", {
+  id: varchar("id").primaryKey().$defaultFn(() => nanoid()),
+  sourceId: varchar("source_id").notNull().references(() => sectors.id),
+  targetId: varchar("target_id").notNull().references(() => sectors.id),
+  strength: decimal("strength", { precision: 3, scale: 2 }).notNull(), // 0.00 - 1.00
+  relationshipType: text("relationship_type").notNull(), // integration, synergy, dependency, collaboration
+  description: text("description"),
+  bidirectional: boolean("bidirectional").default(false),
+  weight: integer("weight").default(1),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+}, (table) => ({
+  unique_relationship: unique().on(table.sourceId, table.targetId),
+}));
+
+export const insertSectorRelationshipSchema = createInsertSchema(sectorRelationships)
+  .omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+  })
+  .extend({
+    relationshipType: z.enum(['integration', 'synergy', 'dependency', 'collaboration']),
+    strength: z.number().min(0).max(1),
+  });
+
+export const updateSectorRelationshipSchema = insertSectorRelationshipSchema.partial();
+
+export type SectorRelationship = typeof sectorRelationships.$inferSelect;
+export type InsertSectorRelationship = z.infer<typeof insertSectorRelationshipSchema>;
+export type UpdateSectorRelationship = z.infer<typeof updateSectorRelationshipSchema>;
+
+// Interactive Sector Mapping System - Cache layer for network calculations
+export const sectorMappingCache = pgTable("sector_mapping_cache", {
+  id: varchar("id").primaryKey().$defaultFn(() => nanoid()),
+  cacheKey: varchar("cache_key", { length: 255 }).notNull().unique(),
+  cacheData: jsonb("cache_data").notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertSectorMappingCacheSchema = createInsertSchema(sectorMappingCache).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type SectorMappingCache = typeof sectorMappingCache.$inferSelect;
+export type InsertSectorMappingCache = z.infer<typeof insertSectorMappingCacheSchema>;
+
 // System Settings table for storing API keys and configuration
 export const systemSettings = pgTable("system_settings", {
   id: varchar("id").primaryKey().$defaultFn(() => nanoid()),

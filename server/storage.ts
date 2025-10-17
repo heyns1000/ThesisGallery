@@ -87,6 +87,12 @@ import {
   // Sector Types
   type Sector,
   type InsertSector,
+  // Sector Mapping Types
+  type SectorRelationship,
+  type InsertSectorRelationship,
+  type UpdateSectorRelationship,
+  type SectorMappingCache,
+  type InsertSectorMappingCache,
   // Replit Apps Types
   type ReplitApp,
   type InsertReplitApp
@@ -128,6 +134,27 @@ export interface IStorage {
   getSector(id: string): Promise<Sector | undefined>;
   createSector(sector: InsertSector): Promise<Sector>;
   updateSector(id: string, updates: Partial<Sector>): Promise<Sector | undefined>;
+  
+  // Sector Mapping methods
+  storeRelationship(relationship: InsertSectorRelationship): Promise<SectorRelationship>;
+  getRelationships(filters?: { sourceId?: string; targetId?: string; type?: string }): Promise<SectorRelationship[]>;
+  getRelationship(id: string): Promise<SectorRelationship | undefined>;
+  updateRelationship(id: string, updates: UpdateSectorRelationship): Promise<SectorRelationship | undefined>;
+  deleteRelationship(id: string): Promise<boolean>;
+  getNetworkStats(): Promise<{
+    totalConnections: number;
+    avgConnections: number;
+    networkDensity: number;
+    maxConnections: number;
+    isolatedNodes: number;
+  }>;
+  getDependencyMap(sectorId: string): Promise<{
+    dependencies: Sector[];
+    dependents: Sector[];
+  }>;
+  getStrongestConnections(limit?: number): Promise<SectorRelationship[]>;
+  setCacheData(cacheKey: string, cacheData: any, expiresAt: Date): Promise<SectorMappingCache>;
+  getCacheData(cacheKey: string): Promise<SectorMappingCache | undefined>;
   
   // Compliance methods
   getComplianceLogs(): Promise<ComplianceLog[]>;
@@ -364,6 +391,8 @@ export class MemStorage implements IStorage {
   private conversations: Map<string, Conversation> = new Map();
   private brands: Map<string, Brand> = new Map();
   private sectors: Map<string, Sector> = new Map();
+  private sectorRelationships: Map<string, SectorRelationship> = new Map();
+  private sectorMappingCache: Map<string, SectorMappingCache> = new Map();
   private complianceLogs: Map<string, ComplianceLog> = new Map();
   private processingQueue: Map<string, ProcessingQueue> = new Map();
   private teamMembers: Map<string, TeamMember> = new Map();
@@ -651,6 +680,177 @@ export class MemStorage implements IStorage {
     const updated = { ...existing, ...updates, updatedAt: new Date() };
     this.sectors.set(id, updated);
     return updated;
+  }
+
+  // Sector Mapping methods
+  async storeRelationship(insertRelationship: InsertSectorRelationship): Promise<SectorRelationship> {
+    const id = randomUUID();
+    const now = new Date();
+    const relationship: SectorRelationship = {
+      ...insertRelationship,
+      id,
+      description: insertRelationship.description || null,
+      bidirectional: insertRelationship.bidirectional ?? false,
+      weight: insertRelationship.weight ?? 1,
+      createdAt: now,
+      updatedAt: now,
+    };
+    this.sectorRelationships.set(id, relationship);
+    return relationship;
+  }
+
+  async getRelationships(filters?: { sourceId?: string; targetId?: string; type?: string }): Promise<SectorRelationship[]> {
+    let relationships = Array.from(this.sectorRelationships.values());
+    
+    if (filters?.sourceId) {
+      relationships = relationships.filter(r => r.sourceId === filters.sourceId);
+    }
+    if (filters?.targetId) {
+      relationships = relationships.filter(r => r.targetId === filters.targetId);
+    }
+    if (filters?.type) {
+      relationships = relationships.filter(r => r.relationshipType === filters.type);
+    }
+    
+    return relationships.sort(
+      (a, b) => parseFloat(String(b.strength)) - parseFloat(String(a.strength))
+    );
+  }
+
+  async getRelationship(id: string): Promise<SectorRelationship | undefined> {
+    return this.sectorRelationships.get(id);
+  }
+
+  async updateRelationship(id: string, updates: UpdateSectorRelationship): Promise<SectorRelationship | undefined> {
+    const existing = this.sectorRelationships.get(id);
+    if (!existing) return undefined;
+    
+    const updated = { ...existing, ...updates, updatedAt: new Date() };
+    this.sectorRelationships.set(id, updated);
+    return updated;
+  }
+
+  async deleteRelationship(id: string): Promise<boolean> {
+    return this.sectorRelationships.delete(id);
+  }
+
+  async getNetworkStats(): Promise<{
+    totalConnections: number;
+    avgConnections: number;
+    networkDensity: number;
+    maxConnections: number;
+    isolatedNodes: number;
+  }> {
+    const relationships = Array.from(this.sectorRelationships.values());
+    const sectors = Array.from(this.sectors.values());
+    const totalSectors = sectors.length;
+    
+    if (totalSectors === 0) {
+      return {
+        totalConnections: 0,
+        avgConnections: 0,
+        networkDensity: 0,
+        maxConnections: 0,
+        isolatedNodes: 0,
+      };
+    }
+
+    // Count connections per sector
+    const connectionCounts = new Map<string, number>();
+    sectors.forEach(s => connectionCounts.set(s.id, 0));
+
+    relationships.forEach(r => {
+      connectionCounts.set(r.sourceId, (connectionCounts.get(r.sourceId) || 0) + 1);
+      connectionCounts.set(r.targetId, (connectionCounts.get(r.targetId) || 0) + 1);
+    });
+
+    const maxConnections = Math.max(...Array.from(connectionCounts.values()));
+    const isolatedNodes = Array.from(connectionCounts.values()).filter(c => c === 0).length;
+    const avgConnections = relationships.length > 0 ? relationships.length / totalSectors : 0;
+    const maxPossibleConnections = (totalSectors * (totalSectors - 1)) / 2;
+    const networkDensity = maxPossibleConnections > 0 ? (relationships.length / maxPossibleConnections) * 100 : 0;
+
+    return {
+      totalConnections: relationships.length,
+      avgConnections: Math.round(avgConnections * 10) / 10,
+      networkDensity: Math.round(networkDensity),
+      maxConnections,
+      isolatedNodes,
+    };
+  }
+
+  async getDependencyMap(sectorId: string): Promise<{
+    dependencies: Sector[];
+    dependents: Sector[];
+  }> {
+    const relationships = Array.from(this.sectorRelationships.values());
+    
+    // Find sectors this sector depends on (where this sector is the target)
+    const dependencyIds = relationships
+      .filter(r => r.targetId === sectorId && r.relationshipType === 'dependency')
+      .map(r => r.sourceId);
+    
+    // Find sectors that depend on this sector (where this sector is the source)
+    const dependentIds = relationships
+      .filter(r => r.sourceId === sectorId && r.relationshipType === 'dependency')
+      .map(r => r.targetId);
+    
+    const dependencies = dependencyIds
+      .map(id => this.sectors.get(id))
+      .filter((s): s is Sector => s !== undefined);
+    
+    const dependents = dependentIds
+      .map(id => this.sectors.get(id))
+      .filter((s): s is Sector => s !== undefined);
+    
+    return { dependencies, dependents };
+  }
+
+  async getStrongestConnections(limit: number = 10): Promise<SectorRelationship[]> {
+    const relationships = Array.from(this.sectorRelationships.values());
+    return relationships
+      .sort((a, b) => parseFloat(String(b.strength)) - parseFloat(String(a.strength)))
+      .slice(0, limit);
+  }
+
+  async setCacheData(cacheKey: string, cacheData: any, expiresAt: Date): Promise<SectorMappingCache> {
+    const id = randomUUID();
+    const cache: SectorMappingCache = {
+      id,
+      cacheKey,
+      cacheData,
+      expiresAt,
+      createdAt: new Date(),
+    };
+    
+    // Remove existing cache with same key
+    for (const [existingId, existingCache] of this.sectorMappingCache.entries()) {
+      if (existingCache.cacheKey === cacheKey) {
+        this.sectorMappingCache.delete(existingId);
+      }
+    }
+    
+    this.sectorMappingCache.set(id, cache);
+    return cache;
+  }
+
+  async getCacheData(cacheKey: string): Promise<SectorMappingCache | undefined> {
+    const now = new Date();
+    
+    for (const cache of this.sectorMappingCache.values()) {
+      if (cache.cacheKey === cacheKey) {
+        // Check if cache has expired
+        if (cache.expiresAt > now) {
+          return cache;
+        } else {
+          // Remove expired cache
+          this.sectorMappingCache.delete(cache.id);
+          return undefined;
+        }
+      }
+    }
+    
+    return undefined;
   }
 
   // Compliance methods

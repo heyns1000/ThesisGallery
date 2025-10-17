@@ -64,6 +64,9 @@ import {
   ecosystemApps,
   ecosystemSyncLogs,
   banimalConnections,
+  // Sector Mapping Schemas
+  insertSectorRelationshipSchema,
+  updateSectorRelationshipSchema,
   // HotStack Schemas
   hotstackWorkers,
   hotstackDeployments,
@@ -565,6 +568,142 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch sector stats" });
+    }
+  });
+
+  // Sector Mapping routes - Interactive Network Visualization System
+  app.post("/api/sector-mapping/relationships", async (req, res) => {
+    try {
+      const relationshipData = insertSectorRelationshipSchema.parse(req.body);
+      const relationship = await storage.storeRelationship(relationshipData);
+      
+      broadcast({ type: 'sector_relationship_created', data: relationship });
+      res.status(201).json(relationship);
+    } catch (error) {
+      console.error("Failed to create relationship:", error);
+      res.status(400).json({ error: "Failed to create sector relationship" });
+    }
+  });
+
+  app.get("/api/sector-mapping/relationships", async (req, res) => {
+    try {
+      const { sourceId, targetId, type } = req.query;
+      const relationships = await storage.getRelationships({
+        sourceId: sourceId as string,
+        targetId: targetId as string,
+        type: type as string,
+      });
+      res.json(relationships);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch relationships" });
+    }
+  });
+
+  app.put("/api/sector-mapping/relationships/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const updates = updateSectorRelationshipSchema.parse(req.body);
+      const relationship = await storage.updateRelationship(id, updates);
+      
+      if (!relationship) {
+        return res.status(404).json({ error: "Relationship not found" });
+      }
+      
+      broadcast({ type: 'sector_relationship_updated', data: relationship });
+      res.json(relationship);
+    } catch (error) {
+      res.status(400).json({ error: "Failed to update relationship" });
+    }
+  });
+
+  app.delete("/api/sector-mapping/relationships/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const deleted = await storage.deleteRelationship(id);
+      
+      if (!deleted) {
+        return res.status(404).json({ error: "Relationship not found" });
+      }
+      
+      broadcast({ type: 'sector_relationship_deleted', data: { id } });
+      res.json({ success: true, id });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete relationship" });
+    }
+  });
+
+  app.get("/api/sector-mapping/network-stats", async (req, res) => {
+    try {
+      const stats = await storage.getNetworkStats();
+      res.json(stats);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch network stats" });
+    }
+  });
+
+  app.get("/api/sector-mapping/critical-paths", async (req, res) => {
+    try {
+      const limit = parseInt(req.query.limit as string) || 10;
+      const strongestConnections = await storage.getStrongestConnections(limit);
+      
+      // Build critical paths from strongest connections
+      const criticalPaths = strongestConnections.map(connection => {
+        const sectors = storage.getSectors();
+        return sectors.then(sectorList => {
+          const source = sectorList.find(s => s.id === connection.sourceId);
+          const target = sectorList.find(s => s.id === connection.targetId);
+          
+          return {
+            path: `${source?.sectorName || 'Unknown'} → ${target?.sectorName || 'Unknown'}`,
+            strength: parseFloat(String(connection.strength)),
+            type: connection.relationshipType,
+            description: connection.description || '',
+          };
+        });
+      });
+      
+      const paths = await Promise.all(criticalPaths);
+      res.json(paths);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch critical paths" });
+    }
+  });
+
+  app.get("/api/sector-mapping/export/matrix", async (req, res) => {
+    try {
+      const [sectors, relationships] = await Promise.all([
+        storage.getSectors(),
+        storage.getRelationships(),
+      ]);
+      
+      // Build relationship matrix
+      const matrix: Record<string, Record<string, number>> = {};
+      
+      sectors.forEach(sector => {
+        matrix[sector.id] = {};
+        sectors.forEach(targetSector => {
+          matrix[sector.id][targetSector.id] = 0;
+        });
+      });
+      
+      relationships.forEach(rel => {
+        matrix[rel.sourceId][rel.targetId] = parseFloat(String(rel.strength));
+        if (rel.bidirectional) {
+          matrix[rel.targetId][rel.sourceId] = parseFloat(String(rel.strength));
+        }
+      });
+      
+      res.json({
+        sectors: sectors.map(s => ({ id: s.id, name: s.sectorName, glyph: s.glyph })),
+        matrix,
+        metadata: {
+          totalSectors: sectors.length,
+          totalRelationships: relationships.length,
+          exportedAt: new Date().toISOString(),
+        },
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to export matrix" });
     }
   });
 
