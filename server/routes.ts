@@ -89,6 +89,8 @@ import { contextTransferService } from "./context-transfer-service";
 import { dailySummaryExtractor } from "./daily-summary-extractor";
 import { setupAuth, isAuthenticated, isAdmin } from "./replitAuth";
 import { nanoid } from "nanoid";
+import { initializeJobProcessor } from "./job-processor";
+import { deploymentJobs, insertDeploymentJobSchema } from "@shared/schema";
 
 // Configure multer for file uploads
 const upload = multer({
@@ -133,6 +135,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     });
   }
+
+  // Initialize job processor with auto-processing
+  const jobProcessor = initializeJobProcessor(broadcast);
 
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
@@ -5466,6 +5471,176 @@ May this wisdom serve your journey well! 🌳✨`
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error'
       });
+    }
+  });
+
+  // ===============================
+  // JOB QUEUE API ROUTES
+  // ===============================
+
+  // POST /api/jobs/deploy - Create deployment job
+  app.post("/api/jobs/deploy", isAuthenticated, async (req, res) => {
+    try {
+      const jobData = insertDeploymentJobSchema.parse({
+        jobType: "deploy",
+        status: "pending",
+        payload: req.body,
+        progress: 0,
+        metadata: {
+          createdBy: req.user?.claims?.sub,
+          createdAt: new Date().toISOString(),
+        },
+      });
+
+      const [job] = await db.insert(deploymentJobs).values(jobData).returning();
+
+      broadcast({
+        type: "job_created",
+        data: job,
+      });
+
+      res.status(201).json({
+        jobId: job.id,
+        status: job.status,
+        message: "Job created successfully",
+      });
+    } catch (error) {
+      console.error("Error creating deployment job:", error);
+      res.status(500).json({ error: "Failed to create deployment job" });
+    }
+  });
+
+  // POST /api/jobs/process - Create data processing job
+  app.post("/api/jobs/process", isAuthenticated, async (req, res) => {
+    try {
+      const jobData = insertDeploymentJobSchema.parse({
+        jobType: "process",
+        status: "pending",
+        payload: req.body,
+        progress: 0,
+        metadata: {
+          createdBy: req.user?.claims?.sub,
+          createdAt: new Date().toISOString(),
+        },
+      });
+
+      const [job] = await db.insert(deploymentJobs).values(jobData).returning();
+
+      broadcast({
+        type: "job_created",
+        data: job,
+      });
+
+      res.status(201).json({
+        jobId: job.id,
+        status: job.status,
+        message: "Processing job created successfully",
+      });
+    } catch (error) {
+      console.error("Error creating processing job:", error);
+      res.status(500).json({ error: "Failed to create processing job" });
+    }
+  });
+
+  // POST /api/jobs/sync - Create sync job
+  app.post("/api/jobs/sync", isAuthenticated, async (req, res) => {
+    try {
+      const jobData = insertDeploymentJobSchema.parse({
+        jobType: "sync",
+        status: "pending",
+        payload: req.body,
+        progress: 0,
+        metadata: {
+          createdBy: req.user?.claims?.sub,
+          createdAt: new Date().toISOString(),
+        },
+      });
+
+      const [job] = await db.insert(deploymentJobs).values(jobData).returning();
+
+      broadcast({
+        type: "job_created",
+        data: job,
+      });
+
+      res.status(201).json({
+        jobId: job.id,
+        status: job.status,
+        message: "Sync job created successfully",
+      });
+    } catch (error) {
+      console.error("Error creating sync job:", error);
+      res.status(500).json({ error: "Failed to create sync job" });
+    }
+  });
+
+  // GET /api/jobs/:id - Get job status
+  app.get("/api/jobs/:id", isAuthenticated, async (req, res) => {
+    try {
+      const job = await db
+        .select()
+        .from(deploymentJobs)
+        .where(eq(deploymentJobs.id, req.params.id))
+        .limit(1);
+
+      if (!job || job.length === 0) {
+        return res.status(404).json({ error: "Job not found" });
+      }
+
+      res.json(job[0]);
+    } catch (error) {
+      console.error("Error fetching job:", error);
+      res.status(500).json({ error: "Failed to fetch job" });
+    }
+  });
+
+  // GET /api/jobs - List all jobs with optional status filter
+  app.get("/api/jobs", isAuthenticated, async (req, res) => {
+    try {
+      const { status } = req.query;
+
+      let query = db.select().from(deploymentJobs).orderBy(desc(deploymentJobs.createdAt));
+
+      if (status && typeof status === "string") {
+        query = query.where(eq(deploymentJobs.status, status));
+      }
+
+      const jobs = await query;
+      res.json(jobs);
+    } catch (error) {
+      console.error("Error fetching jobs:", error);
+      res.status(500).json({ error: "Failed to fetch jobs" });
+    }
+  });
+
+  // DELETE /api/jobs/:id - Cancel/delete job
+  app.delete("/api/jobs/:id", isAuthenticated, async (req, res) => {
+    try {
+      const job = await db
+        .select()
+        .from(deploymentJobs)
+        .where(eq(deploymentJobs.id, req.params.id))
+        .limit(1);
+
+      if (!job || job.length === 0) {
+        return res.status(404).json({ error: "Job not found" });
+      }
+
+      if (job[0].status === "processing") {
+        return res.status(400).json({ error: "Cannot delete a job that is currently processing" });
+      }
+
+      await db.delete(deploymentJobs).where(eq(deploymentJobs.id, req.params.id));
+
+      broadcast({
+        type: "job_deleted",
+        data: { jobId: req.params.id },
+      });
+
+      res.json({ success: true, message: "Job deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting job:", error);
+      res.status(500).json({ error: "Failed to delete job" });
     }
   });
 

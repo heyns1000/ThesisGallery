@@ -1152,6 +1152,22 @@ export const dataImports = pgTable("data_imports", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// Async Job Queue System for Long-Running Tasks (HotStack Deployments, Data Processing, etc.)
+export const deploymentJobs = pgTable("deployment_jobs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  jobType: text("job_type").notNull(), // deploy, process, sync
+  status: text("status").notNull().default("pending"), // pending, processing, completed, failed
+  payload: json("payload").notNull(), // Job-specific payload data
+  result: json("result"), // Job result data
+  progress: integer("progress").default(0), // 0-100 percentage
+  startedAt: timestamp("started_at"),
+  completedAt: timestamp("completed_at"),
+  error: text("error"), // Error message if failed
+  metadata: json("metadata"), // Additional metadata
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 // Crate Dance™ Africa Competition System
 export const crateDanceEvents = pgTable("crate_dance_events", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -1816,6 +1832,19 @@ export const insertDataImportSchema = createInsertSchema(dataImports).pick({
   completedAt: true,
 });
 
+// Deployment Jobs Insert Schema
+export const insertDeploymentJobSchema = createInsertSchema(deploymentJobs).pick({
+  jobType: true,
+  status: true,
+  payload: true,
+  result: true,
+  progress: true,
+  startedAt: true,
+  completedAt: true,
+  error: true,
+  metadata: true,
+});
+
 // Language Learning Insert Schemas
 export const insertLanguageLearningSchema = createInsertSchema(languageLearning).pick({
   languageCode: true,
@@ -1875,6 +1904,10 @@ export type BanimalSyncLog = typeof banimalSyncLogs.$inferSelect;
 
 export type InsertDataImport = z.infer<typeof insertDataImportSchema>;
 export type DataImport = typeof dataImports.$inferSelect;
+
+// Deployment Jobs Types
+export type InsertDeploymentJob = z.infer<typeof insertDeploymentJobSchema>;
+export type DeploymentJob = typeof deploymentJobs.$inferSelect;
 
 // Team Management Types
 export type InsertTeamMember = z.infer<typeof insertTeamMemberSchema>;

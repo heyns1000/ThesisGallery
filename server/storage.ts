@@ -36,6 +36,8 @@ import {
   type InsertBanimalSyncLog,
   type DataImport,
   type InsertDataImport,
+  type DeploymentJob,
+  type InsertDeploymentJob,
   type CrateDanceEvent,
   type InsertCrateDanceEvent,
   type CrateDanceContestant,
@@ -318,6 +320,17 @@ export interface IStorage {
   getEcosystemSyncLogs(limit?: number): Promise<EcosystemSyncLog[]>;
   createEcosystemSyncLog(log: InsertEcosystemSyncLog): Promise<EcosystemSyncLog>;
   updateEcosystemSyncLog(id: string, updates: Partial<EcosystemSyncLog>): Promise<EcosystemSyncLog | undefined>;
+
+  // ===============================
+  // DEPLOYMENT JOBS METHODS
+  // ===============================
+  
+  // Job queue methods
+  getDeploymentJobs(filters?: { status?: string }): Promise<DeploymentJob[]>;
+  getDeploymentJob(id: string): Promise<DeploymentJob | undefined>;
+  createDeploymentJob(job: InsertDeploymentJob): Promise<DeploymentJob>;
+  updateDeploymentJob(id: string, updates: Partial<DeploymentJob>): Promise<DeploymentJob | undefined>;
+  deleteDeploymentJob(id: string): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -360,6 +373,9 @@ export class MemStorage implements IStorage {
   private ecosystemSystems: Map<string, EcosystemSystem> = new Map();
   private ecosystemApps: Map<string, EcosystemApp> = new Map();
   private ecosystemSyncLogs: Map<string, EcosystemSyncLog> = new Map();
+  
+  // Deployment Jobs Storage
+  private deploymentJobs: Map<string, DeploymentJob> = new Map();
   
   private systemStats: SystemStats | undefined;
 
@@ -1896,6 +1912,58 @@ export class MemStorage implements IStorage {
     const updated = { ...existing, ...updates };
     this.ecosystemSyncLogs.set(id, updated);
     return updated;
+  }
+
+  // ===============================
+  // DEPLOYMENT JOBS IMPLEMENTATIONS
+  // ===============================
+
+  async getDeploymentJobs(filters?: { status?: string }): Promise<DeploymentJob[]> {
+    let jobs = Array.from(this.deploymentJobs.values());
+    
+    if (filters?.status) {
+      jobs = jobs.filter(job => job.status === filters.status);
+    }
+    
+    return jobs.sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }
+
+  async getDeploymentJob(id: string): Promise<DeploymentJob | undefined> {
+    return this.deploymentJobs.get(id);
+  }
+
+  async createDeploymentJob(insertJob: InsertDeploymentJob): Promise<DeploymentJob> {
+    const id = randomUUID();
+    const now = new Date();
+    const job: DeploymentJob = {
+      ...insertJob,
+      id,
+      status: insertJob.status || "pending",
+      progress: insertJob.progress || 0,
+      createdAt: now,
+      updatedAt: now,
+      startedAt: insertJob.startedAt || null,
+      completedAt: insertJob.completedAt || null,
+      error: insertJob.error || null,
+      result: insertJob.result || null
+    };
+    this.deploymentJobs.set(id, job);
+    return job;
+  }
+
+  async updateDeploymentJob(id: string, updates: Partial<DeploymentJob>): Promise<DeploymentJob | undefined> {
+    const existing = this.deploymentJobs.get(id);
+    if (!existing) return undefined;
+    
+    const updated = { ...existing, ...updates, updatedAt: new Date() };
+    this.deploymentJobs.set(id, updated);
+    return updated;
+  }
+
+  async deleteDeploymentJob(id: string): Promise<boolean> {
+    return this.deploymentJobs.delete(id);
   }
 
   private async updateStats(): Promise<void> {
