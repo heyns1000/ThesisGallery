@@ -58,6 +58,8 @@ const navItems = [
   { href: "/ecosystem-manager", label: "🌐 Ecosystem Manager", icon: "fas fa-network-wired", id: "ecosystem-manager" },
   { href: "/deployment-dashboard", label: "🚀 Deployment Dashboard", icon: "fas fa-server", id: "deployment-dashboard" },
   { href: "/looppay-gallery", label: "💳 LoopPay™ Sovereign Portal", icon: "fas fa-credit-card", id: "looppay-gallery" },
+  { href: "/scrollbinder-one", label: "📜 ScrollBinder_One™ Audit", icon: "fas fa-scroll", id: "scrollbinder-one" },
+  { href: "/hsomni-integration", label: "🚀 HSOMNI 9000 Integration", icon: "fas fa-rocket", id: "hsomni-integration" },
 ];
 
 export function Sidebar() {

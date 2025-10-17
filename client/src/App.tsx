@@ -72,6 +72,8 @@ import AgentInsightsModule from "@/pages/ai-module-agent-insights";
 import EcosystemManager from "@/pages/ecosystem-manager";
 import AdminSettings from "@/pages/admin-settings";
 import DeploymentDashboard from "@/pages/deployment-dashboard";
+import ScrollBinderOne from "@/pages/scrollbinder-one";
+import HsomniIntegration from "@/pages/hsomni-integration";
 import Landing from "@/pages/landing";
 import NotFound from "@/pages/not-found";
 
@@ -143,6 +145,8 @@ function Router() {
         <Route path="/ai-module/agent-insights" component={AgentInsightsModule} />
         <Route path="/ecosystem-manager" component={EcosystemManager} />
         <Route path="/deployment-dashboard" component={DeploymentDashboard} />
+        <Route path="/scrollbinder-one" component={ScrollBinderOne} />
+        <Route path="/hsomni-integration" component={HsomniIntegration} />
         <Route component={NotFound} />
       </Switch>
     </ErrorBoundary>

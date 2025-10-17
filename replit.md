@@ -72,3 +72,83 @@ The architecture adopts a modern full-stack approach with end-to-end TypeScript,
 -   **Noodle Juice Flow controller**: Provides Replit UUIDs for integrated applications.
 -   **Cloudflare Workers & R2**: HotStack™ rapid deployment system for serverless functions and object storage.
 -   **GitHub API (Octokit)**: For managing and interacting with GitHub repositories.
+
+# Major Intake Systems
+
+## ScrollBinder_One :: Glyph Audit Report System
+
+**Purpose**: Comprehensive operational audit reporting with emission protocols, system status monitoring, agent trail analysis, vendor integration tracking, and inefficiency detection.
+
+**Database Tables** (6 tables):
+- `glyph_audit_reports`: Core audit reports with emission protocol (FAA-TREATY-OMNI-A13XN), flame-lattice (OMNISEED~CONFORGE9000), auth user, system status
+- `operational_vectors`: Operational components tracking (Core Engine, Zero-Click Ingestion, VaultMesh Protocol, Bridge Sequence, File Processing, AI Insights Layer)
+- `agent_trails`: Agent activity tracking with integration grids (Vercel, Gmail, Zoho, Hetzner, Gemini) and processing status
+- `vendor_integrations`: Vendor connection matrix with status (Connected, Active, Authenticated)
+- `inefficiency_detections`: System inefficiency detection and tracking (Manual Process Button Required, Backend Auto-Loop Missing, Route 404 errors)
+- `backend_honesty_logs`: VaultMesh protocol status and ecosystem metrics
+
+**API Routes** (10 endpoints):
+- GET/POST `/api/scrollbinder/audit-reports` - List/create audit reports
+- GET `/api/scrollbinder/system-status` - Current system status matrix
+- GET `/api/scrollbinder/operational-vectors` - All operational vectors
+- GET `/api/scrollbinder/agent-trails` - Agent trail analysis with active nodes
+- GET `/api/scrollbinder/vendor-matrix` - Vendor integration matrix
+- GET `/api/scrollbinder/inefficiencies` - Inefficiency detection results
+- GET `/api/scrollbinder/honesty-logs` - Backend honesty logs
+- POST `/api/scrollbinder/manual-trigger` - Trigger manual file processing
+
+**Frontend Page**: `/scrollbinder-one`
+- Emission Protocol Card (protocol name, auth user, flame-lattice)
+- System Status Matrix (color-coded operational vectors: ACTIVE, FUNCTIONAL, AUTHENTICATED, CONNECTED, READY, DEPLOYED)
+- Inefficiency Detection Panel (red warning cards for issues)
+- Agent Trail Analysis (active nodes, agent primary/secondary, integration grids, processing status, file queue, metadata state)
+- Vendor Integration Matrix (grid showing vendors with connection status badges and integration paths)
+- Backend Honesty Log (current reality, VaultMesh protocol status, global motion, brands ecosystem count)
+
+**Key Features**:
+- Real-time WebSocket updates for system status changes
+- VaultMesh Protocol authentication integration
+- FLAME-LATTICE integration grids
+- 7-layer filtration pipeline tracking
+
+## REPLIT x HSOMNI 9000 Integration
+
+**Purpose**: Universal platform integration for 9000 brands with FAA.ZONE treaty scroll, sector mapping, and liberation protocols for R950 Billion South African township economy access.
+
+**Database Tables** (6 tables):
+- `integration_proposals`: Integration proposals with market access metrics (R950B), contact processing (11M+), platform count (250+), agent network (247 active agents)
+- `treaty_scrolls`: FAA.ZONE treaty scroll management with compliance tracking and automated treaty execution
+- `liberation_protocols`: 4 protocols (Debt Nullification - ARMED, Fiat Loop Detection - Continuous Monitoring, Community Empowerment - R950B Market Integrated, Freedom Cascade - Ready for Mass Liberation)
+- `sector_intelligence`: Sector relationship intelligence with advanced mapping
+- `community_agents`: 247 active agents earning R2,450-R5,680/month in township economy
+- `liberation_events`: Liberation event history and impact metrics
+
+**API Routes** (10 endpoints):
+- GET/POST `/api/hsomni/integration-proposals` - List/create proposals
+- GET `/api/hsomni/treaty-scrolls` - Treaty scroll status
+- GET `/api/hsomni/liberation-protocols` - All liberation protocols with status
+- POST `/api/hsomni/liberation-protocols/activate` - Activate a protocol
+- GET `/api/hsomni/sector-intelligence` - Sector mapping intelligence
+- GET `/api/hsomni/community-agents` - Community agent network stats
+- GET `/api/hsomni/liberation-events` - Liberation event history
+- GET `/api/hsomni/stats` - Strategic value metrics
+
+**Frontend Page**: `/hsomni-integration`
+- Executive Summary Card (9000 brands integration overview, FAA.ZONE treaty scroll & sector mapping)
+- Integration Overview (Core systems integration: Replit Cloud Platform → HSOMNI 9000 Engine → FAA.ZONE Sector Mapping → Treaty Scroll System)
+- Strategic Value Proposition (5 value cards):
+  - R950 Billion Market Access (South African township economy)
+  - 11M+ Contact Processing (250+ platforms)
+  - Real-time Sector Intelligence (Advanced relationship mapping)
+  - Legal Compliance Integration (Automated treaty scroll)
+  - Community Agent Network (247 agents earning R2,450-R5,680/month)
+- Liberation Protocols Dashboard (4 protocol status cards with activation controls)
+- System Integration Complete Panel (FAA release hooks, global inspection framework, blockchain liberation records, real-time statistics dashboard)
+- Community Sovereignty Networks (247 active agents table with earnings and township economy integration)
+
+**Key Features**:
+- Liberation protocol activation with WebSocket broadcasts
+- Treaty scroll compliance monitoring
+- Community empowerment tracking for R950B market access
+- Real-time liberation event recording
+- Integration with existing FAA.ZONE sector mapping (13 active sectors, 1406 brands, 6437 nodes)
