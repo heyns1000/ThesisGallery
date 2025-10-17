@@ -1,5 +1,5 @@
 import { db } from "./db";
-import { hotstackWorkers, hotstackDeployments, hotstackR2Storage, hotstackStations } from "@shared/schema";
+import { hotstackWorkers, hotstackDeployments, hotstackR2Storage, hotstackStations, systemSettings } from "@shared/schema";
 import { eq } from "drizzle-orm";
 
 interface CloudflareWorker {
@@ -30,24 +30,58 @@ interface CloudflareR2BucketStats {
 }
 
 export class CloudflareService {
-  private accountId: string;
-  private apiToken: string;
   private baseUrl: string;
 
-  constructor(accountId?: string, apiToken?: string) {
-    this.accountId = accountId || process.env.CLOUDFLARE_ACCOUNT_ID || '';
-    this.apiToken = apiToken || process.env.CLOUDFLARE_API_TOKEN || '';
+  constructor() {
     this.baseUrl = 'https://api.cloudflare.com/client/v4';
   }
 
+  private async getApiToken(): Promise<string> {
+    try {
+      const settings = await db
+        .select()
+        .from(systemSettings)
+        .where(eq(systemSettings.key, 'CLOUDFLARE_API_TOKEN'))
+        .limit(1);
+
+      if (settings.length > 0 && settings[0].value) {
+        return settings[0].value;
+      }
+    } catch (error) {
+      console.error('Error fetching API token from database:', error);
+    }
+
+    return process.env.CLOUDFLARE_API_TOKEN || '';
+  }
+
+  private async getAccountId(): Promise<string> {
+    try {
+      const settings = await db
+        .select()
+        .from(systemSettings)
+        .where(eq(systemSettings.key, 'CLOUDFLARE_ACCOUNT_ID'))
+        .limit(1);
+
+      if (settings.length > 0 && settings[0].value) {
+        return settings[0].value;
+      }
+    } catch (error) {
+      console.error('Error fetching account ID from database:', error);
+    }
+
+    return process.env.CLOUDFLARE_ACCOUNT_ID || '';
+  }
+
   private async makeRequest(endpoint: string, method: string = 'GET', body?: any) {
-    if (!this.apiToken) {
+    const apiToken = await this.getApiToken();
+    
+    if (!apiToken) {
       throw new Error('CLOUDFLARE_API_TOKEN is not configured');
     }
 
     const url = `${this.baseUrl}${endpoint}`;
     const headers = {
-      'Authorization': `Bearer ${this.apiToken}`,
+      'Authorization': `Bearer ${apiToken}`,
       'Content-Type': 'application/json',
     };
 
@@ -67,7 +101,8 @@ export class CloudflareService {
 
   async getWorkers(): Promise<CloudflareWorker[]> {
     try {
-      const data = await this.makeRequest(`/accounts/${this.accountId}/workers/scripts`);
+      const accountId = await this.getAccountId();
+      const data = await this.makeRequest(`/accounts/${accountId}/workers/scripts`);
       return data.result || [];
     } catch (error) {
       console.error('Error fetching workers:', error);
@@ -77,7 +112,8 @@ export class CloudflareService {
 
   async getWorkerDetails(scriptName: string): Promise<CloudflareWorker | null> {
     try {
-      const data = await this.makeRequest(`/accounts/${this.accountId}/workers/scripts/${scriptName}`);
+      const accountId = await this.getAccountId();
+      const data = await this.makeRequest(`/accounts/${accountId}/workers/scripts/${scriptName}`);
       return data.result || null;
     } catch (error) {
       console.error(`Error fetching worker ${scriptName}:`, error);
@@ -87,7 +123,8 @@ export class CloudflareService {
 
   async getWorkerDeployments(scriptName: string): Promise<CloudflareDeployment[]> {
     try {
-      const data = await this.makeRequest(`/accounts/${this.accountId}/workers/scripts/${scriptName}/deployments`);
+      const accountId = await this.getAccountId();
+      const data = await this.makeRequest(`/accounts/${accountId}/workers/scripts/${scriptName}/deployments`);
       return data.result?.items || [];
     } catch (error) {
       console.error(`Error fetching deployments for ${scriptName}:`, error);
@@ -97,7 +134,8 @@ export class CloudflareService {
 
   async getR2Buckets(): Promise<CloudflareR2Bucket[]> {
     try {
-      const data = await this.makeRequest(`/accounts/${this.accountId}/r2/buckets`);
+      const accountId = await this.getAccountId();
+      const data = await this.makeRequest(`/accounts/${accountId}/r2/buckets`);
       return data.result?.buckets || [];
     } catch (error) {
       console.error('Error fetching R2 buckets:', error);
@@ -107,7 +145,8 @@ export class CloudflareService {
 
   async getR2BucketStats(bucketName: string): Promise<CloudflareR2BucketStats | null> {
     try {
-      const data = await this.makeRequest(`/accounts/${this.accountId}/r2/buckets/${bucketName}/stats`);
+      const accountId = await this.getAccountId();
+      const data = await this.makeRequest(`/accounts/${accountId}/r2/buckets/${bucketName}/stats`);
       return data.result || null;
     } catch (error) {
       console.error(`Error fetching stats for bucket ${bucketName}:`, error);
@@ -117,6 +156,7 @@ export class CloudflareService {
 
   async syncWorkersToDb(): Promise<{ synced: number; errors: number }> {
     const workers = await this.getWorkers();
+    const accountId = await this.getAccountId();
     let synced = 0;
     let errors = 0;
 
@@ -140,7 +180,7 @@ export class CloudflareService {
             workerId: worker.id,
             name: worker.name,
             scriptName: worker.script_name,
-            accountId: this.accountId,
+            accountId: accountId,
             status: 'active',
             routes: worker.routes || null,
             environment: worker.environment || 'production',
@@ -160,6 +200,7 @@ export class CloudflareService {
 
   async syncR2BucketsToDb(): Promise<{ synced: number; errors: number }> {
     const buckets = await this.getR2Buckets();
+    const accountId = await this.getAccountId();
     let synced = 0;
     let errors = 0;
 
@@ -180,7 +221,7 @@ export class CloudflareService {
         } else {
           await db.insert(hotstackR2Storage).values({
             bucketName: bucket.name,
-            accountId: this.accountId,
+            accountId: accountId,
             objectCount: stats?.objectCount || 0,
             storageSize: stats?.payloadSize || 0,
             status: 'active',
@@ -234,14 +275,24 @@ export class CloudflareService {
     const startTime = Date.now();
     
     try {
-      if (!this.apiToken) {
+      const apiToken = await this.getApiToken();
+      const accountId = await this.getAccountId();
+      
+      if (!apiToken) {
         return {
           success: false,
           message: 'CLOUDFLARE_API_TOKEN not configured',
         };
       }
 
-      const data = await this.makeRequest(`/accounts/${this.accountId}/workers/scripts`);
+      if (!accountId) {
+        return {
+          success: false,
+          message: 'CLOUDFLARE_ACCOUNT_ID not configured',
+        };
+      }
+
+      const data = await this.makeRequest(`/accounts/${accountId}/workers/scripts`);
       const latency = Date.now() - startTime;
 
       return {

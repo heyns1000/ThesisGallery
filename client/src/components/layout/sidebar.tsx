@@ -34,6 +34,7 @@ const navItems = [
   { href: "/ai-logic-dashboard", label: "🧠 AI & Logic Grid", icon: "fas fa-brain", id: "ai-logic-dashboard" },
   { href: "/samfox-studio-platform", label: "🦁 SamFox Studio™", icon: "fas fa-copyright", id: "samfox-studio-platform" },
   { href: "/admin-portal", label: "🦁 Admin Portal", icon: "fas fa-shield-alt", id: "admin-portal" },
+  { href: "/admin-settings", label: "⚙️ Admin Settings", icon: "fas fa-cog", id: "admin-settings" },
   { href: "/pulse-grid-dashboard", label: "🍇 PulseGrid Trading", icon: "fas fa-chart-line", id: "pulse-grid-dashboard" },
   { href: "/crate-dance-smart-grid", label: "🧩 Crate Dance Grid", icon: "fas fa-cubes", id: "crate-dance-smart-grid" },
   { href: "/crate-dance-africa", label: "🎭 Crate Dance™ Africa", icon: "fas fa-music", id: "crate-dance-africa" },

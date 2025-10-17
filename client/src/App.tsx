@@ -70,6 +70,7 @@ import MortgageRiskModule from "@/pages/ai-module-mortgage-risk";
 import MarketForecastModule from "@/pages/ai-module-market-forecast";
 import AgentInsightsModule from "@/pages/ai-module-agent-insights";
 import EcosystemManager from "@/pages/ecosystem-manager";
+import AdminSettings from "@/pages/admin-settings";
 import Landing from "@/pages/landing";
 import NotFound from "@/pages/not-found";
 
@@ -114,6 +115,7 @@ function Router() {
       <Route path="/codenest-platform" component={CodeNestPlatform} />
       <Route path="/admin-portal" component={AdminPortal} />
       <Route path="/admin-access-portal" component={AdminAccessPortal} />
+      <Route path="/admin-settings" component={AdminSettings} />
       <Route path="/pulse-grid-dashboard" component={PulseGridDashboard} />
       <Route path="/crate-dance-smart-grid" component={CrateDanceSmartGrid} />
       <Route path="/crate-dance-africa" component={CrateDanceAfrica} />

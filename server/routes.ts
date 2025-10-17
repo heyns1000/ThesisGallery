@@ -87,7 +87,7 @@ import { eurekaGenerator } from "./eureka-generator";
 import { cloudflowAutomation } from "./cloudflow-automation";
 import { contextTransferService } from "./context-transfer-service";
 import { dailySummaryExtractor } from "./daily-summary-extractor";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+import { setupAuth, isAuthenticated, isAdmin } from "./replitAuth";
 import { nanoid } from "nanoid";
 
 // Configure multer for file uploads
@@ -4831,6 +4831,140 @@ May this wisdom serve your journey well! 🌳✨`
     } catch (error) {
       console.error('Error updating ecosystem sync log:', error);
       res.status(500).json({ error: 'Failed to update ecosystem sync log' });
+    }
+  });
+
+  // ===============================
+  // SYSTEM SETTINGS ROUTES
+  // ===============================
+
+  // Helper function to check if a setting key is sensitive
+  function isSensitiveSetting(key: string): boolean {
+    const sensitiveKeywords = ['TOKEN', 'SECRET', 'KEY', 'PASSWORD', 'API'];
+    return sensitiveKeywords.some(keyword => key.toUpperCase().includes(keyword));
+  }
+
+  // Helper function to mask sensitive values
+  function maskSensitiveValue(setting: any): any {
+    if (!setting.value) {
+      return { ...setting, value: null };
+    }
+    
+    if (isSensitiveSetting(setting.key)) {
+      return { ...setting, value: '••••••••' };
+    }
+    
+    return setting;
+  }
+
+  // GET /api/settings/:key/status - Check if setting exists without exposing value
+  app.get("/api/settings/:key/status", isAdmin, async (req, res) => {
+    try {
+      const { key } = req.params;
+      const { systemSettings } = await import("@shared/schema");
+      
+      const [setting] = await db
+        .select()
+        .from(systemSettings)
+        .where(eq(systemSettings.key, key));
+      
+      if (!setting) {
+        return res.json({ exists: false, category: null });
+      }
+      
+      res.json({ 
+        exists: true, 
+        category: setting.category,
+        configured: !!setting.value 
+      });
+    } catch (error) {
+      console.error('Error checking setting status:', error);
+      res.status(500).json({ error: 'Failed to check setting status' });
+    }
+  });
+
+  // GET /api/settings/:key - Get a system setting by key (admin only, with masking)
+  app.get("/api/settings/:key", isAdmin, async (req, res) => {
+    try {
+      const { key } = req.params;
+      const { systemSettings } = await import("@shared/schema");
+      
+      const [setting] = await db
+        .select()
+        .from(systemSettings)
+        .where(eq(systemSettings.key, key));
+      
+      if (!setting) {
+        return res.status(404).json({ error: 'Setting not found' });
+      }
+      
+      // Mask sensitive values before sending to client
+      const maskedSetting = maskSensitiveValue(setting);
+      res.json(maskedSetting);
+    } catch (error) {
+      console.error('Error fetching setting:', error);
+      res.status(500).json({ error: 'Failed to fetch setting' });
+    }
+  });
+
+  // POST /api/settings - Upsert a system setting (admin only, returns masked response)
+  app.post("/api/settings", isAdmin, async (req, res) => {
+    try {
+      const { systemSettings, insertSystemSettingSchema } = await import("@shared/schema");
+      const validatedData = insertSystemSettingSchema.parse(req.body);
+      
+      const existingSetting = await db
+        .select()
+        .from(systemSettings)
+        .where(eq(systemSettings.key, validatedData.key));
+      
+      let result;
+      if (existingSetting.length > 0) {
+        [result] = await db
+          .update(systemSettings)
+          .set({ 
+            ...validatedData,
+            updatedAt: new Date() 
+          })
+          .where(eq(systemSettings.key, validatedData.key))
+          .returning();
+      } else {
+        [result] = await db
+          .insert(systemSettings)
+          .values(validatedData)
+          .returning();
+      }
+      
+      // Mask sensitive values in response
+      const maskedResult = maskSensitiveValue(result);
+      broadcast({ type: 'setting_updated', data: maskedResult });
+      res.json(maskedResult);
+    } catch (error) {
+      console.error('Error upserting setting:', error);
+      res.status(400).json({ error: 'Failed to save setting' });
+    }
+  });
+
+  // GET /api/settings - Get all system settings (admin only, with masking)
+  app.get("/api/settings", isAdmin, async (req, res) => {
+    try {
+      const { systemSettings } = await import("@shared/schema");
+      const { category } = req.query;
+      
+      let query = db.select().from(systemSettings);
+      
+      if (category) {
+        query = query.where(eq(systemSettings.category, category as string));
+      }
+      
+      const settings = await query;
+      
+      // Mask all sensitive values
+      const maskedSettings = settings.map(setting => maskSensitiveValue(setting));
+      res.json(maskedSettings);
+    } catch (error) {
+      console.error('Error fetching settings:', error);
+      res.status(500).json({ error: 'Failed to fetch settings' });
     }
   });
 

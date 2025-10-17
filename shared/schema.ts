@@ -24,6 +24,7 @@ export const users = pgTable("users", {
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
+  role: text("role").default("user"), // admin, user
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -2737,3 +2738,30 @@ export type InsertHotstackWorker = z.infer<typeof insertHotstackWorkerSchema>;
 export type InsertHotstackDeployment = z.infer<typeof insertHotstackDeploymentSchema>;
 export type InsertHotstackR2Storage = z.infer<typeof insertHotstackR2StorageSchema>;
 export type InsertHotstackStation = z.infer<typeof insertHotstackStationSchema>;
+
+// System Settings table for storing API keys and configuration
+export const systemSettings = pgTable("system_settings", {
+  id: varchar("id").primaryKey().$defaultFn(() => nanoid()),
+  key: text("key").notNull().unique(),
+  value: text("value"),
+  category: text("category").notNull(), // cloudflare, stripe, github, etc.
+  isEncrypted: boolean("is_encrypted").default(false),
+  description: text("description"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertSystemSettingSchema = createInsertSchema(systemSettings).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const updateSystemSettingSchema = createInsertSchema(systemSettings).partial().omit({
+  id: true,
+  createdAt: true,
+});
+
+export type SystemSetting = typeof systemSettings.$inferSelect;
+export type InsertSystemSetting = z.infer<typeof insertSystemSettingSchema>;
+export type UpdateSystemSetting = z.infer<typeof updateSystemSettingSchema>;

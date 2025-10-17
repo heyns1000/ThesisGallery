@@ -235,3 +235,54 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
     return;
   }
 };
+
+export const isAdmin: RequestHandler = async (req, res, next) => {
+  const user = req.user as any;
+
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  try {
+    // Get user ID from session
+    let userId: string;
+    if (user.provider === 'google') {
+      userId = user.id;
+    } else if (user.claims?.sub) {
+      userId = user.claims.sub;
+    } else {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    // Fetch user from database to check role
+    const dbUser = await storage.getUser(userId);
+    
+    if (!dbUser || dbUser.role !== 'admin') {
+      return res.status(403).json({ message: "Forbidden - Admin access required" });
+    }
+
+    // Handle Replit OAuth token refresh for admin users
+    if (user.provider !== 'google' && user.expires_at) {
+      const now = Math.floor(Date.now() / 1000);
+      if (now > user.expires_at) {
+        const refreshToken = user.refresh_token;
+        if (!refreshToken) {
+          return res.status(401).json({ message: "Unauthorized" });
+        }
+
+        try {
+          const config = await getOidcConfig();
+          const tokenResponse = await client.refreshTokenGrant(config, refreshToken);
+          updateUserSession(user, tokenResponse);
+        } catch (error) {
+          return res.status(401).json({ message: "Unauthorized" });
+        }
+      }
+    }
+
+    return next();
+  } catch (error) {
+    console.error("Error checking admin access:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
