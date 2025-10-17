@@ -68,7 +68,9 @@ import {
   hotstackWorkers,
   hotstackDeployments,
   hotstackR2Storage,
-  hotstackStations
+  hotstackStations,
+  // Replit Apps
+  replitApps
 } from "@shared/schema";
 import { ContactProcessingAI, BanimalChatbot, CurrencyAI, HolidayAI, generateFaaReference } from "./ai-services";
 import { GeminiContactProcessor, GeminiBanimalChatbot, GeminiProductAI, GeminiMarketingAI } from "./gemini-ai";
@@ -6013,6 +6015,148 @@ May this wisdom serve your journey well! 🌳✨`
       console.error("Error in orchestrate/coordinate:", error);
       res.status(500).json({ 
         error: "Failed to orchestrate ecosystem coordination",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // ===============================
+  // REPLIT APPS ENDPOINTS
+  // ===============================
+
+  // GET /api/replit-apps - List all Replit apps with optional filters
+  app.get("/api/replit-apps", async (req, res) => {
+    try {
+      const { category, deploymentStatus, isActive } = req.query;
+      
+      let query = db.select().from(replitApps);
+      
+      // Apply filters if provided
+      const conditions = [];
+      if (category) {
+        conditions.push(eq(replitApps.category, category as string));
+      }
+      if (deploymentStatus) {
+        conditions.push(eq(replitApps.deploymentStatus, deploymentStatus as string));
+      }
+      if (isActive !== undefined) {
+        conditions.push(eq(replitApps.isActive, isActive === 'true'));
+      }
+      
+      if (conditions.length > 0) {
+        query = query.where(and(...conditions));
+      }
+      
+      const apps = await query.orderBy(desc(replitApps.lastUpdated));
+      
+      res.json(apps);
+    } catch (error) {
+      console.error("Error fetching Replit apps:", error);
+      res.status(500).json({ 
+        error: "Failed to fetch Replit apps",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // GET /api/replit-apps/stats - Get Replit apps statistics
+  app.get("/api/replit-apps/stats", async (req, res) => {
+    try {
+      const allApps = await db.select().from(replitApps);
+      
+      const total = allApps.length;
+      const active = allApps.filter(app => app.isActive).length;
+      
+      // Category breakdown
+      const byCategory: Record<string, number> = {};
+      allApps.forEach(app => {
+        const cat = app.category || 'uncategorized';
+        byCategory[cat] = (byCategory[cat] || 0) + 1;
+      });
+      
+      // Deployment status breakdown
+      const byStatus: Record<string, number> = {};
+      allApps.forEach(app => {
+        const status = app.deploymentStatus;
+        byStatus[status] = (byStatus[status] || 0) + 1;
+      });
+      
+      // Get 10 most recent apps sorted by lastUpdated DESC
+      const recentApps = await db.select()
+        .from(replitApps)
+        .orderBy(desc(replitApps.lastUpdated))
+        .limit(10);
+      
+      res.json({
+        total,
+        active,
+        byCategory,
+        byStatus,
+        recentApps
+      });
+    } catch (error) {
+      console.error("Error fetching Replit apps stats:", error);
+      res.status(500).json({ 
+        error: "Failed to fetch Replit apps stats",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // GET /api/replit-apps/:id - Get specific Replit app
+  app.get("/api/replit-apps/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      
+      const [app] = await db.select()
+        .from(replitApps)
+        .where(eq(replitApps.id, id))
+        .limit(1);
+      
+      if (!app) {
+        return res.status(404).json({ error: "Replit app not found" });
+      }
+      
+      res.json(app);
+    } catch (error) {
+      console.error("Error fetching Replit app:", error);
+      res.status(500).json({ 
+        error: "Failed to fetch Replit app",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // PATCH /api/replit-apps/:id - Update Replit app metadata
+  app.patch("/api/replit-apps/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const updates = req.body;
+      
+      // Validate that the app exists
+      const [existingApp] = await db.select()
+        .from(replitApps)
+        .where(eq(replitApps.id, id))
+        .limit(1);
+      
+      if (!existingApp) {
+        return res.status(404).json({ error: "Replit app not found" });
+      }
+      
+      // Update the app
+      const [updatedApp] = await db.update(replitApps)
+        .set({
+          ...updates,
+          updatedAt: new Date()
+        })
+        .where(eq(replitApps.id, id))
+        .returning();
+      
+      res.json(updatedApp);
+    } catch (error) {
+      console.error("Error updating Replit app:", error);
+      res.status(500).json({ 
+        error: "Failed to update Replit app",
         details: error instanceof Error ? error.message : "Unknown error"
       });
     }

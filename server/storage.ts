@@ -86,7 +86,10 @@ import {
   type InsertEcosystemSyncLog,
   // Sector Types
   type Sector,
-  type InsertSector
+  type InsertSector,
+  // Replit Apps Types
+  type ReplitApp,
+  type InsertReplitApp
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -340,6 +343,18 @@ export interface IStorage {
   createDeploymentJob(job: InsertDeploymentJob): Promise<DeploymentJob>;
   updateDeploymentJob(id: string, updates: Partial<DeploymentJob>): Promise<DeploymentJob | undefined>;
   deleteDeploymentJob(id: string): Promise<boolean>;
+
+  // ===============================
+  // REPLIT APPS METHODS
+  // ===============================
+  
+  // Replit Apps methods
+  getReplitApps(filters?: { category?: string; deploymentStatus?: string; isActive?: boolean }): Promise<ReplitApp[]>;
+  getReplitApp(id: string): Promise<ReplitApp | undefined>;
+  getReplitAppStats(): Promise<{ total: number; byCategory: Record<string, number>; byStatus: Record<string, number>; active: number }>;
+  createReplitApp(app: InsertReplitApp): Promise<ReplitApp>;
+  updateReplitApp(id: string, updates: Partial<ReplitApp>): Promise<ReplitApp | undefined>;
+  deleteReplitApp(id: string): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {

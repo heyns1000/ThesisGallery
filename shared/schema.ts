@@ -2825,3 +2825,31 @@ export const updateSystemSettingSchema = createInsertSchema(systemSettings).part
 export type SystemSetting = typeof systemSettings.$inferSelect;
 export type InsertSystemSetting = z.infer<typeof insertSystemSettingSchema>;
 export type UpdateSystemSetting = z.infer<typeof updateSystemSettingSchema>;
+
+// Replit Apps - Import and manage all Replit applications
+export const replitApps = pgTable("replit_apps", {
+  id: varchar("id").primaryKey(), // Use appId from CSV as primary key
+  appName: text("app_name").notNull(),
+  creatorUsername: text("creator_username").notNull(),
+  creatorEmail: text("creator_email").notNull(),
+  lastUpdated: timestamp("last_updated").notNull(),
+  appCodePrivacy: text("app_code_privacy").notNull(),
+  deploymentStatus: text("deployment_status").notNull(),
+  deploymentPrivacy: text("deployment_privacy"),
+  replitUrl: text("replit_url").notNull(),
+  category: text("category"),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+export const insertReplitAppSchema = createInsertSchema(replitApps).omit({
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const updateReplitAppSchema = insertReplitAppSchema.partial();
+
+export type ReplitApp = typeof replitApps.$inferSelect;
+export type InsertReplitApp = z.infer<typeof insertReplitAppSchema>;
