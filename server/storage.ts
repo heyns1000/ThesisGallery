@@ -95,7 +95,22 @@ import {
   type InsertSectorMappingCache,
   // Replit Apps Types
   type ReplitApp,
-  type InsertReplitApp
+  type InsertReplitApp,
+  // SamFox Studio Types
+  type SamFoxMasterLicense,
+  type InsertSamFoxMasterLicense,
+  type SamFoxTreatyCollaboration,
+  type InsertSamFoxTreatyCollaboration,
+  type SamFoxFileroom,
+  type InsertSamFoxFileroom,
+  type SamFoxWorkspace,
+  type InsertSamFoxWorkspace,
+  type SamFoxVaultTrail,
+  type InsertSamFoxVaultTrail,
+  type SamFoxSyncStat,
+  type InsertSamFoxSyncStat,
+  type SamFoxBrandProfile,
+  type InsertSamFoxBrandProfile
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -382,6 +397,75 @@ export interface IStorage {
   createReplitApp(app: InsertReplitApp): Promise<ReplitApp>;
   updateReplitApp(id: string, updates: Partial<ReplitApp>): Promise<ReplitApp | undefined>;
   deleteReplitApp(id: string): Promise<boolean>;
+
+  // ===============================
+  // SAMFOX STUDIO METHODS
+  // ===============================
+
+  // SamFox Master Licenses methods
+  getSamFoxMasterLicenses(): Promise<SamFoxMasterLicense[]>;
+  getSamFoxMasterLicense(id: string): Promise<SamFoxMasterLicense | undefined>;
+  getSamFoxMasterLicenseByKey(licenseKey: string): Promise<SamFoxMasterLicense | undefined>;
+  createSamFoxMasterLicense(license: InsertSamFoxMasterLicense): Promise<SamFoxMasterLicense>;
+  updateSamFoxMasterLicense(id: string, updates: Partial<SamFoxMasterLicense>): Promise<SamFoxMasterLicense | undefined>;
+  deleteSamFoxMasterLicense(id: string): Promise<boolean>;
+
+  // SamFox Treaty Collaborations methods
+  getSamFoxTreatyCollaborations(): Promise<SamFoxTreatyCollaboration[]>;
+  getSamFoxTreatyCollaboration(id: string): Promise<SamFoxTreatyCollaboration | undefined>;
+  getSamFoxTreatyCollaborationByTreatyId(treatyId: string): Promise<SamFoxTreatyCollaboration | undefined>;
+  createSamFoxTreatyCollaboration(treaty: InsertSamFoxTreatyCollaboration): Promise<SamFoxTreatyCollaboration>;
+  updateSamFoxTreatyCollaboration(id: string, updates: Partial<SamFoxTreatyCollaboration>): Promise<SamFoxTreatyCollaboration | undefined>;
+  deleteSamFoxTreatyCollaboration(id: string): Promise<boolean>;
+
+  // SamFox Fileroom methods
+  getSamFoxFileroomAssets(): Promise<SamFoxFileroom[]>;
+  getSamFoxFileroomAsset(id: string): Promise<SamFoxFileroom | undefined>;
+  getSamFoxFileroomAssetByAssetId(assetId: string): Promise<SamFoxFileroom | undefined>;
+  createSamFoxFileroomAsset(asset: InsertSamFoxFileroom): Promise<SamFoxFileroom>;
+  updateSamFoxFileroomAsset(id: string, updates: Partial<SamFoxFileroom>): Promise<SamFoxFileroom | undefined>;
+  deleteSamFoxFileroomAsset(id: string): Promise<boolean>;
+
+  // SamFox Workspaces methods
+  getSamFoxWorkspaces(): Promise<SamFoxWorkspace[]>;
+  getSamFoxWorkspace(id: string): Promise<SamFoxWorkspace | undefined>;
+  createSamFoxWorkspace(workspace: InsertSamFoxWorkspace): Promise<SamFoxWorkspace>;
+  updateSamFoxWorkspace(id: string, updates: Partial<SamFoxWorkspace>): Promise<SamFoxWorkspace | undefined>;
+  deleteSamFoxWorkspace(id: string): Promise<boolean>;
+
+  // SamFox Vault Trails methods
+  getSamFoxVaultTrails(filters?: { type?: string; userId?: string; resourceType?: string }): Promise<SamFoxVaultTrail[]>;
+  getSamFoxVaultTrail(id: string): Promise<SamFoxVaultTrail | undefined>;
+  createSamFoxVaultTrail(trail: InsertSamFoxVaultTrail): Promise<SamFoxVaultTrail>;
+
+  // SamFox Sync Stats methods
+  getSamFoxSyncStats(): Promise<SamFoxSyncStat[]>;
+  getSamFoxSyncStat(id: string): Promise<SamFoxSyncStat | undefined>;
+  getLatestSamFoxSyncStat(syncOperation: string): Promise<SamFoxSyncStat | undefined>;
+  createSamFoxSyncStat(stat: InsertSamFoxSyncStat): Promise<SamFoxSyncStat>;
+  updateSamFoxSyncStat(id: string, updates: Partial<SamFoxSyncStat>): Promise<SamFoxSyncStat | undefined>;
+
+  // SamFox Brand Profiles methods
+  getSamFoxBrandProfiles(): Promise<SamFoxBrandProfile[]>;
+  getSamFoxBrandProfile(id: string): Promise<SamFoxBrandProfile | undefined>;
+  getSamFoxBrandProfileByName(brandName: string): Promise<SamFoxBrandProfile | undefined>;
+  createSamFoxBrandProfile(profile: InsertSamFoxBrandProfile): Promise<SamFoxBrandProfile>;
+  updateSamFoxBrandProfile(id: string, updates: Partial<SamFoxBrandProfile>): Promise<SamFoxBrandProfile | undefined>;
+  deleteSamFoxBrandProfile(id: string): Promise<boolean>;
+
+  // SamFox Analytics methods
+  getSamFoxAnalytics(): Promise<{
+    totalLicenses: number;
+    activeTreaties: number;
+    totalAssets: number;
+    activeWorkspaces: number;
+    recentVaultTrails: SamFoxVaultTrail[];
+    syncHealth: {
+      vaultMesh: string;
+      treatySync: string;
+      assetBackup: string;
+    };
+  }>;
 }
 
 export class MemStorage implements IStorage {

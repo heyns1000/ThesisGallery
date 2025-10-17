@@ -2172,29 +2172,6 @@ export const globalMasterLicenses = pgTable("global_master_licenses", {
   metadata: json("metadata"),
 });
 
-// SamFox Fileroom - Archive & Document Management
-export const samFoxFileroom = pgTable("samfox_fileroom", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  fileName: text("file_name").notNull(),
-  filePath: text("file_path").notNull(),
-  fileType: text("file_type").notNull(), // project-scroll, license-key, vault-payment-trail, creative-asset
-  brandId: varchar("brand_id").references(() => brands.id),
-  samFoxStudioId: varchar("samfox_studio_id").references(() => samFoxStudio.id),
-  workspaceId: varchar("workspace_id").references(() => collaborationWorkspaces.id),
-  licenseId: varchar("license_id").references(() => globalMasterLicenses.id),
-  accessControl: text("access_control").notNull().default("editor"), // admin, editor, auditor, viewer
-  copyrightProtected: boolean("copyright_protected").default(true),
-  treatyProtected: boolean("treaty_protected").default(true),
-  omniDropSynced: boolean("omni_drop_synced").default(true),
-  vaultTrail: text("vault_trail"), // reference to vault payment trail
-  uploadStream: text("upload_stream"), // secure upload stream reference
-  genesisCommit: boolean("genesis_commit").default(false), // since genesis treaty
-  autoFiled: boolean("auto_filed").default(true),
-  syncEngine: text("sync_engine").default("FAA OmniDrop Memory Feed"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-  metadata: json("metadata"),
-});
 
 // Treaty-Protected Collaboration
 export const treatyCollaboration = pgTable("treaty_collaboration", {
@@ -2266,25 +2243,6 @@ export const insertGlobalMasterLicenseSchema = createInsertSchema(globalMasterLi
   metadata: true,
 });
 
-export const insertSamFoxFileroomSchema = createInsertSchema(samFoxFileroom).pick({
-  fileName: true,
-  filePath: true,
-  fileType: true,
-  brandId: true,
-  samFoxStudioId: true,
-  workspaceId: true,
-  licenseId: true,
-  accessControl: true,
-  copyrightProtected: true,
-  treatyProtected: true,
-  omniDropSynced: true,
-  vaultTrail: true,
-  uploadStream: true,
-  genesisCommit: true,
-  autoFiled: true,
-  syncEngine: true,
-  metadata: true,
-});
 
 export const insertTreatyCollaborationSchema = createInsertSchema(treatyCollaboration).pick({
   treatyId: true,
@@ -2903,3 +2861,185 @@ export const updateReplitAppSchema = insertReplitAppSchema.partial();
 
 export type ReplitApp = typeof replitApps.$inferSelect;
 export type InsertReplitApp = z.infer<typeof insertReplitAppSchema>;
+
+// ===============================
+// SAMFOX STUDIO GLOBAL DIVISION
+// ===============================
+
+// SamFox Master Licenses - Global license management
+export const samFoxMasterLicenses = pgTable("sam_fox_master_licenses", {
+  id: varchar("id").primaryKey().$defaultFn(() => nanoid()),
+  licenseKey: text("license_key").notNull().unique(),
+  licenseType: text("license_type").notNull(), // global-master, treaty-bound, creative-asset, regional
+  licenseMatrix: json("license_matrix"), // Complex license structure data
+  copyrightAssertion: boolean("copyright_assertion").default(true),
+  ipRegistryVerified: boolean("ip_registry_verified").default(false),
+  faaVerified: boolean("faa_verified").default(false),
+  treatyClass: text("treaty_class"), // A+, A, B+, B, C
+  globalScope: boolean("global_scope").default(false),
+  status: text("status").default("active"), // active, pending, expired, revoked
+  issuedAt: timestamp("issued_at").defaultNow().notNull(),
+  expiresAt: timestamp("expires_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+export const insertSamFoxMasterLicenseSchema = createInsertSchema(samFoxMasterLicenses).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type SamFoxMasterLicense = typeof samFoxMasterLicenses.$inferSelect;
+export type InsertSamFoxMasterLicense = z.infer<typeof insertSamFoxMasterLicenseSchema>;
+
+// SamFox Treaty Collaborations - Multi-brand treaty management
+export const samFoxTreatyCollaborations = pgTable("sam_fox_treaty_collaborations", {
+  id: varchar("id").primaryKey().$defaultFn(() => nanoid()),
+  treatyId: text("treaty_id").notNull().unique(),
+  brandCoSigners: text("brand_co_signers").array().notNull(), // Array of brand names
+  collaboratorIds: text("collaborator_ids").array(), // Array of collaborator IDs
+  treatyType: text("treaty_type").notNull(), // brand-alliance, creative-partnership, distribution-rights, technology-sharing
+  sealedTreatyLaw: boolean("sealed_treaty_law").default(false),
+  treatyMessage: text("treaty_message"),
+  faaClassTag: text("faa_class_tag"), // Premium, Standard, Enterprise
+  status: text("status").default("draft"), // draft, active, sealed, terminated
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+export const insertSamFoxTreatyCollaborationSchema = createInsertSchema(samFoxTreatyCollaborations).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type SamFoxTreatyCollaboration = typeof samFoxTreatyCollaborations.$inferSelect;
+export type InsertSamFoxTreatyCollaboration = z.infer<typeof insertSamFoxTreatyCollaborationSchema>;
+
+// SamFox Fileroom - Digital asset management
+export const samFoxFileroom = pgTable("sam_fox_fileroom", {
+  id: varchar("id").primaryKey().$defaultFn(() => nanoid()),
+  assetId: text("asset_id").notNull().unique(),
+  title: text("title").notNull(),
+  type: text("type").notNull(), // digital-print, scroll, creative-asset, blueprint, template
+  fileUrl: text("file_url").notNull(),
+  category: text("category"), // branding, legal, creative, technical, documentation
+  uploadedBy: text("uploaded_by"),
+  fileSize: integer("file_size"), // in bytes
+  mimeType: text("mime_type"),
+  uploadedAt: timestamp("uploaded_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+export const insertSamFoxFileroomSchema = createInsertSchema(samFoxFileroom).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type SamFoxFileroom = typeof samFoxFileroom.$inferSelect;
+export type InsertSamFoxFileroom = z.infer<typeof insertSamFoxFileroomSchema>;
+
+// SamFox Workspaces - Collaborative workspace management
+export const samFoxWorkspaces = pgTable("sam_fox_workspaces", {
+  id: varchar("id").primaryKey().$defaultFn(() => nanoid()),
+  workspaceName: text("workspace_name").notNull(),
+  workspaceType: text("workspace_type").notNull(), // creative-studio, treaty-chamber, vault-command, analytics-hub
+  accessLevel: text("access_level").default("standard"), // public, standard, restricted, classified
+  members: text("members").array(), // Array of member IDs/names
+  realTimeEnabled: boolean("real_time_enabled").default(true),
+  treatyProtected: boolean("treaty_protected").default(false),
+  vaultMeshLinked: boolean("vault_mesh_linked").default(false),
+  status: text("status").default("active"), // active, archived, suspended
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+export const insertSamFoxWorkspaceSchema = createInsertSchema(samFoxWorkspaces).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type SamFoxWorkspace = typeof samFoxWorkspaces.$inferSelect;
+export type InsertSamFoxWorkspace = z.infer<typeof insertSamFoxWorkspaceSchema>;
+
+// SamFox Vault Trails - Audit logging system
+export const samFoxVaultTrails = pgTable("sam_fox_vault_trails", {
+  id: varchar("id").primaryKey().$defaultFn(() => nanoid()),
+  action: text("action").notNull(), // asset-synchronized, treaty-sealed, license-generated, vault-backup, workspace-created
+  timestamp: timestamp("timestamp").defaultNow().notNull(),
+  type: text("type").notNull(), // sync, treaty, license, backup, security, access
+  details: text("details"),
+  userId: text("user_id"),
+  resourceId: text("resource_id"), // ID of affected resource
+  resourceType: text("resource_type"), // license, treaty, workspace, asset
+  severity: text("severity").default("info"), // info, warning, critical
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+export const insertSamFoxVaultTrailSchema = createInsertSchema(samFoxVaultTrails).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type SamFoxVaultTrail = typeof samFoxVaultTrails.$inferSelect;
+export type InsertSamFoxVaultTrail = z.infer<typeof insertSamFoxVaultTrailSchema>;
+
+// SamFox Sync Stats - Synchronization tracking
+export const samFoxSyncStats = pgTable("sam_fox_sync_stats", {
+  id: varchar("id").primaryKey().$defaultFn(() => nanoid()),
+  syncOperation: text("sync_operation").notNull(), // vault-mesh, treaty-sync, asset-backup, global-index
+  totalItems: integer("total_items").default(0),
+  successCount: integer("success_count").default(0),
+  failureCount: integer("failure_count").default(0),
+  syncDuration: integer("sync_duration"), // in seconds
+  lastSyncAt: timestamp("last_sync_at").defaultNow().notNull(),
+  nextSyncAt: timestamp("next_sync_at"),
+  status: text("status").default("completed"), // pending, in-progress, completed, failed
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+export const insertSamFoxSyncStatSchema = createInsertSchema(samFoxSyncStats).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type SamFoxSyncStat = typeof samFoxSyncStats.$inferSelect;
+export type InsertSamFoxSyncStat = z.infer<typeof insertSamFoxSyncStatSchema>;
+
+// SamFox Brand Profiles - Brand management
+export const samFoxBrandProfiles = pgTable("sam_fox_brand_profiles", {
+  id: varchar("id").primaryKey().$defaultFn(() => nanoid()),
+  brandName: text("brand_name").notNull().unique(),
+  treatyClass: text("treaty_class"), // A+, A, B+, B, C
+  licenseType: text("license_type"), // master, regional, creative, enterprise
+  vaultLink: boolean("vault_link").default(false),
+  storagePath: text("storage_path"),
+  syncRate: integer("sync_rate").default(60), // sync interval in minutes
+  globalStatus: text("global_status").default("active"), // active, synced, pending, suspended
+  claimStatement: text("claim_statement"),
+  copyrightActive: boolean("copyright_active").default(true),
+  treatyReady: boolean("treaty_ready").default(false),
+  signatory: text("signatory"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+export const insertSamFoxBrandProfileSchema = createInsertSchema(samFoxBrandProfiles).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type SamFoxBrandProfile = typeof samFoxBrandProfiles.$inferSelect;
+export type InsertSamFoxBrandProfile = z.infer<typeof insertSamFoxBrandProfileSchema>;

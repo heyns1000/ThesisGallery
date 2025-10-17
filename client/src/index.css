@@ -52,6 +52,9 @@
   --energetic-green: hsl(142, 76%, 36%);
   --energetic-blue: hsl(203, 93%, 68%);
   --energetic-amber: hsl(43, 96%, 56%);
+  --samfox-gold: hsl(43, 74%, 49%);
+  --samfox-apple-blue: hsl(211, 100%, 45%);
+  --samfox-apple-green: hsl(142, 78%, 41%);
 }
 
 .dark {
@@ -102,6 +105,9 @@
   --energetic-green: hsl(142, 76%, 36%);
   --energetic-blue: hsl(203, 93%, 68%);
   --energetic-amber: hsl(43, 96%, 56%);
+  --samfox-gold: hsl(43, 74%, 49%);
+  --samfox-apple-blue: hsl(211, 100%, 45%);
+  --samfox-apple-green: hsl(142, 78%, 41%);
 }
 
 @layer base {

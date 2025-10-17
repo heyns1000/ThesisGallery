@@ -6301,5 +6301,352 @@ May this wisdom serve your journey well! 🌳✨`
     }
   });
 
+  // ===============================
+  // SAMFOX STUDIO API ROUTES
+  // ===============================
+
+  const { 
+    samFoxMasterLicenses, 
+    samFoxTreatyCollaborations, 
+    samFoxFileroom, 
+    samFoxWorkspaces, 
+    samFoxVaultTrails, 
+    samFoxSyncStats, 
+    samFoxBrandProfiles,
+    insertSamFoxMasterLicenseSchema,
+    insertSamFoxTreatyCollaborationSchema,
+    insertSamFoxFileroomSchema,
+    insertSamFoxWorkspaceSchema,
+    insertSamFoxVaultTrailSchema,
+    insertSamFoxSyncStatSchema,
+    insertSamFoxBrandProfileSchema
+  } = await import("@shared/schema");
+
+  // SamFox Master Licenses Routes
+  app.get("/api/samfox-studio/licenses", isAuthenticated, async (req, res) => {
+    try {
+      const licenses = await db.select().from(samFoxMasterLicenses).orderBy(desc(samFoxMasterLicenses.issuedAt));
+      res.json(licenses);
+    } catch (error) {
+      console.error("Error fetching SamFox licenses:", error);
+      res.status(500).json({ error: "Failed to fetch licenses" });
+    }
+  });
+
+  app.post("/api/samfox-studio/licenses", isAuthenticated, async (req, res) => {
+    try {
+      const validated = insertSamFoxMasterLicenseSchema.parse(req.body);
+      const [license] = await db.insert(samFoxMasterLicenses).values(validated).returning();
+      res.json(license);
+    } catch (error) {
+      console.error("Error creating SamFox license:", error);
+      res.status(400).json({ error: "Failed to create license" });
+    }
+  });
+
+  app.patch("/api/samfox-studio/licenses/:id", isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const [updated] = await db.update(samFoxMasterLicenses)
+        .set({ ...req.body, updatedAt: new Date() })
+        .where(eq(samFoxMasterLicenses.id, id))
+        .returning();
+      res.json(updated);
+    } catch (error) {
+      console.error("Error updating SamFox license:", error);
+      res.status(500).json({ error: "Failed to update license" });
+    }
+  });
+
+  app.delete("/api/samfox-studio/licenses/:id", isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      await db.delete(samFoxMasterLicenses).where(eq(samFoxMasterLicenses.id, id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting SamFox license:", error);
+      res.status(500).json({ error: "Failed to delete license" });
+    }
+  });
+
+  // SamFox Treaty Collaborations Routes
+  app.get("/api/samfox-studio/treaties", isAuthenticated, async (req, res) => {
+    try {
+      const treaties = await db.select().from(samFoxTreatyCollaborations).orderBy(desc(samFoxTreatyCollaborations.createdAt));
+      res.json(treaties);
+    } catch (error) {
+      console.error("Error fetching SamFox treaties:", error);
+      res.status(500).json({ error: "Failed to fetch treaties" });
+    }
+  });
+
+  app.post("/api/samfox-studio/treaties", isAuthenticated, async (req, res) => {
+    try {
+      const validated = insertSamFoxTreatyCollaborationSchema.parse(req.body);
+      const [treaty] = await db.insert(samFoxTreatyCollaborations).values(validated).returning();
+      res.json(treaty);
+    } catch (error) {
+      console.error("Error creating SamFox treaty:", error);
+      res.status(400).json({ error: "Failed to create treaty" });
+    }
+  });
+
+  app.patch("/api/samfox-studio/treaties/:id", isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const [updated] = await db.update(samFoxTreatyCollaborations)
+        .set({ ...req.body, updatedAt: new Date() })
+        .where(eq(samFoxTreatyCollaborations.id, id))
+        .returning();
+      res.json(updated);
+    } catch (error) {
+      console.error("Error updating SamFox treaty:", error);
+      res.status(500).json({ error: "Failed to update treaty" });
+    }
+  });
+
+  app.delete("/api/samfox-studio/treaties/:id", isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      await db.delete(samFoxTreatyCollaborations).where(eq(samFoxTreatyCollaborations.id, id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting SamFox treaty:", error);
+      res.status(500).json({ error: "Failed to delete treaty" });
+    }
+  });
+
+  // SamFox Fileroom Routes
+  app.get("/api/samfox-studio/fileroom", isAuthenticated, async (req, res) => {
+    try {
+      const assets = await db.select().from(samFoxFileroom).orderBy(desc(samFoxFileroom.uploadedAt));
+      res.json(assets);
+    } catch (error) {
+      console.error("Error fetching SamFox fileroom assets:", error);
+      res.status(500).json({ error: "Failed to fetch fileroom assets" });
+    }
+  });
+
+  app.post("/api/samfox-studio/fileroom", isAuthenticated, upload.single('file'), async (req, res) => {
+    try {
+      const file = req.file;
+      if (!file) {
+        return res.status(400).json({ error: "No file uploaded" });
+      }
+
+      const assetData = {
+        assetId: nanoid(),
+        title: req.body.title || file.originalname,
+        type: req.body.type || 'creative-asset',
+        fileUrl: `/uploads/${file.filename}`,
+        category: req.body.category,
+        uploadedBy: req.user?.id,
+        fileSize: file.size,
+        mimeType: file.mimetype,
+        metadata: req.body.metadata ? JSON.parse(req.body.metadata) : null
+      };
+
+      const validated = insertSamFoxFileroomSchema.parse(assetData);
+      const [asset] = await db.insert(samFoxFileroom).values(validated).returning();
+      res.json(asset);
+    } catch (error) {
+      console.error("Error uploading SamFox asset:", error);
+      res.status(500).json({ error: "Failed to upload asset" });
+    }
+  });
+
+  app.delete("/api/samfox-studio/fileroom/:id", isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      await db.delete(samFoxFileroom).where(eq(samFoxFileroom.id, id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting SamFox fileroom asset:", error);
+      res.status(500).json({ error: "Failed to delete asset" });
+    }
+  });
+
+  // SamFox Workspaces Routes
+  app.get("/api/samfox-studio/workspaces", isAuthenticated, async (req, res) => {
+    try {
+      const workspaces = await db.select().from(samFoxWorkspaces).orderBy(desc(samFoxWorkspaces.createdAt));
+      res.json(workspaces);
+    } catch (error) {
+      console.error("Error fetching SamFox workspaces:", error);
+      res.status(500).json({ error: "Failed to fetch workspaces" });
+    }
+  });
+
+  app.post("/api/samfox-studio/workspaces", isAuthenticated, async (req, res) => {
+    try {
+      const validated = insertSamFoxWorkspaceSchema.parse(req.body);
+      const [workspace] = await db.insert(samFoxWorkspaces).values(validated).returning();
+      res.json(workspace);
+    } catch (error) {
+      console.error("Error creating SamFox workspace:", error);
+      res.status(400).json({ error: "Failed to create workspace" });
+    }
+  });
+
+  app.patch("/api/samfox-studio/workspaces/:id", isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const [updated] = await db.update(samFoxWorkspaces)
+        .set({ ...req.body, updatedAt: new Date() })
+        .where(eq(samFoxWorkspaces.id, id))
+        .returning();
+      res.json(updated);
+    } catch (error) {
+      console.error("Error updating SamFox workspace:", error);
+      res.status(500).json({ error: "Failed to update workspace" });
+    }
+  });
+
+  app.delete("/api/samfox-studio/workspaces/:id", isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      await db.delete(samFoxWorkspaces).where(eq(samFoxWorkspaces.id, id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting SamFox workspace:", error);
+      res.status(500).json({ error: "Failed to delete workspace" });
+    }
+  });
+
+  // SamFox Vault Trails Routes
+  app.get("/api/samfox-studio/vault-trails", isAuthenticated, async (req, res) => {
+    try {
+      const { type, userId, resourceType } = req.query;
+      let query = db.select().from(samFoxVaultTrails);
+      
+      const conditions = [];
+      if (type) conditions.push(eq(samFoxVaultTrails.type, type as string));
+      if (userId) conditions.push(eq(samFoxVaultTrails.userId, userId as string));
+      if (resourceType) conditions.push(eq(samFoxVaultTrails.resourceType, resourceType as string));
+      
+      if (conditions.length > 0) {
+        query = query.where(and(...conditions));
+      }
+      
+      const trails = await query.orderBy(desc(samFoxVaultTrails.timestamp)).limit(100);
+      res.json(trails);
+    } catch (error) {
+      console.error("Error fetching SamFox vault trails:", error);
+      res.status(500).json({ error: "Failed to fetch vault trails" });
+    }
+  });
+
+  app.post("/api/samfox-studio/vault-trails", isAuthenticated, async (req, res) => {
+    try {
+      const validated = insertSamFoxVaultTrailSchema.parse(req.body);
+      const [trail] = await db.insert(samFoxVaultTrails).values(validated).returning();
+      res.json(trail);
+    } catch (error) {
+      console.error("Error creating SamFox vault trail:", error);
+      res.status(400).json({ error: "Failed to create vault trail" });
+    }
+  });
+
+  // SamFox Sync Stats Routes
+  app.get("/api/samfox-studio/sync-stats", isAuthenticated, async (req, res) => {
+    try {
+      const stats = await db.select().from(samFoxSyncStats).orderBy(desc(samFoxSyncStats.lastSyncAt)).limit(50);
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching SamFox sync stats:", error);
+      res.status(500).json({ error: "Failed to fetch sync stats" });
+    }
+  });
+
+  app.post("/api/samfox-studio/sync-stats", isAuthenticated, async (req, res) => {
+    try {
+      const validated = insertSamFoxSyncStatSchema.parse(req.body);
+      const [stat] = await db.insert(samFoxSyncStats).values(validated).returning();
+      res.json(stat);
+    } catch (error) {
+      console.error("Error creating SamFox sync stat:", error);
+      res.status(400).json({ error: "Failed to create sync stat" });
+    }
+  });
+
+  // SamFox Brand Profiles Routes
+  app.get("/api/samfox-studio/brand-profiles", isAuthenticated, async (req, res) => {
+    try {
+      const profiles = await db.select().from(samFoxBrandProfiles).orderBy(desc(samFoxBrandProfiles.createdAt));
+      res.json(profiles);
+    } catch (error) {
+      console.error("Error fetching SamFox brand profiles:", error);
+      res.status(500).json({ error: "Failed to fetch brand profiles" });
+    }
+  });
+
+  app.post("/api/samfox-studio/brand-profiles", isAuthenticated, async (req, res) => {
+    try {
+      const validated = insertSamFoxBrandProfileSchema.parse(req.body);
+      const [profile] = await db.insert(samFoxBrandProfiles).values(validated).returning();
+      res.json(profile);
+    } catch (error) {
+      console.error("Error creating SamFox brand profile:", error);
+      res.status(400).json({ error: "Failed to create brand profile" });
+    }
+  });
+
+  app.patch("/api/samfox-studio/brand-profiles/:id", isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const [updated] = await db.update(samFoxBrandProfiles)
+        .set({ ...req.body, updatedAt: new Date() })
+        .where(eq(samFoxBrandProfiles.id, id))
+        .returning();
+      res.json(updated);
+    } catch (error) {
+      console.error("Error updating SamFox brand profile:", error);
+      res.status(500).json({ error: "Failed to update brand profile" });
+    }
+  });
+
+  app.delete("/api/samfox-studio/brand-profiles/:id", isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      await db.delete(samFoxBrandProfiles).where(eq(samFoxBrandProfiles.id, id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting SamFox brand profile:", error);
+      res.status(500).json({ error: "Failed to delete brand profile" });
+    }
+  });
+
+  // SamFox Analytics Route
+  app.get("/api/samfox-studio/analytics", isAuthenticated, async (req, res) => {
+    try {
+      const [licensesData, treatiesData, assetsData, workspacesData, vaultTrailsData, syncStatsData] = await Promise.all([
+        db.select().from(samFoxMasterLicenses),
+        db.select().from(samFoxTreatyCollaborations),
+        db.select().from(samFoxFileroom),
+        db.select().from(samFoxWorkspaces),
+        db.select().from(samFoxVaultTrails).orderBy(desc(samFoxVaultTrails.timestamp)).limit(10),
+        db.select().from(samFoxSyncStats).orderBy(desc(samFoxSyncStats.lastSyncAt)).limit(5)
+      ]);
+
+      const analytics = {
+        totalLicenses: licensesData.length,
+        activeTreaties: treatiesData.filter(t => t.status === 'active' || t.status === 'sealed').length,
+        totalAssets: assetsData.length,
+        activeWorkspaces: workspacesData.filter(w => w.status === 'active').length,
+        recentVaultTrails: vaultTrailsData,
+        syncHealth: {
+          vaultMesh: syncStatsData.find(s => s.syncOperation === 'vault-mesh')?.status || 'unknown',
+          treatySync: syncStatsData.find(s => s.syncOperation === 'treaty-sync')?.status || 'unknown',
+          assetBackup: syncStatsData.find(s => s.syncOperation === 'asset-backup')?.status || 'unknown'
+        }
+      };
+
+      res.json(analytics);
+    } catch (error) {
+      console.error("Error fetching SamFox analytics:", error);
+      res.status(500).json({ error: "Failed to fetch analytics" });
+    }
+  });
+
   return httpServer;
 }

@@ -653,149 +653,34 @@ function FileroomGallery() {
 export default function SamFoxStudioPlatform() {
   const { trigger } = useInteractivity();
   const [selectedTab, setSelectedTab] = useState("overview");
-  const [pulseInterval, setPulseInterval] = useState<NodeJS.Timeout | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
-
-  // Fetch SamFox Studio instance
-  const { data: studio, isLoading: studioLoading } = useQuery<SamFoxStudio>({
-    queryKey: ["/api/samfox-studio"],
-  });
 
   // Fetch workspaces
   const { data: workspaces = [], isLoading: workspacesLoading } = useQuery<CollaborationWorkspace[]>({
     queryKey: ["/api/samfox-studio/workspaces"],
-    enabled: !!studio?.id,
   });
 
   // Fetch licenses
   const { data: licenses = [], isLoading: licensesLoading } = useQuery<GlobalMasterLicense[]>({
     queryKey: ["/api/samfox-studio/licenses"],
-    enabled: !!studio?.id,
   });
 
   // Fetch treaties
   const { data: treaties = [], isLoading: treatiesLoading } = useQuery<TreatyCollaboration[]>({
     queryKey: ["/api/samfox-studio/treaties"],
-    enabled: !!studio?.id,
   });
 
-  // Fetch dashboard stats
-  const { data: stats } = useQuery({
-    queryKey: ["/api/samfox-studio", studio?.id, "stats"],
-    enabled: !!studio?.id,
+  // Fetch analytics
+  const { data: analytics, isLoading: analyticsLoading } = useQuery({
+    queryKey: ["/api/samfox-studio/analytics"],
   });
 
-  // Initialize SamFox Studio mutation
-  const initializeMutation = useMutation({
-    mutationFn: async () => {
-      return await apiRequest("POST", "/api/samfox-studio/initialize", {});
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/samfox-studio"] });
-      toast({ description: "SamFox Studio initialized successfully! ✨" });
-    },
-    onError: (error: Error) => {
-      toast({ 
-        variant: "destructive",
-        description: `Failed to initialize: ${error.message}` 
-      });
-    },
+  // Fetch vault trails
+  const { data: vaultTrails = [], isLoading: vaultTrailsLoading } = useQuery({
+    queryKey: ["/api/samfox-studio/vault-trails"],
   });
 
-  // Vault sync mutation
-  const syncMutation = useMutation({
-    mutationFn: async () => {
-      if (!studio?.id) throw new Error("Studio not found");
-      return await apiRequest("POST", `/api/samfox-studio/${studio.id}/sync`, {});
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/samfox-studio"] });
-      toast({ description: "Vault sync completed successfully! 🔄" });
-    },
-    onError: (error: Error) => {
-      toast({ 
-        variant: "destructive",
-        description: `Sync failed: ${error.message}` 
-      });
-    },
-  });
-
-  // 9-second pulse sync effect
-  useEffect(() => {
-    if (studio?.syncRate && studio.vaultLink) {
-      const interval = setInterval(() => {
-        if (studio.id) {
-          // Silent sync in background
-          syncMutation.mutate();
-        }
-      }, studio.syncRate * 1000);
-      
-      setPulseInterval(interval);
-      
-      return () => {
-        if (interval) clearInterval(interval);
-      };
-    }
-  }, [studio]);
-
-  if (studioLoading) {
-    return (
-      <div className="p-6">
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-            <p className="text-muted-foreground">Loading SamFox Studio Platform...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!studio) {
-    return (
-      <div className="p-6">
-        <div className="text-center py-12">
-          <div className="mb-6">
-            <div className="text-6xl mb-4">🦁</div>
-            <h2 className="text-2xl font-bold text-foreground mb-2">SamFox Studio™</h2>
-            <p className="text-muted-foreground mb-6">
-              Global Master License | Copyright Protected | Treaty-Bound Collaboration
-            </p>
-          </div>
-          
-          <Card className="max-w-md mx-auto bg-gradient-to-br from-indigo-800 to-gray-900 text-white">
-            <CardHeader>
-              <CardTitle className="text-xl">🌍 Initialize SamFox Studio</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-indigo-300 mb-4">
-                One of a kind • Treaty-Bound • Global License
-              </p>
-              <Button 
-                onClick={() => initializeMutation.mutate()}
-                disabled={initializeMutation.isPending}
-                className="w-full"
-                data-testid="button-initialize-samfox"
-              >
-                {initializeMutation.isPending ? (
-                  <>
-                    <i className="fas fa-spinner fa-spin mr-2"></i>
-                    Initializing...
-                  </>
-                ) : (
-                  <>
-                    <i className="fas fa-magic mr-2"></i>
-                    Initialize Platform
-                  </>
-                )}
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="p-6">
@@ -807,44 +692,34 @@ export default function SamFoxStudioPlatform() {
               <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-white text-xl font-bold">
                 🦁
               </div>
-              {studio.vaultLink && (
-                <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full animate-pulse border-2 border-white"></div>
-              )}
+              <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full animate-pulse border-2 border-white"></div>
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-foreground">{studio.brandName}</h1>
+              <h1 className="text-2xl font-bold text-foreground">SamFox Studio™</h1>
               <div className="flex items-center space-x-2">
                 <Badge variant="secondary" className="text-xs">
-                  {studio.treatyClass}
+                  Global Master Division
                 </Badge>
-                <Badge variant={studio.copyrightActive ? "default" : "outline"} className="text-xs">
-                  ✨ {studio.faaClassTag || "FAA-CLASS-BRND-321/SFS"}
+                <Badge variant="default" className="text-xs">
+                  ✨ FAA-CLASS-BRND-321/SFS
                 </Badge>
               </div>
             </div>
           </div>
           
           <div className="flex items-center space-x-2">
-            <Badge variant={studio.globalStatus === "Open for Business" ? "default" : "secondary"}>
-              {studio.globalStatus}
+            <Badge variant="default">
+              Open for Business
             </Badge>
-            <Button 
-              onClick={() => syncMutation.mutate()}
-              disabled={syncMutation.isPending}
-              size="sm"
-              data-testid="button-vault-sync"
-            >
-              {syncMutation.isPending ? (
-                <i className="fas fa-spinner fa-spin mr-2"></i>
-              ) : (
-                <i className="fas fa-sync mr-2"></i>
-              )}
-              Vault Sync
-            </Button>
+            {analytics && (
+              <div className="text-sm text-muted-foreground">
+                {analytics.totalLicenses} Licenses • {analytics.activeTreaties} Treaties • {analytics.totalAssets} Assets
+              </div>
+            )}
           </div>
         </div>
         
-        <p className="text-muted-foreground">{studio.claimStatement}</p>
+        <p className="text-muted-foreground">Global Master License | Copyright Protected | Treaty-Bound Collaboration</p>
         
         {/* Pulse Status */}
         <div className="mt-4 p-3 bg-card rounded-lg border">
@@ -852,11 +727,11 @@ export default function SamFoxStudioPlatform() {
             <div className="flex items-center space-x-2">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
               <span className="text-sm text-muted-foreground">
-                Pulse Timer: {studio.syncRate}s | Vault Link: {studio.vaultLink ? "Active" : "Inactive"}
+                Pulse Timer: 9s | Vault Link: Active
               </span>
             </div>
             <div className="text-sm text-muted-foreground">
-              Signatory: {studio.signatory}
+              FAA OmniDrop Memory Feed
             </div>
           </div>
         </div>
@@ -880,7 +755,7 @@ export default function SamFoxStudioPlatform() {
                 <CardTitle className="text-sm font-medium">Workspaces</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stats?.totalWorkspaces || 0}</div>
+                <div className="text-2xl font-bold">{analytics?.activeWorkspaces || 0}</div>
                 <p className="text-xs text-muted-foreground">Active collaboration spaces</p>
               </CardContent>
             </Card>
@@ -890,7 +765,7 @@ export default function SamFoxStudioPlatform() {
                 <CardTitle className="text-sm font-medium">Master Licenses</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stats?.totalLicenses || 0}</div>
+                <div className="text-2xl font-bold">{analytics?.totalLicenses || 0}</div>
                 <p className="text-xs text-muted-foreground">Global licensing agreements</p>
               </CardContent>
             </Card>
@@ -900,7 +775,7 @@ export default function SamFoxStudioPlatform() {
                 <CardTitle className="text-sm font-medium">Treaty Files</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stats?.totalFiles || 0}</div>
+                <div className="text-2xl font-bold">{analytics?.totalAssets || 0}</div>
                 <p className="text-xs text-muted-foreground">Protected documents</p>
               </CardContent>
             </Card>
