@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Central Portal | Seedwave™ powered by Fruitful Global</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- PayPal SDK script will now be loaded dynamically -->
+    <link rel="stylesheet" href="./css/styles.css">
+    <script src="./js/script.js" defer></script>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2 class="logo-text">Fruitful™ | <span>PortalNest™</span></h2>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+                <i class="fas fa-sun"></i> <!-- Default to sun icon for dark mode -->
+            </button>
+        </div>
+        <nav class="nav-list">
+            <!-- Updated sidebar links for internal routing -->
+            <a href="javascript:void(0);" onclick="showSection('portalHomeSection')" data-section-id="portalHomeSection" class="active">
+                <i class="fas fa-home nav-icon"></i> Portal Home
+            </a>
+            <a href="javascript:void(0);" onclick="showSection('aboutCentralPortalSection')" data-section-id="aboutCentralPortalSection">
+                <i class="fas fa-info-circle nav-icon"></i> About Central Portal
+            </a>
+            <a href="javascript:void(0);" onclick="showSection('internsSection')" data-section-id="internsSection">
+                <i class="fas fa-user-graduate nav-icon"></i> Interns
+            </a>
+            <a href="javascript:void(0);" onclick="showSection('projectSetupSection')" data-section-id="projectSetupSection">
+                <i class="fas fa-cogs nav-icon"></i> Project Setup
+            </a>
+            <a href="javascript:void(0);" onclick="showSection('backendDevSection')" data-section-id="backendDevSection">
+                <i class="fas fa-server nav-icon"></i> Backend Dev
+            </a>
+            <a href="javascript:void(0);" onclick="showSection('frontendRefactorSection')" data-section-id="frontendRefactorSection">
+                <i class="fas fa-code nav-icon"></i> Frontend Refactor
+            </a>
+            <a href="javascript:void(0);" onclick="showSection('dataAccessSection')" data-section-id="dataAccessSection">
+                <i class="fas fa-database nav-icon"></i> Data & User Access
+            </a>
+            <a href="javascript:void(0);" onclick="showSection('deploymentStrategySection')" data-section-id="deploymentStrategySection">
+                <i class="fas fa-cloud-upload-alt nav-icon"></i> Deployment
+            </a>
+            <a href="javascript:void(0);" onclick="showSection('globalFooterTemplateSection')" data-section-id="globalFooterTemplateSection">
+                <i class="fas fa-code-branch nav-icon"></i> Global Footer
+            </a>
+            <!-- New sidebar button for Global Payment Template -->
+            <a href="javascript:void(0);" onclick="showSection('globalPaymentTemplateSection')" data-section-id="globalPaymentTemplateSection">
+                <i class="fas fa-wallet nav-icon"></i> Global Payment
+            </a>
+            <!-- New sidebar button for FAA.zone Live Demo Dashboard -->
+            <a href="javascript:void(0);" onclick="showSection('faaDemoDashboardSection')" data-section-id="faaDemoDashboardSection">
+                <i class="fas fa-tachometer-alt nav-icon"></i> FAA.zone Demo
+            </a>
+            <!-- New sidebar button for Interns Admin Portal -->
+            <a href="javascript:void(0);" onclick="showSection('internsAdminPortalSection')" data-section-id="internsAdminPortalSection">
+                <i class="fas fa-user-shield nav-icon"></i> Interns Admin Portal
+            </a>
+            <!-- New sidebar button for Legal Index -->
+            <a href="javascript:void(0);" onclick="showSection('legalIndexSection')" data-section-id="legalIndexSection">
+                <i class="fas fa-gavel nav-icon"></i> Legal Index
+            </a>
+        </nav>
+        <div class="mt-auto text-center text-xs text-gray-500 pt-4 border-t border-gray-700">
+            <!-- User ID display removed for static version -->
+        </div>
+    </aside>
+
+    <div class="right-content-wrapper">
+        <main class="main-content">
+            <!-- 1. Portal Home Section -->
+            <div id="portalHomeSection" class="content-section active">
+                <div class="panel">
+                    <h1>Welcome to the <br> Central Portal | <span>Seedwave™</span></h1> 
+                    <p>This is your unified gateway to the entire Seedwave™ ecosystem by Fruitful Global. Discover and access all applications, services, and content in one place.</p>
+                    
+                    <!-- Improved Search Bar -->
+                    <div class="search-input-group">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="searchPortal" placeholder="Search sectors or domains..." class="flex-grow">
+                    </div>
+
+                    <h3 class="text-xl font-bold mb-4 text-red-400">Explore All Offerings:</h3>
+                    <div id="portalItemsContainer" class="space-y-3 text-left">
+                        <p class="text-center text-gray-400 col-span-full">Loading portal items...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. About Central Portal Section -->
+            <div id="aboutCentralPortalSection" class="content-section">
+                <div class="panel">
+                    <h1>About the <br> Central Portal | <span>Seedwave™</span></h1>
+                    <p class="mb-6">The Central Portal serves as the foundational cornerstone of the entire Fruitful Global ecosystem, specifically designed to unify and streamline access to the vast array of innovations, services, and collaborative opportunities within the Seedwave™ and FAA.Zone initiatives. It is not merely a website, but a dynamic, intelligent gateway meticulously crafted to enhance user experience and foster seamless interaction across our diverse digital landscape.</p>
+
+                    <h3 class="text-xl font-bold mb-4 text-red-400">Core Purpose & Vision:</h3>
+                    <div class="info-section">
+                        <div class="info-card col-span-full">
+                            <span class="emoji-large">🌟</span>
+                            <h4>Unified Gateway & Streamlined Access</h4>
+                            <p>Our core purpose is to eliminate fragmentation, offering a single, intuitive point of entry for all stakeholders. This intelligent gateway enhances user experience by fostering seamless interaction across our diverse digital landscape.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-bold mb-4 text-red-400">Key Features & Aggregated Content:</h3>
+                    <div class="info-section">
+                        <div class="info-card">
+                            <i class="fas fa-sitemap icon"></i>
+                            <h4>Sector & Domain Listings</h4>
+                            <p>A meticulously organized directory of all Seedwave™ sectors and top-level domains, providing direct access and relevant details.</p>
+                        </div>
+                        <div class="info-card">
+                            <i class="fas fa-cubes icon"></i>
+                            <h4>Application & Service Directory</h4>
+                            <p>A searchable catalog of all applications, tools, and services developed within the Fruitful Global framework for quick discovery.</p>
+                        </div>
+                        <div class="info-card">
+                            <i class="fas fa-users-cog icon"></i>
+                            <h4>User Management & Personalization</h4>
+                            <p>Centralized authentication and profile control, allowing users to manage preferences and access rights across integrated platforms.</p>
+                        </div>
+                        <div class="info-card">
+                            <i class="fas fa-bullhorn icon"></i>
+                            <h4>Real-time Announcements & News</h4>
+                            <p>Dedicated section for critical updates, system announcements, new features, and industry news across the ecosystem.</p>
+                        </div>
+                        <div class="info-card">
+                            <i class="fas fa-book-open icon"></i>
+                            <h4>Centralized Resource Hub</h4>
+                            <p>Direct links to essential documentation, FAQs, API references, whitepapers, and educational materials for comprehensive knowledge.</p>
+                        </div>
+                        <div class="info-card">
+                            <i class="fas fa-headset icon"></i>
+                            <h4>Integrated Support & Community</h4>
+                            <p>Access to support channels, ticketing systems, and discussion forums to foster collaboration and peer-to-peer assistance.</p>
+                        </div>
+                        <div class="info-card">
+                            <i class="fas fa-handshake icon"></i>
+                            <h4>Partnership & Collaboration</h4>
+                            <p>Information and pathways for potential partners, investors, and collaborators to engage with Fruitful Global initiatives.</p>
+                        </div >
+                        <div class="info-card">
+                            <i class="fas fa-calendar-alt icon"></i>
+                            <h4>Event Calendars & Webinars</h4>
+                            <p>Consolidated view of upcoming events, webinars, workshops, and conferences related to Seedwave™ sectors and technologies.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-bold mb-4 text-red-400">Benefits to Our Users:</h3>
+                    <div class="info-section">
+                        <div class="info-card">
+                            <span class="emoji-large">🔍</span>
+                            <h4>Streamlined Discovery</h4>
+                            <p>Effortlessly find and explore our vast offerings without navigating disparate websites or complex directories.</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">⚡</span>
+                            <h4>Simplified Access</h4>
+                            <p>A single sign-on experience and consolidated access points reduce friction and enhance convenience.</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">⚙️</span>
+                            <h4>Centralized Management</h4>
+                            <p>Manage all interactions, settings, and subscriptions from one intuitive interface.</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">✨</span>
+                            <h4>Enhanced User Experience</h4>
+                            <p>Enjoy a consistent, branded, and user-friendly interface across the entire ecosystem.</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">📣</span>
+                            <h4>Improved Information Flow</h4>
+                            <p>Critical updates and resources are readily available, ensuring you're always up-to-date.</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">🤝</span>
+                            <h4>Fostering Collaboration</h4>
+                            <p>By bringing all elements under one roof, the portal inherently encourages cross-sector innovation.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Interns Section -->
+            <div id="internsSection" class="content-section">
+                <div class="panel">
+                    <h1>Interns Program | <span>Fruitful Global</span></h1>
+                    <p class="mb-6">Welcome to the dedicated section for the Fruitful Global Interns Program. This program is designed to cultivate the next generation of tech leaders and innovators.</p>
+
+                    <h3 class="text-xl font-bold mb-4 text-red-400">What You'll Experience:</h3>
+                    <div class="info-section">
+                        <div class="info-card">
+                            <span class="emoji-large">💻</span>
+                            <h4>Hands-on Projects</h4>
+                            <p>Engage directly with live projects, contributing to real-world solutions and seeing your code come to life within the Seedwave™ ecosystem.</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">🧠</span>
+                            <h4>Mentorship & Learning</h4>
+                            <p>Learn from experienced developers and industry experts. Benefit from structured learning paths, workshops, and continuous feedback to sharpen your skills.</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">🌐</span>
+                            <h4>Global Collaboration</h4>
+                            <p>Work with diverse teams across different sectors, gaining exposure to a wide range of technologies and collaborative methodologies.</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">🌱</span>
+                            <h4>Career Growth</h4>
+                            <p>This internship is a stepping stone to a successful career. Develop a strong professional network and explore potential full-time opportunities within Fruitful Global.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-bold mb-4 text-red-400">We Think Code: A Valued Sub-Division</h3>
+                    <div class="info-section">
+                        <div class="info-card col-span-full">
+                            <span class="emoji-large">🤝</span>
+                            <h4>Seamless Integration for "We Think Code" Interns</h4>
+                            <p>A special welcome to our talented interns from "We Think Code"! Your curriculum and training are highly valued. We provide a supportive environment to transition your academic knowledge into practical industry experience within Fruitful Global's innovative projects.</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">🛠️</span>
+                            <h4>Dedicated Tools & Resources</h4>
+                            <p>As a "We Think Code" intern, you'll have access to cutting-edge development tools, internal documentation, and dedicated support channels to ensure your success in our projects.</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">💡</span>
+                            <h4>Impactful Contributions</h4>
+                            <p>Your fresh perspectives and problem-solving skills are crucial. You'll work on projects that directly impact our innovations and contribute significantly to the growth of the FAA.Zone™.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-bold mb-4 text-red-400">Our Expectations from You:</h3>
+                    <div class="info-section">
+                        <div class="info-card">
+                            <span class="emoji-large">🎯</span>
+                            <h4>Align with Our Vision</h4>
+                            <p>Understand and embrace the core vision of Fruitful Global and the Seedwave™ ecosystem. Your work should contribute directly to our mission of innovation and positive global impact.</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">📚</span>
+                            <h4>Proactive Learning & Growth</h4>
+                            <p>Continuously seek knowledge and new skills. Be proactive in learning our technologies, methodologies, and best practices. Your growth is key to our collective success.</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">🗣️</span>
+                            <h4>Clear & Concise Communication</h4>
+                            <p>Communicate effectively and transparently. Clearly articulate your ideas, progress, challenges, and solutions, both verbally and in writing.</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">🧩</span>
+                            <h4>Problem-Solving Mindset</h4>
+                            <p>Approach challenges with a solutions-oriented mindset. Be resourceful, think critically, and actively participate in finding innovative answers to complex problems.</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">🤝</span>
+                            <h4>Collaborative Spirit</h4>
+                            <p>Actively engage with your team members and other departments. Share knowledge, provide constructive feedback, and contribute positively to our collaborative environment.</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">✨</span>
+                            <h4>Quality & Impactful Contributions</h4>
+                            <p>Strive for excellence in every task. Deliver high-quality work that is well-tested, efficient, and directly contributes to the success and advancement of our projects.</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">⏰</span>
+                            <h4>Time Management & Accountability</h4>
+                            <p>Manage your time effectively, meet deadlines, and take ownership of your tasks. Be accountable for your contributions and progress.</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">🛡️</span>
+                            <h4>Security & Ethical Conduct</h4>
+                            <p>Adhere to all security protocols and maintain the highest ethical standards. Protect sensitive information and uphold the integrity of our systems and data.</p>
+                        </div>
+                    </div>
+                    <p class="mt-6">For more detailed information, resources, and specific project assignments, "We Think Code" interns should refer to their onboarding materials and the dedicated Interns portal.</p>
+                </div>
+            </div>
+
+            <!-- New Section: Project Setup -->
+            <div id="projectSetupSection" class="content-section">
+                <div class="panel">
+                    <h1>Project Setup | <span>Fruitful Global Dynamic Portal</span></h1>
+                    <p class="mb-6">This section outlines the foundational steps for establishing the project environment and organizing files, crucial for a scalable and maintainable ecosystem.</p>
+
+                    <h3 class="text-xl font-bold mb-4 text-red-400">I. Core Project Setup & File Organization:</h3>
+                    <div class="info-section">
+                        <div class="info-card col-span-full">
+                            <span class="emoji-large">📂</span>
+                            <h4>Standardized Project Structure</h4>
+                            <p>Establish a <span class="vip-text">consistent and logical directory structure</span> to ensure <span class="vip-text">maintainability, scalability, and ease of collaboration</span> across the entire project.</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">🏠</span>
+                            <h4>Root Directory (`/`)</h4>
+                            <p>Includes <span class="vip-text">`index.html` (main entry point for the "Fruitful Global™ | Sector Index")</span> and <span class="vip-text">`index.menu.html` (NEW FILE: the top-level menu page for `index.menu.seedwave.faa.zone/index.html`)</span>.</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">📝</span>
+                            <h4>JavaScript (`js/`)</h4>
+                            <p>Separate <span class="vip-text">`global_js_definitions.js`</span> (for <span class="vip-text">`window.API_KEYS`, `window.allSectorConfigs` (initially hardcoded, later fetched), `window.fetchProductDetails`, `productDetailsMap`, `featuresDeepDiveData`, `integrationCapabilitiesData`, `useCasesData`, `techSpecsData`, `securityComplianceData`, `customerSuccessStories`, `supportTrainingData`, `faqData`, and `pricingOverviewContent`</span>) and <span class="vip-text">`script.js`</span> (for <span class="vip-text">all other dynamic JavaScript logic: theme/language toggles, section rendering, AI calls, canvas animations, form handlers</span>).</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">🎨</span>
+                            <h4>CSS (`css/`)</h4>
+                            <p><span class="vip-text">Centralized `style.css`</span> for all global CSS rules, including <span class="vip-text">`:root` CSS variables</span> and all styling from the provided HTML templates.</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">🖼️</span>
+                            <h4>Public Assets (`public/`)</h4>
+                            <p>Contains <span class="vip-text">`favicon.ico`</span> and <span class="vip-text">`assets/images/`</span> (for <span class="vip-text">all product images, brand images, and other visual assets referenced in data</span>, e.g., `networkflow-product.jpg`, `predictdisrupt-product.jpg`).</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">🗂️</span>
+                            <h4>Sectors (`sectors/`)</h4>
+                            <p>Contains <span class="vip-text">subdirectories for each sector</span> (e.g., `fruitful-global/`, `agriculture/`, `banimal-sector/`, `ai-logic-grid/`). Each sector folder will contain its <span class="vip-text">specific static HTML files for terminals</span> (e.g., `vault-master.html`, `cube-lattice.html`), and any other unique static assets.</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">⚖️</span>
+                            <h4>Legal Documents (`legal/`)</h4>
+                            <p>Contains <span class="vip-text">static HTML or PDF files</span> for legal documents and manuals.</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">🐍</span>
+                            <h4>Backend (`my_flask_app/`)</h4>
+                            <p>Dedicated directory for the <span class="vip-text">Flask application (`app.py`)</span> and <span class="vip-text">Jinja2 templates (`templates/`)</span>, including <span class="vip-text">`base.html.jinja` (master layout)</span>, <span class="vip-text">`menu_index.html.jinja` (for `index.menu.html`)</span>, <span class="vip-text">`sector_template.html.jinja` (main template for dynamic sector pages)</span>, and <span class="vip-text">`_pages/` (sub-templates for specific page types)</span>. Also, <span class="vip-text">`sectors_data.json` (initial/mock JSON for sector configurations)</span>.</p>
+                        </div>
+                        <div class="info-card col-span-full">
+                            <span class="emoji-large">🧹</span>
+                            <h4>Clean Up `index.html` (Main Entry Point)</h4>
+                            <p>This file will now be the `global_sector_template.html` you provided, but with its <span class="vip-text">CSS and JS extracted to external files</span>. It will <span class="vip-text">dynamically load content for specific sectors</span>.</p>
+                        </div>
+                        <div class="info-card col-span-full">
+                            <span class="emoji-large">🆕</span>
+                            <h4>NEW: `index.menu.html` (Top-Level Menu Index)</h4>
+                            <p>This page will serve as the <span class="vip-text">initial landing page for `index.menu.seedwave.faa.zone`</span>. It should contain a <span class="vip-text">simpler navigation</span>, listing main sectors and <span class="vip-text">linking to `index.html?sector=<sector_id>`</span>. It must have the <span class="vip-text">consistent header, footer, language toggle, and theme toggle</span>.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Section: Backend Development -->
+            <div id="backendDevSection" class="content-section">
+                <div class="panel">
+                    <h1>Backend Development | <span>Python Flask</span></h1>
+                    <p class="mb-6">This section details the backend architecture using Python Flask, focusing on data centralization and robust API implementations.</p>
+
+                    <h3 class="text-xl font-bold mb-4 text-red-400">II. Backend Development (Python Flask - my_flask_app/app.py):</h3>
+                    <div class="info-section">
+                        <div class="info-card col-span-full">
+                            <span class="emoji-large">🗄️</span>
+                            <h4>Centralize All Data in a Database</h4>
+                            <p><strong><span class="vip-text">Migrate all `window.allSectorConfigs`, product details, features, etc., into a central backend database</span></strong> like <span class="vip-text">Firebase Firestore or PostgreSQL</span> for <span class="vip-text">dynamic management</span>. Also, <span class="vip-text">store all repository data and legal document data in dedicated collections</span> within this database.</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">🔌</span>
+                            <h4>Implement Backend APIs</h4>
+                            <div class="api-list">
+                                <div class="api-item">
+                                    <span class="api-endpoint">GET <code>/api/sector-configs</code></span>
+                                    <p class="api-description"><strong><span class="vip-text">Serves the entire `allSectorConfigs` JSON</span></strong>, providing configurations for all sectors and domains.</p>
+                                </div>
+                                <div class="api-item">
+                                    <span class="api-endpoint">GET <code>/api/sectors/&lt;sector_id&gt;/&lt;page_name&gt;</code></span>
+                                    <p class="api-description"><strong><span class="vip-text">Renders and serves dynamic HTML content</span></strong> for a specific sector's page (e.g., `agriculture/products.html`), <strong><span class="vip-text">dynamically populating it with data from the database</span></strong>.</p>
+                                </div>
+                                <div class="api-item">
+                                    <span class="api-endpoint">GET <code>/api/repositories</code></span>
+                                    <p class="api-description"><strong><span class="vip-text">Serves a list of all code repositories</span></strong> from the database.</p>
+                                </div>
+                                <div class="api-item">
+                                    <span class="api-endpoint">POST <code>/api/repositories</code></span>
+                                    <p class="api-description"><strong><span class="vip-text">Handles adding new repositories</span></strong> to the database.</p>
+                                </div>
+                                <div class="api-item">
+                                    <span class="api-endpoint">GET <code>/api/legal-documents</code></span>
+                                    <p class="api-description"><strong><span class="vip-text">Serves a list of all legal documents</span></strong> from the database.</p>
+                                </div>
+                                <div class="api-item">
+                                    <span class="api-endpoint">POST <code>/api/legal-documents</code></span>
+                                    <p class="api-description"><strong><span class="vip-text">Handles adding new legal documents</span></strong> to the database.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">💰</span>
+                            <h4>PayPal API Service</h4>
+                            <div class="api-list">
+                                <div class="api-item">
+                                    <span class="api-endpoint">POST <code>/api/paypal/create-product</code></span>
+                                    <p class="api-description"><strong><span class="vip-text">Dynamically creates new PayPal Products</span></strong>.</p>
+                                </div>
+                                <div class="api-item">
+                                    <span class="api-endpoint">POST <code>/api/paypal/create-plan</code></span>
+                                    <p class="api-description"><strong><span class="vip-text">Automatically creates PayPal Plans (monthly/annual tiers)</span></strong> for each product/service, <strong><span class="vip-text">storing the `plan_id` and `hosted_button_id` in your database</span></strong>.</p>
+                                </div>
+                                <div class="api-item">
+                                    <span class="api-endpoint">POST <code>/api/paypal/create-subscription</code></span>
+                                    <p class="api-description"><strong><span class="vip-text">Initiates PayPal subscriptions</span></strong>.</p>
+                                </div>
+                                <div class="api-item">
+                                    <span class="api-endpoint">POST <code>/api/paypal/webhook</code></span>
+                                    <p class="api-description"><strong><span class="vip-text">Receives and processes PayPal webhook notifications</span></strong> to update internal user subscription statuses.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info-card col-span-full">
+                            <span class="emoji-large">⚙️</span>
+                            <h4>Jinja2 Templates (Backend)</h4>
+                            <p><strong><span class="vip-text">Create `my_flask_app/templates/base.html.jinja`</span></strong> (the master layout for all pages). <strong><span class="vip-text">Create `my_flask_app/templates/menu_index.html.jinja`</span></strong> (for `index.menu.html`). <strong><span class="vip-text">Create `my_flask_app/templates/sector_template.html.jinja`</span></strong> (the main template for dynamic sector pages). Create <span class="vip-text">sub-templates in `my_flask_app/templates/_pages/`</span> for each page type (e.g., `products.html.jinja`, `dashboard.html.jinja`).</p>
+                        </div>
+                        <div class="info-card col-span-full">
+                            <span class="emoji-large">🛣️</span>
+                            <h4>Flask Routes</h4>
+                            <p><strong><span class="vip-text">Implement the `/api/sector-configs` endpoint</span></strong>. <strong><span class="vip-text">Implement the top-level menu route (`@app.route('/index.menu.html')`)</span></strong>. <strong><span class="vip-text">Implement the `/sectors/<sector_id>` route</span></strong> to render `sector_template.html.jinja`. <strong><span class="vip-text">Implement routes for specific brand pages</span></strong> (e.g., `/sectors/<sector_id>/<brand_slug>/<page_name>`).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Section: Frontend Refactoring -->
+            <div id="frontendRefactorSection" class="content-section">
+                <div class="panel">
+                    <h1>Frontend Refactoring & Interactivity</h1>
+                    <p class="mb-6">This section outlines the transformation of the frontend for enhanced interactivity, dynamic content rendering, and a seamless user experience.</p>
+
+                    <h3 class="text-xl font-bold mb-4 text-red-400">III. Frontend Refactoring & Interactivity:</h3>
+                    <div class="info-section">
+                        <div class="info-card col-span-full">
+                            <span class="emoji-large">🎨</span>
+                            <h4>CSS (`css/style.css`)</h4>
+                            <p><strong><span class="vip-text">Copy all CSS rules from the provided HTML template's `&lt;style&gt;` block into this new file</span></strong>. Ensure all <span class="vip-text">`:root` CSS variables are correctly defined here</span>.</p>
+                        </div>
+                        <div class="info-card col-span-full">
+                            <span class="emoji-large">📝</span>
+                            <h4>JavaScript (`js/global_js_definitions.js`)</h4>
+                            <p><strong><span class="vip-text">Copy the entire `window.API_KEYS` object</span></strong>. <strong><span class="vip-text">Copy the entire `window.allSectorConfigs` object</span></strong> (initially hardcoded, later fetched). <strong><span class="vip-text">Copy `window.fetchProductDetails` function and its helpers</span></strong>. <strong><span class="vip-text">Copy `productDetailsMap`, `featuresDeepDiveData`, `integrationCapabilitiesData`, `useCasesData`, `techSpecsData`, `securityComplianceData`, `customerSuccessStories`, `supportTrainingData`, `faqData`, and `pricingOverviewContent`</span></strong> into this file (defined globally or within `window.allSectorConfigs`).</p>
+                        </div>
+                        <div class="info-card col-span-full">
+                            <span class="emoji-large">💡</span>
+                            <h4>JavaScript Logic (`js/script.js`)</h4>
+                            <p><strong><span class="vip-text">Copy all remaining JavaScript functions</span></strong> from the provided HTML template. <strong><span class="vip-text">Crucially, remove all inline `onclick="..."` attributes from HTML</span></strong>. In `script.js`, within `DOMContentLoaded`, <strong><span class="vip-text">use `document.querySelectorAll` and `addEventListener` to attach event handlers</span></strong>. For dynamically generated content, <span class="vip-text">attach a single event listener to their parent container and use `event.target.closest()`</span>. For initial load of `index.html`, <span class="vip-text">get `initialSectorId` from URL or default, call `switchSector(initialSectorId)`, `updateSharePrice()`, and `showMainSection('hero-section')`</span>.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Section: Data Synchronization & User Access -->
+            <div id="dataAccessSection" class="content-section">
+                <div class="panel">
+                    <h1>Data Synchronization & User Access</h1>
+                    <p class="mb-6">This section focuses on real-time data display and secure, authentication-driven access control for users across the platform.</p>
+
+                    <h3 class="text-xl font-bold mb-4 text-red-400">IV. Data Synchronization & User Access:</h3>
+                    <div class="info-section">
+                        <div class="info-card col-span-full">
+                            <span class="emoji-large">🗄️</span>
+                            <h4>Database Integration</h4>
+                            <p>The `html-page-generator.py` script will be <span class="vip-text">updated to fetch data from a real database (e.g., Firestore)</span> instead of static JSON, ensuring <span class="vip-text">generated static pages reflect live data</span>.</p>
+                        </div>
+                        <div class="info-card col-span-full">
+                            <span class="emoji-large">🔄</span>
+                            <h4>Firebase for Live Repository/Legal</h4>
+                            <p>The `legal/index.html` (rendered by Flask as a Jinja2 template) will <span class="vip-text">continue to use client-side Firebase `onSnapshot` listeners</span> to display <span class="vip-text">real-time lists of code repositories and legal documents</span>. The "Add New Repository" and "Add New Legal Document" forms will <span class="vip-text">send data to Firebase Firestore</span>.</p>
+                        </div>
+                        <div class="info-card col-span-full">
+                            <span class="emoji-large">🔒</span>
+                            <h4>Authentication-Driven Access (RBAC)</h4>
+                            <p><strong><span class="vip-text">Backend RBAC (Role-Based Access Control) will verify user permissions</span></strong> based on their purchased PayPal plans/packages. The frontend will <span class="vip-text">dynamically adjust UI elements</span> (e.g., hide/show navigation links, enable/disable buttons) based on the user's authenticated status and entitlements. Crucially, ensure that <span class="vip-text">successful sign-up/login activates the user's purchased sector access</span>, allowing them to view their specific sector dashboard and content.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Section: Deployment Strategy -->
+            <div id="deploymentStrategySection" class="content-section">
+                <div class="panel">
+                    <h1>Deployment Strategy | <span>Vercel</span></h1>
+                    <p class="mb-6">This section outlines the deployment approach using Vercel, ensuring efficient hosting, serverless functions, and robust routing for the dynamic portal.</p>
+
+                    <h3 class="text-xl font-bold mb-4 text-red-400">V. Deployment Strategy (vercel.json):</h3>
+                    <div class="info-section">
+                        <div class="info-card col-span-full">
+                            <span class="emoji-large">🚀</span>
+                            <h4>Vercel Configuration (`vercel.json`)</h4>
+                            <p><strong><span class="vip-text">Configure `vercel.json` to build and deploy the Python Flask application as serverless functions</span></strong>. Also, <strong><span class="vip-text">serve all generated static HTML files (from `generated_pages/`) as static assets via Vercel's CDN</span></strong>.</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">🛣️</span>
+                            <h4>Routing Rules</h4>
+                            <p><strong><span class="vip-text">Define routing rules to direct requests</span></strong> (e.g., `/`, `/index.menu.html`, `/sectors/<sector_id>`, `/legal/index.html`, `/api/*`) to the correct Flask functions or static files.</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">🔐</span>
+                            <h4>Environment Variables</h4>
+                            <p><strong><span class="vip-text">Set up all necessary Vercel Environment Variables</span></strong> for sensitive API keys (Firebase, PayPal, Gemini, Xero) to ensure secure deployment.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Section: Global Footer Template -->
+            <div id="globalFooterTemplateSection" class="content-section">
+                <div class="panel">
+                    <h1>Global Footer Template | <span>Mandatory for Every Page</span></h1>
+                    <p class="mb-6">This section provides the complete, standardized HTML template for the global footer. It is **CRUCIAL** that this exact code, including all comments and attributes, is integrated into **EVERY SINGLE PAGE** within the FAA.Zone™ ecosystem. This ensures strict consistency, legal compliance, and branding integrity across all sectors, brands, and subnodes.</p>
+                    <p class="mb-6">**Founder's Directive:** <span class="vip-text">NO CHANGES ALLOWED TO THIS GLOBAL FOOTER TEMPLATE.</span></p>
+
+                    <h3 class="text-xl font-bold mb-4 text-red-400">Global Footer HTML:</h3>
+                    <div class="code-block-container">
+                        <button class="copy-button" onclick="window.copyToClipboard(this)">Copy Code</button>
+                        <pre id="globalFooterCodeBlock">
+&lt;!--
+    FOUNDER'S DIRECTIVE: NO CHANGES ALLOWED TO THIS GLOBAL FOOTER TEMPLATE.
+
+    Global Footer Repository: The Legal Standard
+    The global footer, including all mandatory legal and ecosystem links, is managed from a single, dedicated repository. This ensures strict consistency, legal compliance, and branding integrity across every single page, brand, and subnode within the FAA.Zone™.
+
+    Conceptual `footer-global-repo` Structure:
+    /footer-global-repo/
+    ├── src/
+    │   ├── components/
+    │   │   └── GlobalFooter.js   # Reusable footer component
+    │   └── styles/
+    │       └── footer.css        # Styling for the footer
+    ├── public/
+    │   ├── privacy.html          # Content for /privacy route
+    │   ├── terms.html            # Content for /terms route
+    │   ├── contact.html          # Content for /contact route
+    │   ├── copyright.html        # Content for /copyright route
+    │   ├── developers.html       # Content for /developers route
+    │   ├── vaultmesh.html        # Content for /vaultmesh route
+    │   ├── fruitful.html         # Content for /fruitful route
+    │   ├── faa.zone.html         # Content for /faa.zone route
+    │   ├── about.html            # Content for /about route
+    │   └── accessibility.html    # Content for /accessibility route
+    └── package.json              # Build scripts for global deployment
+
+    This repository is automatically integrated into every sector's build process, ensuring all sites adhere to the global footer mandate.
+--&gt;
+&lt;footer class="py-8 px-6 md:px-12 text-center bg-f5f5f7 text-gray-600 border-t border-e8e8ed dark:bg-1a1a1a dark:text-gray-400 dark:border-333"&gt;
+    &lt;div class="flex flex-wrap justify-center mb-4 text-sm"&gt;
+        &lt;a href="https://footer.global.repo.seedwave.faa.zone/privacy.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerPrivacy"&gt;Privacy&lt;/a&gt;
+        &lt;a href="https://footer.global.repo.seedwave.faa.zone/terms.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerTerms"&gt;Terms&lt;/a&gt;
+        &lt;a href="https://footer.global.repo.seedwave.faa.zone/contact.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerContact"&gt;Contact&lt;/a&gt;
+        &lt;a href="https://footer.global.repo.seedwave.faa.zone/copyright.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerCopyrightLink"&gt;Copyright&lt;/a&gt;
+        &lt;a href="https://footer.global.repo.seedwave.faa.zone/developers.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerDevelopers"&gt;Developers&lt;/a&gt;
+        &lt;a href="https://footer.global.repo.seedwave.faa.zone/vaultmesh.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerVaultMeshLink"&gt;VaultMesh&lt;/a&gt;
+        &lt;a href="https://footer.global.repo.seedwave.faa.zone/fruitful.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerFruitfulLink"&gt;Fruitful&lt;/a&gt;
+        &lt;a href="https://footer.global.repo.seedwave.faa.zone/faa.zone.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerFAAZoneLink"&gt;FAA.Zone&lt;/a&gt;
+        &lt;a href="https://footer.global.repo.seedwave.faa.zone/about.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerAboutLink"&gt;About&lt;/a&gt;
+        &lt;a href="https://footer.global.repo.seedwave.faa.zone/accessibility.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerAccessibility"&gt;Accessibility&lt;/a&gt;
+    &lt;/div&gt;
+    &lt;span data-i18n="footerCopyright"&gt;&amp;copy; 2025 FAA&amp;trade; Treaty System&amp;trade;. All Rights Reserved.&lt;/span&gt; &lt;span data-i18n="footerPoweredBy"&gt;Powered by &amp;#x1F98D; glyphs + Vault API. Synced with Seedwave&amp;trade;.&lt;span&gt;
+&lt;/footer&gt;
+</pre>
+                            </div>
+                        </div>
+                        <div class="info-card col-span-full">
+                            <span class="emoji-large">🐍</span>
+                            <h4>Python Flask Backend Template</h4>
+                            <p>A basic Flask app structure to get your backend services running. Remember to expand on this!</p>
+                            <div class="code-block-container">
+                                <button class="copy-button" onclick="window.copyToClipboard(this)">Copy Code</button>
+                                <pre>
+# my_flask_app/app.py
+from flask import Flask, render_template, jsonify, request
+
+app = Flask(__name__)
+
+# Mock data - replace with database fetching
+SECTOR_CONFIGS = {
+    "agriculture": {"name": "Agriculture & Biotech", "base_url": "heyns1000/agriculture.seedwave.faa.zone"},
+    # ... more sector data
+}
+
+@app.route('/')
+def index():
+    return "Welcome to the Flask Backend!"
+
+@app.route('/api/sector-configs')
+def get_sector_configs():
+    return jsonify(SECTOR_CONFIGS)
+
+@app.route('/sectors/&lt;string:sector_id&gt;')
+def sector_page(sector_id):
+    # In a real app, you'd fetch data for this sector from a DB
+    sector_info = SECTOR_CONFIGS.get(sector_id, {"name": "Unknown Sector"})
+    return render_template('sector_template.html.jinja', sector=sector_info)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+                                </pre>
+                            </div>
+                        </div>
+                        <div class="info-card col-span-full">
+                            <span class="emoji-large">🎨</span>
+                            <h4>Tailwind CSS Setup</h4>
+                            <p>Ensure your HTML includes the Tailwind CDN for rapid styling.</p>
+                            <div class="code-block-container">
+                                <button class="copy-button" onclick="window.copyToClipboard(this)">Copy Code</button>
+                                <pre>
+&lt;!-- Tailwind CSS CDN --&gt;
+&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;
+&lt;link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"&gt;
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-bold mb-4 text-red-400">🛠️ Development Guidelines</h3>
+                    <div class="info-section">
+                        <div class="info-card">
+                            <span class="emoji-large">💡</span>
+                            <h4>Coding Standards</h4>
+                            <p>Adhere to our <span class="vip-text">ESLint</span> and <span class="vip-text">Prettier</span> configurations. Write clean, well-commented, and modular code. Focus on <span class="vip-text">reusability</span> and <span class="vip-text">readability</span>.</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">🌳</span>
+                            <h4>Git Workflow</h4>
+                            <p>Use <span class="vip-text">feature branches</span>, rebase frequently, and ensure your commits are <span class="vip-text">atomic and descriptive</span>. All merges via <span class="vip-text">Pull Requests (PRs)</span> with at least one reviewer.</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">🧪</span>
+                            <h4>Testing Philosophy</h4>
+                            <p>Prioritize <span class="vip-text">unit tests</span> for all new logic. Aim for high code coverage and ensure all features have corresponding <span class="vip-text">integration tests</span>.</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">🤝</span>
+                            <h4>Collaboration Tools</h4>
+                            <p>We use <span class="vip-text">Jira</span> for task management, <span class="vip-text">Slack</span> for daily communication, and <span class="vip-text">GitHub</span> for code collaboration and version control.</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">🔒</span>
+                            <h4>Security Best Practices</h4>
+                            <p>Always sanitize inputs, validate data, and avoid hardcoding sensitive information. Follow <span class="vip-text">OWASP Top 10</span> guidelines. Report any vulnerabilities immediately.</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">📈</span>
+                            <h4>Performance Optimization</h4>
+                            <p>Write efficient queries, optimize asset loading, and minimize render-blocking resources. Aim for fast load times and smooth user interactions.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-bold mb-4 text-red-400">🔗 Important Links</h3>
+                    <div class="info-section">
+                        <div class="info-card">
+                            <span class="emoji-large">📚</span>
+                            <h4>Internal Documentation</h4>
+                            <p>Access our comprehensive <span class="vip-text">Confluence Wiki</span> for project specs, API docs, and internal knowledge base articles.</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">🗓️</span>
+                            <h4>Team Calendar</h4>
+                            <p>Stay updated with team meetings, project deadlines, and company events on the <span class="vip-text">Google Calendar</span>.</p>
+                        </div>
+                        <div class="info-card">
+                            <span class="emoji-large">📧</span>
+                            <h4>Support Channels</h4>
+                            <p>For technical issues, submit a ticket via <span class="vip-text">Jira Service Desk</span>. For general queries, reach out on the <span class="vip-text">#intern-support Slack channel</span>.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Custom Modal Structure -->
+    <div id="customModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-md border border-blue-500 transform scale-95 transition-transform duration-300 ease-out">
+            <div id="customModalMessage" class="text-white text-center text-lg mb-4 leading-relaxed"></div>
+            <button onclick="hideCustomModal()" class="block w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors">Close</button>
+        </div>
+    </div>
+</body>
+</html>

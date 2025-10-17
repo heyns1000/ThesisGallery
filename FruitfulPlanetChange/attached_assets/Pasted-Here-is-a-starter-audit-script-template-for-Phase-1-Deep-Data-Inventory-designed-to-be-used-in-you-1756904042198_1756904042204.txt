@@ -1,0 +1,105 @@
+Here is a starter audit script template for Phase 1: Deep Data Inventory, designed to be used in your Replit Flask + PostgreSQL ecosystem.
+It will:
+✅ Scan all key tables
+✅ Parse local JSON/TS/HTML data arrays
+✅ Compare totals and keys
+🧩 Output discrepancy report in structured JSON or terminal log
+🧪 scripts/audit_inventory.py (Starter Script)
+import json
+import os
+import psycopg2
+from bs4 import BeautifulSoup
+
+# --- Database Connection (edit credentials as needed) ---
+DB_CONFIG = {
+    'dbname': os.getenv("POSTGRES_DB", "postgres"),
+    'user': os.getenv("POSTGRES_USER", "postgres"),
+    'password': os.getenv("POSTGRES_PASSWORD", "password"),
+    'host': os.getenv("POSTGRES_HOST", "localhost"),
+    'port': os.getenv("POSTGRES_PORT", "5432"),
+}
+
+# --- File Paths (adjust if different) ---
+COMPREHENSIVE_SYNC_FILE = "server/comprehensive-brand-sync-clean.ts"
+COMPLETE_INTEGRATION_FILE = "server/execute-complete-comprehensive-sync.ts"
+ADMIN_ARRAYS_FILE = "public/admin-panel_full_arrays.html"
+ICON_MATRIX_FILE = "HSOMNI9000_ICON_MATRIX.html"
+
+# --- Query count of records from PostgreSQL ---
+def get_table_counts():
+    counts = {}
+    try:
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor()
+        for table in [
+            "sectors", "brands", "admin_panel_brands",
+            "legal_documents", "repositories", "system_status",
+            "media_projects", "processing_engines"
+        ]:
+            cur.execute(f"SELECT COUNT(*) FROM {table};")
+            counts[table] = cur.fetchone()[0]
+        cur.close()
+        conn.close()
+    except Exception as e:
+        print("Database error:", e)
+    return counts
+
+# --- Parse brand count from JSON in TS files ---
+def extract_json_from_ts(file_path):
+    try:
+        with open(file_path, "r") as f:
+            content = f.read()
+            json_start = content.find("[")
+            json_data = json.loads(content[json_start:])
+            return json_data
+    except Exception as e:
+        print(f"Error parsing {file_path}:", e)
+        return []
+
+# --- Extract brand arrays from HTML ---
+def extract_brands_from_html(path):
+    try:
+        with open(path, "r") as f:
+            soup = BeautifulSoup(f.read(), "html.parser")
+            script_tags = soup.find_all("script")
+            all_arrays = []
+            for tag in script_tags:
+                if "const" in tag.text and "[" in tag.text:
+                    array_start = tag.text.find("[")
+                    array_text = tag.text[array_start:]
+                    array = json.loads(array_text)
+                    all_arrays.append(array)
+            return all_arrays
+    except Exception as e:
+        print(f"Error reading {path}:", e)
+        return []
+
+# --- Master audit execution ---
+def run_audit():
+    results = {
+        "db_counts": get_table_counts(),
+        "comprehensive_sync_brands": len(extract_json_from_ts(COMPREHENSIVE_SYNC_FILE)),
+        "complete_integration_brands": len(extract_json_from_ts(COMPLETE_INTEGRATION_FILE)),
+        "admin_panel_arrays": sum(len(arr) for arr in extract_brands_from_html(ADMIN_ARRAYS_FILE)),
+        "icon_matrix_entries": len(extract_brands_from_html(ICON_MATRIX_FILE)),
+    }
+
+    total_count = (
+        results["comprehensive_sync_brands"]
+        + results["complete_integration_brands"]
+        + results["admin_panel_arrays"]
+        + results["icon_matrix_entries"]
+    )
+
+    print("\n📊 Seedwave Inventory Audit Summary:")
+    print(json.dumps(results, indent=2))
+    print(f"\n🧮 Total Aggregate Items (non-deduped): ~{total_count}")
+    print("⚠️ Cross-check for duplicates, unmapped sectors, or unlinked foreign keys recommended.")
+
+if __name__ == "__main__":
+    run_audit()
+🛠️ Next Steps:
+Drop this in /scripts/audit_inventory.py
+✅ Run it via:
+python3 scripts/audit_inventory.py
+📋 Use the output JSON as a base for Phase 2: Schema Normalization

@@ -1,0 +1,2050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAA.zone™ MONSTER OMNI™ Grand Operator Console</title>
+
+    <!-- Open Graph Meta Tags for Rich Previews -->
+    <!-- These tags help platforms like Safari, Facebook, LinkedIn, etc., display rich previews of your page. -->
+    <meta property="og:title" content="FAA.zone™ MONSTER OMNI™: Grand Operator Console" />
+    <meta property="og:description" content="Experience the ultimate control over global operations with FAA.zone™ MONSTER OMNI™ Grand Operator Console. Real-time insights, AI-powered analysis, and atom-level precision for your enterprise." />
+    <!-- Replace this placeholder image URL with your actual image.
+         A good size for Open Graph images is 1200x630 pixels. -->
+    <meta property="og:image" content="https://placehold.co/1200x630/0a0a0a/facc15?text=FAA.zone+MONSTER+OMNI" />
+    <meta property="og:url" content="https://samfox.faa.zone/" /> <!-- Ensure this matches your actual domain -->
+    <meta property="og:site_name" content="FAA.zone™" />
+    <meta property="og:type" content="website" />
+    <!-- End Open Graph Meta Tags -->
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Orbitron and Space Mono Fonts for Console Feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Chart.js for graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- 
+    Chosen Palette: Operator Console (Base: #1a202c, Text: #e2e8f0, Accents: #3b82f6, #10b981, #f97316, #ef4444, #a855f7) - Adapted to template's :root variables.
+    Application Structure Plan: The SPA is designed as a deep, interactive operator console, integrating the MONSTER OMNI™ system into the FAA.zone™ demo dashboard template. It features a central 'System Core Status' with dynamic, simulated real-time metrics and alerts, providing the impression of a vast, live system. Each 'Logic Core' is a gateway to an expansive, multi-layered modal. 'Deployment Modes' and 'Security Layers' are presented with interactive "Simulate" buttons. A prominent 'Destructive Power' section highlights critical capabilities. The 'Chairman Decision Node' acts as a command interface. A 'Global Omni-Network' section provides a conceptual map. The existing 'Demo Controls' now directly influence MONSTER OMNI™'s simulated performance, KPIs, and charts. The goal is to simulate immense depth and complexity through nested interactions, dynamic visuals, and a narrative that positions the user as the ultimate operator of a "100k page" system, all within the provided template structure.
+    Visualization & Content Choices:
+    - Report Info: System Attributes (Type, Tier, Purpose, Power Source, Seedwave, Deployment Mode, Crypto Function) -> Goal: Core system identity -> Viz/Method: High-contrast, concise attribute cards. Interaction: Static. Justification: Provides immediate, impactful understanding of fundamental identity.
+    - Report Info: General System Status (implied from overall report) -> Goal: Simulate live operation & vastness -> Viz/Method: Dynamic charts (Chart.js) for Network Load, Transaction Velocity, Security Threat Level, Mist Density, OmniProof Stability. Simulated "System Alerts" feed. New "Data Stream Pulse" with numerical readouts. Interaction: Charts update more frequently, alerts appear dynamically, numerical readouts constantly refresh. Justification: Conveys continuous, massive system activity and high data volume.
+    - Report Info: Destructive Power -> Goal: Prominently highlight critical capability -> Viz/Method: Bold, impactful text block with a warning aesthetic. Interaction: Static. Justification: Emphasizes a key, powerful feature.
+    - Report Info: 20 Fused Abilities (Logic Cores) -> Goal: Deep, multi-layered exploration -> Viz/Method: Clickable grid items opening an extensive, multi-tab modal. Each modal tab (Overview, Parameters, Sub-Modules, Diagnostics) contains detailed text, simulated data tables, and conceptual HTML/CSS diagrams. Interaction: Click-to-open modal, tab navigation within modal, diagnostic console within modal updates dynamically. Justification: Creates the "infinite pages" feeling through nested content and detailed simulated data for each core.
+    - Report Info: Deployment Modes (GhostGrid, VaultGenesis, AuraChain) -> Goal: Explain operational frameworks with simulated action -> Viz/Method: Expandable cards with "Simulate Deployment" buttons. Interaction: Click-to-toggle detailed description and trigger a simulated deployment sequence. Justification: Engages user in understanding complex processes.
+    - Report Info: Security Layers (FAA Inline Verification, GhostTrace Blackout Filter, OmniTrace Immutable Memory Layer, TruthWeight Bias Firewall, FireRatio Crisis Bypass Circuit) -> Goal: Detail protection protocols with simulated resilience -> Viz/Method: Expandable list items with "Simulate Breach" buttons. Interaction: Click-to-toggle detailed description and trigger a simulated breach response. Justification: Demonstrates system robustness and user control over security.
+    - Report Info: Global Omni-Network (conceptual) -> Goal: Convey interconnected scale -> Viz/Method: Conceptual HTML/CSS grid map with clickable nodes. Interaction: Click node to reveal simulated status. Justification: Visually represents the system's global reach and node interaction.
+    - Report Info: Chairman Decision Node (System Commands) -> Goal: Engage operator with ultimate control -> Viz/Method: Interactive buttons with a dynamic "Command Console" output area. Interaction: Click triggers complex, multi-step simulated system responses. Justification: Reinforces the user's role as the system's ultimate authority.
+    - Report Info: Underlying concepts (Baobab, Mist, Pebble, Rossouw, Atom-Level, Conad Loop, Fruitful.Planet.change, Hoenderbleis, etc.) -> Goal: Weave narrative depth & unique lore -> Viz/Method: Integrated throughout descriptions, modal content, chart labels, and dynamic status updates. Justification: Enhances immersion and reinforces the unique terminology, making the system feel truly bespoke and vast.
+    CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. 
+    -->
+    <style>
+        /* Base Styles - Apple inspired cleanliness with vibrant accents */
+        :root {
+            --text-color-light: #1d1d1f;
+            --text-color-dark: #f5f5f7;
+            --bg-color-light: #f5f5f7;
+            --bg-color-dark: #1a1a1c; /* Overall dark background for header/footer in dark mode */
+            --card-bg-light: #ffffff;
+            --card-bg-dark: #2a2a2e; /* Darker card background for header/footer in dark mode */
+            --border-color-light: #e8e8ed;
+            --border-color-dark: #3a3a3e;
+            --primary-color: #0071e3; /* Apple Blue - fallback for core UI elements */
+            --secondary-color: #30d158; /* Apple Green - fallback */
+            --tertiary-color: #ff3b30; /* Vibrant Red for specific accents */
+            --muted-text-light: #6e6e73;
+            --muted-text-dark: #a0a0a5;
+
+            /* Page-specific theme colors (Yellow dark theme, matching Core Abilities) */
+            --page-theme-accent-color: #facc15; /* Yellow 500 - for main headings, icons, strong highlights */
+            --page-theme-text-light: #fcd34d; /* Yellow 300 - light text on dark bg */
+            --page-theme-text-muted: #eab308; /* Yellow 600 - muted text on dark bg */
+            --page-theme-background: #0a0a0a; /* Very dark gray, almost black for main section */
+            --page-card-background: #1a1a1c; /* Slightly lighter dark for cards within section */
+            --page-border-color: #2e2e2e; /* Darker border for elements within the dark section */
+            --progress-bar-bg: #3b3b42; /* Dark background for progress bars */
+            --progress-fill-color: var(--page-theme-accent-color);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif; /* Default font for general text */
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            background-color: var(--page-theme-background); /* Apply dark background from template */
+            color: var(--page-theme-text-light); /* Apply light text from template */
+        }
+
+        /* Default Light/Dark Mode for overall page (header/footer) */
+        .light-mode {
+            background-color: var(--bg-color-light);
+            color: var(--text-color-light);
+        }
+
+        .dark-mode {
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-dark);
+        }
+
+        /* Header / Nav Styling remains consistent with parent theme */
+        .main-header {
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color-light);
+            box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        .dark-mode .main-header {
+            background-color: var(--card-bg-dark);
+            border-bottom-color: var(--border-color-dark);
+            box-shadow: 0 1px 0 rgba(0,0,0,0.2);
+        }
+        .header-content { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        .logo-group { display: flex; align-items: center; gap: 10px; color: var(--text-color-light); transition: color 0.3s ease; }
+        .dark-mode .logo-group { color: var(--text-color-dark); }
+        .logo-group .logo-link { text-decoration: none; color: inherit; display: flex; align-items: center; gap: 5px; }
+        .logo-fruitful { color: var(--primary-color); font-size: 1.6rem; font-weight: 800; }
+        .logo-faa { color: var(--primary-color); font-weight: 800; font-size: 1rem; }
+        .logo-buildnest { color: var(--secondary-color); font-weight: 800; font-size: 1rem; }
+        .main-nav { display: flex; align-items: center; gap: 30px; }
+        .nav-list { display: flex; list-style: none; margin: 0; padding: 0; gap: 25px; }
+        .nav-list a { text-decoration: none; color: var(--muted-text-light); font-weight: 500; font-size: 0.95rem; transition: color 0.3s ease; }
+        .nav-list a:hover { color: var(--primary-color); }
+        .dark-mode .nav-list a { color: var(--muted-text-dark); }
+        .dark-mode .nav-list a:hover { color: var(--primary-color); }
+        .nav-actions { display: flex; align-items: center; gap: 15px; }
+        .cta-button { display: inline-block; padding: 10px 20px; background-color: var(--primary-color); color: white; text-decoration: none; border-radius: 25px; font-weight: 600; font-size: 0.9rem; transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .cta-button:hover { background-color: #0066cc; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .hamburger-menu { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-color-light); transition: color 0.3s ease; }
+        .dark-mode .hamburger-menu { color: var(--text-color-dark); }
+        .pulse-grid-noodle-rope { display: flex; align-items: center; height: 2px; width: 250px; background-color: var(--muted-text-light); border-radius: 1px; position: relative; margin: 0 40px; opacity: 0.7; }
+        .dark-mode .pulse-grid-noodle-rope { background-color: var(--muted-text-dark); }
+        .noodle-dot { position: absolute; width: 8px; height: 8px; background-color: var(--primary-color); border-radius: 50%; transform: translate(-50%, -50%); top: 50%; animation: pulse 3s infinite ease-in-out; }
+        .noodle-dot.dot-stepdad { width: 10px; height: 10px; background-color: var(--secondary-color); }
+        .noodle-dot.dot-1 { left: 0%; animation-delay: 0s; } .noodle-dot.dot-2 { left: 20%; animation-delay: 0.5s; } .noodle-dot.dot-3 { left: 40%; animation-delay: 1s; } .noodle-dot.dot-stepdad { left: 60%; animation-delay: 1.5s; } .noodle-dot.dot-4 { left: 80%; animation-delay: 2s; } .noodle-dot.dot-5 { left: 100%; animation-delay: 2.5s; }
+        @keyframes pulse { 0% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; } 50% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; } }
+
+
+        /* Demo Dashboard Layout */
+        .demo-dashboard-main {
+            padding: 40px 20px;
+            background-color: var(--page-theme-background);
+            color: var(--page-theme-text-light);
+            min-height: calc(100vh - 120px); /* Adjust based on header/footer height */
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .dashboard-section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            color: var(--page-theme-accent-color);
+            margin-bottom: 40px;
+        }
+
+        .dashboard-card {
+            background-color: var(--page-card-background);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+            border: 1px solid var(--page-border-color);
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* Demo Controls and Operations Log */
+        #demo-controls-panel {
+            background-color: var(--page-card-background);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid var(--page-border-color);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+            margin-bottom: 40px;
+            text-align: left;
+        }
+        #demo-controls-panel label {
+            color: var(--page-theme-text-muted);
+            font-weight: 500;
+            margin-bottom: 5px;
+            display: block;
+        }
+        #demo-controls-panel select {
+            background-color: #000000;
+            border: 1px solid var(--page-border-color);
+            color: var(--page-theme-text-light);
+            border-radius: 6px;
+            padding: 8px 12px;
+            width: 100%;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%23facc15%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%20011.414%201.414l-4%204a1%201%2001-1.414%200l-4-4a1%201%20010-1.414z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 0.7em top 50%;
+            background-size: 0.8em auto;
+        }
+        #demo-controls-panel select:focus {
+            border-color: var(--page-theme-accent-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(250, 200, 20, 0.3);
+        }
+
+        .action-button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+        .action-button:hover {
+            background-color: #0066cc;
+            transform: translateY(-2px);
+            box-shadow: 0 44px 12px rgba(0,0,0,0.4);
+        }
+        .action-button:disabled {
+            background-color: #333;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+            opacity: 0.6;
+        }
+        .action-button.live-data {
+            background-color: var(--secondary-color); /* Green for live data */
+        }
+        .action-button.live-data:hover {
+            background-color: #28a745;
+        }
+
+        .gemini-button {
+            background-color: #6200EE; /* Deep Purple for Gemini */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin-top: 15px;
+        }
+        .gemini-button:hover {
+            background-color: #3700B3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+        .gemini-button:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+            opacity: 0.6;
+        }
+
+
+        /* Operations Log Styling */
+        .operations-log-console { /* Renamed for clarity, applies to all logs */
+            background-color: #000000; /* Pure black for the log background */
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            height: 250px;
+            overflow-y: auto;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            font-size: 0.85rem;
+            color: #00ff00; /* Green text for "console" feel */
+            white-space: pre-wrap; /* Preserve whitespace and wrap */
+            text-align: left;
+            box-shadow: inset 0 0 10px rgba(0,255,0,0.2);
+            flex-grow: 1; /* Allows it to take available space */
+        }
+        .operations-log-console span.log-timestamp { color: #888; margin-right: 10px; }
+        .operations-log-console span.log-message-info { color: #00e0ff; /* Cyan for info messages */ }
+        .operations-log-console span.log-message-success { color: #30d158; /* Apple green for success */ }
+        .operations-log-console span.log-message-warning { color: #facc15; /* Yellow for warnings */ }
+        .operations-log-console span.log-message-error { color: #ff3b30; /* Red for errors */ }
+        .operations-log-console span.engine-name { font-weight: bold; color: var(--page-theme-accent-color); /* Yellow accent for engine names */ }
+
+        /* KPI Cards */
+        .kpi-card {
+            background-color: var(--page-card-background);
+            border: 1px solid var(--page-border-color);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .kpi-card .kpi-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--page-theme-accent-color);
+            margin-bottom: 5px;
+            transition: color 0.3s ease;
+        }
+        .kpi-card .kpi-label {
+            font-size: 0.9rem;
+            color: var(--page-theme-text-muted);
+        }
+
+        /* Chart specific container styling to constrain height */
+        .chart-container {
+            position: relative;
+            height: 280px; /* Smaller height for dashboard context */
+            width: 100%;
+            background-color: #000000; /* Pure black for chart canvas background */
+            border: 1px solid var(--page-border-color);
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+        .chart-container canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        /* Individual Node Cards */
+        .node-card {
+            background-color: var(--page-card-background);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--page-border-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: opacity 0.5s ease, transform 0.2s ease, box-shadow 0.2s ease; /* For dimming and active effects */
+        }
+        .node-card.active {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(250, 200, 20, 0.4); /* Accent color glow */
+        }
+        .node-card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--page-theme-accent-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .node-card p {
+            font-size: 0.9rem;
+            color: var(--page-theme-text-muted);
+            flex-grow: 1; /* Pushes content down */
+        }
+        .node-card .metrics-line {
+            font-size: 0.85rem;
+            color: var(--page-theme-text-light);
+            font-weight: 500;
+        }
+        .node-card .node-status {
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background-color: rgba(255,255,255,0.1);
+            color: var(--page-theme-text-light);
+            text-align: center;
+        }
+
+        /* Progress Bar (Mock) */
+        .progress-bar-container {
+            width: 100%;
+            background-color: var(--progress-bar-bg);
+            border-radius: 5px;
+            height: 8px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background-color: var(--progress-fill-color);
+            border-radius: 5px;
+            transition: width 0.15s ease-out; /* Smoother animation for filling */
+        }
+
+        /* Metadata Table */
+        .metadata-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .metadata-table th, .metadata-table td {
+            border: 1px solid var(--page-border-color);
+            padding: 12px;
+            text-align: left;
+            font-size: 0.95rem;
+            color: var(--page-theme-text-muted);
+        }
+        .metadata-table thead {
+            background-color: #451a03; /* Amber 950 */
+            color: var(--page-theme-text-light);
+            font-weight: 600;
+        }
+        .metadata-table tbody tr:nth-child(odd) { background-color: var(--page-card-background); }
+        .metadata-table tbody tr:nth-child(even) { background-color: #000000; }
+        .metadata-table td:first-child { font-weight: 500; color: var(--page-theme-accent-color); }
+        .metadata-table pre {
+            background-color: #000000;
+            color: #d1d5db;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            font-size: 0.85rem;
+            border: 1px solid #333;
+        }
+
+        /* CTA button */
+        .demo-cta-button {
+            display: inline-block;
+            background-color: var(--page-theme-accent-color);
+            color: #1a1a1c;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(250, 200, 20, 0.4);
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .demo-cta-button:hover {
+            background-color: #fbbf24;
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(250, 200, 20, 0.6);
+        }
+        .demo-cta-button:disabled {
+            background-color: #554a00;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+            opacity: 0.7;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 2000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.8); /* Black w/ opacity */
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background-color: var(--page-card-background);
+            margin: auto;
+            padding: 30px;
+            border: 1px solid var(--page-border-color);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 700px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            position: relative;
+            animation: fadeIn 0.3s ease-out;
+            color: var(--page-theme-text-light);
+            max-height: 90vh; /* Ensure modal content is scrollable if too long */
+            overflow-y: auto;
+        }
+
+        .close-button {
+            color: var(--page-theme-text-muted);
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: var(--page-theme-accent-color);
+            text-decoration: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Footer */
+        .main-footer {
+            background-color: var(--card-bg-light);
+            border-top: 1px solid var(--border-color-light);
+            padding: 40px 0;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .dark-mode .main-footer {
+            background-color: var(--card-bg-dark);
+            border-top-color: var(--border-color-dark);
+        }
+        .footer-content { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 30px; }
+        .footer-brand { flex: 1 1 300px; }
+        .footer-brand .logo { margin-bottom: 15px; }
+        .copyright { font-size: 0.8rem; color: var(--muted-text-light); line-height: 1.4; transition: color 0.3s ease; }
+        .dark-mode .copyright { color: var(--muted-text-dark); }
+        .footer-links { display: flex; flex: 2 1 500px; justify-content: space-around; flex-wrap: wrap; gap: 20px; }
+        .footer-column { flex: 1 1 150px; }
+        .footer-column h4 { font-size: 1rem; font-weight: 600; margin-bottom: 15px; color: var(--text-color-light); transition: color 0.3s ease; }
+        .dark-mode .footer-column h4 { color: var(--text-color-dark); }
+        .footer-column ul { list-style: none; padding: 0; margin: 0; }
+        .footer-column a { text-decoration: none; font-size: 0.9rem; color: var(--muted-text-light); margin-bottom: 8px; display: block; transition: color 0.3s ease; }
+        .footer-column a:hover { color: var(--primary-color); }
+        .dark-mode .footer-column a { color: var(--muted-text-dark); }
+        .dark-mode .footer-column a:hover { color: var(--primary-color); }
+
+        /* New styles for Mining Equipment section */
+        .equipment-division-card {
+            background-color: var(--page-card-background);
+            border: 1px solid var(--page-border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .equipment-division-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--page-theme-accent-color);
+            margin-bottom: 15px;
+            cursor: pointer; /* Indicate clickable */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .equipment-division-card h3 i {
+            transition: transform 0.3s ease;
+        }
+        .equipment-division-card h3 i.fa-chevron-up {
+            transform: rotate(180deg);
+        }
+        .equipment-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--page-border-color);
+            margin-top: 15px;
+        }
+        .equipment-list.hidden {
+            display: none; /* Hide list when toggled */
+        }
+        .equipment-item {
+            background-color: #000000; /* Pure black for equipment item background */
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 0.9rem;
+            color: var(--page-theme-text-light);
+            box-shadow: inset 0 0 5px rgba(250,200,20,0.1);
+        }
+        .equipment-item strong {
+            color: var(--page-theme-accent-color);
+        }
+        .equipment-item .status-operational { color: #30d158; } /* Apple Green */
+        .equipment-item .status-maintenance { color: #facc15; } /* Yellow */
+        .equipment-item .status-offline { color: #ff3b30; } /* Red */
+
+
+        @media (max-width: 768px) {
+            .main-header { flex-direction: column; padding-bottom: 10px; align-items: flex-start; }
+            .header-content { flex-direction: column; align-items: flex-start; }
+            .logo-group { margin-bottom: 15px; }
+            .logo-group .logo-link { gap: 5px; }
+            .logo-fruitful { font-size: 1.4rem; }
+            .pulse-grid-noodle-rope { display: none; }
+            .main-nav { display: none; flex-direction: column; position: static; width: 100%; background-color: var(--card-bg-light); border-top: 1px solid var(--border-color-light); padding: 10px 0; box-shadow: none; }
+            .dark-mode .main-nav { background-color: var(--card-bg-dark); border-top-color: var(--border-color-dark); }
+            .main-nav.active { display: flex; }
+            .nav-list { flex-direction: column; text-align: center; width: 100%; gap: 10px; }
+            .nav-list li { width: 100%; }
+            .nav-list a { display: block; padding: 8px 0; }
+            .nav-actions { flex-direction: column; gap: 10px; width: 100%; padding-top: 10px; border-top: 1px solid var(--border-color-light); margin-top: 10px; }
+            .dark-mode .nav-actions { border-top-color: var(--border-color-dark); }
+            .nav-actions .cta-button { width: calc(100% - 40px); margin: 0 20px; text-align: center; }
+            .hamburger-menu { display: block; position: absolute; top: 15px; right: 20px; z-index: 1001; }
+            .dashboard-section-title { font-size: 2rem; }
+            .footer-content { flex-direction: column; text-align: center; }
+            .footer-brand, .footer-links { flex: 1 1 100%; }
+            .footer-column { flex: 1 1 100%; margin-bottom: 20px; }
+            .footer-column h4 { margin-bottom: 10px; }
+            .footer-column ul { text-align: center; }
+            .footer-column a { display: inline-block; margin: 0 10px 8px; }
+        }
+    </style>
+</head>
+<body class="light-mode"> <!-- Default to light-mode, JS will toggle based on preference -->
+    <header class="main-header">
+        <div class="container mx-auto px-4 header-content">
+            <div class="logo-group">
+                <a href="#" class="logo-link">
+                    <span class="logo-fruitful">Fruitful™</span>
+                    <span class="logo-faa">FAA.zone™</span>
+                    <span class="logo-buildnest">BuildNest™</span>
+                </a>
+                <button class="hamburger-menu" aria-label="Toggle navigation">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <div class="pulse-grid-noodle-rope">
+                <span class="noodle-dot dot-1"></span>
+                <span class="noodle-dot dot-2"></span>
+                <span class="noodle-dot dot-3"></span>
+                <span class="noodle-dot dot-stepdad"></span>
+                <span class="noodle-dot dot-4"></span>
+                <span class="noodle-dot dot-5"></span>
+            </div>
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li><a href="#overview-section">Overview</a></li>
+                    <li><a href="#system-status-section">System Status</a></li>
+                    <li><a href="#global-network-section">Omni-Network</a></li>
+                    <li><a href="#destructive-power-section">Destructive Power</a></li>
+                    <li><a href="#logic-cores-section">Logic Cores</a></li>
+                    <li><a href="#deployment-section">Deployment</a></li>
+                    <li><a href="#security-section">Security</a></li>
+                    <li><a href="#decision-section">Decision Node</a></li>
+                    <li><a href="#admin-portal-section">Admin Panel</a></li>
+                    <li><a href="#about-section">About</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <button id="themeToggle" class="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 py-2 px-3 rounded-full text-sm font-semibold transition duration-300 ease-in-out">
+                        <i class="fas fa-moon hidden dark:inline-block"></i>
+                        <i class="fas fa-sun inline-block dark:hidden"></i>
+                    </button>
+                    <a href="#cta-section" class="cta-button nav-cta">Get Started</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="demo-dashboard-main">
+        <div class="container mx-auto px-4">
+            <h1 class="dashboard-section-title">FAA.zone™ Live Operational Dashboard</h1>
+            <p class="text-xl text-page-theme-text-muted text-center mb-8 max-w-3xl mx-auto">
+                Monitor and manage your diverse operations across the Fruitful Global Treaty Grid. From Atom-Level Engines to Mining Node performance, get real-time insights and AI-powered analysis.
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+                <div id="demo-controls-panel" class="lg:col-span-1 dashboard-card">
+                    <h2 class="text-2xl font-bold mb-6 text-center text-page-theme-accent-color">Configure Your Scenario</h2>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div>
+                            <label for="industrySector" class="text-sm">Industry Sector:</label>
+                            <select id="industrySector" class="mt-1 block w-full">
+                                <option value="Finance">Finance</option>
+                                <option value="Logistics">Logistics</option>
+                                <option value="Healthcare">Healthcare</option>
+                                <option value="Retail">Retail</option>
+                                <option value="Manufacturing">Manufacturing</option>
+                                <option value="Mining" selected>Mining & Resources</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="dataVolume" class="text-sm">Data Volume Scale:</label>
+                            <select id="dataVolume" class="mt-1 block w-full">
+                                <option value="Small">Small (Tens of GB)</option>
+                                <option value="Medium">Medium (Hundreds of GB)</option>
+                                <option value="Large">Large (Terabytes)</option>
+                                <option value="Massive">Massive (Petabytes+)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="networkTopology" class="text-sm">Network Topology:</label>
+                            <select id="networkTopology" class="mt-1 block w-full">
+                                <option value="Local">Local (Single Region)</option>
+                                <option value="Regional">Regional (Multiple Regions)</option>
+                                <option value="Global">Global (Cross-Continental)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="securityPosture" class="text-sm">Security Posture:</label>
+                            <select id="securityPosture" class="mt-1 block w-full">
+                                <option value="Standard">Standard</option>
+                                <option value="Elevated">Elevated Threat</option>
+                                <option value="Hostile">Hostile Environment</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <label class="text-sm block font-medium mb-2 text-page-theme-text-muted">Emphasize Core Abilities:</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <label class="inline-flex items-center text-page-theme-text-muted"><input type="checkbox" class="form-checkbox h-4 w-4 text-page-theme-accent-color" value="Corethink" checked><span class="ml-2">Corethink™</span></label>
+                            <label class="inline-flex items-center text-page-theme-text-muted"><input type="checkbox" class="form-checkbox h-4 w-4 text-page-theme-accent-color" value="TruthWeight" checked><span class="ml-2">TruthWeight™</span></label>
+                            <label class="inline-flex items-center text-page-theme-text-muted"><input type="checkbox" class="form-checkbox h-4 w-4 text-page-theme-accent-color" value="EchoSynth" checked><span class="ml-2">EchoSynth™</span></label>
+                            <label class="inline-flex items-center text-page-theme-text-muted"><input type="checkbox" class="form-checkbox h-4 w-4 text-page-theme-accent-color" value="AutoSigil" checked><span class="ml-2">AutoSigil™</span></label>
+                            <label class="inline-flex items-center text-page-theme-text-muted"><input type="checkbox" class="form-checkbox h-4 w-4 text-page-theme-accent-color" value="PulseIndex" checked><span class="ml-2">PulseIndex™</span></label>
+                            <label class="inline-flex items-center text-page-theme-text-muted"><input type="checkbox" class="form-checkbox h-4 w-4 text-page-theme-accent-color" value="OmniTrace" checked><span class="ml-2">OmniTrace™</span></label>
+                            <label class="inline-flex items-center text-page-theme-text-muted"><input type="checkbox" class="form-checkbox h-4 w-4 text-page-theme-accent-color" value="LiftHalo" checked><span class="ml-2">LiftHalo™</span></label>
+                            <label class="inline-flex items-center text-page-theme-text-muted"><input type="checkbox" class="form-checkbox h-4 w-4 text-page-theme-accent-color" value="MirrorLoop" checked><span class="ml-2">MirrorLoop™</span></label>
+                            <label class="inline-flex items-center text-page-theme-text-muted"><input type="checkbox" class="form-checkbox h-4 w-4 text-page-theme-accent-color" value="FireRatio" checked><span class="ml-2">FireRatio™</span></label>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-4 mt-8">
+                        <button id="generateDemoBtn" class="action-button">
+                            <i class="fas fa-play-circle mr-2"></i> Generate Simulated Demo
+                        </button>
+                        <button id="connectLiveBtn" class="action-button live-data">
+                            <i class="fas fa-plug mr-2"></i> Connect to Live Data (Simulated)
+                        </button>
+                        <button id="stopLiveBtn" class="action-button live-data hidden">
+                            <i class="fas fa-stop-circle mr-2"></i> Stop Live Data
+                        </button>
+                        <button id="generateScenarioInsightsBtn" class="gemini-button">
+                            ✨ Generate Scenario Insights
+                        </button>
+                    </div>
+                    <div id="demoStatusMessage" class="mt-4 text-center text-page-theme-accent-color text-sm hidden">
+                        Simulating results...
+                    </div>
+                </div>
+
+                <div id="operationsLog" class="operations-log-console lg:col-span-2">
+                    <span class="log-timestamp">[START]</span> <span class="log-message-info">Initializing FAA.zone™ Operational Dashboard. Please configure and generate a scenario or connect to live data.</span><br>
+                </div>
+            </div>
+
+            <div id="simulatedResults">
+                <h2 class="dashboard-section-title text-center mt-12">Overall Operational Performance: <span id="currentScenarioText" class="text-page-theme-accent-color">--</span></h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
+                    <div class="kpi-card">
+                        <div class="kpi-value"><span id="kpi-total-processed">0</span> GB</div>
+                        <div class="kpi-label">Data Processed</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-value"><span id="kpi-avg-latency">0</span> ms</div>
+                        <div class="kpi-label">Avg. Network Latency</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-value"><span id="kpi-security-events">0</span></div>
+                        <div class="kpi-label">Security Events Mitigated</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-value"><span id="kpi-efficiency-gain">0</span>%</div>
+                        <div class="kpi-label">Operational Efficiency Gain</div>
+                    </div>
+                    <!-- NEW: Mining Specific KPIs -->
+                    <div class="kpi-card">
+                        <div class="kpi-value"><span id="kpi-total-mine-sites">0</span></div>
+                        <div class="kpi-label">Active Mine Sites</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-value"><span id="kpi-active-drill-rigs">0</span></div>
+                        <div class="kpi-label">Active Drill Rigs</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-value"><span id="kpi-monthly-ore-yield">0</span> T</div>
+                        <div class="kpi-label">Monthly Ore Yield</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-value"><span id="kpi-equipment-uptime">0</span>%</div>
+                        <div class="kpi-label">Equipment Uptime</div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+                    <div class="dashboard-card">
+                        <h3 class="text-xl font-bold mb-4 text-page-theme-accent-color text-center">📈 Overall Performance Index Trend</h3>
+                        <div class="chart-container">
+                            <canvas id="overallPerformanceChart"></canvas>
+                        </div>
+                        <p class="text-center text-page-theme-text-muted text-sm mt-2">Normalized index reflecting system health and optimization over time.</p>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3 class="text-xl font-bold mb-4 text-page-theme-accent-color text-center">🔒 Security & Integrity Score</h3>
+                        <div class="chart-container">
+                            <canvas id="securityIntegrityChart"></canvas>
+                        </div>
+                        <p class="text-center text-page-theme-text-muted text-sm mt-2">Real-time assessment of system vulnerability and data immutability.</p>
+                    </div>
+                    <!-- NEW: Mining Operational Health Chart -->
+                    <div class="dashboard-card lg:col-span-2">
+                        <h3 class="text-xl font-bold mb-4 text-page-theme-accent-color text-center">⛏️ Mining Operational Health</h3>
+                        <div class="chart-container">
+                            <canvas id="miningOperationalHealthChart"></canvas>
+                        </div>
+                        <p class="text-center text-page-theme-text-muted text-sm mt-2">Key metrics for mining site efficiency, resource extraction, and equipment reliability.</p>
+                    </div>
+                </div>
+
+                <!-- Tabbed Content for Detailed Demo Sections -->
+                <div class="w-full mt-16">
+                    <div class="flex border-b border-page-border-color">
+                        <button class="px-6 py-3 text-lg font-semibold border-b-2 border-transparent text-page-theme-text-muted hover:text-page-theme-accent-color hover:border-page-theme-accent-color transition-colors duration-200"
+                                onclick="showDemoTab('coreEnginesTab', this)" id="defaultOpenTab">Core Engines Impact</button>
+                        <button class="px-6 py-3 text-lg font-semibold border-b-2 border-transparent text-page-theme-text-muted hover:text-page-theme-accent-color hover:border-page-theme-accent-color transition-colors duration-200"
+                                onclick="showDemoTab('financialImpactTab', this)">Financial Impact (Simulated)</button>
+                        <button class="px-6 py-3 text-lg font-semibold border-b-2 border-transparent text-page-theme-text-muted hover:text-page-theme-accent-color hover:border-page-theme-accent-color transition-colors duration-200"
+                                onclick="showDemoTab('dataGovernanceTab', this)">Data Governance & Audit (Simulated)</button>
+                        <button class="px-6 py-3 text-lg font-semibold border-b-2 border-transparent text-page-theme-text-muted hover:text-page-theme-accent-color hover:border-page-theme-accent-color transition-colors duration-200"
+                                onclick="showDemoTab('miningEquipmentTab', this)">Mining Equipment & Assets</button>
+                    </div>
+
+                    <!-- Core Engines Tab Content -->
+                    <div id="coreEnginesTab" class="demo-tab-content pt-8">
+                        <h2 class="dashboard-section-title">Atom-Level Engines: Operational Impact</h2>
+                        <p class="text-center text-page-theme-text-muted mb-8 max-w-3xl mx-auto">
+                            Observe the direct operational impact of MONSTER OMNI™'s Atom-Level Logic Engines. Each engine contributes to overall system performance and efficiency gains.
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- Corethink -->
+                            <div class="node-card" id="card-Corethink">
+                                <h3>🧠 Corethink™</h3>
+                                <p>Accelerates decision-making with real-time cognitive processing by analyzing complex data streams instantly.</p>
+                                <div class="metrics-line"><strong>Latency Reduced:</strong> <span id="corethinkResult">--%</span></div>
+                                <div class="metrics-line"><strong>Decisions/Sec:</strong> <span id="corethinkMetrics">--k</span></div>
+                                <div class="progress-bar-container"><div class="progress-bar-fill" id="corethinkProgressBar"></div></div>
+                                <div class="node-status" id="corethinkStatus">Idle</div>
+                            </div>
+                            <!-- TruthWeight -->
+                            <div class="node-card" id="card-TruthWeight">
+                                <h3>⚖️ TruthWeight™</h3>
+                                <p>Ensures absolute data integrity by evaluating veracity and assigning trust scores to information streams.</p>
+                                <div class="metrics-line"><strong>Veracity Score:</strong> <span id="truthweightResult">--%</span></div>
+                                <div class="metrics-line"><strong>False Positives:</strong> <span id="truthweightMetrics">--%</span></div>
+                                <div class="progress-bar-container"><div class="progress-bar-fill" id="truthweightProgressBar"></div></div>
+                                <div class="node-status" id="truthweightStatus">Idle</div>
+                            </div>
+                            <!-- EchoSynth -->
+                            <div class="node-card" id="card-EchoSynth">
+                                <h3>🔊 EchoSynth™</h3>
+                                <p>Facilitates dynamic and resonant communication pathways, ensuring signal clarity and reach across networks.</p>
+                                <div class="metrics-line"><strong>Fidelity Improved:</strong> <span id="echosynthResult">--%</span></div>
+                                <div class="metrics-line"><strong>Packet Loss:</strong> <span id="echosynthMetrics">--%</span></div>
+                                <div class="progress-bar-container"><div class="progress-bar-fill" id="echosynthProgressBar"></div></div>
+                                <div class="node-status" id="echosynthStatus">Idle</div>
+                            </div>
+                            <!-- AutoSigil -->
+                            <div class="node-card" id="card-AutoSigil">
+                                <h3>✍️ AutoSigil™</h3>
+                                <p>Automates the generation and application of unique digital signatures for content and transactions securely.</p>
+                                <div class="metrics-line"><strong>Verification Time Cut:</strong> <span id="autosigilResult">--%</span></div>
+                                <div class="metrics-line"><strong>Auth Overhead:</strong> <span id="autosigilMetrics">--ms</span></div>
+                                <div class="progress-bar-container"><div class="progress-bar-fill" id="autosigilProgressBar"></div></div>
+                                <div class="node-status" id="autosigilStatus">Idle</div>
+                            </div>
+                            <!-- PulseIndex -->
+                            <div class="node-card" id="card-PulseIndex">
+                                <h3>📊 PulseIndex™</h3>
+                                <p>Maintains real-time operational awareness through high-frequency indexing of all network components.</p>
+                                <div class="metrics-line"><strong>Visibility Boosted:</strong> <span id="pulseindexResult">--%</span></div>
+                                <div class="metrics-line"><strong>Index Refresh:</strong> <span id="pulseindexMetrics">--ms</span></div>
+                                <div class="progress-bar-container"><div class="progress-bar-fill" id="pulseindexProgressBar"></div></div>
+                                <div class="node-status" id="pulseindexStatus">Idle</div>
+                            </div>
+                            <!-- OmniTrace -->
+                            <div class="node-card" id="card-OmniTrace">
+                                <h3>🌐 OmniTrace™</h3>
+                                <p>Provides comprehensive, multi-dimensional traceability for all data and asset movements across the grid.</p>
+                                <div class="metrics-line"><strong>Transparency:</strong> <span id="omnitraceResult">--%</span></div>
+                                <div class="metrics-line"><strong>Trace Depth:</strong> <span id="omnitraceMetrics">-- layers</span></div>
+                                <div class="progress-bar-container"><div class="progress-bar-fill" id="omnitraceProgressBar"></div></div>
+                                <div class="node-status" id="omnitraceStatus">Idle</div>
+                            </div>
+                            <!-- LiftHalo -->
+                            <div class="node-card" id="card-LiftHalo">
+                                <h3>⬆️ LiftHalo™</h3>
+                                <p>Optimizes network resource allocation and elevates performance for critical operations.</p>
+                                <div class="metrics-line"><strong>Task Acceleration:</strong> <span id="lifthaloResult">--%</span></div>
+                                <div class="metrics-line"><strong>Resource Idle:</strong> <span id="lifthaloMetrics">--%</span></div>
+                                <div class="progress-bar-container"><div class="progress-bar-fill" id="lifthaloProgressBar"></div></div>
+                                <div class="node-status" id="lifthaloStatus">Idle</div>
+                            </div>
+                            <!-- MirrorLoop -->
+                            <div class="node-card" id="card-MirrorLoop">
+                                <h3>🔄 MirrorLoop™</h3>
+                                <p>Enables redundant and self-healing data replication across distributed nodes for business continuity.</p>
+                                <div class="metrics-line"><strong>Recovery Time:</strong> <span id="mirrorloopResult">--</span></div>
+                                <div class="metrics-line"><strong>RPO:</strong> <span id="mirrorloopMetrics">--</span></div>
+                                <div class="progress-bar-container"><div class="progress-bar-fill" id="mirrorloopProgressBar"></div></div>
+                                <div class="node-status" id="mirrorloopStatus">Idle</div>
+                            </div>
+                            <!-- FireRatio -->
+                            <div class="node-card" id="card-FireRatio">
+                                <h3>🔥 FireRatio™</h3>
+                                <p>Dynamically manages network bandwidth and congestion for smooth data flow and superior experience.</p>
+                                <div class="metrics-line"><strong>Congestion Reduced:</strong> <span id="fireratioResult">--%</span></div>
+                                <div class="metrics-line"><strong>Avg. Latency:</strong> <span id="fireratioMetrics">--ms</span></div>
+                                <div class="progress-bar-container"><div class="progress-bar-fill" id="fireratioProgressBar"></div></div>
+                                <div class="node-status" id="fireratioStatus">Idle</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Financial Impact Tab Content -->
+                    <div id="financialImpactTab" class="demo-tab-content pt-8 hidden">
+                        <h2 class="dashboard-section-title">Financial Impact: Simulated ROI</h2>
+                        <p class="text-center text-page-theme-text-muted mb-8 max-w-3xl mx-auto">
+                            See how Atom-Level Engines translate into tangible financial benefits for your selected industry and scenario.
+                        </p>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div class="dashboard-card">
+                                <h3 class="text-xl font-bold mb-4 text-page-theme-accent-color text-center">💰 Projected Revenue Growth</h3>
+                                <div class="chart-container">
+                                    <canvas id="revenueGrowthChart"></canvas>
+                                </div>
+                                <p class="text-center text-page-theme-text-muted text-sm mt-2">Annualized growth due to operational efficiencies and enhanced trust.</p>
+                            </div>
+                            <div class="dashboard-card">
+                                <h3 class="text-xl font-bold mb-4 text-page-theme-accent-color text-center">📉 Operational Cost Reduction</h3>
+                                <div class="chart-container">
+                                    <canvas id="costReductionChart"></canvas>
+                                </div>
+                                <p class="text-center text-page-theme-text-muted text-sm mt-2">Savings from reduced errors, manual processes, and optimized resource use.</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+                            <div class="kpi-card">
+                                <div class="kpi-value"><span id="kpi-roi">0</span>%</div>
+                                <div class="kpi-label">Simulated ROI</div>
+                            </div>
+                            <div class="kpi-card">
+                                <div class="kpi-value">$<span id="kpi-cost-savings">0</span>M</div>
+                                <div class="kpi-label">Annual Cost Savings</div>
+                            </div>
+                        </div>
+                        <div class="dashboard-card mt-8">
+                            <h3 class="text-xl font-bold mb-4 text-page-theme-accent-color text-center">Financial Operations Log</h3>
+                            <div id="financialOperationsLog" class="operations-log-console">
+                                <!-- Simulated financial log entries will appear here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Governance & Audit Tab Content -->
+                    <div id="dataGovernanceTab" class="demo-tab-content pt-8 hidden">
+                        <h2 class="dashboard-section-title">Data Governance & Audit: Immutability & Compliance</h2>
+                        <p class="text-center text-page-theme-text-muted mb-8 max-w-3xl mx-auto">
+                            Experience the robust security and transparent auditability provided by FAA.zone™ for mission-critical data.
+                        </p>
+                        <div class="dashboard-card">
+                            <h3 class="text-xl font-bold mb-4 text-page-theme-accent-color text-center">📊 Audit Trail Events & Integrity Checks</h3>
+                            <div class="chart-container">
+                                <canvas id="auditIntegrityChart"></canvas>
+                            </div>
+                            <p class="text-center text-page-theme-text-muted text-sm mt-2">Verification points and integrity checks over time.</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+                            <div class="kpi-card">
+                                <div class="kpi-value"><span id="kpi-compliance-score">0</span>/100</div>
+                                <div class="kpi-label">Compliance Index</div>
+                            </div>
+                            <div class="kpi-card">
+                                <div class="kpi-value"><span id="kpi-trace-depth">0</span> Layers</div>
+                                <div class="kpi-label">Average Trace Depth</div>
+                            </div>
+                        </div>
+                        <div class="dashboard-card mt-8">
+                            <h3 class="text-xl font-bold mb-4 text-page-theme-accent-color text-center">Recent Audit Log (Simulated)</h3>
+                            <div id="dataGovernanceLog" class="operations-log-console">
+                                <!-- Simulated log entries will appear here -->
+                            </div>
+                            <button id="explainSecurityEventBtn" class="gemini-button mt-4">
+                                ✨ Explain Latest Security Event
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- NEW: Mining Equipment & Assets Tab Content -->
+                    <div id="miningEquipmentTab" class="demo-tab-content pt-8 hidden">
+                        <h2 class="dashboard-section-title">Mining Equipment & Assets: Global Overview</h2>
+                        <p class="text-center text-page-theme-text-muted mb-8 max-w-3xl mx-auto">
+                            Detailed inventory and status of all mining equipment across your global operations, categorized by division.
+                        </p>
+                        <div id="equipmentDivisionsContainer">
+                            <!-- Equipment divisions will be rendered here by JavaScript -->
+                        </div>
+                    </div>
+
+                </div>
+
+                <h2 class="dashboard-section-title mt-16">Demo Configuration Metadata: Trial Parameters</h2>
+                <p class="text-center text-page-theme-text-muted mb-8 max-w-3xl mx-auto">
+                    This metadata schema defines the parameters of your current live simulation. It showcases the granular control and transparency over your FAA.zone™ environment.
+                </p>
+                <table class="metadata-table max-w-4xl mx-auto">
+                    <thead>
+                        <tr>
+                            <th>Field Name</th>
+                            <th>Data Type</th>
+                            <th>Description</th>
+                            <th>Current Value</th>
+                            <th>Usage Context</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>demoInstanceID</code></td><td>UUID (String)</td><td>Unique identifier for this specific demo instance.</td><td><code id="meta-demoInstanceID">"generating..."</code></td><td>For tracking and support reference.</td></tr>
+                        <tr><td><code>industrySector</code></td><td>String (Enum)</td><td>Simulated industry vertical.</td><td><span id="meta-industrySector">--</span></td><td>Shapes relevant data sets and performance metrics.</td></tr>
+                        <tr><td><code>activeFeatures</code></td><td>Array of Strings</td><td>Core Abilities actively emphasized in this demo.</td><td><span id="meta-featureFocus">--</span></td><td>Highlights specific engine impacts.</td></tr>
+                        <tr><td><code>dataVolumeScale</code></td><td>String (Enum)</td><td>Scale of data processed in simulation.</td><td><span id="meta-dataVolumeScale">--</span></td><td>Influences simulated throughput and latency.</td></tr>
+                        <tr><td><code>networkTopology</code></td></td><td>String (Enum)</td><td>Simulated network complexity.</td><td><span id="meta-networkTopology">--</span></td><td>Affects simulated latency and synchronization challenges.</td></tr>
+                        <tr><td><code>securityPosture</code></td><td>String (Enum)</td><td>Simulated security threat level.</td><td><span id="meta-securityPosture">--</span></td><td>Triggers relevant security engine responses.</td></tr>
+                        <tr><td><code>trialExpiration</code></td><td>ISO 8601 (String)</td><td>Date when this demo instance will expire.</td><td><span id="meta-expirationTimestamp">--</span></td><td>Automated demo cleanup.</td></tr>
+                    </tbody>
+                </table>
+                <p class="mt-6 text-page-theme-text-muted text-center">
+                    <strong>Raw Configuration Request (JSON Payload):</strong>
+                </p>
+                <pre class="max-w-4xl mx-auto"><code id="demoPayloadJson">{...}</code></pre>
+
+                <div class="text-center mt-16">
+                    <h2 class="dashboard-section-title">Ready to Transform Your Operations?</h2>
+                    <p class="text-xl text-page-theme-text-muted mb-10 max-w-3xl mx-auto">
+                        This live demo is just a glimpse. Unlock the full power of FAA.zone™ for your enterprise.
+                    </p>
+                    <a href="#" class="demo-cta-button" id="getStartedCta">
+                        Upgrade to Full Plan <i class="fas fa-arrow-circle-right ml-2"></i>
+                    </a>
+                    <p class="text-page-theme-text-muted text-sm mt-4">Or <a href="#" class="text-page-theme-accent-color hover:underline">Contact Sales for a Custom Solution</a></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container mx-auto px-4 footer-content">
+            <div class="footer-brand">
+                <div class="logo">
+                    <span class="logo-faa">FAA.zone™</span> / <span class="logo-buildnest">BuildNest™</span>
+                </div>
+                <p class="copyright">&copy; 2025 FAA™ Treaty System™. All Rights Reserved. Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>BuildNest™</h4>
+                    <ul>
+                        <li><a href="#">Features</a></li>
+                        <li><a href="#">Use Cases</a></li>
+                        <li><a href="#">Pricing</a></li>
+                        <li><a href="#">Modules</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>FAA.zone™</h4>
+                    <ul>
+                        <li><a href="#">About FAA Systems™</a></li>
+                        <li><a href="#">Omni Grid™</a></li>
+                        <li><a href="#">Baobab Archive™</a></li>
+                        <li><a href="#">Compliance</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="#">Contact Support</a></li>
+                        <li><a href="#">Partner Program</a></li>
+                        <li><a href="#">Developer API</a></li>
+                        <li><a href="#">Legal & Privacy</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Gemini Response Modal -->
+    <div id="geminiModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="closeGeminiModal">&times;</span>
+            <h3 class="text-xl font-bold mb-4 text-page-theme-accent-color" id="geminiModalTitle"></h3>
+            <div id="geminiModalBody" class="text-page-theme-text-light text-base leading-relaxed">
+                <!-- Gemini API response will be inserted here -->
+            </div>
+            <div id="geminiLoadingIndicator" class="text-center mt-4 text-page-theme-accent-color hidden">
+                <i class="fas fa-spinner fa-spin mr-2"></i> Generating insights...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Consolidated API Key Data from both FAA.zone and MineNest contexts
+        const apiKeysData = [
+            { service: "PayPal (SDK)", key: "BAAGdPecRsf6dw_nIrWqUen0GdW0UsBZapp1Gn62xkPdD-Vqc-4lqWAidKK8LOObXux8pHJGjXknZoar6Q", locations: ["Various checkout scrolls"] },
+            { service: "PayPal (Hosted Button)", key: "EMWGPGHNN8Y8E", context: "(Starter Package)", locations: ["HotStack™", "Various landing pages"] },
+            { service: "PayPal (Hosted Button)", key: "QGU3ZUQCMD49Q", context: "(Pro Package)", locations: ["HotStack™", "Larger brand sites"] },
+            { service: "PayPal (Hosted Button)", key: "9C88S44F93M5J", context: "(Enterprise Package)", locations: ["HotStack™", "Enterprise solutions"] },
+            { service: "PayPal (Hosted Button)", key: "YOUR_BANIMAL_PAYPAL_BUTTON_ID_HERE", context: "(Banimal Loop Plan - Placeholder)", locations: ["Banimal Loop Plan site"] },
+            { service: "Google Maps", key: "AIzaSyBPG8dG29cl0TvYRGyLozejGed5Wj5Ab80", locations: ["Location-based microsites"] },
+            { service: "Spotify (Access Token)", key: "BQBDSZ232IQmSLVbROkxqdwNMoGhtitKOJBjDzE-Lu9YKsSK1RKVwXNfYfncP2wf6Ff6xcYlnGD75baEqOmd3XtxhU...", locations: ["Music/media scrolls"] },
+            { service: "Gemini AI", key: "AIzaSyBGSDZATtITv5iIoB3rgKHBpWx9MrufxXE", locations: ["AI-powered insights scrolls", "Baobab Terminal"] },
+            { service: "Xero (Client ID)", key: "81B3573D453040508996432C5DAD565B", locations: ["Accounting/payroll integration scrolls"] },
+            { service: "Xero (Client Secret)", key: "FIaJGmsaCcKR3Z8kWxPnQd04EhYy6_bImPmoitQDP1U6Smaq", locations: ["Accounting/payroll integration scrolls"] },
+            { service: "Xero (Redirect URI)", key: "https://seedwave.faa.zone/admin_panel_xero.html", locations: ["Xero OAuth setup"] },
+            { service: "Xero (Webhook Key)", key: "2fd5LQV0TQDI3572Er/sg66zqEbl8mFWRyfX3XkoKFZGRLK2cZPGpWV/j4yMTU7aUpbgBCfeZkuHnQIwD/0igw==", locations: ["Xero webhook configurations"] },
+            { service: "ExchangeRate-API", key: "40015d117bc7fff9495dcf28", locations: ["Currency Converter Module"] },
+            // Mining-specific API keys
+            { service: "IoT Sensor Data Platform", key: "SENSORKEY123XYZABC", locations: ["Drill Rig Telemetry", "Mine Site Monitoring"] },
+            { service: "Geological Survey API", key: "GEOAPIKEY987654", locations: ["VaultRock™", "Exploration Planning"] },
+            { service: "Environmental Monitoring API", key: "ECOMONITORABCDEF", locations: ["Environmental Compliance Reports"] },
+            { service: "Supply Chain Logistics Integration", key: "LOGISTICSAPI789DEF", locations: ["Ore Transport Tracking"] },
+            { service: "Satellite Imagery & GIS", key: "SATIMGXYZ789", locations: ["Mine Site Mapping", "Resource Mapping"] }
+        ];
+
+        // Define mining equipment data
+        const miningEquipmentData = {
+            "Drilling & Blasting": [
+                { name: "Rotary Drill Rig #1", id: "DR-001", status: "Operational", location: "South Africa - Pit A", last_service: "2025-06-15", uptime_pct: 98.5 },
+                { name: "Rotary Drill Rig #2", id: "DR-002", status: "Maintenance", location: "Australia - Site B", last_service: "2025-06-28", uptime_pct: 70.2 },
+                { name: "Blast Hole Drill #3", id: "BHD-003", status: "Operational", location: "Chile - Mine C", last_service: "2025-06-01", uptime_pct: 99.1 },
+                { name: "Top Hammer Drill #4", id: "THD-004", status: "Operational", location: "Canada - Pit D", last_service: "2025-06-20", uptime_pct: 97.0 },
+            ].sort((a, b) => a.name.localeCompare(b.name)),
+            "Loading & Hauling": [
+                { name: "Electric Rope Shovel #1", id: "ERS-001", status: "Operational", location: "South Africa - Pit A", last_service: "2025-06-10", uptime_pct: 97.8 },
+                { name: "Hydraulic Excavator #2", id: "HEX-002", status: "Operational", location: "Australia - Site B", last_service: "2025-06-25", uptime_pct: 96.5 },
+                { name: "Off-Highway Truck #1", id: "OHT-001", status: "Operational", location: "South Africa - Pit A", last_service: "2025-06-18", uptime_pct: 99.0 },
+                { name: "Off-Highway Truck #2", id: "OHT-002", status: "Offline", location: "Chile - Mine C", last_service: "2025-06-05", uptime_pct: 50.0 },
+                { name: "Wheel Loader #3", id: "WL-003", status: "Operational", location: "Canada - Pit D", last_service: "2025-06-22", uptime_pct: 98.0 },
+            ].sort((a, b) => a.name.localeCompare(b.name)),
+            "Processing & Crushing": [
+                { name: "Primary Jaw Crusher", id: "PJC-001", status: "Operational", location: "South Africa - Plant 1", last_service: "2025-05-20", uptime_pct: 99.5 },
+                { name: "Secondary Cone Crusher", id: "SCC-002", status: "Maintenance", location: "Australia - Plant 2", last_service: "2025-06-29", uptime_pct: 85.0 },
+                { name: "Ball Mill #1", id: "BM-001", status: "Operational", location: "Chile - Plant 3", last_service: "2025-06-10", uptime_pct: 98.0 },
+                { name: "Vibrating Screen #2", id: "VS-002", status: "Operational", location: "Canada - Plant 4", last_service: "2025-06-20", uptime_pct: 97.5 },
+            ].sort((a, b) => a.name.localeCompare(b.name)),
+            "Support & Ancillary": [
+                { name: "Water Pump Station A", id: "WPS-A", status: "Operational", location: "South Africa - Pit A", last_service: "2025-06-01", uptime_pct: 99.9 },
+                { name: "Power Generator Unit #1", id: "PGU-001", status: "Operational", location: "Australia - Site B", last_service: "2025-06-10", uptime_pct: 98.0 },
+                { name: "Conveyor System C", id: "CS-C", status: "Operational", location: "Chile - Mine C", last_service: "2025-06-25", uptime_pct: 99.2 },
+            ].sort((a, b) => a.name.localeCompare(b.name)),
+            "Safety & Monitoring": [
+                { name: "Gas Detection System", id: "GDS-001", status: "Operational", location: "South Africa - Underground", last_service: "2025-06-05", uptime_pct: 99.8 },
+                { name: "Ventilation Fan Array", id: "VFA-001", status: "Operational", location: "Australia - Underground", last_service: "2025-06-12", uptime_pct: 99.0 },
+                { name: "Geotechnical Radar", id: "GTR-001", status: "Operational", location: "Chile - Pit C", last_service: "2025-06-20", uptime_pct: 98.7 },
+            ].sort((a, b) => a.name.localeCompare(b.name)),
+        };
+
+
+        // Extract Gemini API Key
+        const GEMINI_API_KEY_OBJECT = apiKeysData.find(item => item.service === "Gemini AI");
+        const GEMINI_API_KEY = GEMINI_API_KEY_OBJECT ? GEMINI_API_KEY_OBJECT.key : "";
+        console.log("Gemini API Key for AI features:", GEMINI_API_KEY ? "Loaded" : "Not Provided (using default)");
+
+        let overallPerformanceChart;
+        let securityIntegrityChart;
+        let revenueGrowthChart;
+        let costReductionChart;
+        let auditIntegrityChart;
+        let miningOperationalHealthChart; // New chart instance for mining
+        let liveDataInterval; // Variable to hold the interval ID for live data updates
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const mainNav = document.querySelector('.main-nav');
+            const hamburgerMenu = document.querySelector('.hamburger-menu');
+            const body = document.body;
+            const themeToggle = document.getElementById('themeToggle');
+
+            const generateDemoBtn = document.getElementById('generateDemoBtn');
+            const connectLiveBtn = document.getElementById('connectLiveBtn');
+            const stopLiveBtn = document.getElementById('stopLiveBtn');
+            const generateScenarioInsightsBtn = document.getElementById('generateScenarioInsightsBtn');
+            const explainSecurityEventBtn = document.getElementById('explainSecurityEventBtn');
+
+            const demoStatusMessage = document.getElementById('demoStatusMessage');
+            const simulatedResultsSection = document.getElementById('simulatedResults');
+            const currentScenarioText = document.getElementById('currentScenarioText');
+            const operationsLog = document.getElementById('operationsLog'); // Global Operations Log Console
+            const financialOperationsLog = document.getElementById('financialOperationsLog'); // Financial Operations Log Console
+            const dataGovernanceLog = document.getElementById('dataGovernanceLog'); // Data Governance Operations Log Console
+
+
+            // KPI elements
+            const kpiTotalProcessed = document.getElementById('kpi-total-processed');
+            const kpiAvgLatency = document.getElementById('kpi-avg-latency');
+            const kpiSecurityEvents = document.getElementById('kpi-security-events');
+            const kpiEfficiencyGain = document.getElementById('kpi-efficiency-gain');
+            const kpiROI = document.getElementById('kpi-roi');
+            const kpiCostSavings = document.getElementById('kpi-cost-savings');
+            const kpiComplianceScore = document.getElementById('kpi-compliance-score');
+            const kpiTraceDepth = document.getElementById('kpi-trace-depth');
+            // NEW Mining KPIs
+            const kpiTotalMineSites = document.getElementById('kpi-total-mine-sites');
+            const kpiActiveDrillRigs = document.getElementById('kpi-active-drill-rigs');
+            const kpiMonthlyOreYield = document.getElementById('kpi-monthly-ore-yield');
+            const kpiEquipmentUptime = document.getElementById('kpi-equipment-uptime');
+
+
+            // Configuration controls
+            const industrySectorSelect = document.getElementById('industrySector');
+            const dataVolumeSelect = document.getElementById('dataVolume');
+            const networkTopologySelect = document.getElementById('networkTopology');
+            const securityPostureSelect = document.getElementById('securityPosture');
+            const emphasizeAbilitiesCheckboxes = document.querySelectorAll('#demo-controls-panel input[type="checkbox"]');
+
+
+            // Individual Core Ability result spans
+            const corethinkResult = document.getElementById('corethinkResult');
+            const truthweightResult = document.getElementById('truthweightResult');
+            const echosynthResult = document.getElementById('echosynthResult');
+            const autosigilResult = document.getElementById('autosigilResult');
+            const pulseindexResult = document.getElementById('pulseindexResult');
+            const omnitraceResult = document.getElementById('omnitraceResult');
+            const lifthaloResult = document.getElementById('lifthaloResult');
+            const mirrorloopResult = document.getElementById('mirrorloopResult');
+            const fireratioResult = document.getElementById('fireratioResult');
+
+            // Individual Core Ability metric spans
+            const corethinkMetrics = document.getElementById('corethinkMetrics');
+            const truthweightMetrics = document.getElementById('truthweightMetrics');
+            const echosynthMetrics = document.getElementById('echosynthMetrics');
+            const autosigilMetrics = document.getElementById('autosigilMetrics');
+            const pulseindexMetrics = document.getElementById('pulseindexMetrics');
+            const omnitraceMetrics = document.getElementById('omnitraceMetrics');
+            const lifthaloMetrics = document.getElementById('lifthaloMetrics');
+            const mirrorloopMetrics = document.getElementById('mirrorloopMetrics');
+            const fireratioMetrics = document.getElementById('fireratioMetrics');
+
+            // Individual Core Ability Status spans
+            const corethinkStatus = document.getElementById('corethinkStatus');
+            const truthweightStatus = document.getElementById('truthweightStatus');
+            const echosynthStatus = document.getElementById('echosynthStatus');
+            const autosigilStatus = document.getElementById('autosigilStatus');
+            const pulseindexStatus = document.getElementById('pulseindexStatus');
+            const omnitraceStatus = document.getElementById('omnitraceStatus');
+            const lifthaloStatus = document.getElementById('lifthaloStatus');
+            const mirrorloopStatus = document.getElementById('mirrorloopStatus');
+            const fireratioStatus = document.getElementById('fireratioStatus');
+
+            // Individual Core Ability progress bars
+            const corethinkProgressBar = document.getElementById('corethinkProgressBar');
+            const truthweightProgressBar = document.getElementById('truthweightProgressBar');
+            const echosynthProgressBar = document.getElementById('echosynthProgressBar');
+            const autosigilProgressBar = document.getElementById('autosigilProgressBar');
+            const pulseindexProgressBar = document.getElementById('pulseindexProgressBar');
+            const omnitraceProgressBar = document.getElementById('omnitraceProgressBar');
+            const lifthaloProgressBar = document.getElementById('lifthaloProgressBar');
+            const mirrorloopProgressBar = document.getElementById('mirrorloopProgressBar');
+            const fireratioProgressBar = document.getElementById('fireratioProgressBar');
+
+
+            // Metadata table elements
+            const metaDemoInstanceID = document.getElementById('meta-demoInstanceID');
+            const metaIndustrySector = document.getElementById('meta-industrySector');
+            const metaFeatureFocus = document.getElementById('meta-featureFocus');
+            const metaDataVolumeScale = document.getElementById('meta-dataVolumeScale');
+            const metaNetworkTopology = document.getElementById('meta-networkTopology');
+            const metaSecurityPosture = document.getElementById('meta-securityPosture');
+            const metaExpirationTimestamp = document.getElementById('meta-expirationTimestamp');
+            const demoPayloadJson = document.getElementById('demoPayloadJson');
+
+            // Gemini Modal Elements
+            const geminiModal = document.getElementById('geminiModal');
+            const closeGeminiModal = document.getElementById('closeGeminiModal');
+            const geminiModalTitle = document.getElementById('geminiModalTitle');
+            const geminiModalBody = document.getElementById('geminiModalBody');
+            const geminiLoadingIndicator = document.getElementById('geminiLoadingIndicator');
+
+            // Mining Equipment Elements
+            const equipmentDivisionsContainer = document.getElementById('equipmentDivisionsContainer');
+
+
+            // --- Helper to update progress bars ---
+            const updateProgressBar = (element, percentage) => {
+                if (element) {
+                    element.style.width = `${percentage}%`;
+                }
+            };
+
+            // --- Log to Operations Console ---
+            const logGlobalOperation = (message, type = 'info', engine = null) => {
+                const timestamp = new Date().toLocaleTimeString('en-US', { hour12: false });
+                let logEntry = `<span class="log-timestamp">[${timestamp}]</span> `;
+                if (engine) {
+                    logEntry += `<span class="engine-name">${engine}:</span> `;
+                }
+                logEntry += `<span class="log-message-${type}">${message}</span>`;
+                if (operationsLog) {
+                    operationsLog.innerHTML += logEntry + '<br>';
+                    operationsLog.scrollTop = operationsLog.scrollHeight;
+                }
+            };
+
+            // New: Log to contextual logs
+            const logContextualOperation = (logElement, message, type = 'info') => {
+                const timestamp = new Date().toLocaleTimeString('en-US', { hour12: false });
+                const logEntry = `<span class="log-timestamp">[${timestamp}]</span> <span class="log-message-${type}">${message}</span>`;
+                if (logElement) {
+                    logElement.innerHTML += logEntry + '<br>';
+                    logElement.scrollTop = logElement.scrollHeight;
+                }
+            };
+
+            // --- Update individual ability status ---
+            const updateAbilityStatus = (abilityName, statusText, statusType = 'light') => {
+                const statusSpan = document.getElementById(`${abilityName}Status`);
+                if (statusSpan) {
+                    statusSpan.textContent = statusText;
+                    statusSpan.className = 'node-status';
+                    if (statusType === 'light') statusSpan.classList.add('text-page-theme-text-light');
+                    else if (statusType === 'accent') statusSpan.classList.add('text-page-theme-accent-color');
+                    else if (statusType === 'error') statusSpan.classList.add('text-red-500');
+                    else if (statusType === 'success') statusSpan.classList.add('text-green-500');
+                }
+            };
+
+
+            // --- Initialize Charts ---
+            const initCharts = () => {
+                if (overallPerformanceChart) overallPerformanceChart.destroy();
+                if (securityIntegrityChart) securityIntegrityChart.destroy();
+                if (revenueGrowthChart) revenueGrowthChart.destroy();
+                if (costReductionChart) costReductionChart.destroy();
+                if (auditIntegrityChart) auditIntegrityChart.destroy();
+                if (miningOperationalHealthChart) miningOperationalHealthChart.destroy(); // Destroy new chart
+
+                const commonChartOptions = {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, ticks: { color: 'var(--page-theme-text-muted)' }, grid: { color: 'var(--page-border-color)' } },
+                        x: { ticks: { color: 'var(--page-theme-text-muted)' }, grid: { color: 'var(--page-border-color)' } }
+                    },
+                    plugins: { legend: { display: true, labels: { color: 'var(--page-theme-text-light)' } } }
+                };
+
+                // Overall Performance Chart
+                const overallCtx = document.getElementById('overallPerformanceChart').getContext('2d');
+                overallPerformanceChart = new Chart(overallCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Initial', 'Current'],
+                        datasets: [{
+                            label: 'Performance Index (Normalized)',
+                            data: [50, 50],
+                            borderColor: 'var(--page-theme-accent-color)',
+                            backgroundColor: 'rgba(250, 200, 20, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                            pointBackgroundColor: 'var(--page-theme-accent-color)',
+                            pointBorderColor: 'var(--page-card-background)',
+                            pointRadius: 5,
+                            pointHoverRadius: 7
+                        }]
+                    },
+                    options: commonChartOptions
+                });
+
+                // Security & Integrity Chart
+                const securityCtx = document.getElementById('securityIntegrityChart').getContext('2d');
+                securityIntegrityChart = new Chart(securityCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Initial', 'Current'],
+                        datasets: [{
+                            label: 'Security & Integrity Score (%)',
+                            data: [80, 80],
+                            backgroundColor: ['#6366f1', 'var(--page-theme-accent-color)'],
+                            borderColor: ['#4f46e5', '#eab308'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: commonChartOptions
+                });
+
+                // Financial Impact Charts
+                const revenueCtx = document.getElementById('revenueGrowthChart').getContext('2d');
+                revenueGrowthChart = new Chart(revenueCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Year 0', 'Year 1', 'Year 2', 'Year 3'],
+                        datasets: [{
+                            label: 'Projected Annual Revenue Growth (%)',
+                            data: [0, 0, 0, 0], // Base values
+                            borderColor: '#30d158', /* Apple Green */
+                            backgroundColor: 'rgba(48, 209, 88, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                            pointBackgroundColor: '#30d158',
+                            pointBorderColor: 'var(--page-card-background)'
+                        }]
+                    },
+                    options: commonChartOptions
+                });
+
+                const costCtx = document.getElementById('costReductionChart').getContext('2d');
+                costReductionChart = new Chart(costCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Initial', 'Post-Deployment'],
+                        datasets: [{
+                            label: 'Operational Cost Reduction (%)',
+                            data: [0, 0], // Base values
+                            backgroundColor: ['#ff3b30', '#00e0ff'], /* Red for initial, Cyan for reduction */
+                            borderColor: ['#cc2e2e', '#00b3cc'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: commonChartOptions
+                });
+
+                // Data Governance & Audit Chart
+                const auditCtx = document.getElementById('auditIntegrityChart').getContext('2d');
+                auditIntegrityChart = new Chart(auditCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                        datasets: [
+                            {
+                                label: 'Integrity Checks Performed',
+                                data: [0, 0, 0, 0, 0, 0],
+                                borderColor: '#00e0ff',
+                                fill: false,
+                                tension: 0.3,
+                                pointBackgroundColor: '#00e0ff'
+                            },
+                            {
+                                label: 'Security Events Logged',
+                                data: [0, 0, 0, 0, 0, 0],
+                                borderColor: '#ff3b30',
+                                fill: false,
+                                tension: 0.3,
+                                pointBackgroundColor: '#ff3b30'
+                            }
+                        ]
+                    },
+                    options: commonChartOptions
+                });
+
+                // NEW: Mining Operational Health Chart
+                const miningHealthCtx = document.getElementById('miningOperationalHealthChart').getContext('2d');
+                miningOperationalHealthChart = new Chart(miningHealthCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'], // Placeholder labels
+                        datasets: [
+                            {
+                                label: 'Ore Extraction Rate (Tonnes/hr)',
+                                data: [0, 0, 0, 0, 0, 0],
+                                borderColor: '#B8860B', // Gold for mining
+                                backgroundColor: 'rgba(184, 134, 11, 0.1)',
+                                fill: true,
+                                tension: 0.3,
+                                pointBackgroundColor: '#B8860B'
+                            },
+                            {
+                                label: 'Equipment Downtime (%)',
+                                data: [0, 0, 0, 0, 0, 0],
+                                borderColor: '#0071e3', // Blue
+                                backgroundColor: 'rgba(0, 113, 227, 0.1)',
+                                fill: true,
+                                tension: 0.3,
+                                pointBackgroundColor: '#0071e3'
+                            }
+                        ]
+                    },
+                    options: commonChartOptions
+                });
+            };
+
+            // --- Simulate API Fetch for Live Metrics ---
+            const fetchLiveMetrics = async (industry, dataVolume, network, security, emphasizedAbilities) => {
+                // This function simulates fetching data from a real API endpoint.
+                // In a real application, you would make a 'fetch' call here.
+                // For this demo, we'll generate dynamic mock data and simulate API key usage.
+
+                const relevantApiServices = apiKeysData.filter(item =>
+                    item.service.includes('Google Maps') ||
+                    item.service.includes('Spotify') ||
+                    item.service.includes('Xero') ||
+                    item.service.includes('PayPal') ||
+                    item.service.includes('ExchangeRate-API') ||
+                    item.service.includes('IoT Sensor Data Platform') ||
+                    item.service.includes('Geological Survey API') ||
+                    item.service.includes('Environmental Monitoring API') ||
+                    item.service.includes('Supply Chain Logistics Integration') ||
+                    item.service.includes('Satellite Imagery & GIS')
+                );
+                const randomApiService = relevantApiServices[Math.floor(Math.random() * relevantApiServices.length)];
+                const apiServiceUsed = randomApiService ? randomApiService.service : "Internal Data Source";
+
+                logGlobalOperation(`Accessing simulated external API: <span class="log-message-info">${apiServiceUsed}</span> for metrics.`, 'info');
+
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        const basePerf = 60 + (dataVolume === 'Massive' ? -10 : 0) + (network === 'Global' ? -5 : 0);
+                        const baseSecurity = 85 + (security === 'Hostile' ? -10 : 0);
+
+                        const totalProcessed = (Math.random() * 2000 + 1000 + (dataVolume === 'Massive' ? 5000 : 0)).toFixed(0);
+                        const avgLatency = (Math.random() * 50 + 30 + (network === 'Global' ? 50 : 0)).toFixed(0);
+                        const securityEvents = (Math.random() * 20 + 10 + (security === 'Elevated' ? 50 : (security === 'Hostile' ? 150 : 0))).toFixed(0);
+                        const efficiencyGain = (Math.random() * 10 + 15).toFixed(0);
+
+                        const revenueGrowth = (Math.random() * 5 + 5 + (industry === 'Finance' ? 5 : 0)).toFixed(1);
+                        const costReduction = (Math.random() * 5 + 8 + (industry === 'Manufacturing' ? 5 : 0)).toFixed(1);
+                        const roi = (parseFloat(revenueGrowth) * 2 + parseFloat(costReduction) * 3 + Math.random() * 20).toFixed(0);
+                        const complianceScore = (Math.random() * 5 + 90 - (security === 'Hostile' ? 10 : 0)).toFixed(0);
+                        const traceDepth = (Math.random() * 2 + 5 + (dataVolume === 'Massive' ? 3 : 0)).toFixed(0);
+
+                        // NEW: Mining specific metrics
+                        const totalMineSites = (700 + Math.random() * 100).toFixed(0);
+                        const activeDrillRigs = (400 + Math.random() * 50).toFixed(0);
+                        const monthlyOreYield = (1000000 + Math.random() * 200000).toFixed(0); // In Tonnes
+                        const equipmentUptime = (90 + Math.random() * 9).toFixed(2); // In %
+
+                        const miningHealthData = {
+                            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                            datasets: [
+                                {
+                                    label: 'Ore Extraction Rate (Tonnes/hr)',
+                                    data: [
+                                        (80 + Math.random() * 5).toFixed(0),
+                                        (85 + Math.random() * 5).toFixed(0),
+                                        (82 + Math.random() * 5).toFixed(0),
+                                        (88 + Math.random() * 5).toFixed(0),
+                                        (90 + Math.random() * 5).toFixed(0),
+                                        (92 + Math.random() * 5).toFixed(0)
+                                    ],
+                                    borderColor: '#B8860B',
+                                    backgroundColor: 'rgba(184, 134, 11, 0.1)',
+                                    fill: true,
+                                    tension: 0.3
+                                },
+                                {
+                                    label: 'Equipment Downtime (%)',
+                                    data: [
+                                        (15 - Math.random() * 2).toFixed(1),
+                                        (12 - Math.random() * 2).toFixed(1),
+                                        (10 - Math.random() * 2).toFixed(1),
+                                        (8 - Math.random() * 2).toFixed(1),
+                                        (9 - Math.random() * 2).toFixed(1),
+                                        (7 - Math.random() * 2).toFixed(1)
+                                    ],
+                                    borderColor: '#0071e3',
+                                    backgroundColor: 'rgba(0, 113, 227, 0.1)',
+                                    fill: true,
+                                    tension: 0.3
+                                }
+                            ]
+                        };
+
+
+                        const nodeImpacts = {};
+                        const abilityData = {
+                            Corethink: { result: (70 + Math.random() * 10).toFixed(0), metrics: `${(Math.random() * 50 + 50).toFixed(0)}k` },
+                            TruthWeight: { result: (98 + Math.random() * 1).toFixed(2), metrics: `${(Math.random() * 0.1 + 0.1).toFixed(2)}%` },
+                            EchoSynth: { result: (80 + Math.random() * 10).toFixed(0), metrics: `${(Math.random() * 0.5 + 0.5).toFixed(1)}%` },
+                            AutoSigil: { result: (90 + Math.random() * 5).toFixed(0), metrics: `${(Math.random() * 20 + 30).toFixed(0)}ms` },
+                            PulseIndex: { result: (95 + Math.random() * 3).toFixed(0), metrics: `${(Math.random() * 10 + 20).toFixed(0)}ms` },
+                            OmniTrace: { result: (99 + Math.random() * 0.5).toFixed(0), metrics: `${(Math.random() * 2 + 7).toFixed(0)} layers` },
+                            LiftHalo: { result: (30 + Math.random() * 10).toFixed(0), metrics: `${(Math.random() * 10 + 10).toFixed(0)}%` },
+                            MirrorLoop: { result: (Math.random() < 0.9 ? 'sub-seconds' : 'seconds'), metrics: (Math.random() < 0.9 ? 'RPO: 0' : 'RPO: 1') },
+                            FireRatio: { result: (60 + Math.random() * 15).toFixed(0), metrics: `${(Math.random() * 20 + 40).toFixed(0)}ms` },
+                        };
+
+                        emphasizedAbilities.forEach(ability => {
+                            // Apply a bonus to emphasized abilities
+                            const original = abilityData[ability];
+                            if (original) { // Check if original exists to prevent errors for non-existent abilities
+                                if (ability === 'Corethink') {
+                                    original.result = (parseFloat(original.result) + 5).toFixed(0);
+                                    original.metrics = `${(parseFloat(original.metrics.replace('k', '')) + 10).toFixed(0)}k`;
+                                } else if (ability === 'TruthWeight') {
+                                    original.result = (parseFloat(original.result) + 0.1).toFixed(2);
+                                    original.metrics = `${Math.max(0.01, parseFloat(original.metrics.replace('%', '')) - 0.05).toFixed(2)}%`;
+                                }
+                                // Add more specific boosts for other abilities if desired
+                                nodeImpacts[ability] = original;
+                            }
+                        });
+
+                        resolve({
+                            overallPerformance: Math.min(100, basePerf + (emphasizedAbilities.length > 0 ? 10 : 0) + Math.random() * 5),
+                            securityScore: Math.min(100, baseSecurity + (emphasizedAbilities.length > 0 ? 5 : 0) + Math.random() * 3),
+                            kpis: {
+                                totalProcessed: totalProcessed,
+                                avgLatency: avgLatency,
+                                securityEvents: securityEvents,
+                                efficiencyGain: efficiencyGain,
+                                roi: roi,
+                                costSavings: costReduction,
+                                complianceScore: complianceScore,
+                                traceDepth: traceDepth,
+                                revenueGrowth: revenueGrowth,
+                                // NEW Mining KPIs
+                                totalMineSites: totalMineSites,
+                                activeDrillRigs: activeDrillRigs,
+                                monthlyOreYield: monthlyOreYield,
+                                equipmentUptime: equipmentUptime,
+                            },
+                            nodeImpacts: nodeImpacts,
+                            miningHealthData: miningHealthData // Include new chart data
+                        });
+                    }, 1000); // Simulate 1 second network latency
+                });
+            };
+
+
+            // --- Update Dashboard Metrics (for both simulated and live) ---
+            const updateDashboardMetrics = async (isLive = false) => {
+                const industry = industrySectorSelect ? industrySectorSelect.value : 'Finance';
+                const dataVolume = dataVolumeSelect ? dataVolumeSelect.value : 'Small';
+                const network = networkTopologySelect ? networkTopologySelect.value : 'Local';
+                const security = securityPostureSelect ? securityPostureSelect.value : 'Standard';
+                const emphasizedAbilities = Array.from(emphasizeAbilitiesCheckboxes)
+                                             .filter(checkbox => checkbox.checked)
+                                             .map(checkbox => checkbox.value);
+
+                if (!isLive) { // Only clear logs and reset cards for initial "Generate Simulated Demo"
+                    if (operationsLog) operationsLog.innerHTML = '';
+                    if (financialOperationsLog) financialOperationsLog.innerHTML = '';
+                    if (dataGovernanceLog) dataGovernanceLog.innerHTML = '';
+
+                    document.querySelectorAll('.node-card').forEach(card => {
+                        card.style.opacity = '0.4';
+                        card.classList.remove('active');
+                    });
+
+                    const allAbilityNames = ['Corethink', 'TruthWeight', 'EchoSynth', 'AutoSigil', 'PulseIndex', 'OmniTrace', 'LiftHalo', 'MirrorLoop', 'FireRatio'];
+                    allAbilityNames.forEach(name => {
+                        updateAbilityStatus(name, 'Idle', 'light');
+                        updateProgressBar(document.getElementById(`${name}ProgressBar`), 0);
+                    });
+
+                    if (kpiTotalProcessed) kpiTotalProcessed.textContent = '0';
+                    if (kpiAvgLatency) kpiAvgLatency.textContent = '0';
+                    if (kpiSecurityEvents) kpiSecurityEvents.textContent = '0';
+                    if (kpiEfficiencyGain) kpiEfficiencyGain.textContent = '0';
+                    if (kpiROI) kpiROI.textContent = '0';
+                    if (kpiCostSavings) kpiCostSavings.textContent = '0';
+                    if (kpiComplianceScore) kpiComplianceScore.textContent = '0';
+                    if (kpiTraceDepth) kpiTraceDepth.textContent = '0';
+                    // NEW Mining KPIs reset
+                    if (kpiTotalMineSites) kpiTotalMineSites.textContent = '0';
+                    if (kpiActiveDrillRigs) kpiActiveDrillRigs.textContent = '0';
+                    if (kpiMonthlyOreYield) kpiMonthlyOreYield.textContent = '0';
+                    if (kpiEquipmentUptime) kpiEquipmentUptime.textContent = '0';
+
+
+                    initCharts(); // Re-initialize charts for fresh start
+                    logGlobalOperation('Initializing FAA.zone™ Operational Dashboard...', 'info');
+                    await new Promise(r => setTimeout(r, 500));
+                    logGlobalOperation('Establishing secure connection to simulated data streams for operational scenario...', 'info');
+                    await new Promise(r => setTimeout(r, 700));
+                }
+
+                logGlobalOperation(`Fetching ${isLive ? 'live' : 'simulated'} metrics for scenario: Industry - <span class="log-message-info">${industry}</span>, Data Volume - <span class="log-message-info">${dataVolume}</span>, Network - <span class="log-message-info">${network}</span>, Security - <span class="log-message-info">${security}</span>.`, 'info');
+                if (demoStatusMessage) {
+                    demoStatusMessage.classList.remove('hidden');
+                    demoStatusMessage.textContent = isLive ? "Connecting to live data..." : "Simulating results...";
+                }
+
+                // Simulate fetching data
+                const fetchedData = await fetchLiveMetrics(industry, dataVolume, network, security, emphasizedAbilities);
+
+                if (demoStatusMessage) {
+                    demoStatusMessage.classList.add('hidden');
+                }
+
+                // Update KPIs
+                if (kpiTotalProcessed) kpiTotalProcessed.textContent = fetchedData.kpis.totalProcessed;
+                if (kpiAvgLatency) kpiAvgLatency.textContent = fetchedData.kpis.avgLatency;
+                if (kpiSecurityEvents) kpiSecurityEvents.textContent = fetchedData.kpis.securityEvents;
+                if (kpiEfficiencyGain) kpiEfficiencyGain.textContent = fetchedData.kpis.efficiencyGain;
+                if (kpiROI) kpiROI.textContent = fetchedData.kpis.roi;
+                if (kpiCostSavings) kpiCostSavings.textContent = (parseFloat(fetchedData.kpis.costSavings) * 0.1).toFixed(1); // Mock millions
+                if (kpiComplianceScore) kpiComplianceScore.textContent = Math.min(100, fetchedData.kpis.complianceScore);
+                if (kpiTraceDepth) kpiTraceDepth.textContent = fetchedData.kpis.traceDepth;
+                // NEW Mining KPIs update
+                if (kpiTotalMineSites) kpiTotalMineSites.textContent = fetchedData.kpis.totalMineSites;
+                if (kpiActiveDrillRigs) kpiActiveDrillRigs.textContent = fetchedData.kpis.activeDrillRigs;
+                if (kpiMonthlyOreYield) kpiMonthlyOreYield.textContent = fetchedData.kpis.monthlyOreYield;
+                if (kpiEquipmentUptime) kpiEquipmentUptime.textContent = fetchedData.kpis.equipmentUptime;
+
+
+                // Update Overall Performance Chart
+                if (overallPerformanceChart) {
+                    overallPerformanceChart.data.datasets[0].data[1] = fetchedData.overallPerformance;
+                    overallPerformanceChart.update();
+                }
+                // Update Security & Integrity Chart
+                if (securityIntegrityChart) {
+                    securityIntegrityChart.data.datasets[0].data[1] = fetchedData.securityScore;
+                    securityIntegrityChart.update();
+                }
+
+                // Update Financial and Audit Charts (with new random data for each update)
+                if (revenueGrowthChart) {
+                    revenueGrowthChart.data.datasets[0].data = [0, parseFloat(fetchedData.kpis.revenueGrowth)/2, parseFloat(fetchedData.kpis.revenueGrowth)*0.8, parseFloat(fetchedData.kpis.revenueGrowth)];
+                    revenueGrowthChart.update();
+                }
+                if (costReductionChart) {
+                    costReductionChart.data.datasets[0].data = [0, parseFloat(fetchedData.kpis.costSavings)];
+                    costReductionChart.update();
+                }
+                if (auditIntegrityChart) {
+                    auditIntegrityChart.data.datasets[0].data = [
+                        100 + Math.random() * 50, 120 + Math.random() * 50, 150 + Math.random() * 50,
+                        180 + Math.random() * 50, 200 + Math.random() * 50, 220 + Math.random() * 50
+                    ];
+                    auditIntegrityChart.data.datasets[1].data = [
+                        Math.max(0, 10 - Math.random() * 5), Math.max(0, 8 - Math.random() * 4), Math.max(0, 5 - Math.random() * 3),
+                        Math.max(0, 7 - Math.random() * 4), Math.max(0, 3 - Math.random() * 2), Math.max(0, 2 - Math.random() * 1)
+                    ];
+                    auditIntegrityChart.update();
+                }
+
+                // NEW: Update Mining Operational Health Chart
+                if (miningOperationalHealthChart && fetchedData.miningHealthData) {
+                    miningOperationalHealthChart.data.labels = fetchedData.miningHealthData.labels;
+                    miningOperationalHealthChart.data.datasets[0].data = fetchedData.miningHealthData.datasets[0].data;
+                    miningOperationalHealthChart.data.datasets[1].data = fetchedData.miningHealthData.datasets[1].data;
+                    miningOperationalHealthChart.update();
+                }
+
+
+                // Update individual Core Ability cards
+                const allAbilityNames = ['Corethink', 'TruthWeight', 'EchoSynth', 'AutoSigil', 'PulseIndex', 'OmniTrace', 'LiftHalo', 'MirrorLoop', 'FireRatio'];
+                for (const name of allAbilityNames) {
+                    const nodeCard = document.getElementById(`card-${name}`);
+                    const progressBar = document.getElementById(`${name}ProgressBar`);
+                    const resultSpan = document.getElementById(`${name}Result`);
+                    const metricsSpan = document.getElementById(`${name}Metrics`);
+
+                    const impact = fetchedData.nodeImpacts[name];
+                    if (impact) {
+                        if (resultSpan) resultSpan.textContent = impact.result + (name !== 'MirrorLoop' ? '%' : '');
+                        if (metricsSpan) metricsSpan.textContent = impact.metrics;
+                        updateAbilityStatus(name, 'Optimal', 'success');
+                        updateProgressBar(progressBar, 100); // Set to 100% instantly for live update
+                        if (nodeCard) nodeCard.style.opacity = '1'; // Ensure active cards are fully visible
+                    } else {
+                        // If an ability is not emphasized, dim it and set to idle
+                        updateAbilityStatus(name, 'Idle', 'light');
+                        updateProgressBar(progressBar, 0);
+                        if (nodeCard) nodeCard.style.opacity = '0.4';
+                    }
+                }
+
+                // Update Metadata table
+                if (metaDemoInstanceID) metaDemoInstanceID.textContent = `demo-${crypto.randomUUID().substring(0,8)}`;
+                if (metaIndustrySector) metaIndustrySector.textContent = industry;
+                if (metaFeatureFocus) metaFeatureFocus.textContent = emphasizedAbilities.length > 0 ? JSON.stringify(emphasizedAbilities) : "[]";
+                if (metaDataVolumeScale) metaDataVolumeScale.textContent = dataVolume;
+                if (metaNetworkTopology) metaNetworkTopology.textContent = network;
+                if (metaSecurityPosture) metaSecurityPosture.textContent = security;
+                const expirationDate = new Date();
+                expirationDate.setDate(expirationDate.getDate() + 7);
+                if (metaExpirationTimestamp) metaExpirationTimestamp.textContent = expirationDate.toISOString().split('T')[0] + 'Z';
+
+                const currentPayload = {
+                    demoInstanceID: metaDemoInstanceID ? metaDemoInstanceID.textContent : 'N/A',
+                    industrySector: industry,
+                    featureFocus: emphasizedAbilities,
+                    dataVolumeScale: dataVolume,
+                    networkTopology: network,
+                    securityPosture: security,
+                    outputFormat: "InteractiveDashboard",
+                    requestTimestamp: new Date().toISOString().split('.')[0] + 'Z',
+                    simulatedResults: fetchedData
+                };
+                if (demoPayloadJson) demoPayloadJson.textContent = JSON.stringify(currentPayload, null, 2);
+
+                if (currentScenarioText) currentScenarioText.textContent = `${industry} - ${dataVolume} Data Volume - ${network} Network`;
+
+                if (simulatedResultsSection) {
+                    simulatedResultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+
+                logGlobalOperation(`${isLive ? 'Live' : 'Simulated'} data update complete.`, 'success');
+            };
+
+            // --- Gemini API Call Function ---
+            async function callGeminiAPI(prompt, title) {
+                geminiModalTitle.textContent = title;
+                geminiModalBody.innerHTML = ''; // Clear previous content
+                geminiLoadingIndicator.classList.remove('hidden');
+                geminiModal.style.display = 'flex'; // Show modal
+
+                try {
+                    let chatHistory = [];
+                    chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                    const payload = { contents: chatHistory };
+                    const apiKey = GEMINI_API_KEY; // Use the extracted API key
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const result = await response.json();
+
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        geminiModalBody.innerHTML = text.replace(/\n/g, '<br>'); // Display text with line breaks
+                        logGlobalOperation(`Gemini API call successful for "${title}".`, 'success');
+                    } else {
+                        geminiModalBody.textContent = "Error: Could not get a valid response from Gemini API.";
+                        logGlobalOperation(`Gemini API call failed for "${title}": No valid response.`, 'error');
+                        console.error("Gemini API error: No valid response structure", result);
+                    }
+                } catch (error) {
+                    geminiModalBody.textContent = `Error calling Gemini API: ${error.message}`;
+                    logGlobalOperation(`Gemini API call failed for "${title}": ${error.message}`, 'error');
+                    console.error("Error calling Gemini API:", error);
+                } finally {
+                    geminiLoadingIndicator.classList.add('hidden');
+                }
+            }
+
+
+            // --- Event Listener for Generate Simulated Demo Button ---
+            if (generateDemoBtn) {
+                generateDemoBtn.addEventListener('click', async () => {
+                    clearInterval(liveDataInterval); // Stop any existing live data interval
+                    generateDemoBtn.disabled = true;
+                    connectLiveBtn.disabled = false;
+                    stopLiveBtn.classList.add('hidden');
+                    connectLiveBtn.classList.remove('hidden');
+
+                    if (demoStatusMessage) {
+                        demoStatusMessage.classList.remove('hidden');
+                        demoStatusMessage.textContent = "Simulating results, please wait...";
+                    }
+
+                    document.querySelectorAll('.progress-bar-fill').forEach(bar => updateProgressBar(bar, 0));
+                    await updateDashboardMetrics(false); // Run initial simulation
+                    generateDemoBtn.disabled = false;
+                    if (demoStatusMessage) {
+                        demoStatusMessage.classList.add('hidden');
+                    }
+                });
+            }
+
+            // --- Event Listener for Connect to Live Data Button ---
+            if (connectLiveBtn) {
+                connectLiveBtn.addEventListener('click', () => {
+                    clearInterval(liveDataInterval); // Clear any previous interval
+                    logGlobalOperation('Attempting to connect to live data stream (simulated)...', 'info');
+
+                    generateDemoBtn.disabled = true;
+                    connectLiveBtn.disabled = true;
+                    stopLiveBtn.classList.remove('hidden');
+
+                    // Initial fetch and then set interval
+                    updateDashboardMetrics(true); // First update immediately
+                    liveDataInterval = setInterval(() => {
+                        updateDashboardMetrics(true); // Subsequent updates every 9 seconds
+                    }, 9000); // 9 seconds interval
+                    logGlobalOperation('Connected to simulated live data. Updates will occur every 9 seconds.', 'success');
+                });
+            }
+
+            // --- Event Listener for Stop Live Data Button ---
+            if (stopLiveBtn) {
+                stopLiveBtn.addEventListener('click', () => {
+                    clearInterval(liveDataInterval);
+                    logGlobalOperation('Live data stream stopped.', 'warning');
+                    generateDemoBtn.disabled = false;
+                    connectLiveBtn.disabled = false;
+                    stopLiveBtn.classList.add('hidden');
+                    if (demoStatusMessage) {
+                        demoStatusMessage.classList.add('hidden');
+                    }
+                });
+            }
+
+            // --- Event Listener for Generate Scenario Insights Button ---
+            if (generateScenarioInsightsBtn) {
+                generateScenarioInsightsBtn.addEventListener('click', async () => {
+                    generateScenarioInsightsBtn.disabled = true;
+                    const industry = industrySectorSelect ? industrySectorSelect.value : 'Finance';
+                    const dataVolume = dataVolumeSelect ? dataVolumeSelect.value : 'Small';
+                    const network = networkTopologySelect ? networkTopologySelect.value : 'Local';
+                    const security = securityPostureSelect ? securityPostureSelect.value : 'Standard';
+                    const emphasizedAbilities = Array.from(emphasizeAbilitiesCheckboxes)
+                                                             .filter(checkbox => checkbox.checked)
+                                                             .map(checkbox => checkbox.value);
+
+                    const prompt = `You are an expert system architect and data strategist for FAA.zone™. Based on the following demo scenario parameters, provide a concise analysis of potential challenges, key benefits, and recommended critical Atom-Level Engines for that specific scenario.
+Industry Sector: ${industry}
+Data Volume Scale: ${dataVolume}
+Network Topology: ${network}
+Security Posture: ${security}
+Currently Emphasized Abilities: ${emphasizedAbilities.length > 0 ? emphasizedAbilities.join(', ') : 'None'}
+Focus on how these parameters interact and what FAA.zone™ brings to the table. Keep it under 200 words.`;
+
+                    await callGeminiAPI(prompt, "Scenario Insights & Recommendations");
+                    generateScenarioInsightsBtn.disabled = false;
+                });
+            }
+
+            // --- Event Listener for Explain Latest Security Event Button ---
+            if (explainSecurityEventBtn) {
+                explainSecurityEventBtn.addEventListener('click', async () => {
+                    explainSecurityEventBtn.disabled = true;
+                    const security = securityPostureSelect ? securityPostureSelect.value : 'Standard';
+                    const emphasizedSecurityAbilities = Array.from(emphasizeAbilitiesCheckboxes)
+                                                                 .filter(checkbox => checkbox.checked && (checkbox.value === 'TruthWeight' || checkbox.value === 'OmniTrace' || checkbox.value === 'AutoSigil'))
+                                                                 .map(checkbox => checkbox.value);
+                    const relevantEngine = emphasizedSecurityAbilities.length > 0 ? emphasizedSecurityAbilities[Math.floor(Math.random() * emphasizedSecurityAbilities.length)] : 'TruthWeight';
+
+
+                    const prompt = `You are a cybersecurity analyst from FAA.zone™. Given a simulated security posture of '${security}' and the active use of '${emphasizedSecurityAbilities.length > 0 ? emphasizedSecurityAbilities.join(', ') : 'various'}' engines, describe a hypothetical, recently mitigated security event. Explain what the event was, how it might have impacted operations, and how FAA.zone™'s engines (specifically mentioning ${relevantEngine}) detected and mitigated it. Keep it under 150 words.`;
+
+                    await callGeminiAPI(prompt, "Latest Security Event Analysis");
+                    explainSecurityEventBtn.disabled = false;
+                });
+            }
+
+
+            // --- Modal Close Logic ---
+            if (closeGeminiModal) {
+                closeGeminiModal.addEventListener('click', () => {
+                    geminiModal.style.display = 'none';
+                });
+            }
+
+            // Close modal if user clicks outside of it
+            window.addEventListener('click', (event) => {
+                if (event.target === geminiModal) {
+                    geminiModal.style.display = 'none';
+                }
+            });
+
+
+            // Theme Toggle Logic
+            if (themeToggle) {
+                themeToggle.addEventListener('click', () => {
+                    body.classList.toggle('dark-mode');
+                    body.classList.toggle('light-mode');
+                });
+            }
+
+            // Hamburger Menu Toggle Logic
+            if (hamburgerMenu && mainNav) {
+                hamburgerMenu.addEventListener('click', () => {
+                    mainNav.classList.toggle('active');
+                });
+            }
+
+            // --- Mining Equipment & Assets Tab Logic ---
+            function renderMiningEquipment() {
+                if (!equipmentDivisionsContainer) return;
+                equipmentDivisionsContainer.innerHTML = ''; // Clear existing content
+
+                // Get sorted division names
+                const sortedDivisions = Object.keys(miningEquipmentData).sort();
+
+                sortedDivisions.forEach(divisionName => {
+                    const divisionCard = document.createElement('div');
+                    divisionCard.className = 'equipment-division-card';
+
+                    const equipmentListId = `equipment-list-${divisionName.replace(/\s/g, '-')}`;
+                    
+                    // Create header with toggle functionality
+                    const header = document.createElement('h3');
+                    header.innerHTML = `${divisionName} <i class="fas fa-chevron-down"></i>`;
+                    header.onclick = () => {
+                        const list = document.getElementById(equipmentListId);
+                        const icon = header.querySelector('i');
+                        if (list) {
+                            list.classList.toggle('hidden');
+                            icon.classList.toggle('fa-chevron-down');
+                            icon.classList.toggle('fa-chevron-up');
+                        }
+                    };
+                    divisionCard.appendChild(header);
+
+                    const equipmentListDiv = document.createElement('div');
+                    equipmentListDiv.id = equipmentListId;
+                    equipmentListDiv.className = 'equipment-list hidden'; // Hidden by default
+
+                    miningEquipmentData[divisionName].forEach(item => {
+                        const equipmentItem = document.createElement('div');
+                        equipmentItem.className = 'equipment-item';
+                        equipmentItem.innerHTML = `
+                            <strong>${item.name}</strong> (ID: ${item.id})<br>
+                            Status: <span class="status-${item.status.toLowerCase()}">${item.status}</span><br>
+                            Location: ${item.location}<br>
+                            Last Service: ${item.last_service}<br>
+                            Uptime: ${item.uptime_pct}%
+                        `;
+                        equipmentListDiv.appendChild(equipmentItem);
+                    });
+
+                    divisionCard.appendChild(equipmentListDiv);
+                    equipmentDivisionsContainer.appendChild(divisionCard);
+                });
+            }
+
+            // Function to show specific demo tab
+            window.showDemoTab = (tabId, element) => {
+                // Get all tab content elements and hide them
+                document.querySelectorAll('.demo-tab-content').forEach(tab => {
+                    tab.classList.add('hidden');
+                });
+
+                // Get all tab buttons and remove active class
+                document.querySelectorAll('.flex.border-b button').forEach(btn => {
+                    btn.classList.remove('text-page-theme-accent-color', 'border-page-theme-accent-color');
+                    btn.classList.add('text-page-theme-text-muted', 'border-transparent');
+                });
+
+                // Show the selected tab content
+                const selectedTab = document.getElementById(tabId);
+                if (selectedTab) {
+                    selectedTab.classList.remove('hidden');
+                }
+
+                // Add active class to the clicked button
+                if (element) {
+                    element.classList.add('text-page-theme-accent-color', 'border-page-theme-accent-color');
+                    element.classList.remove('text-page-theme-text-muted', 'border-transparent');
+                }
+            };
+
+
+            // Initial setup when page loads
+            initCharts();
+            emphasizeAbilitiesCheckboxes.forEach(checkbox => {
+                checkbox.checked = true;
+            });
+            updateDashboardMetrics(false); // Run initial simulation on page load
+            renderMiningEquipment(); // Render mining equipment on page load
+            const defaultOpenTab = document.getElementById('defaultOpenTab');
+            if (defaultOpenTab) {
+                defaultOpenTab.click();
+            }
+        });
+    </script>
+</body>
+</html>

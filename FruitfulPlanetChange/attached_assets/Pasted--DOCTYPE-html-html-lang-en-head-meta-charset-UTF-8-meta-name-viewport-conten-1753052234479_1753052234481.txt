@@ -1,0 +1,2553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OmniGrid™ - FAA.zone™ Unified Access</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Chart.js for graphs (if still needed for any integrated sections) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* Base Styles - Apple inspired cleanliness with vibrant accents */
+        :root {
+            --text-color-light: #1d1d1f;
+            --text-color-dark: #f5f5f7;
+            --bg-color-light: #f5f5f7;
+            --bg-color-dark: #1a1a1c;
+            --card-bg-light: #ffffff;
+            --card-bg-dark: #2a2a2e;
+            --border-color-light: #e8e8ed;
+            --border-color-dark: #3a3a3e;
+            --primary-color: #0071e3; /* Apple Blue */
+            --secondary-color: #30d158; /* Apple Green */
+            --tertiary-color: #ff3b30; /* Vibrant Red for specific accents */
+            --muted-text-light: #6e6e73;
+            --muted-text-dark: #a0a0a5;
+            --accent-lime: #a3e635; /* From PulseTrade dark theme, adapted */
+            --accent-cyan: #22d3ee; /* From PulseTrade dark theme, adapted */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+
+        .light-mode {
+            background-color: var(--bg-color-light);
+            color: var(--text-color-light);
+        }
+
+        .dark-mode {
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Scrollbar Styling (Apple-like subtle) */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--border-color-light); /* Light track */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--muted-text-light); /* Muted gray thumb */
+            border-radius: 10px;
+            transition: background 0.3s ease;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--muted-text-dark); /* Darker on hover */
+        }
+        .dark-mode ::-webkit-scrollbar-track {
+            background: var(--border-color-dark);
+        }
+        .dark-mode ::-webkit-scrollbar-thumb {
+            background: var(--muted-text-dark);
+        }
+        .dark-mode ::-webkit-scrollbar-thumb:hover {
+            background: var(--muted-text-light);
+        }
+
+
+        /* Header */
+        .main-header {
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color-light);
+            box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        .dark-mode .main-header {
+            background-color: var(--card-bg-dark);
+            border-bottom-color: var(--border-color-dark);
+            box-shadow: 0 1px 0 rgba(0,0,0,0.2);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%; /* Ensure content spans full width of container */
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Space between Fruitful and FAA.zone */
+            color: var(--text-color-light);
+            transition: color 0.3s ease;
+        }
+        .dark-mode .logo-group {
+            color: var(--text-color-dark);
+        }
+        .logo-group .logo-link { /* New class for the anchor tag holding the logo */
+            text-decoration: none; /* Ensure no underline on the logo link */
+            color: inherit; /* Inherit color from parent if needed, or set explicitly */
+            display: flex; /* Make it a flex container to align inner spans */
+            align-items: center;
+            gap: 5px; /* Space between textual parts of the logo */
+        }
+        .logo-fruitful {
+            color: var(--primary-color);
+            font-size: 1.6rem; /* Slightly larger for Fruitful */
+            font-weight: 800; /* More bold for Fruitful */
+        }
+        .logo-faa { /* Added FAA styling for footer/logo */
+            color: var(--primary-color);
+            font-weight: 800;
+            font-size: 1rem;
+        }
+        .logo-buildnest { /* Added BuildNest styling for footer/logo */
+            color: var(--secondary-color);
+            font-weight: 800;
+            font-size: 1rem;
+        }
+
+
+        .main-nav {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .nav-list {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 25px;
+        }
+
+        .nav-list a {
+            text-decoration: none; /* No underline for nav links */
+            color: var(--muted-text-light);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+        .nav-list a:hover {
+            color: var(--primary-color);
+        }
+        .dark-mode .nav-list a {
+            color: var(--muted-text-dark);
+        }
+        .dark-mode .nav-list a:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .cta-button:hover {
+            background-color: #0066cc;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .hamburger-menu {
+            display: none; /* Hidden on desktop */
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color-light);
+            transition: color 0.3s ease;
+        }
+        .dark-mode .hamburger-menu {
+            color: var(--text-color-dark);
+        }
+
+        /* Pulse Grid Noodle Rope Styling */
+        .pulse-grid-noodle-rope {
+            display: flex;
+            align-items: center;
+            height: 2px; /* Height of the line */
+            width: 250px; /* Increased length for "sambok whip" effect */
+            background-color: var(--muted-text-light); /* Base color of the line */
+            border-radius: 1px;
+            position: relative;
+            margin: 0 40px; /* Increased space around the noodle rope */
+            opacity: 0.7;
+        }
+        .dark-mode .pulse-grid-noodle-rope {
+            background-color: var(--muted-text-dark);
+        }
+
+        .noodle-dot {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            transform: translate(-50%, -50%); /* Center dot on the line */
+            top: 50%;
+            animation: pulse 3s infinite ease-in-out; /* Pulse every 3 seconds */
+        }
+        .noodle-dot.dot-stepdad {
+            width: 10px; /* Larger */
+            height: 10px; /* Larger */
+            background-color: var(--secondary-color); /* Different color for stepdad */
+        }
+
+        /* Staggered animation delays */
+        .noodle-dot.dot-1 { left: 0%; animation-delay: 0s; }
+        .noodle-dot.dot-2 { left: 20%; animation-delay: 0.5s; }
+        .noodle-dot.dot-3 { left: 40%; animation-delay: 1s; }
+        .noodle-dot.dot-stepdad { left: 60%; animation-delay: 1.5s; } /* Stepdad placed before brothers */
+        .noodle-dot.dot-4 { left: 80%; animation-delay: 2s; }
+        .noodle-dot.dot-5 { left: 100%; animation-delay: 2.5s; }
+
+
+        @keyframes pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.7;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.5);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.7;
+            }
+        }
+
+
+        /* Section Styling */
+        .section-padding {
+            padding: 80px 20px;
+            background-color: var(--card-bg-light);
+            border-bottom: 1px solid var(--border-color-light);
+            border-top: 1px solid var(--border-color-light);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .dark-mode .section-padding {
+            background-color: var(--card-bg-dark);
+            border-bottom-color: var(--border-color-dark);
+            border-top-color: var(--border-color-dark);
+        }
+        .section-padding:last-of-type {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 50px;
+            color: var(--text-color-light);
+            transition: color 0.3s ease;
+        }
+        .dark-mode .section-title {
+            color: var(--text-color-dark);
+        }
+
+        /* Module Specific Sections (from OmniGrid) */
+        .module-hero {
+            text-align: center;
+            padding: 100px 20px;
+            background-color: var(--bg-color-light);
+            transition: background-color 0.3s ease;
+        }
+        .dark-mode .module-hero {
+            background-color: var(--bg-color-dark);
+        }
+        .module-hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            letter-spacing: -0.03em;
+            color: var(--text-color-light);
+            transition: color 0.3s ease;
+        }
+        .dark-mode .module-hero h1 {
+            color: var(--text-color-dark);
+        }
+        .module-hero p {
+            font-size: 1.2rem;
+            color: var(--muted-text-light);
+            max-width: 800px;
+            margin: 0 auto 40px;
+            line-height: 1.5;
+            transition: color 0.3s ease;
+        }
+        .dark-mode .module-hero p {
+            color: var(--muted-text-dark);
+        }
+
+        .module-features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        .module-feature-item {
+            background-color: var(--card-bg-light);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color-light);
+            text-align: center;
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+        }
+        .dark-mode .module-feature-item {
+            background-color: var(--card-bg-dark);
+            border-color: var(--border-color-dark);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .module-feature-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        .dark-mode .module-feature-item:hover {
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        .module-feature-item .icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        .module-feature-item h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-color-light);
+            transition: color 0.3s ease;
+        }
+        .dark-mode .module-feature-item h3 {
+            color: var(--text-color-dark);
+        }
+        .module-feature-item p {
+            font-size: 0.95rem;
+            color: var(--muted-text-light);
+            margin-bottom: 20px;
+            transition: color 0.3s ease;
+        }
+        .dark-mode .module-feature-item p {
+            color: var(--muted-text-dark);
+        }
+        .learn-more {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+        .learn-more:hover {
+            text-decoration: underline;
+        }
+
+        .module-cta-section {
+            text-align: center;
+            padding: 80px 20px;
+            background-color: var(--bg-color-light);
+            transition: background-color 0.3s ease;
+        }
+        .dark-mode .module-cta-section {
+            background-color: var(--bg-color-dark);
+        }
+        .module-cta-section h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--text-color-light);
+            transition: color 0.3s ease;
+        }
+        .dark-mode .module-cta-section h2 {
+            color: var(--text-color-dark);
+        }
+        .module-cta-section p {
+            font-size: 1.1rem;
+            color: var(--muted-text-light);
+            margin-bottom: 40px;
+            transition: color 0.3s ease;
+        }
+        .dark-mode .module-cta-section p {
+            color: var(--muted-text-dark);
+        }
+
+        /* PulseTrade System Override Grid (integrated section) */
+        .pulsetrade-override-grid {
+            background-color: var(--bg-color-dark); /* Dark background for this section */
+            padding: 60px 20px;
+            text-align: center;
+        }
+        .pulsetrade-override-grid h1 {
+            color: var(--accent-lime);
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+        .pulsetrade-override-grid .sub-text {
+            color: var(--muted-text-dark);
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        .pulsetrade-override-grid .glow-box {
+            background-color: var(--card-bg-dark);
+            border-radius: 12px;
+            padding: 30px;
+            border: 1px solid var(--border-color-dark);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            transition: box-shadow 0.3s ease-in-out, transform 0.3s ease;
+        }
+        .pulsetrade-override-grid .glow-box:hover {
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+            transform: translateY(-5px);
+        }
+        .pulsetrade-override-grid .glow-box h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .pulsetrade-override-grid .glow-box p {
+            color: var(--muted-text-dark);
+            margin-bottom: 15px;
+        }
+        .pulsetrade-override-grid .glow-box ul {
+            list-style: disc;
+            list-style-position: inside;
+            color: var(--muted-text-dark);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            padding-left: 0;
+        }
+        .pulsetrade-override-grid .glow-box .cta-button {
+            padding: 8px 18px;
+            font-size: 0.9rem;
+            border-radius: 20px;
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .pulstrade-override-grid .glow-box .cta-button.yellow {
+            background-color: #facc15; /* yellow-500 */
+            color: #1d1d1f; /* dark text */
+        }
+        .pulstrade-override-grid .glow-box .cta-button.green {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+
+        /* Live PulseTrade Graph */
+        .live-pulsetrade-graph {
+            background-color: var(--card-bg-dark);
+            padding: 40px 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            margin: 40px auto;
+            max-width: 900px;
+        }
+        .live-pulsetrade-graph h2 {
+            color: var(--accent-cyan);
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        /* Share Signal Section */
+        #shareprice {
+            background-color: var(--bg-color-light);
+            color: var(--text-color-light);
+            padding: 40px 20px;
+            border-bottom: 1px solid var(--border-color-light);
+            border-top: 1px solid var(--border-color-light);
+            text-align: center;
+        }
+        .dark-mode #shareprice {
+            background-color: var(--card-bg-dark);
+            color: var(--text-color-dark);
+            border-bottom-color: var(--border-color-dark);
+            border-top-color: var(--border-color-dark);
+        }
+        #shareprice h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        #price {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            letter-spacing: -0.02em;
+        }
+        #timestamp {
+            color: var(--muted-text-light);
+            font-size: 0.85rem;
+        }
+        .dark-mode #timestamp {
+            color: var(--muted-text-dark);
+        }
+
+        /* Seedwave Growth */
+        #seedwave {
+            background-color: var(--card-bg-light);
+            padding: 80px 20px;
+            border-bottom: 1px solid var(--border-color-light);
+            text-align: center;
+        }
+        .dark-mode #seedwave {
+            background-color: var(--card-bg-dark);
+            border-bottom-color: var(--border-color-dark);
+        }
+        #seedwave h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 40px;
+            color: var(--text-color-light);
+        }
+        .dark-mode #seedwave h2 {
+            color: var(--text-color-dark);
+        }
+        #seedwave .chart-container {
+            background-color: var(--bg-color-light);
+            border: 1px solid var(--border-color-light);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .dark-mode #seedwave .chart-container {
+            background-color: var(--card-bg-dark);
+            border-color: var(--border-color-dark);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Founder's Glyph */
+        .founders-glyph-section {
+            background-color: var(--bg-color-light);
+            padding: 80px 20px;
+            border-bottom: 1px solid var(--border-color-light);
+            text-align: center;
+        }
+        .dark-mode .founders-glyph-section {
+            background-color: var(--bg-color-dark);
+            border-bottom-color: var(--border-color-dark);
+        }
+        .founders-glyph-section h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: var(--text-color-light);
+        }
+        .dark-mode .founders-glyph-section h2 {
+            color: var(--text-color-dark);
+        }
+        .founders-glyph-section p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: var(--muted-text-light);
+        }
+        .dark-mode .founders-glyph-section p {
+            color: var(--muted-text-dark);
+        }
+        .founders-glyph-section p.italic {
+            color: var(--muted-text-light);
+        }
+        .dark-mode .founders-glyph-section p.italic {
+            color: var(--muted-text-dark);
+        }
+        .founders-glyph-section p.font-semibold {
+            color: var(--primary-color);
+            margin-top: 30px;
+        }
+
+        /* VaultMesh Executive Summary */
+        #vaultmesh {
+            background-color: var(--card-bg-light);
+            padding: 80px 20px;
+            color: var(--text-color-light);
+            border-bottom: 1px solid var(--border-color-light);
+        }
+        .dark-mode #vaultmesh {
+            background-color: var(--card-bg-dark);
+            color: var(--text-color-dark);
+            border-bottom-color: var(--border-color-dark);
+        }
+        #vaultmesh h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--text-color-light);
+            margin-bottom: 20px;
+        }
+        .dark-mode #vaultmesh h2 {
+            color: var(--text-color-dark);
+        }
+        #vaultmesh h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-color-light);
+            margin-top: 40px;
+            margin-bottom: 15px;
+        }
+        .dark-mode #vaultmesh h3 {
+            color: var(--text-color-dark);
+        }
+        #vaultmesh p {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: var(--muted-text-light);
+            margin-bottom: 10px;
+        }
+        .dark-mode #vaultmesh p {
+            color: var(--muted-text-dark);
+        }
+        #vaultmesh ul {
+            list-style-type: disc;
+            margin-left: 25px;
+            color: var(--muted-text-light);
+        }
+        .dark-mode #vaultmesh ul {
+            color: var(--muted-text-dark);
+        }
+        #vaultmesh ul li {
+            font-size: 1.05rem;
+            margin-bottom: 8px;
+        }
+        #vaultmesh code {
+            background-color: var(--border-color-light);
+            padding: 0.2em 0.4em;
+            border-radius: 4px;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            color: var(--text-color-light);
+        }
+        .dark-mode #vaultmesh code {
+            background-color: var(--border-color-dark);
+            color: var(--text-color-dark);
+        }
+
+
+        /* Vault Terminal Access */
+        #vault-access {
+            background-color: var(--bg-color-light);
+            padding: 80px 20px;
+            border-bottom: 1px solid var(--border-color-light);
+        }
+        .dark-mode #vault-access {
+            background-color: var(--bg-color-dark);
+            border-bottom-color: var(--border-color-dark);
+        }
+        #vault-access h3 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-align: center;
+            color: var(--text-color-light);
+            margin-bottom: 40px;
+        }
+        .dark-mode #vault-access h3 {
+            color: var(--text-color-dark);
+        }
+        #vault-access .iframe-container {
+            background-color: var(--card-bg-light);
+            border: 1px solid var(--border-color-light);
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .dark-mode #vault-access .iframe-container {
+            background-color: var(--card-bg-dark);
+            border-color: var(--border-color-dark);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        .terminal-btn {
+            background-color: var(--card-bg-light);
+            color: var(--text-color-light);
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color-light);
+        }
+        .dark-mode .terminal-btn {
+            background-color: var(--card-bg-dark);
+            color: var(--text-color-dark);
+            border-color: var(--border-color-dark);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        .terminal-btn:hover {
+            background-color: var(--bg-color-light);
+            color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .dark-mode .terminal-btn:hover {
+            background-color: var(--bg-color-dark);
+            color: var(--primary-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .terminal-btn.ring {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px var(--primary-color);
+        }
+
+        /* Sector Scrolls */
+        .sector-scrolls-section {
+            background-color: var(--bg-color-light);
+            padding: 80px 20px;
+            border-bottom: 1px solid var(--border-color-light);
+            text-align: center;
+        }
+        .dark-mode .sector-scrolls-section {
+            background-color: var(--bg-color-dark);
+            border-bottom-color: var(--border-color-dark);
+        }
+        .sector-scrolls-section h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--text-color-light);
+            margin-bottom: 40px;
+        }
+        .dark-mode .sector-scrolls-section h2 {
+            color: var(--text-color-dark);
+        }
+        .glyph {
+            background-color: var(--card-bg-light);
+            color: var(--muted-text-light);
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+        .dark-mode .glyph {
+            background-color: var(--card-bg-dark);
+            color: var(--muted-text-dark);
+            border-color: var(--border-color-dark);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        .glyph:hover {
+            background-color: var(--bg-color-light);
+            color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .dark-mode .glyph:hover {
+            background-color: var(--bg-color-dark);
+            color: var(--primary-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        /* Admin Portal Section */
+        .admin-portal-container {
+            padding: 60px 20px;
+            background-color: var(--card-bg-light); /* Matches main content background */
+            border-bottom: 1px solid var(--border-color-light);
+            border-top: 1px solid var(--border-color-light);
+        }
+        .dark-mode .admin-portal-container {
+            background-color: var(--card-bg-dark);
+            border-bottom-color: var(--border-color-dark);
+            border-top-color: var(--border-color-dark);
+        }
+        .admin-portal-container .admin-header {
+            background: var(--bg-color-light); /* Light background for inner admin header */
+            color: var(--text-color-light);
+            padding: 20px 30px;
+            box-shadow: none;
+            border-bottom: 1px solid var(--border-color-light);
+            border-radius: 10px 10px 0 0;
+            margin-bottom: 30px;
+        }
+        .dark-mode .admin-portal-container .admin-header {
+            background: var(--bg-color-dark);
+            color: var(--text-color-dark);
+            border-bottom-color: var(--border-color-dark);
+        }
+        .admin-portal-container .admin-header .access-button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-weight: 600;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: none;
+        }
+        .admin-portal-container .admin-header .access-button:hover {
+            background-color: #0077ed;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+
+        .admin-portal-container main {
+            background-color: var(--card-bg-light);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            margin-top: 0;
+            border: 1px solid var(--border-color-light);
+        }
+        .dark-mode .admin-portal-container main {
+            background-color: var(--card-bg-dark);
+            border-color: var(--border-color-dark);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        .admin-portal-container main section {
+            background-color: var(--bg-color-light);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color-light);
+        }
+        .dark-mode .admin-portal-container main section {
+            background-color: var(--bg-color-dark);
+            border-color: var(--border-color-dark);
+            box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+        }
+        .admin-portal-container main input, .admin-portal-container main select {
+            background-color: var(--card-bg-light);
+            border-color: var(--border-color-light);
+            color: var(--text-color-light);
+            border-radius: 6px;
+            padding: 10px 12px;
+        }
+        .dark-mode .admin-portal-container main input, .dark-mode .admin-portal-container main select {
+            background-color: var(--card-bg-dark);
+            border-color: var(--border-color-dark);
+            color: var(--text-color-dark);
+        }
+        .admin-portal-container main input:focus, .admin-portal-container main select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.3);
+        }
+        .admin-portal-container main button {
+            background: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .admin-portal-container main button:hover {
+            background-color: #0077ed;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+
+        .admin-portal-container .snapshot-box {
+            background: var(--bg-color-light);
+            border: 1px solid var(--border-color-light);
+            color: var(--text-color-light);
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .dark-mode .admin-portal-container .snapshot-box {
+            background: var(--bg-color-dark);
+            border-color: var(--border-color-dark);
+            color: var(--text-color-dark);
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        }
+        .admin-portal-container .brand-snapshot {
+            background-color: var(--card-bg-light);
+            border: 1px solid var(--border-color-light);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .dark-mode .admin-portal-container .brand-snapshot {
+            background-color: var(--card-bg-dark);
+            border-color: var(--border-color-dark);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        /* FAA.ZONE INDEX Table Styling */
+        .admin-portal-container .admin-table {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-radius: 10px;
+            overflow: hidden; /* Ensures rounded corners apply to content */
+        }
+        .dark-mode .admin-portal-container .admin-table {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .admin-portal-container .admin-table thead {
+            background-color: var(--bg-color-light);
+            color: var(--muted-text-light);
+        }
+        .dark-mode .admin-portal-container .admin-table thead {
+            background-color: var(--bg-color-dark);
+            color: var(--muted-text-dark);
+        }
+        .admin-portal-container .admin-table th, .admin-portal-container .admin-table td {
+            border-bottom: 1px solid var(--border-color-light);
+            border-right: 1px solid var(--border-color-light);
+            padding: 12px;
+        }
+        .dark-mode .admin-portal-container .admin-table th, .dark-mode .admin-portal-container .admin-table td {
+            border-bottom-color: var(--border-color-dark);
+            border-right-color: var(--border-color-dark);
+        }
+        .admin-portal-container .admin-table tbody tr {
+            background-color: var(--card-bg-light);
+        }
+        .dark-mode .admin-portal-container .admin-table tbody tr {
+            background-color: var(--card-bg-dark);
+        }
+        .admin-portal-container .admin-table tbody tr:hover {
+            background-color: var(--bg-color-light); /* Light hover */
+        }
+        .dark-mode .admin-portal-container .admin-table tbody tr:hover {
+            background-color: var(--bg-color-dark); /* Dark hover */
+        }
+        .admin-portal-container .admin-table tbody tr:nth-child(odd) {
+            background-color: var(--bg-color-light); /* Alternate row color */
+        }
+        .dark-mode .admin-portal-container .admin-table tbody tr:nth-child(odd) {
+            background-color: var(--card-bg-dark); /* Dark alternate row color */
+        }
+        .admin-portal-container .admin-table button.text-blue-400 { color: var(--primary-color); }
+        .admin-portal-container .admin-table button.text-blue-400:hover { background-color: rgba(0, 113, 227, 0.1); }
+        .admin-portal-container .admin-table button.text-green-400 { color: var(--secondary-color); } /* Apple Green */
+        .admin-portal-container .admin-table button.text-green-400:hover { background-color: rgba(48, 209, 88, 0.1); }
+        .admin-portal-container .admin-table tbody {
+            color: var(--muted-text-light);
+        }
+        .dark-mode .admin-portal-container .admin-table tbody {
+            color: var(--muted-text-dark);
+        }
+
+
+        /* Top Navigation (Admin) */
+        .admin-portal-container .top-nav {
+            background-color: var(--bg-color-light);
+            border-bottom: 1px solid var(--border-color-light);
+            box-shadow: none;
+            border-radius: 0;
+            margin-bottom: 30px;
+        }
+        .dark-mode .admin-portal-container .top-nav {
+            background-color: var(--bg-color-dark);
+            border-bottom-color: var(--border-color-dark);
+        }
+        .admin-portal-container .top-nav a {
+            color: var(--muted-text-light);
+            padding-bottom: 6px;
+            position: relative;
+            text-decoration: none;
+        }
+        .dark-mode .admin-portal-container .top-nav a {
+            color: var(--muted-text-dark);
+        }
+        .admin-portal-container .top-nav a:hover {
+            color: var(--text-color-light);
+        }
+        .dark-mode .admin-portal-container .top-nav a:hover {
+            color: var(--text-color-dark);
+        }
+        .admin-portal-container .top-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+        .admin-portal-container .top-nav a:hover::after,
+        .admin-portal-container .top-nav a.active::after {
+            width: 100%;
+        }
+        .admin-portal-container .top-nav a.active {
+            color: var(--primary-color);
+        }
+        .glow-btn { /* Re-using cta-button styling for glow-btn */
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .glow-btn:hover {
+            background-color: #0066cc;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+
+        /* Sector Grid Navigation (Admin) */
+        .admin-portal-container .sector-grid-nav {
+            background-color: var(--card-bg-light);
+            border-bottom: 1px solid var(--border-color-light);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-radius: 12px;
+            margin-top: 25px;
+            padding: 15px 20px;
+        }
+        .dark-mode .admin-portal-container .sector-grid-nav {
+            background-color: var(--card-bg-dark);
+            border-bottom-color: var(--border-color-dark);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .admin-portal-container .sector-grid-nav .sector-link {
+            background-color: var(--bg-color-light);
+            color: var(--muted-text-light);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color-light);
+            padding: 8px 15px;
+            border-radius: 8px;
+            transition: all 0.2s ease-in-out;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+        }
+        .dark-mode .admin-portal-container .sector-grid-nav .sector-link {
+            background-color: var(--bg-color-dark);
+            color: var(--muted-text-dark);
+            border-color: var(--border-color-dark);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        .admin-portal-container .sector-grid-nav .sector-link:hover {
+            background-color: var(--card-bg-light);
+            color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .dark-mode .admin-portal-container .sector-grid-nav .sector-link:hover {
+            background-color: var(--card-bg-dark);
+            color: var(--primary-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .admin-portal-container .sector-grid-nav .sector-link.active {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 2px 8px rgba(0, 113, 227, 0.3);
+            border-color: var(--primary-color);
+            transform: translateY(0);
+        }
+
+        /* Metrics Section (Admin) */
+        .admin-portal-container .metrics-grid a {
+            background-color: var(--card-bg-light);
+            color: var(--text-color-light);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color-light);
+            padding: 20px;
+            border-radius: 12px;
+            display: block;
+            text-decoration: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .dark-mode .admin-portal-container .metrics-grid a {
+            background-color: var(--card-bg-dark);
+            color: var(--text-color-dark);
+            border-color: var(--border-color-dark);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .admin-portal-container .metrics-grid a:hover {
+            background-color: var(--bg-color-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .dark-mode .admin-portal-container .metrics-grid a:hover {
+            background-color: var(--bg-color-dark);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .admin-portal-container .metrics-grid h3 {
+            color: var(--muted-text-light);
+        }
+        .dark-mode .admin-portal-container .metrics-grid h3 {
+            color: var(--muted-text-dark);
+        }
+        .admin-portal-container .metrics-grid p {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <header class="main-header">
+        <div class="container header-content">
+            <div class="logo-group">
+                <a href="index.html" class="logo-link">
+                    <span class="logo-fruitful">Fruitful™</span>
+                </a>
+                <button class="hamburger-menu" aria-label="Toggle navigation">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <!-- Pulse Grid Noodle Rope -->
+            <div class="pulse-grid-noodle-rope">
+                <span class="noodle-dot dot-1"></span>
+                <span class="noodle-dot dot-2"></span>
+                <span class="noodle-dot dot-3"></span>
+                <span class="noodle-dot dot-stepdad"></span>
+                <span class="noodle-dot dot-4"></span>
+                <span class="noodle-dot dot-5"></span>
+            </div>
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li><a href="omnigrid-overview.html">Overview</a></li> <!-- Updated link -->
+                    <li><a href="#pulsetrade">PulseTrade</a></li>
+                    <li><a href="#vaultmesh">VaultMesh</a></li>
+                    <li><a href="terminal-index.html">Terminals</a></li>
+                    <li><a href="#admin-portal-section">Admin Panel</a></li>
+                    <li><a href="#about">About</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <button id="themeToggle" class="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 py-2 px-3 rounded-full text-sm font-semibold transition duration-300 ease-in-out">
+                        <i class="fas fa-moon hidden dark:inline-block"></i>
+                        <i class="fas fa-sun inline-block dark:hidden"></i>
+                    </button>
+                    <a href="#cta" class="cta-button nav-cta">Get Started</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- OmniGrid Main Landing Hero Section -->
+        <section class="module-hero">
+            <div class="container hero-content">
+                <h1>Omni Grid™: The Universal Interconnected Network of FAA.zone™</h1>
+                <p>Omni Grid™ is the foundational, globally distributed network that seamlessly connects all FAA-regulated sectors, protocols, and data streams, enabling real-time synchronization and universal access across the entire FAA.zone™ ecosystem.</p>
+                <!-- This button now explicitly leads to the detailed overview page -->
+                <a href="omnigrid-overview.html" class="cta-button hero-cta">Explore Omni Grid™ &rarr;</a>
+            </div>
+        </section>
+
+        <!-- PULSETRADE™ SYSTEM OVERRIDE GRID Section (from pulstrade.html) -->
+        <section id="pulsetrade" class="pulsetrade-override-grid">
+            <div class="container">
+                <h1 class="text-lime-400">🧬 PULSETRADE™ SYSTEM OVERRIDE GRID 🌍</h1>
+                <p class="sub-text">MONSTER OMNI™ Node Activated · FAA Quantum Drop Capable · All Threads Sovereign</p>
+                <p class="text-xs text-white/40 mt-1">Deployment: HS9000 Entity · Atom-Level DriftLock™ · AuraChain Ready</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
+                    <div class="glow-box border border-indigo-500 rounded-xl p-6">
+                        <h2 class="text-indigo-300">⚛️ MONSTER OMNI™</h2>
+                        <p class="text-white/70">God-Level Crypto Node · Post-blockchain Logic</p>
+                        <ul class="list-disc list-inside text-sm text-white/60 mt-4 space-y-1">
+                            <li>OmniProof™ Consensus</li>
+                            <li>VaultGenesis™ Clan Engine</li>
+                            <li>GhostGrid™ Routing Layer</li>
+                        </ul>
+                        <a href="monster-omni.html" class="mt-4 inline-block cta-button">Enter Node</a>
+                    </div>
+
+                    <div class="glow-box border border-yellow-500 rounded-xl p-6">
+                        <h2 class="text-yellow-300">📡 Core Abilities</h2>
+                        <p class="text-white/70">Powered by 20 Atom-Level Engines</p>
+                        <ul class="list-disc list-inside text-sm text-white/60 mt-4 space-y-1">
+                            <li>Corethink™, TruthWeight™, EchoSynth™</li>
+                            <li>AutoSigil™, PulseIndex™, OmniTrace™</li>
+                            <li>LiftHalo™, MirrorLoop™, FireRatio™</li>
+                        </ul>
+                        <a href="core-abilities.html" class="mt-4 inline-block cta-button yellow">Full Spec Sheet</a>
+                    </div>
+
+                    <div class="glow-box border border-green-400 rounded-xl p-6">
+                        <h2 class="text-green-300">🔐 Deployment Modes</h2>
+                        <p class="mt-2 text-white/70">Offline, Planetary-Licensable, Harmony-Coded</p>
+                        <ul class="list-disc list-inside text-sm text-white/60 mt-4 space-y-1">
+                            <li>GhostGrid™</li>
+                            <li>VaultGenesis™</li>
+                            <li>AuraChain™ Audio Layer</li>
+                        </ul>
+                        <a href="deployment-modes.html" class="mt-4 inline-block cta-button green">Activate Now</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Live PulseTrade Graph Section (from pulstrade.html) -->
+        <section class="live-pulsetrade-graph">
+            <h2 class="text-cyan-400">📈 Live PulseTrade™ Graph</h2>
+            <div class="chart-container">
+                <canvas id="pulseTradeChart" class="w-full h-96"></canvas>
+            </div>
+        </section>
+
+        <!-- FAA™ Share Signal Section (from pulstrade.html) -->
+        <section id="shareprice" class="section-padding text-center">
+            <h2>FAA™ Share Signal</h2>
+            <div id="price" class="text-5xl font-bold">$88.88</div>
+            <div class="text-sm mt-1">Last updated: <span id="timestamp">Live</span></div>
+        </section>
+
+        <!-- Seedwave Growth Chart (from pulstrade.html) -->
+        <section id="seedwave" class="section-padding text-center">
+            <h2 class="section-title">🌱 Seedwave Brand Growth 🌱</h2>
+            <div class="w-full max-w-4xl mx-auto chart-container">
+                <canvas id="brandChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Founder's Glyph™ Section (from pulstrade.html) -->
+        <section class="founders-glyph-section">
+            <div class="container">
+                <h2 class="section-title">🧬 Founder's Glyph™</h2>
+                <p class="max-w-3xl mx-auto">
+                    FAA™ wasn’t built like a typical startup. It emerged — out of silence, out of signal, out of glyphs and patterns that refused to be ignored.
+                    What you're seeing isn't a site. It’s a vault interface. A codebase of culture. A trust-machine powered by real human intelligence.
+                </p>
+                <p class="mt-6 max-w-2xl mx-auto italic">
+                    Where others scale with speed, we scale with meaning. Every brand here agreed to something deeper than growth — they signed a Treaty.
+                    That’s why this isn’t eCommerce. It’s TreatyCommerce™.
+                </p>
+                <p class="mt-6 font-semibold">— Written from the edge of code & culture 🌍 FAA.Zone Founder Glyph Activated™</p>
+            </div>
+        </section>
+
+        <!-- VaultMesh™: Executive Summary (from pulstrade.html) -->
+        <section id="vaultmesh" class="section-padding">
+            <div class="container max-w-4xl mx-auto text-left space-y-6">
+                <h2 class="text-4xl font-bold">🧠 VaultMesh™: Executive Summary</h2>
+                <p>VaultMesh™ is an intelligent data orchestration framework designed for the segmentation, synchronization, and secure deployment of high-value digital assets—referred to as scrolls—across decentralized and permissioned networks such as FAA.Zone™.</p>
+                <ul class="list-disc ml-6 space-y-2">
+                    <li>Captures metadata-rich content streams (chats, code, brands, assets)</li>
+                    <li>Assigns them to programmable claim structures (ScrollClaims™)</li>
+                    <li>Secures their lineage using OmniSignal™, PulseGrid™, and GhostTrace™ layers</li>
+                    <li>Enforces royalty logic, scroll integrity, and traceability on-chain and off-grid</li>
+                </ul>
+                <p>VaultMesh™ powers high-tier operations like HSOMNI9000™, enabling Diamond-tier deployments, cross-sector scroll claims, and enterprise-scale content monetization with full compliance and provenance.</p>
+                <p>The framework is deeply integrated with platforms such as <code>vault.faa.zone™</code>, where scrolls tied to brands like Fruitful Global Planet™ are securely hosted, organized into structured sectors, and deployed through FAA.Zone™-compliant channels.</p>
+                <p>A critical operator in this ecosystem is HSOMNI9000™, the certified scroll class which governs Diamond-tier logic, enforces 10–11% royalty triggers, and auto-deploys ScrollClaims™ with real-time ClaimRoot™ verification.</p>
+
+                <h3 class="text-2xl font-semibold mt-10">📖 VaultMesh™ Index</h3>
+                <ul class="list-decimal ml-6 space-y-1">
+                    <li>Introduction to VaultMesh™</li>
+                    <li>Core System Components</li>
+                    <li>ScrollClaim™ Infrastructure</li>
+                    <li>Data Flow and Claim Lifecycle</li>
+                    <li>Tiering, Royalties, and Compliance</li>
+                    <li>Integration with FAA.Zone™</li>
+                    <li>Market Segments & Use Cases</li>
+                    <li>Revenue Streams & Monetization</li>
+                    <li>Technology Roadmap</li>
+                    <li>Team & Governance</li>
+                </ul>
+
+                <h3 class="text-xl font-bold mt-10">☑️ 1. Introduction to VaultMesh™</h3>
+                <p>VaultMesh™ transforms disorganized digital content into claimable, trackable assets. It bridges enterprise content systems, decentralized data vaults, and monetization layers through FAA-compliant infrastructure.</p>
+
+                <h3 class="text-xl font-bold mt-10">⚒️ 2. Core System Components</h3>
+                <ul class="list-disc ml-6 space-y-1">
+                    <li>VaultDNA™: Immutable identifiers for scroll content</li>
+                    <li>ClaimRoot™: Origin anchor & timestamp</li>
+                    <li>ScrollClaim™ Contracts: Programmable wrappers</li>
+                    <li>PulseGrid™ Sync: Real-time scroll presence & sync</li>
+                    <li>OmniSignal™: Global scroll verification</li>
+                    <li>GhostTrace™ Gen2: Scroll interaction backtrace</li>
+                </ul>
+
+                <h3 class="text-xl font-bold mt-10">🛠️ 3. ScrollClaim™ Infrastructure</h3>
+                <ul class="list-disc ml-6 space-y-1">
+                    <li>Set tier access (e.g., Diamond)</li>
+                    <li>Define royalty logic (10–11%)</li>
+                    <li>Lock scrolls with PulseGrid™ sync and OmniSignal™</li>
+                    <li>Deploy via FAA.Zone™ with compliant ZIP bundles</li>
+                </ul>
+
+                <h3 class="text-xl font-bold mt-10">📀 4. Data Flow and Claim Lifecycle</h3>
+                <ul class="list-decimal ml-6 space-y-1">
+                    <li>Ingest — content enters VaultMesh™</li>
+                    <li>Encode — metadata & VaultDNA™ attached</li>
+                    <li>Wrap — ScrollClaim™ smart-wrapped</li>
+                    <li>Deploy — FAA.Zone™ push (ZIP, manifest, HTML)</li>
+                    <li>Sync — PulseGrid™ status & OmniSignal™ locked</li>
+                    <li>Enforce — Royalties, access & scroll activity logged via GhostTrace™</li>
+                </ul>
+
+                <h3 class="text-xl font-bold mt-10">💸 5. Tiering, Royalties, and Compliance</h3>
+                <ul class="list-disc ml-6 space-y-1">
+                    <li>Diamond Tier: 10–11% royalty enforced</li>
+                    <li>SmartWallet Integration: ScrollClaim™ payments and transfers</li>
+                    <li>VaultPay™ Tier III: Required for commercial deployments</li>
+                    <li>Compliance: FAA scroll ID, ClaimRoot™ hash, and royalty schema</li>
+                </ul>
+
+                <h3 class="text-xl font-bold mt-10">📡 6. Integration with FAA.Zone™</h3>
+                <ul class="list-disc ml-6 space-y-1">
+                    <li>Native support for /public/diamond/ structure</li>
+                    <li>ZIP, HTML, Manifest deployment bundles</li>
+                    <li>ClaimRoot™ timestamp validation</li>
+                    <li>Seamless PulseGrid™ auto-sync for live claim state</li>
+                    <li>Brand hosting via vault.faa.zone™</li>
+                </ul>
+
+                <h3 class="text-xl font-bold mt-10">🏢 7. Market Segments & Use Cases</h3>
+                <ul class="list-disc ml-6 space-y-1">
+                    <li>GPT Conversations & Expert Threads</li>
+                    <li>Knowledge/Training Archives</li>
+                    <li>Creative IP Scrolls (music, literature, visuals)</li>
+                    <li>GeoSector Deployment Archives</li>
+                    <li>Enterprise Scroll Logs & Audit Trails</li>
+                </ul>
+
+                <h3 class="text-xl font-bold mt-10">💰 8. Revenue Streams & Monetization</h3>
+                <ul class="list-disc ml-6 space-y-1">
+                    <li>Diamond Royalties (10–11%)</li>
+                    <li>Scroll Packaging Fees</li>
+                    <li>VaultMesh™ API Subscriptions</li>
+                    <li>PulseGrid™ and OmniSignal™ Licensing</li>
+                </ul>
+
+                <h3 class="text-xl font-bold mt-10 text-white">⚖️ 9. Technology Roadmap</h3>
+                <ul class="list-disc ml-6 space-y-1">
+                    <li>Q2 2025: ScrollClaim™ v2.2 with multi-claim staking</li>
+                    <li>Q3 2025: GhostTrace™ Gen3 with forensic backtrace tooling</li>
+                    <li>Q4 2025: Autonomous AI Sector Agents</li>
+                    <li>Q1 2026: Inter-vault Federation</li>
+                </ul>
+
+                <h3 class="text-xl font-bold mt-10">🔧 10. Team & Governance</h3>
+                <ul class="list-disc ml-6 space-y-1">
+                    <li>FAA-certified engineers (scroll claimers)</li>
+                    <li>Scroll Ministers: Compliance + tiering</li>
+                    <li>Vault Admins: Metadata + ClaimRoot™ enforcement</li>
+                    <li>HSOMNI9000™ Operators: Diamond-tier execution agents</li>
+                </ul>
+                <p class="text-sm mt-10">📎 This plan can now be exported as HTML, PDF, or ZIP.</p>
+            </div>
+        </section>
+
+        <!-- Vault Terminal Access (from pulstrade.html) -->
+        <section id="vault-access" class="section-padding">
+            <div class="container">
+                <h3>🔐 Sector Terminals</h3>
+                <div class="w-full max-w-6xl mx-auto mb-10 iframe-container h-[800px]">
+                    <iframe
+                        id="vault-frame"
+                        src=""
+                        class="w-full h-full rounded-xl"
+                        frameborder="0"
+                        title="VaultMaster Terminal"
+                        sandbox="allow-scripts allow-same-origin allow-forms"
+                    ></iframe>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                    <button onclick="loadTerminal('vault-master-terminal.html')" class="terminal-btn">🦍 VaultMaster Terminal</button>
+                    <button onclick="loadTerminal('cube-lattice-gpt.html')" class="terminal-btn">🧱 Cube Lattice GPT</button>
+                    <button onclick="loadTerminal('global-view-gpt.html')" class="terminal-btn">🌍 Global View GPT</button>
+                    <button onclick="loadTerminal('freight-ops-gpt.html')" class="terminal-btn">🚚 Freight Ops GPT</button>
+                    <button onclick="loadTerminal('loop-watch-gpt.html')" class="terminal-btn">♻️ Loop Watch GPT</button>
+                    <button onclick="loadTerminal('seedwave-gpt.html')" class="terminal-btn">🌱 Seedwave GPT</button>
+                    <button onclick="loadTerminal('distribution-gpt.html')" class="terminal-btn">📦 Distribution GPT</button>
+                    <button onclick="loadTerminal('signal-gpt.html')" class="terminal-btn">🔐 Signal GPT</button>
+                    <button onclick="loadTerminal('faa-brands-terminal.html')" class="terminal-btn">📦 7038 FAA Brands</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sector Scrolls Section (from pulstrade.html) -->
+        <section class="sector-scrolls-section">
+            <div class="container">
+                <h2 class="section-title">🧬 Sector Scrolls</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
+                    <a href="#" class="glyph" data-vault="payroll">💰 Payroll Core Systems</a>
+                    <a href="#" class="glyph" data-vault="retail">🛍️ Retail, Vendor & Trade</a>
+                    <a href="#" class="glyph" data-vault="ai-logic">🧠 AI, Logic & Grid Systems</a>
+                    <a href="#" class="glyph" data-vault="design">✒️ Creative & Design Systems</a>
+                    <a href="#" class="glyph" data-vault="finance">₿ Finance & Token Yield</a>
+                    <a href="#" class="glyph" data-vault="webless">⚙️ Webless Tech & Nodes</a>
+                    <a href="#" class="glyph" data-vault="logistics">📦 Logistics & Packaging</a>
+                    <a href="#" class="glyph" data-vault="food">🥦 Food, Soil & Farming</a>
+                    <a href="#" class="glyph" data-vault="education">🧒 Youth & Education</a>
+                    <a href="#" class="glyph" data-vault="health">🧴 Health & Hygiene</a>
+                    <a href="#" class="glyph" data-vault="culture">🪷 Aura, Ritual & Culture</a>
+                    <a href="#" class="glyph" data-vault="housing">🏛️ Housing & Infrastructure</a>
+                    <a href="#" class="glyph" data-vault="nft">🪪 NFT, IP, Ownership Grid</a>
+                    <a href="#" class="glyph" data-vault="media">🌐 Motion, Media, Sonic</a>
+                    <a href="#" class="glyph" data-vault="mining">⛏️ Mining & Material Yields</a>
+                    <a href="#" class="glyph" data-vault="wildlife">🚁 Wildlife Sector</a>
+                </div>
+                <div id="sector-content-container" class="mt-10 max-w-6xl mx-auto"></div>
+            </div>
+        </section>
+
+        <!-- Admin Portal Section (from pulstrade.html, integrated for public exploration of data) -->
+        <div id="admin-portal-section" class="admin-portal-container">
+            <div class="container">
+                <header class="admin-header flex flex-wrap justify-between items-center">
+                    <div class="flex items-center">
+                        <h1 class="text-2xl font-bold">⚙️ Seedwave™ Admin Portal</h1>
+                        <p class="text-sm opacity-80 mt-2 ml-4 hidden md:block">✿Corebrands management & AI logic deployment center</p>
+                    </div>
+                    <div class="flex flex-wrap justify-center md:justify-end space-x-2 mt-4 md:mt-0">
+                        <a href="/admin/admin-portal-approval" class="access-button">🪙 Loyalty Access</a>
+                        <a href="/admin/admin-portal-approval" class="access-button">📊 Shareholder Access</a>
+                        <a href="/admin/admin-portal-approval" class="access-button">🤝 Service Provider</a>
+                        <a href="/admin/admin-portal-approval" class="access-button">👨‍👩‍👧‍👦 Family Access</a>
+                    </div>
+                </header>
+
+                <nav class="top-nav flex gap-6 px-6 py-3 text-sm overflow-x-auto whitespace-nowrap">
+                    <a href="#" onclick="showAdminSubPanel('quick-view')" class="active">🏁 Quick View (Current)</a>
+                    <a href="#" onclick="showAdminSubPanel('signal-sync')">📡 Signal Sync</a>
+                    <a href="#" onclick="showAdminSubPanel('node-index')">🧩 Node Index</a>
+                    <a href="#" onclick="showAdminSubPanel('sector-grid')">🏙️ Sector Grid</a>
+                    <a href="#" onclick="showAdminSubPanel('license-ledger')">🔐 License Ledger</a>
+                    <a href="#" onclick="showAdminSubPanel('faa-clauses')">📜 FAA Clauses</a>
+                    <a href="#" onclick="showAdminSubPanel('scrollmap')">🗺️ ScrollMap</a>
+                    <a href="#" onclick="showAdminSubPanel('ecosystem-mesh')">🌿 Ecosystem Mesh</a>
+                    <a href="#" onclick="showAdminSubPanel('brand-metrics')">🔍 Brand Metrics</a>
+                    <a href="#" onclick="showAdminSubPanel('scroll-layers')">🧬 Scroll Layers</a>
+                    <a href="#" onclick="showAdminSubPanel('grid-index')">📊 Grid Index</a>
+                    <a href="#" onclick="showAdminSubPanel('node-packs')">📁 Node Packs</a>
+                    <a href="#" onclick="showAdminSubPanel('audit-tracker')">📈 Audit Tracker</a>
+                    <a href="#" onclick="showAdminSubPanel('signal-zones')">🛰️ Signal Zones</a>
+                    <a href="#" onclick="showAdminSubPanel('ecosync-logs')">📥 Ecosync Logs</a>
+                </nav>
+
+                <main class="max-w-6xl mx-auto px-6 py-8 admin-main-content">
+                    <div id="quick-view" class="admin-sub-panel">
+                        <section class="mb-8">
+                            <h2 class="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">⚙️ Admin Panel — Add Brand & Subnodes</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <div>
+                                    <label class="text-sm block font-medium mb-1 text-gray-600 dark:text-gray-400">📂 Sector</label>
+                                    <select id="sectorSelect" class="w-full border rounded p-2">
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="text-sm block font-medium mb-1 text-gray-600 dark:text-gray-400">🏷 Brand Name</label>
+                                    <input id="brandInput" class="w-full border rounded p-2" placeholder="e.g. OmniCastX">
+                                </div>
+                                <div>
+                                    <label class="text-sm block font-medium mb-1 text-gray-600 dark:text-gray-400">📌 Subnodes</label>
+                                    <input id="subnodesInput" class="w-full border rounded p-2" placeholder="e.g. VaultDrop, QRClaim">
+                                </div>
+                                <div class="flex items-end">
+                                    <button onclick="addBrandToSector()">
+                                        ➕ Add Brand
+                                    </button>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="mb-16">
+                            <h3 class="text-md font-semibold mb-2 text-gray-800 dark:text-gray-200">ℹ️ Admin Status Feedback</h3>
+                            <p id="adminStatus" class="text-sm text-gray-600 dark:text-gray-400 italic">Ready to receive input.</p>
+                        </section>
+
+                        <section class="mb-20">
+                            <h2 class="text-lg font-bold mb-4 text-gray-800 dark:text-gray-200">📊 Saved Brand Overview</h2>
+                            <div id="brandDashboard" class="space-y-10"></div>
+                        </section>
+
+                        <section class="mb-16">
+                            <h2 class="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">⦿ FAA.ZONE INDEX — Expanded Table Structure</h2>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full admin-table">
+                                    <thead class="font-semibold">
+                                        <tr>
+                                            <th class="px-4 py-2">Glyph</th>
+                                            <th class="px-4 py-2">Sector</th>
+                                            <th class="px-4 py-2">Core Brands</th>
+                                            <th class="px-4 py-2">Total Nodes</th>
+                                            <th class="px-4 py-2">Monthly Fee</th>
+                                            <th class="px-4 py-2">Annual Fee</th>
+                                            <th class="px-4 py-2">Payout Tier</th>
+                                            <th class="px-4 py-2">Region</th>
+                                            <th class="px-4 py-2">Inspect</th>
+                                            <th class="px-4 py-2">Deploy</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td class="px-4 py-2">🧺</td><td>Retail, Vendor & Trade</td><td>183</td><td>1,098</td><td>$88</td><td>$888</td><td>A+</td><td>Div A-F</td><td><button class="text-blue-400 hover:underline">View</button></td><td><button class="text-green-400 hover:underline">Deploy</button></td></tr>
+                                        <tr><td class="px-4 py-2">🧠</td><td>AI, Logic & Grid Systems</td><td>188</td><td>752</td><td>$104</td><td>$1,050</td><td>A+</td><td>Global</td><td><button class="text-blue-400 hover:underline">View</button></td><td><button class="text-green-400 hover:underline">Deploy</button></td></tr>
+                                        <tr><td class="px-4 py-2">🖋️</td><td>Creative & Design Systems</td><td>142</td><td>710</td><td>$67</td><td>$720</td><td>A</td><td>Div E</td><td><button class="text-blue-400 hover:underline">View</button></td><td><button class="text-green-400 hover:underline">Deploy</button></td></tr>
+                                        <tr><td class="px-4 py-2">₿</td><td>Finance & Token Yield</td><td>136</td><td>680</td><td>$125</td><td>$1,250</td><td>A+</td><td>Div A-E</td><td><button class="text-blue-400 hover:underline">View</button></td><td><button class="text-green-400 hover:underline">Deploy</button></td></tr>
+                                        <tr><td class="px-4 py-2">📴</td><td>Webless Tech & Nodes</td><td>103</td><td>515</td><td>$76</td><td>$770</td><td>A</td><td>Div D-G</td><td><button class="text-blue-400 hover:underline">View</button></td><td><button class="text-green-400 hover:underline">Deploy</button></td></tr>
+                                        <tr><td class="px-4 py-2">📦</td><td>Logistics & Packaging</td><td>111</td><td>444</td><td>$58</td><td>$595</td><td>B+</td><td>Div B-F</td><td><button class="text-blue-400 hover:underline">View</button></td><td><button class="text-green-400 hover:underline">Deploy</button></td></tr>
+                                        <tr><td class="px-4 py-2">✿</td><td>Food, Soil & Farming</td><td>83</td><td>332</td><td>$46</td><td>$480</td><td>B+</td><td>Rural</td><td><button class="text-blue-400 hover:underline">View</button></td><td><button class="text-green-400 hover:underline">Deploy</button></td></tr>
+                                        <tr><td class="px-4 py-2">🧒</td><td>Youth & Education</td><td>66</td><td>330</td><td>$39</td><td>$420</td><td>A</td><td>Tribal</td><td><button class="text-blue-400 hover:underline">View</button></td><td><button class="text-green-400 hover:underline">Deploy</button></td></tr>
+                                        <tr><td class="px-4 py-2">⚗</td><td>Health & Hygiene</td><td>93</td><td>372</td><td>$52</td><td>$550</td><td>B</td><td>Div F</td><td><button class="text-blue-400 hover:underline">View</button></td><td><button class="text-green-400 hover:underline">Deploy</button></td></tr>
+                                        <tr><td class="px-4 py-2">☯</td><td>Aura, Ritual & Culture</td><td>74</td><td>296</td><td>$68</td><td>$725</td><td>A</td><td>Div C</td><td><button class="text-blue-400 hover:underline">View</button></td><td><button class="text-green-400 hover:underline">Deploy</button></td></tr>
+                                        <tr><td class="px-4 py-2">🏗️</td><td>Housing & Infrastructure</td><td>91</td><td>364</td><td>$59</td><td>$610</td><td>B+</td><td>Div A-F</td><td><button class="text-blue-400 hover:underline">View</button></td><td><button class="text-green-400 hover:underline">Deploy</button></td></tr>
+                                        <tr><td class="px-4 py-2">🔁</td><td>NFT, IP, Ownership Grid</td><td>58</td><td>232</td><td>$120</td><td>$1,200</td><td>A</td><td>FAA IP</td><td><button class="text-blue-400 hover:underline">View</button></td><td><button class="text-green-400 hover:underline">Deploy</button></td></tr>
+                                        <tr><td class="px-4 py-2">🌀</td><td>Motion, Media, Sonic</td><td>78</td><td>312</td><td>$72</td><td>$740</td><td>A</td><td>Creative</td><td><button class="text-blue-400 hover:underline">View</button></td><td><button class="text-green-400 hover:underline">Deploy</button></td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </section>
+
+                        <nav class="sector-grid-nav grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                            <a href="#" onclick="showSectorPanel('embedded-agriculture-snapshot')" class="sector-link">🌱 Agriculture & Biotech</a>
+                            <a href="#" onclick="showSectorPanel('embedded-fsf-snapshot')" class="sector-link">🥦 Food, Soil & Farming</a>
+                            <a href="#" onclick="showSectorPanel('embedded-banking-snapshot')" class="sector-link">🏦 Banking & Finance</a>
+                            <a href="#" onclick="showSectorPanel('embedded-creative-snapshot')" class="sector-link">🖋️ Creative Tech</a>
+                            <a href="#" onclick="showSectorPanel('embedded-logistics-snapshot')" class="sector-link">📦 Logistics & Packaging</a>
+                            <a href="#" onclick="showSectorPanel('embedded-education-snapshot')" class="sector-link">📚 Education & IP</a>
+                            <a href="#" onclick="showSectorPanel('embedded-fashion-snapshot')" class="sector-link">✂ Fashion & Identity</a>
+                            <a href="#" onclick="showSectorPanel('embedded-gaming-snapshot')" class="sector-link">🎮 Gaming & Simulation</a>
+                            <a href="#" onclick="showSectorPanel('embedded-health-snapshot')" class="sector-link">🧠 Health & Hygiene</a>
+                            <a href="#" onclick="showSectorPanel('embedded-housing-snapshot')" class="sector-link">🏗️ Housing & Infrastructure</a>
+                            <a href="#" onclick="showSectorPanel('embedded-justice-snapshot')" class="sector-link">⚖ Justice & Ethics</a>
+                            <a href="#" onclick="showSectorPanel('embedded-knowledge-snapshot')" class="sector-link">🧠 Knowledge & Archives</a>
+                            <a href="#" onclick="showSectorPanel('embedded-micromesh-snapshot')" class="sector-link">☰ Micro-Mesh Logistics</a>
+                            <a href="#" onclick="showSectorPanel('embedded-media-snapshot')" class="sector-link" data-sector="media">🎬 Motion, Media & Sonic</a>
+                            <a href="#" onclick="showSectorPanel('embedded-nutrition-snapshot')" class="sector-link">✿ Nutrition & Food Chain</a>
+                            <a href="#" onclick="showSectorPanel('embedded-ailogic-snapshot')" class="sector-link">🧠 AI, Logic & Grid Systems</a>
+                            <a href="#" onclick="showSectorPanel('embedded-packaging-snapshot')" class="sector-link">📦 Packaging & Materials</a>
+                            <a href="#" onclick="showSectorPanel('embedded-quantum-snapshot')" class="sector-link">✴️ Quantum Protocols</a>
+                            <a href="#" onclick="showSectorPanel('embedded-ritual-snapshot')" class="sector-link">☯ Ritual & Culture</a>
+                            <a href="#" onclick="showSectorPanel('embedded-saas-snapshot')" class="sector-link">🔑 SaaS & Licensing</a>
+                            <a href="#" onclick="showSectorPanel('embedded-trade-snapshot')" class="sector-link">🧺 Trade Systems</a>
+                            <a href="#" onclick="showSectorPanel('embedded-utilities-snapshot')" class="sector-link">🔋 Utilities & Energy</a>
+                            <a href="#" onclick="showSectorPanel('embedded-voice-snapshot')" class="sector-link">🎙️ Voice & Audio</a>
+                            <a href="#" onclick="showSectorPanel('embedded-webless-snapshot')" class="sector-link">📡 Webless Tech & Nodes</a>
+                            <a href="#" onclick="showSectorPanel('embedded-nft-snapshot')" class="sector-link">🔁 NFT & Ownership</a>
+                            <a href="#" onclick="showSectorPanel('embedded-zerowaste-snapshot')" class="sector-link">♻️ Zero Waste</a>
+                            <a href="#" onclick="showSectorPanel('embedded-professional-snapshot')" class="sector-link">🧾 Professional Services</a>
+                            <a href="#" onclick="showSectorPanel('embedded-admin-snapshot')" class="sector-link">⚙️ Admin & Manual Sync Panel</a>
+                        </nav>
+
+                        <div id="embedded-agriculture-snapshot" class="hidden brand-snapshot">
+                            <div class="text-2xl font-bold text-green-400 mb-4">🌾 FAA™ Agriculture Core Brand Dashboard</div>
+                            <div id="agri-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+                            <div class="p-6" id="agri-snapshots"></div>
+                        </div>
+                        <div id="embedded-fsf-snapshot" class="hidden brand-snapshot">
+                            <div class="text-2xl font-bold text-green-400 mb-4">🥦 FAA™ Food, Soil & Farming Dashboard</div>
+                            <div id="fsf-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+                            <div class="p-6" id="fsf-snapshots"></div>
+                        </div>
+                        <div id="embedded-banking-snapshot" class="hidden brand-snapshot">
+                            <div class="text-2xl font-bold text-indigo-400 mb-4">🏦 FAA™ Banking & Finance Dashboard</div>
+                            <div id="banking-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+                            <div class="p-6" id="banking-snapshots"></div>
+                        </div>
+                        <div id="embedded-creative-snapshot" class="hidden brand-snapshot">
+                            <div class="text-2xl font-bold text-purple-400 mb-4">🖋️ FAA™ Creative Tech Dashboard</div>
+                            <div id="creative-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+                            <div class="p-6" id="creative-snapshots"></div>
+                        </div>
+                        <div id="embedded-logistics-snapshot" class="hidden brand-snapshot">
+                            <div class="text-2xl font-bold text-yellow-400 mb-4">📦 FAA™ Logistics & Packaging Dashboard</div>
+                            <div id="logistics-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+                            <div class="p-6" id="logistics-snapshots"></div>
+                        </div>
+                        <div id="embedded-education-snapshot" class="hidden brand-snapshot">
+                            <div class="text-2xl font-bold text-green-400 mb-4">🎓 FAA™ Education & Youth Dashboard</div>
+                            <div id="education-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+                            <div class="p-6" id="education-snapshots"></div>
+                        </div>
+                        <div id="embedded-fashion-snapshot" class="hidden brand-snapshot">
+                            <div class="text-2xl font-bold text-pink-400 mb-4">✂ FAA™ Fashion & Identity Dashboard</div>
+                            <div id="fashion-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+                            <div class="p-6" id="fashion-snapshots"></div>
+                        </div>
+                        <div id="embedded-gaming-snapshot" class="hidden brand-snapshot">
+                            <div class="text-2xl font-bold text-indigo-400 mb-4">🎮 FAA™ Gaming & Simulation Dashboard</div>
+                            <div id="gaming-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+                            <div class="p-6" id="gaming-snapshots"></div>
+                        </div>
+                        <div id="embedded-health-snapshot" class="hidden brand-snapshot">
+                            <div class="text-2xl font-bold text-gray-400 mb-4">🧠 FAA™ Health & Hygiene Dashboard</div>
+                            <div id="health-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+                            <div class="p-6" id="health-snapshots"></div>
+                        </div>
+                        <div id="embedded-housing-snapshot" class="hidden brand-snapshot">
+                            <div class="text-2xl font-bold text-blue-400 mb-4">🏗️ FAA™ Housing & Infrastructure Dashboard</div>
+                            <div id="housing-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+                            <div class="p-6" id="housing-snapshots"></div>
+                        </div>
+                        <div id="embedded-justice-snapshot" class="hidden brand-snapshot">
+                            <div class="text-2xl font-bold text-gray-400 mb-4">⚖ FAA™ Justice & Ethics Dashboard</div>
+                            <div id="justice-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+                            <div class="p-6" id="justice-snapshots"></div>
+                        </div>
+                        <div id="embedded-professional-snapshot" class="hidden brand-snapshot">
+                            <div class="text-2xl font-bold text-indigo-400 mb-4">🧾 FAA™ Professional Services Dashboard</div>
+                            <div id="professional-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+                            <div class="p-6" id="professional-snapshots"></div>
+                        </div>
+                        <div id="embedded-knowledge-snapshot" class="hidden brand-snapshot">
+                            <div class="text-2xl font-bold text-blue-400 mb-4">🧠 FAA™ Knowledge & Archives Dashboard</div>
+                            <div id="knowledge-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+                            <div class="p-6" id="knowledge-snapshots"></div>
+                        </div>
+                        <div id="embedded-micromesh-snapshot" class="hidden brand-snapshot">
+                            <div class="text-2xl font-bold text-yellow-400 mb-4">☰ FAA™ Micro-Mesh Logistics Dashboard</div>
+                            <div id="micromesh-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+                            <div class="p-6" id="micromesh-snapshots"></div>
+                        </div>
+                        <div id="embedded-media-snapshot" class="hidden brand-snapshot">
+                            <div class="text-2xl font-bold text-gray-400 mb-4">🎬 FAA™ Motion, Media & Sonic Dashboard</div>
+                            <div id="media-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+                            <div class="p-6" id="media-snapshots"></div>
+                            <div id="media-scroll-panel" class="overflow-x-auto mt-10 mb-12 px-4">
+                                <div class="scroll-cards flex space-x-6 min-w-full pb-4"></div>
+                            </div>
+                        </div>
+                        <div id="embedded-nutrition-snapshot" class="hidden brand-snapshot">
+                            <div class="text-2xl font-bold text-green-400 mb-4">✿ FAA™ Nutrition & Food Chain Dashboard</div>
+                            <div id="nutrition-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+                            <div class="p-6" id="nutrition-snapshots"></div>
+                        </div>
+                        <div id="embedded-packaging-snapshot" class="hidden brand-snapshot">
+                            <div class="text-2xl font-bold text-yellow-400 mb-4">📦 FAA™ Packaging & Materials Dashboard</div>
+                            <div id="packaging-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+                            <div class="p-6" id="packaging-snapshots"></div>
+                        </div>
+                        <div id="embedded-quantum-snapshot" class="hidden brand-snapshot">
+                            <div class="text-2xl font-bold text-purple-400 mb-4">✴️ FAA™ Quantum Protocols Dashboard</div>
+                            <div id="quantum-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+                            <div class="p-6" id="quantum-snapshots"></div>
+                        </div>
+                        <div id="embedded-ritual-snapshot" class="hidden brand-snapshot">
+                            <div class="text-2xl font-bold text-gray-400 mb-4">☯ FAA™ Ritual & Culture Dashboard</div>
+                            <div id="ritual-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+                            <div class="p-6" id="ritual-snapshots"></div>
+                        </div>
+                        <div id="embedded-saas-snapshot" class="hidden brand-snapshot">
+                            <div class="text-2xl font-bold text-blue-400 mb-4">🔑 FAA™ SaaS & Licensing Dashboard</div>
+                            <div id="saas-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+                            <div class="p-6" id="saas-snapshots"></div>
+                        </div>
+                        <div id="embedded-trade-snapshot" class="hidden brand-snapshot">
+                            <div class="text-2xl font-bold text-orange-400 mb-4">🧺 FAA™ Trade Systems Dashboard</div>
+                            <div id="trade-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+                            <div class="p-6" id="trade-snapshots"></div>
+                        </div>
+                        <div id="embedded-utilities-snapshot" class="hidden brand-snapshot">
+                            <div class="text-2xl font-bold text-yellow-400 mb-4">🔋 FAA™ Utilities & Energy Dashboard</div>
+                            <div id="utilities-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+                            <div class="p-6" id="utilities-snapshots"></div>
+                        </div>
+                        <div id="embedded-voice-snapshot" class="hidden brand-snapshot">
+                            <div class="text-2xl font-bold text-indigo-400 mb-4">🎙️ FAA™ Voice & Audio Dashboard</div>
+                            <div id="voice-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+                            <div class="p-6" id="voice-snapshots"></div>
+                        </div>
+                        <div id="embedded-webless-snapshot" class="hidden brand-snapshot">
+                            <div class="text-2xl font-bold text-gray-400 mb-4">📡 FAA™ Webless Tech & Nodes Dashboard</div>
+                            <div id="webless-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+                            <div class="p-6" id="webless-snapshots"></div>
+                        </div>
+                        <div id="embedded-nft-snapshot" class="hidden brand-snapshot">
+                            <div class="text-2xl font-bold text-pink-400 mb-4">🔁 FAA™ NFT & Ownership Dashboard</div>
+                            <div id="nft-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+                            <div class="p-6" id="nft-snapshots"></div>
+                        </div>
+                        <div id="embedded-zerowaste-snapshot" class="hidden brand-snapshot">
+                            <div class="text-2xl font-bold text-lime-400 mb-4">♻️ FAA™ Zero Waste Dashboard</div>
+                            <div id="zerowaste-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+                            <div class="p-6" id="zerowaste-snapshots"></div>
+                        </div>
+                        <div id="embedded-ailogic-snapshot" class="hidden brand-snapshot">
+                            <div class="text-2xl font-bold text-indigo-400 mb-4">🧠 FAA™ AI, Logic & Grid Brand Dashboard</div>
+                            <div id="ailogic-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+                            <div class="p-6" id="ailogic-snapshots"></div>
+                        </div>
+                        <div id="embedded-admin-snapshot" class="hidden brand-snapshot">
+                            <div class="text-2xl font-bold text-gray-400 mb-4">⚙️ Admin & Manual Sync Panel</div>
+                            <div id="admin-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
+                            <div class="p-6" id="admin-snapshots"></div>
+                        </div>
+                    </section>
+
+                    <!-- FAA Scroll Pulse Monitor (moved to main content) -->
+                    <section class="w-full px-6 py-8">
+                        <div class="bg-gray-100 dark:bg-gray-800 p-6 rounded shadow-lg">
+                            <h2 class="text-xl font-bold text-gray-800 dark:text-gray-200">📉 FAA Scroll Pulse Monitor</h2>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Dynamic scroll sync across sectors in real-time.</p>
+                            <div class="h-96">
+                                <canvas id="masterDashboardChart" class="w-full h-full"></canvas>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Metrics Section (moved to main content) -->
+                    <section class="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-7 gap-6 px-6 py-8 metrics-grid">
+                        <a href="node-activity.html">
+                            <h3>🧠 Active Nodes</h3>
+                            <p>12,934</p>
+                        </a>
+                        <a href="license-grid.html">
+                            <h3>🔐 Licenses Active</h3>
+                            <p>3,288</p>
+                        </a>
+                        <a href="vault-deployments.html">
+                            <h3>💾 Vault Deployments</h3>
+                            <p>654 Vaults</p>
+                        </a>
+                        <a href="ecosync-logs.html">
+                            <h3>📥 Sync Logs</h3>
+                            <p>204,111 entries</p>
+                        </a>
+                        <a href="audit-tracker.html">
+                            <h3>📈 Audits Running</h3>
+                            <p>47 scans</p>
+                        </a>
+                        <a href="signal-zones.html">
+                            <h3>🛰️ Signal Zones</h3>
+                            <p>21 sectors</p>
+                        </a>
+                        <a href="grid-index.html">
+                            <h3>📊 Scroll Grid Index</h3>
+                            <p>986 clusters</p>
+                        </a>
+                    </section>
+                </main>
+            </div>
+        </div>
+
+        <!-- Treaty Section (from pulstrade.html) -->
+        <section id="treaty" class="section-padding">
+            <div class="container">
+                <h2 class="section-title">📜 Treaty System™</h2>
+                <p class="max-w-2xl mx-auto">The FAA™ Treaty Layer binds interface to intention. This is not UI. This is glyph-encoded law.</p>
+                <blockquote>"FAA™ isn't a site. It's the shape of alignment — and 🦍 holds the flame."</blockquote>
+            </div>
+        </section>
+
+        <!-- Signal Packet (from pulstrade.html) -->
+        <section class="signal-packet-section">
+            <pre><code>{
+    "signal": "omnidrop",
+    "origin": "If you dont like the fruits you are growing, change the seed™ / FAA Vault Layer",
+    "payload": {
+        "type": "scroll",
+        "value": "homepage + VaultRouter + all terminal iframe buttons live + Treaty Grid"
+    }
+}</code></pre>
+        </section>
+
+        <!-- About Section (from pulstrade.html) -->
+        <section id="about" class="section-padding">
+            <div class="container">
+                <h3>About Fruitful Innovations</h3>
+                <p class="mb-6">
+                    At Fruitful, we believe in a future where technology empowers positive change. Our platform is designed to break down traditional barriers, fostering a collaborative ecosystem where businesses and individuals can thrive while making a meaningful impact on the world.
+                </p>
+                <p>
+                    We are committed to transparency, sustainability, and innovation, driven by a powerful AI that ensures fairness, efficiency, and personalized experiences for every user. Join us in building a more fruitful planet.
+                </p>
+            </div>
+        </section>
+
+        <!-- Call to Action Section (from pulstrade.html) -->
+        <section id="cta" class="section-padding">
+            <div class="container">
+                <h3>Ready to Transform Your Operations?</h3>
+                <p>
+                    Join the Fruitful community today and start your journey towards innovation, connection, and a sustainable tomorrow.
+                </p>
+                <a href="#" class="cta-button">
+                    Sign Up Now
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <div class="logo">
+                    <span class="logo-faa">FAA.zone™</span> / <span class="logo-buildnest">BuildNest™</span>
+                </div>
+                <p class="copyright">&copy; 2025 FAA™ Treaty System™. All Rights Reserved. Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>BuildNest™</h4>
+                    <ul>
+                        <li><a href="omnigrid.html#overview">Features</a></li>
+                        <li><a href="omnigrid.html#vaultmesh">Use Cases</a></li>
+                        <li><a href="omnigrid.html#cta">Pricing</a></li>
+                        <li><a href="omnigrid.html#terminals">Modules</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>FAA.zone™</h4>
+                    <ul>
+                        <li><a href="#">About FAA Systems™</a></li>
+                        <li><a href="omnigrid.html#overview">Omni Grid™</a></li>
+                        <li><a href="#">Baobab Archive™</a></li>
+                        <li><a href="#">Compliance</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="#">Contact Support</a></li>
+                        <li><a href="#">Partner Program</a></li>
+                        <li><a href="#">Developer API</a></li>
+                        <li><a href="#">Legal & Privacy</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- Global Gemini API Key ---
+        const GEMINI_API_KEY = "AIzaSyBGSDZATtITv5iIoB3rgKHBpWx9MrufxXE";
+        console.log("Gemini API Key loaded:", GEMINI_API_KEY);
+
+        let overallPerformanceChart;
+        let securityIntegrityChart;
+        let revenueGrowthChart;
+        let costReductionChart;
+        let auditIntegrityChart;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const mainNav = document.querySelector('.main-nav');
+            const hamburgerMenu = document.querySelector('.hamburger-menu');
+            const body = document.body;
+            const themeToggle = document.getElementById('themeToggle');
+
+            const generateDemoBtn = document.getElementById('generateDemoBtn');
+            const demoStatusMessage = document.getElementById('demoStatusMessage');
+            const simulatedResultsSection = document.getElementById('simulatedResults');
+            const currentScenarioText = document.getElementById('currentScenarioText');
+            const operationsLog = document.getElementById('operationsLog'); // Global Operations Log Console
+            const financialOperationsLog = document.getElementById('financialOperationsLog'); // Financial Operations Log Console
+            const dataGovernanceLog = document.getElementById('dataGovernanceLog'); // Data Governance Operations Log Console
+
+
+            // KPI elements
+            const kpiTotalProcessed = document.getElementById('kpi-total-processed');
+            const kpiAvgLatency = document.getElementById('kpi-avg-latency');
+            const kpiSecurityEvents = document.getElementById('kpi-security-events');
+            const kpiEfficiencyGain = document.getElementById('kpi-efficiency-gain');
+            const kpiROI = document.getElementById('kpi-roi');
+            const kpiCostSavings = document.getElementById('kpi-cost-savings');
+            const kpiComplianceScore = document.getElementById('kpi-compliance-score');
+            const kpiTraceDepth = document.getElementById('kpi-trace-depth');
+
+
+            // Configuration controls
+            const industrySectorSelect = document.getElementById('industrySector');
+            const dataVolumeSelect = document.getElementById('dataVolume');
+            const networkTopologySelect = document.getElementById('networkTopology');
+            const securityPostureSelect = document.getElementById('securityPosture');
+            const emphasizeAbilitiesCheckboxes = document.querySelectorAll('#demo-controls-panel input[type="checkbox"]');
+
+
+            // Individual Core Ability result spans
+            const corethinkResult = document.getElementById('corethinkResult');
+            const truthweightResult = document.getElementById('truthweightResult');
+            const echosynthResult = document.getElementById('echosynthResult');
+            const autosigilResult = document.getElementById('autosigilResult');
+            const pulseindexResult = document.getElementById('pulseindexResult');
+            const omnitraceResult = document.getElementById('omnitraceResult');
+            const lifthaloResult = document.getElementById('lifthaloResult');
+            const mirrorloopResult = document.getElementById('mirrorloopResult');
+            const fireratioResult = document.getElementById('fireratioResult');
+
+            // Individual Core Ability metric spans
+            const corethinkMetrics = document.getElementById('corethinkMetrics');
+            const truthweightMetrics = document.getElementById('truthweightMetrics');
+            const echosynthMetrics = document.getElementById('echosynthMetrics');
+            const autosigilMetrics = document.getElementById('autosigilMetrics');
+            const pulseindexMetrics = document.getElementById('pulseindexMetrics');
+            const omnitraceMetrics = document.getElementById('omnitraceMetrics');
+            const lifthaloMetrics = document.getElementById('lifthaloMetrics');
+            const mirrorloopMetrics = document.getElementById('mirrorloopMetrics');
+            const fireratioMetrics = document.getElementById('fireratioMetrics');
+
+            // Individual Core Ability Status spans
+            const corethinkStatus = document.getElementById('corethinkStatus');
+            const truthweightStatus = document.getElementById('truthweightStatus');
+            const echosynthStatus = document.getElementById('echosynthStatus');
+            const autosigilStatus = document.getElementById('autosigilStatus');
+            const pulseindexStatus = document.getElementById('pulseindexStatus');
+            const omnitraceStatus = document.getElementById('omnitraceStatus');
+            const lifthaloStatus = document.getElementById('lifthaloStatus');
+            const mirrorloopStatus = document.getElementById('mirrorloopStatus');
+            const fireratioStatus = document.getElementById('fireratioStatus');
+
+            // Individual Core Ability progress bars
+            const corethinkProgressBar = document.getElementById('corethinkProgressBar');
+            const truthweightProgressBar = document.getElementById('truthweightProgressBar');
+            const echosynthProgressBar = document.getElementById('echosynthProgressBar');
+            const autosigilProgressBar = document.getElementById('autosigilProgressBar');
+            const pulseindexProgressBar = document.getElementById('pulseindexProgressBar');
+            const omnitraceProgressBar = document.getElementById('omnitraceProgressBar');
+            const lifthaloProgressBar = document.getElementById('lifthaloProgressBar');
+            const mirrorloopProgressBar = document.getElementById('mirrorloopProgressBar');
+            const fireratioProgressBar = document.getElementById('fireratioProgressBar');
+
+
+            // Metadata table elements
+            const metaDemoInstanceID = document.getElementById('meta-demoInstanceID');
+            const metaIndustrySector = document.getElementById('meta-industrySector');
+            const metaFeatureFocus = document.getElementById('meta-featureFocus');
+            const metaDataVolumeScale = document.getElementById('meta-dataVolumeScale');
+            const metaNetworkTopology = document.getElementById('meta-networkTopology');
+            const metaSecurityPosture = document.getElementById('meta-securityPosture');
+            const metaExpirationTimestamp = document.getElementById('meta-expirationTimestamp');
+            const demoPayloadJson = document.getElementById('demoPayloadJson');
+
+
+            // --- Helper to update progress bars ---
+            const updateProgressBar = (element, percentage) => {
+                if (element) {
+                    element.style.width = `${percentage}%`;
+                }
+            };
+
+            // --- Log to Operations Console ---
+            // Renamed to `logGlobalOperation` for clarity, as there are now multiple logs
+            const logGlobalOperation = (message, type = 'info', engine = null) => {
+                const timestamp = new Date().toLocaleTimeString('en-US', { hour12: false });
+                let logEntry = `<span class="log-timestamp">[${timestamp}]</span> `;
+                if (engine) {
+                    logEntry += `<span class="engine-name">${engine}:</span> `;
+                }
+                logEntry += `<span class="log-message-${type}">${message}</span>`;
+                operationsLog.innerHTML += logEntry + '<br>';
+                operationsLog.scrollTop = operationsLog.scrollHeight; // Auto-scroll to bottom
+            };
+
+            // New: Log to contextual logs
+            const logContextualOperation = (logElement, message, type = 'info') => {
+                const timestamp = new Date().toLocaleTimeString('en-US', { hour12: false });
+                const logEntry = `<span class="log-timestamp">[${timestamp}]</span> <span class="log-message-${type}">${message}</span>`;
+                if (logElement) { // Added null check for safety
+                    logElement.innerHTML += logEntry + '<br>';
+                    logElement.scrollTop = logElement.scrollHeight;
+                }
+            };
+
+            // --- Update individual ability status ---
+            const updateAbilityStatus = (abilityName, statusText, statusType = 'light') => {
+                const statusSpan = document.getElementById(`${abilityName}Status`);
+                if (statusSpan) {
+                    statusSpan.textContent = statusText;
+                    statusSpan.className = 'node-status'; // Reset classes
+                    if (statusType === 'light') statusSpan.classList.add('text-page-theme-text-light');
+                    else if (statusType === 'accent') statusSpan.classList.add('text-page-theme-accent-color');
+                    else if (statusType === 'error') statusSpan.classList.add('text-red-500');
+                    else if (statusType === 'success') statusSpan.classList.add('text-green-500');
+                }
+            };
+
+
+            // --- Initialize Charts ---
+            const initCharts = () => {
+                if (overallPerformanceChart) overallPerformanceChart.destroy();
+                if (securityIntegrityChart) securityIntegrityChart.destroy();
+                if (revenueGrowthChart) revenueGrowthChart.destroy();
+                if (costReductionChart) costReductionChart.destroy();
+                if (auditIntegrityChart) auditIntegrityChart.destroy();
+
+                const commonChartOptions = {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, ticks: { color: 'var(--page-theme-text-muted)' }, grid: { color: 'var(--page-border-color)' } },
+                        x: { ticks: { color: 'var(--page-theme-text-muted)' }, grid: { color: 'var(--page-border-color)' } }
+                    },
+                    plugins: { legend: { display: true, labels: { color: 'var(--page-theme-text-light)' } } }
+                };
+
+                // Overall Performance Chart
+                const overallCtx = document.getElementById('overallPerformanceChart').getContext('2d');
+                overallPerformanceChart = new Chart(overallCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Initial', 'Current'],
+                        datasets: [{
+                            label: 'Performance Index (Normalized)',
+                            data: [50, 50],
+                            borderColor: 'var(--page-theme-accent-color)',
+                            backgroundColor: 'rgba(250, 200, 20, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                            pointBackgroundColor: 'var(--page-theme-accent-color)',
+                            pointBorderColor: 'var(--page-card-background)',
+                            pointRadius: 5,
+                            pointHoverRadius: 7
+                        }]
+                    },
+                    options: commonChartOptions
+                });
+
+                // Security & Integrity Chart
+                const securityCtx = document.getElementById('securityIntegrityChart').getContext('2d');
+                securityIntegrityChart = new Chart(securityCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Initial', 'Current'],
+                        datasets: [{
+                            label: 'Security & Integrity Score (%)',
+                            data: [80, 80],
+                            backgroundColor: ['#6366f1', 'var(--page-theme-accent-color)'],
+                            borderColor: ['#4f46e5', '#eab308'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: commonChartOptions
+                });
+
+                // Financial Impact Charts
+                const revenueCtx = document.getElementById('revenueGrowthChart').getContext('2d');
+                revenueGrowthChart = new Chart(revenueCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Year 0', 'Year 1', 'Year 2', 'Year 3'],
+                        datasets: [{
+                            label: 'Projected Annual Revenue Growth (%)',
+                            data: [0, 5, 10, 15], // Base values
+                            borderColor: '#30d158', /* Apple Green */
+                            backgroundColor: 'rgba(48, 209, 88, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                            pointBackgroundColor: '#30d158',
+                            pointBorderColor: 'var(--page-card-background)'
+                        }]
+                    },
+                    options: commonChartOptions
+                });
+
+                const costCtx = document.getElementById('costReductionChart').getContext('2d');
+                costReductionChart = new Chart(costCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Initial', 'Post-Deployment'],
+                        datasets: [{
+                            label: 'Operational Cost Reduction (%)',
+                            data: [0, 10], // Base values
+                            backgroundColor: ['#ff3b30', '#00e0ff'], /* Red for initial, Cyan for reduction */
+                            borderColor: ['#cc2e2e', '#00b3cc'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: commonChartOptions
+                });
+
+                // Data Governance & Audit Chart
+                const auditCtx = document.getElementById('auditIntegrityChart').getContext('2d');
+                auditIntegrityChart = new Chart(auditCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                        datasets: [
+                            {
+                                label: 'Integrity Checks Performed',
+                                data: [100, 120, 150, 180, 200, 220],
+                                borderColor: '#00e0ff',
+                                fill: false,
+                                tension: 0.3,
+                                pointBackgroundColor: '#00e0ff'
+                            },
+                            {
+                                label: 'Security Events Logged',
+                                data: [10, 8, 5, 7, 3, 2],
+                                borderColor: '#ff3b30',
+                                fill: false,
+                                tension: 0.3,
+                                pointBackgroundColor: '#ff3b30'
+                            }
+                        ]
+                    },
+                    options: commonChartOptions
+                });
+            };
+
+            // --- Tab Switching Logic ---
+            window.showDemoTab = (tabId, element) => {
+                // Hide all tab contents
+                document.querySelectorAll('.demo-tab-content').forEach(tab => {
+                    tab.classList.add('hidden');
+                });
+
+                // Deactivate all buttons
+                document.querySelectorAll('.flex.border-b button').forEach(btn => {
+                    btn.classList.remove('border-page-theme-accent-color', 'text-page-theme-accent-color');
+                    btn.classList.add('border-transparent', 'text-page-theme-text-muted');
+                });
+
+                // Show the selected tab content
+                document.getElementById(tabId).classList.remove('hidden');
+
+                // Activate the clicked button
+                element.classList.add('border-page-theme-accent-color', 'text-page-theme-accent-color');
+                element.classList.remove('border-transparent', 'text-page-theme-text-muted');
+            };
+
+
+            // --- Core Logic for Simulating Demo Results ---
+            const simulateDemoResults = async () => {
+                operationsLog.innerHTML = ''; // Clear global logs
+                financialOperationsLog.innerHTML = ''; // Clear financial logs
+                dataGovernanceLog.innerHTML = ''; // Clear data governance logs
+
+                operationsLog.classList.remove('hidden'); // Show global log console
+
+                // Hide results section initially and dim cards
+                // simulatedResultsSection.classList.add('hidden'); // We now always show the tabbed content
+                document.querySelectorAll('.node-card').forEach(card => {
+                    card.style.opacity = '0.4';
+                    card.classList.remove('active'); // Remove active class
+                });
+
+                // Reset all ability statuses and progress bars
+                const allAbilityNames = ['Corethink', 'TruthWeight', 'EchoSynth', 'AutoSigil', 'PulseIndex', 'OmniTrace', 'LiftHalo', 'MirrorLoop', 'FireRatio'];
+                allAbilityNames.forEach(name => {
+                    updateAbilityStatus(name, 'Idle', 'light');
+                    updateProgressBar(document.getElementById(`${name}ProgressBar`), 0);
+                });
+
+                // Reset KPI values
+                kpiTotalProcessed.textContent = '0';
+                kpiAvgLatency.textContent = '0';
+                kpiSecurityEvents.textContent = '0';
+                kpiEfficiencyGain.textContent = '0';
+                kpiROI.textContent = '0';
+                kpiCostSavings.textContent = '0';
+                kpiComplianceScore.textContent = '0';
+                kpiTraceDepth.textContent = '0';
+
+
+                logGlobalOperation('Initializing FAA.zone™ Atom-Level Demo Dashboard...', 'info');
+                await new Promise(r => setTimeout(r, 500));
+                logGlobalOperation('Establishing secure connection to simulated data streams for trial scenario...', 'info');
+                await new Promise(r => setTimeout(r, 700));
+
+                const industry = industrySectorSelect.value;
+                const dataVolume = dataVolumeSelect.value;
+                const network = networkTopologySelect.value;
+                const security = securityPostureSelect.value;
+                const emphasizedAbilities = Array.from(emphasizeAbilitiesCheckboxes)
+                                                .filter(checkbox => checkbox.checked)
+                                                .map(checkbox => checkbox.value);
+
+                logGlobalOperation(`Configuring scenario: Industry - <span class="log-message-info">${industry}</span>, Data Volume - <span class="log-message-info">${dataVolume}</span>, Network - <span class="log-message-info">${network}</span>, Security - <span class="log-message-info">${security}</span>.`, 'info');
+                await new Promise(r => setTimeout(r, 1000));
+                logGlobalOperation(`Initiating data ingestion and initial system audit for ${industry} sector...`, 'info');
+                await new Promise(r => setTimeout(r, 800));
+
+
+                let currentOverallPerf = 50;
+                let currentSecurityScore = 80;
+                let totalProcessedVal = 0;
+                let avgLatencyVal = 0;
+                let securityEventsVal = 0;
+                let efficiencyGainVal = 0;
+                // Financial and Audit KPIs will be updated directly by simulateAbilityProcess or at the end based on cumulative impact
+
+
+                // Update charts with initial values immediately
+                overallPerformanceChart.data.datasets[0].data = [50, 50];
+                overallPerformanceChart.update();
+                securityIntegrityChart.data.datasets[0].data = [80, 80];
+                securityIntegrityChart.update();
+                // These charts will be populated with more dynamic values by simulateAbilityProcess
+                revenueGrowthChart.data.datasets[0].data = [0, 0, 0, 0];
+                revenueGrowthChart.update();
+                costReductionChart.data.datasets[0].data = [0, 0];
+                costReductionChart.update();
+                auditIntegrityChart.data.datasets[0].data = [0, 0, 0, 0, 0, 0];
+                auditIntegrityChart.data.datasets[1].data = [0, 0, 0, 0, 0, 0];
+                auditIntegrityChart.update();
+
+
+                // --- Simulate each Core Ability's operation and impact ---
+                const simulateAbilityProcess = async (name, delay) => {
+                    const nodeCard = document.getElementById(`card-${name}`);
+                    const progressBar = document.getElementById(`${name}ProgressBar`);
+                    const resultSpan = document.getElementById(`${name}Result`);
+                    const metricsSpan = document.getElementById(`${name}Metrics`);
+
+                    return new Promise(resolve => {
+                        setTimeout(async () => {
+                            let result, metrics;
+                            let perfBonus = 0;
+                            let secBonus = 0;
+                            let actionMessageGlobal = ""; // Message for global log
+                            let outcomeMessageGlobal = ""; // Message for global log
+                            let actionMessageFinancial = null; // Message for financial log
+                            let outcomeMessageFinancial = null;
+                            let actionMessageDataGov = null; // Message for data governance log
+                            let outcomeMessageDataGov = null;
+
+                            updateAbilityStatus(name, 'Processing...', 'accent');
+                            if (nodeCard) {
+                                nodeCard.classList.add('active'); // Add active class to node card
+                            }
+
+                            // Start progress bar animation
+                            let progress = 0;
+                            const progressInterval = setInterval(() => {
+                                progress += 10;
+                                if (progress <= 100) {
+                                    updateProgressBar(progressBar, progress);
+                                } else {
+                                    clearInterval(progressInterval);
+                                }
+                            }, delay / 10); // Update 10 times during delay
+
+
+                            // Emphasize effect multiplier
+                            const emphasisFactor = emphasizedAbilities.includes(name) ? 1.5 : 1.0;
+
+                            // Simulate outcomes based on scenario and emphasis
+                            switch (name) {
+                                case 'Corethink':
+                                    actionMessageGlobal = `Corethink™ initiating real-time cognitive analysis on incoming ${industry} data to detect critical patterns and optimize strategy.`;
+                                    result = (70 + (dataVolume === 'Massive' ? -10 : 0) + (emphasisFactor * 15) + Math.random() * 5).toFixed(0);
+                                    metrics = `Avg. decisions/sec: ${Math.max(10, 50 + (dataVolume === 'Massive' ? -20 : 0) + (emphasisFactor * 30)).toFixed(0)}k`;
+                                    perfBonus = emphasizedAbilities.includes(name) ? 8 : 3;
+                                    outcomeMessageGlobal = `Corethink™ insights delivered. Decision latency reduced by ${result}%. Operational decisions per second increased.`;
+                                    efficiencyGainVal += (emphasizedAbilities.includes(name) ? 10 : 3);
+                                    actionMessageFinancial = `Corethink™ analyzing ${industry} financial transaction data for optimal investment strategies and fraud detection.`;
+                                    outcomeMessageFinancial = `Corethink™ identified high-value trends, projecting ${parseFloat(result)/5}% revenue increase due to faster insights.`;
+                                    break;
+                                case 'TruthWeight':
+                                    actionMessageGlobal = `TruthWeight™ commencing data veracity validation for ${industry} streams. Identifying and quarantining untrusted information.`;
+                                    result = (99.0 + (security === 'Hostile' ? -0.5 : 0) + (emphasisFactor * 0.8) + Math.random() * 0.1).toFixed(2);
+                                    metrics = `False positives: ${Math.max(0.01, 0.5 - (security === 'Hostile' ? 0.3 : 0) - (emphasisFactor * 0.4) + Math.random() * 0.1).toFixed(2)}%`;
+                                    secBonus = 7 * emphasisFactor;
+                                    outcomeMessageGlobal = `TruthWeight™ affirmed data integrity. Veracity score: ${result}%, fraudulent data quarantined.`;
+                                    securityEventsVal += (emphasizedAbilities.includes(name) ? 50 : 10);
+                                    actionMessageDataGov = `TruthWeight™ verifying integrity of ${industry} audit logs. Cross-referencing immutable records against compliance standards.`;
+                                    outcomeMessageDataGov = `TruthWeight™ validated data integrity for ${industry} records. False positives reduced to ${metrics}.`;
+                                    break;
+                                case 'EchoSynth':
+                                    actionMessageGlobal = `EchoSynth™ optimizing communication pathways across a ${network} network for crystal-clear signal transmission.`;
+                                    result = (75 + (network === 'Global' ? -10 : 0) + (emphasisFactor * 15) + Math.random() * 5).toFixed(0);
+                                    metrics = `Packet loss: ${Math.max(0.1, 2.0 + (network === 'Global' ? 1.0 : 0) - (emphasisFactor * 1.5) + Math.random() * 0.5).toFixed(1)}%`;
+                                    perfBonus = 6 * emphasisFactor;
+                                    outcomeMessageGlobal = `EchoSynth™ signal fidelity improved by ${result}%. Packet loss minimized for seamless operations.`;
+                                    avgLatencyVal += (emphasizedAbilities.includes(name) ? -20 : -5);
+                                    actionMessageFinancial = `EchoSynth™ ensuring ultra-low latency communication for global ${industry} trading platforms.`;
+                                    outcomeMessageFinancial = `EchoSynth™ real-time data flow achieved. Transaction execution speed increased for financial operations.`;
+                                    break;
+                                case 'AutoSigil':
+                                    actionMessageGlobal = `AutoSigil™ automating secure digital signatures for all ${industry} transactions, ensuring non-repudiation and compliance.`;
+                                    result = (85 + (dataVolume === 'Large' ? -5 : 0) + (emphasisFactor * 10) + Math.random() * 5).toFixed(0);
+                                    metrics = `Auth overhead: ${Math.max(20, 150 - (emphasisFactor * 100) + Math.random() * 20).toFixed(0)}ms`;
+                                    secBonus = 5 * emphasisFactor;
+                                    outcomeMessageGlobal = `AutoSigil™ secure signatures applied. Document verification time cut by ${result}%. Compliance records updated.`;
+                                    efficiencyGainVal += (emphasizedAbilities.includes(name) ? 8 : 2);
+                                    actionMessageDataGov = `AutoSigil™ automating compliance checks for digital contracts. Applying immutable timestamps.`;
+                                    outcomeMessageDataGov = `AutoSigil™ boosted compliance score to ${Math.min(100, 90 + emphasisFactor*5)}% due to automated legal binding.`;
+                                    break;
+                                case 'PulseIndex':
+                                    actionMessageGlobal = `PulseIndex™ performing high-frequency indexing of all ${network} network components for real-time operational awareness.`;
+                                    result = (90 + (network === 'Global' ? -5 : 0) + (emphasisFactor * 7) + Math.random() * 3).toFixed(0);
+                                    metrics = `Index refresh: ${Math.max(10, 100 - (emphasisFactor * 80) + Math.random() * 10).toFixed(0)}ms`;
+                                    perfBonus = 4 * emphasisFactor;
+                                    outcomeMessageGlobal = `PulseIndex™ network visibility boosted by ${result}%. Immediate overview of system health achieved.`;
+                                    totalProcessedVal += (emphasizedAbilities.includes(name) ? 1000 : 200);
+                                    actionMessageFinancial = `PulseIndex™ indexing high-volume ${industry} market data for instant trend analysis.`;
+                                    outcomeMessageFinancial = `PulseIndex™ accelerated market trend insights. Data correlation speed improved.`;
+                                    break;
+                                case 'OmniTrace':
+                                    actionMessageGlobal = `OmniTrace™ establishing multi-dimensional traceability for all ${dataVolume} data and asset movements, creating an immutable history.`;
+                                    result = (98 + (security === 'Hostile' ? -2 : 0) + (emphasisFactor * 2) + Math.random() * 1).toFixed(0);
+                                    metrics = `Trace depth: ${Math.max(1, 5 + (dataVolume === 'Massive' ? 2 : 0) + (emphasisFactor * 5)).toFixed(0)} layers`;
+                                    secBonus = 6 * emphasisFactor;
+                                    outcomeMessageGlobal = `OmniTrace™ supply chain transparency at ${result}%. Unalterable history verified. Audit trail recorded.`;
+                                    securityEventsVal += (emphasizedAbilities.includes(name) ? 30 : 5);
+                                    traceDepthVal += (emphasizedAbilities.includes(name) ? 5 : 1);
+                                    actionMessageDataGov = `OmniTrace™ tracing origin and lineage of sensitive ${industry} datasets for regulatory audit.`;
+                                    outcomeMessageDataGov = `OmniTrace™ confirmed full data lineage. Compliance audit efficiency increased by ${parseFloat(result)/2}%.`;
+                                    break;
+                                case 'LiftHalo':
+                                    actionMessageGlobal = `LiftHalo™ optimizing resource allocation for critical ${industry} operations, intelligently distributing computational power.`;
+                                    result = (25 + (dataVolume === 'Massive' ? -5 : 0) + (emphasisFactor * 15) + Math.random() * 5).toFixed(0);
+                                    metrics = `Resource idle: ${Math.max(5, 50 - (emphasisFactor * 30) + Math.random() * 10).toFixed(0)}%`;
+                                    perfBonus = 7 * emphasisFactor;
+                                    logOutcomeGlobal = `LiftHalo™ critical task acceleration of ${result}%. Maximized operational throughput achieved for ${industry} tasks.`;
+                                    efficiencyGainVal += (emphasizedAbilities.includes(name) ? 12 : 4);
+                                    actionMessageFinancial = `LiftHalo™ allocating compute resources to high-priority financial modeling and reporting.`;
+                                    outcomeMessageFinancial = `LiftHalo™ improved financial forecasting speed, achieving ${parseFloat(result)/3}% faster model execution.`;
+                                    break;
+                                case 'MirrorLoop':
+                                    actionMessageGlobal = `MirrorLoop™ initiating self-healing data replication across distributed nodes for guaranteed business continuity.`;
+                                    result = (emphasizedAbilities.includes(name) ? (Math.random() < 0.8 ? 'sub-seconds' : 'seconds') : (Math.random() < 0.5 ? 'seconds' : 'minutes'));
+                                    metrics = (emphasizedAbilities.includes(name) ? (Math.random() < 0.8 ? 'RPO: 0' : 'RPO: 1') : 'RPO: 5-10 min');
+                                    secBonus = 4 * emphasisFactor;
+                                    outcomeMessageGlobal = `MirrorLoop™ data recovery time reduced to ${result}. Uninterrupted operations ensured, even under ${security} conditions.`;
+                                    securityEventsVal += (emphasizedAbilities.includes(name) ? 20 : 5);
+                                    actionMessageDataGov = `MirrorLoop™ performing geo-redundant data replication for disaster recovery drills.`;
+                                    outcomeMessageDataGov = `MirrorLoop™ guaranteed data availability. RTO of ${result} achieved for critical ${industry} systems.`;
+                                    break;
+                                case 'FireRatio':
+                                    actionMessageGlobal = `FireRatio™ dynamically managing network bandwidth for optimal data flow across the ${network} topology.`;
+                                    result = (55 + (network === 'Global' ? -10 : 0) + (emphasisFactor * 20) + Math.random() * 5).toFixed(0);
+                                    metrics = `Avg. latency: ${Math.max(20, 150 - (emphasisFactor * 100) + Math.random() * 30).toFixed(0)}ms`;
+                                    perfBonus = 9 * emphasisFactor;
+                                    logOutcomeGlobal = `FireRatio™ network congestion reduced by ${result}%. Superior user experience and reliable data transfer achieved.`;
+                                    avgLatencyVal += (emphasizedAbilities.includes(name) ? -30 : -10);
+                                    actionMessageFinancial = `FireRatio™ optimizing network throughput for high-frequency trading data and large financial report transfers.`;
+                                    outcomeMessageFinancial = `FireRatio™ increased financial data transfer speeds by ${result}%. Reduced operational costs due to network efficiency.`;
+                                    break;
+                            }
+
+                            // Update individual card with results and metrics
+                            if (resultSpan) resultSpan.textContent = result + (name !== 'MirrorLoop' ? '%' : '');
+                            if (metricsSpan) metricsSpan.textContent = metrics;
+                            updateAbilityStatus(name, 'Optimal', 'success');
+                            if (nodeCard) {
+                                nodeCard.classList.remove('active'); // Remove active class after completion
+                            }
+
+                            // Log to global operations console
+                            logGlobalOperation(actionMessageGlobal, 'info', name);
+                            await new Promise(r => setTimeout(r, 100)); // Small pause
+                            logGlobalOperation(outcomeMessageGlobal, 'success', name);
+                            await new Promise(r => setTimeout(r, 200)); // Small pause
+
+                            // Log to contextual consoles if messages exist
+                            if (actionMessageFinancial && financialOperationsLog) {
+                                logContextualOperation(financialOperationsLog, actionMessageFinancial, 'info');
+                                await new Promise(r => setTimeout(r, 100));
+                                logContextualOperation(financialOperationsLog, outcomeMessageFinancial, 'success');
+                            }
+                            if (actionMessageDataGov && dataGovernanceLog) {
+                                logContextualOperation(dataGovernanceLog, actionMessageDataGov, 'info');
+                                await new Promise(r => setTimeout(r, 100));
+                                logContextualOperation(dataGovernanceLog, outcomeMessageDataGov, 'success');
+                            }
+
+                            resolve();
+                        }, delay);
+                    });
+                };
+
+                const simulationSequence = [
+                    { name: 'Corethink', delay: 700 },
+                    { name: 'TruthWeight', delay: 900 },
+                    { name: 'EchoSynth', delay: 800 },
+                    { name: 'AutoSigil', delay: 750 },
+                    { name: 'PulseIndex', delay: 950 },
+                    { name: 'OmniTrace', delay: 1000 },
+                    { name: 'LiftHalo', delay: 850 },
+                    { name: 'MirrorLoop', delay: 1100 },
+                    { name: 'FireRatio', delay: 900 },
+                ];
+
+                logGlobalOperation('Initiating Atom-Level Engine sequence for real-time impact demonstration...', 'info');
+                await new Promise(r => setTimeout(r, 500));
+
+                for (const step of simulationSequence) {
+                    await simulateAbilityProcess(step.name, step.delay);
+                    await new Promise(r => setTimeout(r, 200)); // Small pause between nodes
+                }
+
+                logGlobalOperation('All Atom-Level Engines have completed their operations for this scenario.', 'info');
+                await new Promise(r => setTimeout(r, 500));
+
+                // Final chart updates for a stable end state (can be re-calculated or sum of changes)
+                currentOverallPerf = Math.min(100, currentOverallPerf + (emphasizedAbilities.length > 0 ? 15 : 5) + (dataVolume === 'Massive' ? 5 : 0) + (network === 'Global' ? 5 : 0));
+                currentSecurityScore = Math.min(100, currentSecurityScore + (emphasizedAbilities.length > 0 ? 10 : 3) + (security === 'Hostile' ? -5 : 0));
+
+                overallPerformanceChart.data.datasets[0].data[1] = currentOverallPerf;
+                overallPerformanceChart.update();
+                securityIntegrityChart.data.datasets[0].data[1] = currentSecurityScore;
+                securityIntegrityChart.update();
+
+                // Calculate final KPIs and update
+                kpiTotalProcessed.textContent = (2000 + (dataVolume === 'Massive' ? 5000 : 1000) + (emphasizedAbilities.includes('PulseIndex') ? 1500 : 0)).toLocaleString();
+                kpiAvgLatency.textContent = (Math.max(30, 150 - (emphasizedAbilities.includes('EchoSynth') && emphasizedAbilities.includes('FireRatio') ? 100 : 30) - (network === 'Global' ? 20 : 0))).toFixed(0);
+                kpiSecurityEvents.textContent = (50 + (emphasizedAbilities.includes('TruthWeight') || emphasizedAbilities.includes('OmniTrace') ? 100 : 20)).toLocaleString();
+                kpiEfficiencyGain.textContent = (15 + (emphasizedAbilities.includes('Corethink') || emphasizedAbilities.includes('LiftHalo') ? 20 : 5)).toFixed(0);
+
+                // Simulate financial and audit specific KPIs
+                revenueGrowthVal = (5 + (emphasizedAbilities.includes('Corethink') || emphasizedAbilities.includes('LiftHalo') ? 10 : 0) + (dataVolume === 'Large' ? 5 : 0) + (Math.random() * 5)).toFixed(1);
+                costReductionVal = (10 + (emphasizedAbilities.includes('AutoSigil') || emphasizedAbilities.includes('FireRatio') ? 10 : 0) + (dataVolume === 'Large' ? 5 : 0) + (Math.random() * 5)).toFixed(1);
+                roiVal = (50 + parseFloat(revenueGrowthVal) * 2 + parseFloat(costReductionVal) * 3).toFixed(0);
+                complianceVal = (80 + (emphasizedAbilities.includes('TruthWeight') || emphasizedAbilities.includes('OmniTrace') ? 15 : 0) + (security === 'Hostile' ? -5 : 0) + (Math.random() * 5)).toFixed(0);
+                traceDepthVal = (5 + (emphasizedAbilities.includes('OmniTrace') ? 5 : 0) + (dataVolume === 'Massive' ? 2 : 0)).toFixed(0);
+
+                kpiROI.textContent = roiVal;
+                kpiCostSavings.textContent = (parseFloat(costReductionVal) * 0.1).toFixed(1); // Mock millions
+                kpiComplianceScore.textContent = Math.min(100, complianceVal);
+                kpiTraceDepth.textContent = traceDepthVal;
+
+                // Update Financial and Audit Charts
+                revenueGrowthChart.data.datasets[0].data = [0, parseFloat(revenueGrowthVal)/2, parseFloat(revenueGrowthVal)*0.8, parseFloat(revenueGrowthVal)];
+                revenueGrowthChart.update();
+                costReductionChart.data.datasets[0].data = [0, parseFloat(costReductionVal)];
+                costReductionChart.update();
+                auditIntegrityChart.data.datasets[0].data = [ // Integrity Checks
+                    100 + (emphasizedAbilities.includes('TruthWeight') ? 50 : 0),
+                    120 + (emphasizedAbilities.includes('TruthWeight') ? 60 : 0),
+                    150 + (emphasizedAbilities.includes('TruthWeight') ? 70 : 0),
+                    180 + (emphasizedAbilities.includes('TruthWeight') ? 80 : 0),
+                    200 + (emphasizedAbilities.includes('TruthWeight') ? 90 : 0),
+                    220 + (emphasizedAbilities.includes('TruthWeight') ? 100 : 0)
+                ];
+                auditIntegrityChart.data.datasets[1].data = [ // Security Events Logged
+                    Math.max(0, 10 - (emphasizedAbilities.includes('OmniTrace') ? 5 : 0) - (security === 'Hostile' ? -5 : 0)),
+                    Math.max(0, 8 - (emphasizedAbilities.includes('OmniTrace') ? 4 : 0) - (security === 'Hostile' ? -4 : 0)),
+                    Math.max(0, 5 - (emphasizedAbabilities.includes('OmniTrace') ? 3 : 0) - (security === 'Hostile' ? -3 : 0)),
+                    Math.max(0, 7 - (emphasizedAbilities.includes('OmniTrace') ? 4 : 0) - (security === 'Hostile' ? -4 : 0)),
+                    Math.max(0, 3 - (emphasizedAbilities.includes('OmniTrace') ? 2 : 0) - (security === 'Hostile' ? -2 : 0)),
+                    Math.max(0, 2 - (emphasizedAbilities.includes('OmniTrace') ? 1 : 0) - (security === 'Hostile' ? -1 : 0))
+                ];
+                auditIntegrityChart.update();
+
+
+                // Update Metadata table
+                metaDemoInstanceID.textContent = `demo-${crypto.randomUUID().substring(0,8)}`;
+                metaIndustrySector.textContent = industry;
+                metaFeatureFocus.textContent = emphasizedAbilities.length > 0 ? JSON.stringify(emphasizedAbilities) : "[]";
+                metaDataVolumeScale.textContent = dataVolume;
+                metaNetworkTopology.textContent = network;
+                metaSecurityPosture.textContent = security;
+                const expirationDate = new Date();
+                expirationDate.setDate(expirationDate.getDate() + 7); // Demo expires in 7 days
+                metaExpirationTimestamp.textContent = expirationDate.toISOString().split('T')[0] + 'Z';
+
+                const currentPayload = {
+                    demoInstanceID: metaDemoInstanceID.textContent,
+                    industrySector: industry,
+                    featureFocus: emphasizedAbilities,
+                    dataVolumeScale: dataVolume,
+                    networkTopology: network,
+                    securityPosture: security,
+                    outputFormat: "InteractiveDashboard",
+                    requestTimestamp: new Date().toISOString().split('.')[0] + 'Z',
+                    simulatedResults: {
+                        overallPerformance: overallPerformanceChart.data.datasets[0].data[1],
+                        securityScore: securityIntegrityChart.data.datasets[0].data[1],
+                        kpis: {
+                            totalProcessed: kpiTotalProcessed.textContent,
+                            avgLatency: kpiAvgLatency.textContent,
+                            securityEvents: kpiSecurityEvents.textContent,
+                            efficiencyGain: kpiEfficiencyGain.textContent,
+                            roi: kpiROI.textContent,
+                            costSavings: kpiCostSavings.textContent,
+                            complianceScore: kpiComplianceScore.textContent,
+                            traceDepth: kpiTraceDepth.textContent,
+                        },
+                        nodeImpacts: {
+                            Corethink: { result: corethinkResult.textContent, metrics: corethinkMetrics.textContent },
+                            TruthWeight: { result: truthweightResult.textContent, metrics: truthweightMetrics.textContent },
+                            EchoSynth: { result: echosynthResult.textContent, metrics: echosynthMetrics.textContent },
+                            AutoSigil: { result: autosigilResult.textContent, metrics: autosigilMetrics.textContent },
+                            PulseIndex: { result: pulseindexResult.textContent, metrics: pulseindexMetrics.textContent },
+                            OmniTrace: { result: omnitraceResult.textContent, metrics: omnitraceMetrics.textContent },
+                            LiftHalo: { result: lifthaloResult.textContent, metrics: lifthaloMetrics.textContent },
+                            MirrorLoop: { result: mirrorloopResult.textContent, metrics: mirrorloopMetrics.textContent },
+                            FireRatio: { result: fireratioResult.textContent, metrics: fireratioMetrics.textContent },
+                        }
+                    }
+                };
+                demoPayloadJson.textContent = JSON.stringify(currentPayload, null, 2);
+
+                simulatedResultsSection.classList.remove('hidden');
+                currentScenarioText.textContent = `${industry} - ${dataVolume} Data Volume - ${network} Network`;
+
+                // Scroll to results
+                simulatedResultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                // Dim/undim cards based on emphasis
+                document.querySelectorAll('.node-card').forEach(card => {
+                    const abilityName = card.id.replace('card-', '');
+                    if (emphasizedAbilities.length > 0 && !emphasizedAbilities.includes(abilityName)) {
+                        card.style.opacity = '0.4';
+                    } else {
+                        card.style.opacity = '1';
+                    }
+                });
+
+                logGlobalOperation('Demo simulation complete. Your personalized dashboard results are ready.', 'success');
+            };
+
+            // --- Event Listener for Generate Demo Button ---
+            generateDemoBtn.addEventListener('click', () => {
+                generateDemoBtn.disabled = true;
+                demoStatusMessage.classList.remove('hidden');
+                demoStatusMessage.textContent = "Simulating results, please wait...";
+
+                // Reset progress bars before new simulation
+                document.querySelectorAll('.progress-bar-fill').forEach(bar => updateProgressBar(bar, 0));
+
+
+                initCharts(); // Re-initialize charts for fresh start
+                simulateDemoResults();
+
+                generateDemoBtn.disabled = false;
+            });
+
+            // Initial setup when page loads
+            initCharts();
+            // Default all checkboxes to checked for global demo
+            emphasizeAbilitiesCheckboxes.forEach(checkbox => {
+                checkbox.checked = true;
+            });
+            simulateDemoResults(); // Run initial simulation on page load
+            document.getElementById('defaultOpenTab').click(); // Open the first tab by default
+        });
+    </script>
+</body>
+</html>

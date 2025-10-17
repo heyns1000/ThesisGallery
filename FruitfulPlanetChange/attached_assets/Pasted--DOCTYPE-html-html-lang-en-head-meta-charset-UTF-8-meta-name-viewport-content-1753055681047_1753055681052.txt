@@ -1,0 +1,2284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>King Price Strategic Opportunity Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Leaflet CSS for OpenStreetMap (if needed for maps section) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""/>
+    <style>
+        /* King Price Brand Styling */
+        :root {
+            --kp-red-royal: #B10F1F; /* PANTONE 7621 C (R177 G15 B31) */
+            --kp-red-royal-rgb: 177, 15, 31; /* Added for rgba usage */
+            --kp-red-highlight: #D6001C; /* PANTONE 2035 C (R214 G0 B28) */
+            --kp-red-shadow: #522B39; /* PANTONE 7645 C (R82 G43 B57) */
+            --kp-gold-accent: #FFD700; /* A complementary gold/yellow for accents */
+            --kp-white: #FFFFFF;
+            --kp-light-gray: #F8F8F8; /* Retaining a light background */
+            --kp-dark-gray: #333333; /* For text */
+            --kp-medium-gray: #555555; /* For muted text */
+            --kp-border-light: #E0E0E0; /* Light border */
+
+            /* New variables from provided header, adapted to King Price palette */
+            --text-color-light: var(--kp-dark-gray);
+            --text-color-dark: var(--kp-white);
+            --bg-color-light: var(--kp-white);
+            --bg-color-dark: #2A0008; /* Deep, rich red for main background in dark mode, matching screenshot */
+            --card-bg-light: var(--kp-white);
+            --card-bg-dark: #3A0010; /* Slightly lighter, but still deep red for cards in dark mode, matching screenshot */
+            --border-color-light: var(--kp-border-light);
+            --border-color-dark: var(--kp-gold-accent); /* Royal gold for dark mode borders */
+            --primary-color: var(--kp-red-royal); /* King Price Royal Red */
+            --secondary-color: var(--kp-red-highlight); /* King Price Highlight Red */
+            --tertiary-color: var(--kp-gold-accent); /* King Price Gold Accent */
+            --muted-text-light: var(--kp-medium-gray);
+            --muted-text-dark: rgba(255, 255, 255, 0.7); /* Lighter white for muted text in dark mode */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color-light);
+            color: var(--text-color-light);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.4;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            margin: 0;
+            padding: 0;
+            flex-direction: column;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Dark Mode styles */
+        body.dark-mode {
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-dark);
+        }
+        .dark-mode header {
+            background-color: var(--card-bg-dark); /* Header also gets a dark card background */
+            border-bottom-color: var(--border-color-dark); /* Gold border for header in dark mode */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.6); /* Stronger shadow, matching screenshot */
+        }
+        .dark-mode .logo-group {
+            color: var(--text-color-dark);
+        }
+        .dark-mode .logo-separator {
+            color: var(--muted-text-dark);
+        }
+        .dark-mode .logo-omnigrid {
+            color: var(--text-color-dark);
+        }
+        .dark-mode .nav-list a {
+            color: var(--muted-text-dark);
+        }
+        .dark-mode .nav-list a:hover {
+            color: var(--primary-color);
+        }
+        .dark-mode .hamburger-menu {
+            color: var(--text-color-dark);
+        }
+        /* Ensure specific sections also adapt to dark mode for backgrounds */
+        .dark-mode #innovate-connect-thrive, /* Added for hero section */
+        .dark-mode .hero-canvas-section, /* Added for canvas section */
+        .dark-mode #shareprice,
+        .dark-mode #seedwave,
+        .dark-mode section.bg-gray-700,
+        .dark-mode #vault-access,
+        .dark-mode #treaty,
+        .dark-mode #vaultmesh,
+        .dark-mode #about,
+        .dark-mode #cta,
+        .dark-mode footer,
+        .dark-mode .sidebar-bg,
+        .dark-mode .main-content-bg,
+        .dark-mode .dashboard-card-bg {
+            background-color: var(--bg-color-dark); /* Use dark background for all sections */
+            color: var(--text-color-dark);
+        }
+        .dark-mode section h2, .dark-mode section h3, .dark-mode .dashboard-primary-text {
+            color: var(--text-color-dark);
+        }
+        .dark-mode section p, .dark-mode .text-muted, .dark-mode .dashboard-secondary-text {
+            color: var(--muted-text-dark);
+        }
+        .dark-mode #seedwave .w-full.max-w-4xl,
+        .dark-mode #vault-access .w-full.h-\[800px\] {
+            background-color: var(--card-bg-dark); /* Darker card/iframe background */
+            border-color: var(--border-color-dark);
+        }
+        .dark-mode .terminal-btn {
+            background-color: var(--card-bg-dark);
+            color: var(--text-color-dark);
+            border-color: var(--border-color-dark);
+        }
+        .dark-mode .terminal-btn:hover {
+            background-color: #3a3a3e;
+            color: var(--text-color-dark);
+        }
+        .dark-mode .glyph {
+            background-color: var(--card-bg-dark);
+            color: var(--text-color-dark);
+            border-color: var(--border-color-dark);
+        }
+        .dark-mode .glyph:hover {
+            background-color: #3a3a3e;
+            color: var(--text-color-dark);
+        }
+        .dark-mode footer a {
+            color: var(--muted-text-dark);
+        }
+        .dark-mode footer a:hover {
+            color: var(--text-color-dark);
+        }
+        .dark-mode .card {
+            background-color: var(--card-bg-dark);
+            border-color: var(--border-color-dark);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.12); /* Matching screenshot shadow intensity */
+        }
+        .dark-mode .tier-card.highlight {
+            border-color: var(--kp-gold-accent);
+        }
+        .dark-mode .sidebar-nav-item {
+            color: var(--muted-text-dark);
+        }
+        .dark-mode .sidebar-nav-item:hover {
+            background-color: rgba(var(--kp-red-royal-rgb), 0.3); /* Stronger hover effect for sidebar items */
+            color: var(--primary-color);
+        }
+        .dark-mode .sidebar-nav-item.active {
+            background-color: var(--primary-color);
+            color: var(--text-color-dark);
+        }
+        .dark-mode .sidebar-nav-item.active i {
+            color: var(--text-color-dark);
+        }
+        .dark-mode .faa-intro-card, .dark-mode .bbbee-section-card {
+            background: linear-gradient(135deg, var(--kp-red-royal), var(--kp-red-shadow));
+            border-color: var(--kp-gold-accent);
+            box-shadow: 0 10px 20px rgba(var(--kp-red-royal-rgb), 0.3);
+        }
+        .dark-mode .faa-point-icon, .dark-mode .bbbee-point-icon {
+            background-color: var(--kp-gold-accent);
+            color: var(--kp-red-royal);
+        }
+        .dark-mode .pitch-icon {
+            color: var(--kp-gold-accent);
+        }
+        .dark-mode .smart-grid-module-card {
+            background-color: var(--card-bg-dark);
+            border: 1px solid var(--border-color-dark);
+        }
+        .dark-mode .module-icon {
+            color: var(--kp-gold-accent);
+        }
+        .dark-mode .value-loop-card {
+            background-color: var(--card-bg-dark);
+            border: 1px solid var(--border-color-dark);
+        }
+        .dark-mode .list-item-icon {
+            color: var(--kp-gold-accent);
+        }
+
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header - Minimalist and clean */
+        header {
+            background-color: var(--bg-color-light);
+            border-bottom: 1px solid var(--border-color-light);
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-color-light);
+            transition: color 0.3s ease;
+        }
+
+        .logo-group .logo-link {
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .logo-fruitful {
+            color: var(--primary-color);
+            font-size: 1.6rem;
+            font-weight: 800;
+        }
+        .logo-separator {
+            color: var(--muted-text-light);
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+        .logo-omnigrid {
+            color: var(--text-color-light);
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .main-nav {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-list {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-list a {
+            text-decoration: none;
+            color: var(--muted-text-light);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+        .nav-list a:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Styling for header CTA buttons */
+        .hero-cta-button {
+            display: inline-block;
+            padding: 10px 20px; /* Increased padding */
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.95rem; /* Slightly larger font */
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease, color 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            line-height: 1.2;
+        }
+        .hero-cta-button:hover {
+            background-color: var(--kp-red-highlight); /* Use highlight red on hover */
+            transform: translateY(-2px); /* More pronounced lift */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Stronger shadow */
+        }
+        .hero-cta-button.secondary {
+            background-color: var(--kp-light-gray); /* King Price light gray */
+            color: var(--kp-dark-gray); /* King Price dark gray */
+            box-shadow: none;
+            border: 1px solid var(--kp-border-light);
+        }
+        .hero-cta-button.secondary:hover {
+            background-color: var(--kp-border-light); /* Slightly darker light gray */
+            color: var(--kp-dark-gray);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        /* Styling for header CTA buttons */
+        .header-cta-button {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease, color 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            line-height: 1.2;
+        }
+        .header-cta-button:hover {
+            background-color: #0066cc; /* A slightly darker primary color */
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+        .header-cta-button.secondary {
+            background-color: var(--kp-light-gray); /* King Price light gray */
+            color: var(--kp-dark-gray); /* King Price dark gray */
+            box-shadow: none;
+            border: 1px solid var(--kp-border-light);
+        }
+        .header-cta-button.secondary:hover {
+            background-color: var(--kp-border-light); /* Slightly darker light gray */
+            color: var(--kp-dark-gray);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        /* Enhanced Day/Night Toggle Button in Dark Mode */
+        body.dark-mode .header-cta-button.secondary {
+            background-color: var(--primary-color); /* Primary red in dark mode */
+            color: white; /* White text */
+            border-color: var(--primary-color); /* Red border */
+            box-shadow: 0 1px 5px rgba(177, 15, 31, 0.4); /* Subtle red glow */
+        }
+        body.dark-mode .header-cta-button.secondary:hover {
+            background-color: var(--kp-red-shadow); /* Darker red on hover */
+            border-color: var(--kp-red-shadow);
+            box-shadow: 0 2px 8px rgba(177, 15, 31, 0.6);
+        }
+
+
+        .hamburger-menu {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color-light);
+            transition: color 0.3s ease;
+        }
+
+        /* Moved Hero Content Section */
+        .innovate-connect-thrive-section {
+            padding: 4rem 1.5rem;
+            text-align: center;
+            color: var(--text-color-light);
+            background-color: var(--bg-color-light);
+            border-bottom: 1px solid var(--border-color-light);
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        body.dark-mode .innovate-connect-thrive-section {
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-dark);
+            border-bottom-color: var(--border-color-dark);
+        }
+        body.dark-mode .innovate-connect-thrive-section h2 {
+            color: var(--text-color-dark);
+        }
+        body.dark-mode .innovate-connect-thrive-section h2 span {
+            color: var(--primary-color); /* Keep primary color for accent */
+        }
+
+
+        /* Hero Section (now just canvas background) */
+        .hero-canvas-section {
+            position: relative;
+            min-height: 100vh; /* Increased height to ensure full vertical space */
+            background-color: var(--bg-color-light); /* Explicitly use variable */
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+        body.dark-mode .hero-canvas-section {
+            background-color: var(--bg-color-dark);
+        }
+
+        .hero-canvas-section #rhythmicCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            z-index: 0;
+            background-color: transparent;
+        }
+        .hero-canvas-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(177, 15, 31, 0.05) 0%, transparent 70%); /* Royal Red gradient */
+            pointer-events: none;
+            z-index: 1;
+            animation: subtlePulse 5s infinite ease-in-out alternate;
+        }
+
+        @keyframes subtlePulse {
+            0% { opacity: 0.5; transform: scale(1); }
+            100% { opacity: 0.7; transform: scale(1.03); }
+        }
+
+        /* Dashboard specific styles */
+        .dashboard-container {
+            display: flex;
+            flex-grow: 1;
+            width: 100%;
+            max-width: 100%; /* Ensure it takes full width */
+        }
+
+        .sidebar-bg {
+            background-color: var(--bg-color-light);
+            transition: background-color 0.3s ease;
+            border-right: 1px solid var(--border-color-light);
+        }
+        .main-content-bg {
+            background-color: var(--kp-light-gray); /* Slightly different bg for main content in light mode */
+            transition: background-color 0.3s ease;
+        }
+        .dark-mode .main-content-bg {
+            background-color: var(--bg-color-dark);
+        }
+
+        .dashboard-card-bg {
+            background-color: var(--card-bg-light);
+            transition: background-color 0.3s ease;
+            border: 1px solid var(--border-color-light);
+        }
+        .dark-mode .dashboard-card-bg {
+            background-color: var(--card-bg-dark);
+            border-color: var(--border-color-dark);
+        }
+
+        .dashboard-primary-text {
+            color: var(--primary-color);
+            transition: color 0.3s ease;
+        }
+        .dark-mode .dashboard-primary-text {
+            color: var(--text-color-dark); /* Primary text becomes white in dark mode */
+        }
+
+        .dashboard-secondary-text {
+            color: var(--kp-dark-gray);
+            transition: color 0.3s ease;
+        }
+        .dark-mode .dashboard-secondary-text {
+            color: var(--kp-gold-accent); /* Secondary text becomes gold in dark mode */
+        }
+
+        .text-muted {
+            color: var(--muted-text-light);
+            transition: color 0.3s ease;
+        }
+        .dark-mode .text-muted {
+            color: var(--muted-text-dark);
+        }
+
+        .card {
+            background-color: var(--card-bg-light);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .kpi-value {
+            color: var(--primary-color);
+            font-weight: 700;
+            line-height: 1.1;
+        }
+        .dark-mode .kpi-value {
+            color: var(--kp-gold-accent);
+        }
+
+        .kpi-label {
+            color: var(--muted-text-light);
+            font-weight: 500;
+        }
+        .dark-mode .kpi-label {
+            color: var(--muted-text-dark);
+        }
+
+        .list-item-icon {
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-right: 0.5rem;
+            flex-shrink: 0; /* Prevent icon from shrinking */
+        }
+        .dark-mode .list-item-icon {
+            color: var(--kp-gold-accent);
+        }
+
+        /* FAA Partnership Section Specific Styles */
+        .faa-intro-card, .bbbee-section-card {
+            background: linear-gradient(135deg, var(--kp-red-royal), var(--kp-red-shadow)); /* Changed to shadow red for a deeper gradient */
+            color: white;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+            border: 1px solid var(--kp-red-shadow);
+            transition: all 0.3s ease;
+        }
+        .faa-title, .bbbee-title {
+            font-size: 2.25rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-align: center;
+            color: var(--kp-white);
+        }
+        .faa-subtitle, .bbbee-subtitle {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+        }
+        .faa-point, .bbbee-point {
+            display: flex;
+            align-items: flex-start; /* Ensure vertical alignment to top */
+            gap: 1rem;
+            background-color: rgba(255,255,255,0.1);
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .faa-point-icon, .bbbee-point-icon {
+            font-size: 2rem;
+            color: var(--kp-gold-accent);
+            flex-shrink: 0;
+            background-color: rgba(var(--kp-red-royal-rgb), 0.4);
+            padding: 0.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .faa-point-text, .bbbee-point-text {
+            flex-grow: 1; /* Allow text to take available space */
+            word-wrap: break-word; /* Ensure long words break */
+            overflow-wrap: break-word; /* Modern equivalent */
+        }
+        .faa-point-text p, .bbbee-point-text p {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.95rem;
+        }
+
+        .pitch-point {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        .pitch-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            flex-shrink: 0;
+        }
+        .dark-mode .pitch-icon {
+            color: var(--kp-gold-accent);
+        }
+
+        /* Smart Grid Module Cards */
+        .smart-grid-module-card {
+            background-color: var(--card-bg-light);
+            border: 1px solid var(--border-color-light);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+        .smart-grid-module-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        .smart-grid-module-card h4 {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--primary-color);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+        }
+        .dark-mode .smart-grid-module-card h4 {
+            color: var(--kp-gold-accent);
+        }
+        .module-icon {
+            margin-right: 0.75rem;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+        .dark-mode .module-icon {
+            color: var(--kp-gold-accent);
+        }
+        .smart-grid-module-card ul {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 1rem;
+            flex-grow: 1;
+        }
+        .smart-grid-module-card ul li {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--muted-text-light);
+        }
+        .dark-mode .smart-grid-module-card ul li {
+            color: var(--muted-text-dark);
+        }
+
+        /* Sponsorship Packages Tier Cards */
+        .tier-card {
+            background-color: var(--card-bg-light);
+            border: 1px solid var(--border-color-light);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        .tier-card.highlight {
+            border: 3px solid var(--primary-color); /* Thicker border for highlight */
+            box-shadow: 0 8px 16px rgba(var(--kp-red-royal-rgb), 0.4); /* Stronger shadow */
+            transform: translateY(-5px);
+        }
+        .dark-mode .tier-card.highlight {
+            border: 3px solid var(--kp-gold-accent); /* Thicker gold border in dark mode */
+            box-shadow: 0 8px 16px rgba(255, 215, 0, 0.4); /* Gold shadow */
+        }
+        .tier-card h3 {
+            color: var(--primary-color);
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+        }
+        .dark-mode .tier-card h3 {
+            color: var(--kp-gold-accent);
+        }
+        .tier-card p {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--kp-dark-gray);
+        }
+        .dark-mode .tier-card p {
+            color: var(--text-color-dark);
+        }
+        .benefit-list {
+            text-align: left;
+            width: 100%;
+            margin-bottom: 1.5rem;
+        }
+        .benefit-list li {
+            display: flex;
+            align-items: flex-start; /* Changed to flex-start for multi-line text alignment */
+            margin-bottom: 0.75rem;
+            color: var(--muted-text-light);
+        }
+        .dark-mode .benefit-list li {
+            color: var(--muted-text-dark);
+        }
+        .benefit-list li i {
+            color: var(--primary-color);
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+            flex-shrink: 0; /* Prevent icon from shrinking */
+        }
+        .dark-mode .benefit-list li i {
+            color: var(--kp-gold-accent);
+        }
+        .cta-button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.85rem 1.75rem; /* Increased padding for larger buttons */
+            border-radius: 0.5rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            cursor: pointer;
+            border: none;
+        }
+        .cta-button:hover {
+            background-color: var(--kp-red-highlight);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .dark-mode .cta-button {
+            background-color: var(--kp-gold-accent);
+            color: var(--kp-red-royal);
+        }
+        .dark-mode .cta-button:hover {
+            background-color: #e6c200; /* Slightly darker gold */
+            color: var(--kp-red-shadow);
+        }
+
+        /* Value Giving Loop Card */
+        .value-loop-card {
+            background-color: var(--card-bg-light);
+            border: 1px solid var(--border-color-light);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            height: 400px; /* Fixed height for charts */
+            padding: 1rem;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1024px) { /* Adjusting breakpoint for tablet/smaller desktop */
+            .dashboard-sidebar {
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--kp-border-light);
+                padding-bottom: 1rem;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.5rem;
+            }
+            .dashboard-sidebar-nav-item { /* This class is not used, use sidebar-nav-item instead */
+                flex-grow: 1;
+                justify-content: center;
+                font-size: 0.9rem;
+                padding: 0.5rem;
+            }
+            .dashboard-container {
+                flex-direction: column;
+            }
+            .dashboard-main-content { /* This class is not used in the current HTML, can be removed if not needed */
+                width: 100%;
+            }
+            .grid-cols-2-md { /* This class seems custom, ensure it works as intended */
+                grid-template-columns: 1fr; /* Default to single column on smaller screens */
+            }
+            .main-content-wrapper { /* This class is not used in the current HTML, can be removed if not needed */
+                flex-direction: column;
+            }
+            .music-sub-sidebar { /* This class is not used in the current HTML, can be removed if not needed */
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--kp-border-light);
+                padding-bottom: 1rem;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.5rem;
+                margin-right: 0;
+            }
+        }
+
+        @media (max-width: 768px) { /* Mobile specific adjustments */
+            header {
+                padding: 0.5rem 1rem;
+                flex-direction: column;
+                justify-content: center;
+                text-align: center;
+                gap: 0.5rem;
+            }
+            .header-content { /* Ensure header content stacks on mobile */
+                flex-direction: column;
+                align-items: center;
+            }
+            header .flex.items-center.space-x-4 { /* This class is not used directly, but keep for context */
+                width: 100%;
+                justify-content: center;
+                margin-top: 0.5rem;
+                margin-bottom: 0.5rem;
+            }
+            header .logo-group {
+                width: 100%;
+                justify-content: center;
+                margin-bottom: 0.5rem;
+            }
+            .main-nav {
+                flex-direction: column;
+                width: 100%;
+                display: none; /* Hidden by default on mobile */
+            }
+            .main-nav.active {
+                display: flex; /* Shown when active */
+            }
+            .nav-list {
+                flex-direction: column;
+                width: 100%;
+                align-items: center;
+            }
+            .nav-list li {
+                width: 100%;
+                text-align: center;
+                margin-bottom: 0.5rem;
+            }
+            .nav-list a {
+                padding: 0.5rem 0;
+                display: block;
+            }
+            .nav-actions {
+                flex-direction: column;
+                width: 100%;
+                gap: 0.5rem;
+            }
+            .header-cta-button {
+                width: 100%;
+                text-align: center;
+            }
+            .hamburger-menu {
+                display: block; /* Show hamburger on mobile */
+                position: absolute;
+                right: 1rem;
+                top: 1.5rem;
+            }
+            .logo-group {
+                gap: 0.5rem;
+            }
+            .logo-group .logo-fruitful, .logo-group .logo-seedwave { font-size: 1.2rem; }
+            .logo-separator { font-size: 1rem; }
+            #header-pulse-canvas { display: none; } /* This ID is not used, can be removed if not needed */
+            .mindlift-hero h1 { font-size: 2.8rem; } /* This class is not used, can be removed if not needed */
+            .mindlift-hero p { font-size: 1.2rem; } /* This class is not used, can be removed if not needed */
+            .global-pulse-grid { /* This class is not used, can be removed if not needed */
+                grid-template-columns: 1fr;
+                grid-template-rows: repeat(6, 1fr);
+                max-height: none;
+            }
+            .section-title { font-size: 2.2rem; } /* This class is not used, can be removed if not needed */
+            .section-padding { padding: 4rem 1rem; } /* This class is not used, can be removed if not needed */
+            .metrics-grid, .whimsical-card-grid, .feature-grid, .metadata-metrics-grid, .pricing-grid { /* These classes are not used, can be removed if not needed */
+                grid-template-columns: 1fr;
+            }
+            .metric-card-icon { font-size: 3rem; } /* This class is not used, can be removed if not needed */
+            .metric-card h3 { font-size: 1.5rem; } /* This class is not used, can be removed if not needed */
+            .metric-value { font-size: 2.2rem; } /* This class is not used, can be removed if not needed */
+            .whimsical-icon { font-size: 3.5rem; } /* This class is not used, can be removed if not needed */
+            .whimsical-card h3 { font-size: 1.8rem; } /* This class is not used, can be removed if not needed */
+            .whimsical-card p { font-size: 1rem; } /* This class is not used, can be removed if not needed */
+            .currency-converter-section { padding: 2rem; } /* This class is not used, can be removed if not needed */
+            .currency-converter-section h2 { font-size: 2rem; } /* This class is not used, can be removed if not needed */
+            .pricing-card { padding: 30px; } /* This class is not used, can be removed if not needed */
+            .pricing-card h3 { font-size: 1.6rem; } /* This class is not used, can be removed if not needed */
+            .pricing-card .price { font-size: 2rem; } /* This class is not used, can be removed if not needed */
+            .spotify-controls { flex-direction: column; } /* This class is not used, can be removed if not needed */
+            #node-pulse-graph .w-full { padding: 10px; } /* This ID is not used, can be removed if not needed */
+            .ai-help-section h3 { font-size: 1.3rem; flex-direction: column; text-align: center; } /* This class is not used, can be removed if not needed */
+            .ai-help-section h3 i { margin-right: 0; margin-bottom: 10px; } /* This class is not used, can be removed if not needed */
+            #planet-text { font-size: 1.5rem; } /* This ID is not used, can be removed if not needed */
+            .new-footer { padding: 1.5rem; } /* This class is not used, can be removed if not needed */
+            .banimal-footer-content h1 { font-size: 2.25rem; } /* This class is not used, can be removed if not needed */
+            .banimal-footer-content p { font-size: 0.9rem; } /* This class is not used, can be removed if not needed */
+            .new-footer .cta-button { padding: 0.6rem 1.2rem; font-size: 0.9rem; } /* This class is not used, can be removed if not needed */
+
+            .checkout-header h1 { /* This class is not used, can be removed if not needed */
+                font-size: 2.5rem;
+            }
+            .checkout-header .slogan { /* This class is not used, can be removed if not needed */
+                font-size: 1.1rem;
+            }
+            .checkout-step-text { /* This class is not used, can be removed if not needed */
+                font-size: 0.75rem;
+            }
+            .checkout-step-number { /* This class is not used, can be removed if not needed */
+                width: 30px;
+                height: 30px;
+                font-size: 0.8rem;
+            }
+            .form-input, .form-select { /* These classes are not used, can be removed if not needed */
+                padding: 10px 12px;
+                font-size: 0.9rem;
+            }
+            .checkout-action-button { /* This class is not used, can be removed if not needed */
+                height: 48px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="light-mode">
+
+    <header class="main-header">
+        <div class="container header-content">
+            <div class="logo-group">
+                <a href="index.html" class="logo-link">
+                    <span class="logo-fruitful">King Price™</span> <!-- Changed to King Price logo -->
+                </a>
+                <button class="hamburger-menu" aria-label="Toggle navigation">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li><a href="https://faa.zone/contact-us.html">✉️ Contact Us</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <button id="dayNightToggle" class="header-cta-button secondary">
+                        <i class="fas fa-moon"></i> Day/Night
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section id="innovate-connect-thrive" class="innovate-connect-thrive-section">
+            <h2 class="text-5xl md:text-6xl font-extrabold mb-6 leading-tight">
+                Innovate. Connect. <span class="text-primary-color">Thrive.</span> <!-- Using primary-color variable -->
+            </h2>
+            <div class="cta-group">
+                <a href="https://fruitful.faa.zone/omnigrid.html" class="hero-cta-button">
+                    🕸️ Explore Omnigrid
+                </a> 
+                <a href="https://vaultmesh.faa.zone/index.html" class="hero-cta-button secondary"> <!-- Changed to secondary button style -->
+                    🌐 VaultMesh™
+                </a> 
+            </div>
+        </section>
+
+        <section class="hero-canvas-section">
+            <canvas id="rhythmicCanvas"></canvas>
+            <div class="hero-canvas-overlay"></div>
+        </section>
+
+        <!-- Main Dashboard Container - Existing content starts here -->
+        <div class="flex flex-grow dashboard-container">
+            <!-- Dashboard Sidebar Navigation -->
+            <nav class="sidebar-bg w-64 p-6 flex flex-col items-start space-y-4 shadow-md">
+                <h2 class="text-xl font-semibold dashboard-primary-text mb-4">Sections</h2>
+                <a href="#" class="sidebar-nav-item flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 text-kp-dark-gray hover:bg-hover-bg-light active" data-section-id="overview-king-price">
+                    <i class="fas fa-chart-bar"></i> Overview
+                </a>
+                <a href="#" class="sidebar-nav-item flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 text-kp-dark-gray hover:bg-hover-bg-light" data-section-id="faa-partnership-section">
+                    <i class="fas fa-handshake"></i> FAA™ Partnership
+                </a>
+                <a href="#" class="sidebar-nav-item flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 text-kp-dark-gray hover:bg-hover-bg-light" data-section-id="products-portfolio">
+                    <i class="fas fa-box"></i> Product Portfolio
+                </a>
+                <a href="#" class="sidebar-nav-item flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 text-kp-dark-gray hover:bg-hover-bg-light" data-section-id="market-and-growth">
+                    <i class="fas fa-chart-line"></i> Market & Growth
+                </a>
+                <a href="#" class="sidebar-nav-item flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 text-kp-dark-gray hover:bg-hover-bg-light" data-section-id="swot-analysis">
+                    <i class="fas fa-lightbulb"></i> SWOT Analysis
+                </a>
+                <a href="#" class="sidebar-nav-item flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 text-kp-dark-gray hover:bg-hover-bg-light" data-section-id="strategic-focus">
+                    <i class="fas fa-bullseye"></i> Strategic Focus
+                </a>
+                <a href="#" class="sidebar-nav-item flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 text-kp-dark-gray hover:bg-hover-bg-light" data-section-id="smart-grid-details">
+                    <i class="fas fa-network-wired"></i> Smart Grid Details
+                </a>
+                <a href="#" class="sidebar-nav-item flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 text-kp-dark-gray hover:bg-hover-bg-light" data-section-id="sponsorship-packages">
+                    <i class="fas fa-hand-holding-usd"></i> Sponsorship Packages
+                </a>
+                <a href="#" class="sidebar-nav-item flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 text-kp-dark-gray hover:bg-hover-bg-light" data-section-id="value-giving-loop">
+                    <i class="fas fa-heart"></i> Value Giving Loop
+                </a>
+                <a href="#" class="sidebar-nav-item flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 text-kp-dark-gray hover:bg-hover-bg-light" data-section-id="financial-projections">
+                    <i class="fas fa-chart-pie"></i> Financial Projections
+                </a>
+                <a href="#" class="sidebar-nav-item flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 text-kp-dark-gray hover:bg-hover-bg-light" data-section-id="crate-manufacturing">
+                    <i class="fas fa-boxes"></i> Crate Mfg.
+                </a>
+                <a href="#" class="sidebar-nav-item flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 text-kp-dark-gray hover:bg-hover-bg-light" data-section-id="bbbee-advantage">
+                    <i class="fas fa-award"></i> B-BBEE Advantage
+                </a>
+                <div class="mt-8 pt-4 border-t border-kp-border-light w-full">
+                    <h3 class="text-xl font-semibold dashboard-primary-text mb-4">FAA.Zone™ Portal</h3>
+                    <!-- These links are external and should not use data-section-id or preventDefault -->
+                    <a href="https://fruitfulcratedance.com" target="_blank" class="sidebar-nav-item flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 text-kp-dark-gray hover:bg-hover-bg-light">
+                        <i class="fas fa-globe"></i> Public Portal
+                    </a>
+                    <a href="https://fruitful.crate.dance.faa.zone/banimal_smart_grid.html" target="_blank" class="sidebar-nav-item flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 text-kp-dark-gray hover:bg-hover-bg-light">
+                        <i class="fas fa-sheep"></i> Banimal™ Smart Grid
+                    </a>
+                    <a href="https://fruitful.crate.dance.faa.zone/ecosystem_explorer.html" target="_blank" class="sidebar-nav-item flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 text-kp-dark-gray hover:bg-hover-bg-light">
+                        <i class="fas fa-tree"></i> Ecosystem Explorer
+                    </a>
+                    <a href="https://fruitful.crate.dance.faa.zone/landing_page.html" target="_blank" class="sidebar-nav-item flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 text-kp-dark-gray hover:bg-hover-bg-light">
+                        <i class="fas fa-home"></i> FAA™ Landing Page
+                    </a>
+                    <a href="https://fruitful.crate.dance.faa.zone/pricing.html" target="_blank" class="sidebar-nav-item flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 text-kp-dark-gray hover:bg-hover-bg-light">
+                        <i class="fas fa-dollar-sign"></i> FAA™ Pricing
+                    </a>
+                </div>
+            </nav>
+
+            <!-- Main Content Area -->
+            <main class="flex-grow p-8 main-content-bg overflow-y-auto">
+                <!-- Overview Section -->
+                <section id="overview-king-price" class="content-section mb-8 p-6 dashboard-card-bg rounded-lg shadow-xl">
+                    <h2 class="text-3xl font-bold dashboard-primary-text mb-6">King Price™ Overview</h2>
+                    <p class="text-muted mb-4">A snapshot of King Price Insurance's core strengths and market position.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="card p-6 text-center">
+                            <div class="kpi-value text-5xl">R5.2B</div>
+                            <div class="kpi-label text-xl mt-2">Company Valuation</div>
+                        </div>
+                        <div class="card p-6 text-center">
+                            <div class="kpi-value text-5xl">>20%</div>
+                            <div class="kpi-label text-xl mt-2">Sustained Growth</div>
+                        </div>
+                        <div class="card p-6 text-center">
+                            <div class="kpi-value text-5xl">57%</div>
+                            <div class="kpi-label text-xl mt-2">Positive Sentiment</div>
+                        </div>
+                        <div class="card p-6 text-center">
+                            <div class="kpi-value text-5xl">R701M+</div>
+                            <div class="kpi-label text-xl mt-2">Charitable Donations</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8">
+                        <h3 class="text-2xl font-bold dashboard-primary-text mb-4">Core Strengths & Market Differentiators</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="card">
+                                <h4 class="text-xl font-bold dashboard-secondary-text mb-3">Disruptive Product Model</h4>
+                                <ul class="list-none text-left space-y-2 text-muted">
+                                    <li class="flex items-start"><span class="list-item-icon">✓</span>World-first monthly decreasing car premiums.</li>
+                                    <li class="flex items-start"><span class="list-item-icon">✓</span>Innovative R1 Insurance add-ons.</li>
+                                    <li class="flex items-start"><span class="list-item-icon">✓</span>"Pay per k" for collectable cars.</li>
+                                </ul>
+                            </div>
+                            <div class="card">
+                                <h4 class="text-xl font-bold dashboard-secondary-text mb-3">Customer-Centricity & Trust</h4>
+                                <ul class="list-none text-left space-y-2 text-muted">
+                                    <li class="flex items-start"><span class="list-item-icon">✓</span>Recognized for "best customer experience" in SA.</li>
+                                    <li class="flex items-start"><span class="list-item-icon">✓</span>Voted "most trusted insurer" by HelloPeter.</li>
+                                    <li class="flex items-start"><span class="list-item-icon">✓</span>57% positive sentiment score.</li>
+                                </ul>
+                            </div>
+                            <div class="card">
+                                <h4 class="text-xl font-bold dashboard-secondary-text mb-3">Technological Agility & AI Leadership</h4>
+                                <ul class="list-none text-left space-y-2 text-muted">
+                                    <li class="flex items-start"><span class="list-item-icon">✓</span>Proprietary rating engine.</li>
+                                    <li class="flex items-start"><span class="list-item-icon">✓</span>Advanced AI-powered contact center.</li>
+                                    <li class="flex items-start"><span class="list-item-icon">✓</span>>24% of clients interact with AI.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- FAA & Fruitful Crate Dance Partnership Section -->
+                <section id="faa-partnership-section" class="content-section hidden mb-8 p-6 dashboard-card-bg rounded-lg shadow-xl">
+                    <h2 class="text-3xl font-bold dashboard-primary-text mb-6">The FAA™ & Fruitful Global Crate Dance Showcase Partnership</h2>
+                    <p class="text-muted mb-4">A Game-Changing Opportunity for King Price™ to Dominate the Motor Industry and Drive Unprecedented Social Impact.</p>
+
+                    <!-- Why This is Big: Introducing FAA™ - Styled like B-BBEE section -->
+                    <div class="faa-intro-card mb-8">
+                        <h3 class="faa-title">Why This is Big: Introducing FAA™</h3>
+                        <p class="faa-subtitle">
+                            We are launching **FAA™**, a global, AI-driven, event-hosting powerhouse. This initiative, the **Fruitful Global Crate Dance Showcase**, is 3X the global size of anything done before, a high-energy, culture-driven movement set to engage 1 MILLION participants across South Africa.
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-6">
+                            <div class="faa-point">
+                                <span class="faa-point-icon"><i class="fas fa-star"></i></span>
+                                <div class="faa-point-text">
+                                    <h4 class="font-bold text-xl mb-1 text-white">Massive Scale:</h4>
+                                    <p>500+ auditions nationwide, culminating in a Grand Final at Soccer City.</p>
+                                </div>
+                            </div>
+                            <div class="faa-point">
+                                <span class="faa-point-icon"><i class="fas fa-bullseye"></i></span>
+                                <div class="faa-point-text">
+                                    <h4 class="font-bold text-xl mb-1 text-white">Precision Execution:</h4>
+                                    <p>Full-scale execution at Atom Level—precision-driven, AI-backed, legally sound.</p>
+                                </div>
+                            </div>
+                            <div class="faa-point">
+                                <span class="faa-point-icon"><i class="fas fa-masks-theater"></i></span>
+                                <div class="faa-point-text">
+                                    <h4 class="font-bold text-xl mb-1 text-white">Cultural Phenomenon:</h4>
+                                    <p>Transforms crate dancing, a grassroots art form, into a nationwide movement that uplifts youth and builds cultural and economic momentum.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card p-8">
+                        <h3 class="text-2xl font-bold dashboard-primary-text mb-4">Why King Price™ Should Take the Throne</h3>
+                        <p class="text-muted mb-4">
+                            To dominate South Africa's motor industry—from Ford, Mazda, Toyota, Nissan, Penta Motor Group, to every dealership, supplier, and vendor—we need a powerful industry leader to align with. King Price™ is that leader.
+                        </p>
+                        <ul class="list-none text-left space-y-4 text-muted">
+                            <li class="pitch-point">
+                                <span class="pitch-icon">👑</span>
+                                <div>
+                                    <h4 class="font-bold text-xl dashboard-primary-text">Exclusive Insurance Sponsorship:</h4>
+                                    <p>King Price™ locks in a **monopoly on event sponsorships in the motor industry**. This is not just a sponsorship; it's a strategic acquisition of the entire sector's event engagement.</p>
+                                </div>
+                            </li>
+                            <li class="pitch-point">
+                                <span class="pitch-icon">🤝</span>
+                                <div>
+                                    <h4 class="font-bold text-xl dashboard-primary-text">Mandatory Dealership & Vendor Alignment:</h4>
+                                    <p>Every dealership & vendor sponsors through King Price™—meaning **no King Price™ = no sponsorship = no entry**. This creates an unparalleled funnel for new business.</p>
+                                </div>
+                            </li>
+                            <li class="pitch-point">
+                                <span class="pitch-icon">📊</span>
+                                <div>
+                                    <h4 class="font-bold text-xl dashboard-primary-text">Direct Data & Metrics:</h4>
+                                    <p>Access to invaluable data from our sign-up forms (www.fruitfulcratedance.com), fully compliant with legal frameworks and unlocking the rural market.</p>
+                                </div>
+                            </li>
+                            <li class="pitch-point">
+                                <span class="pitch-icon">📦</span>
+                                <div>
+                                    <h4 class="font-bold text-xl dashboard-primary-text">Branded Crates with 20-Year Lifecycle:</h4>
+                                    <p>Over **400,000+ crates** featuring King Price™ branding will circulate in high-visibility urban & rural areas. These are not just props; they are long-term, mobile billboards. **Mpack manufacturers provide a 20-year recycling commitment, with an estimated cost of R71.50 excl. per crate.**</p>
+                                </div>
+                            </li>
+                            <li class="pitch-point">
+                                <span class="pitch-icon">👨‍👩‍👧‍👦</span>
+                                <div>
+                                    <h4 class="font-bold text-xl dashboard-primary-text">Family-First Insurance Plans:</h4>
+                                    <p>Targeting **400,000+ new signups** through funeral cover, family insurance, and seamless dealership integrations, tapping into a massive, underserved market.</p>
+                                </div>
+                            </li>
+                            <li class="pitch-point">
+                                <span class="pitch-icon">🎬</span>
+                                <div>
+                                    <h4 class="font-bold text-xl dashboard-primary-text">Showmax & Netflix Documentary Involvement:</h4>
+                                    <p>King Price™ is involved at ground level, **owning national & international exposure** through a high-profile documentary series.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="card p-8 mt-8">
+                        <h3 class="text-2xl font-bold dashboard-primary-text mb-4">King Price's™ Exclusive Features</h3>
+                        <ul class="list-none text-left space-y-3 text-muted">
+                            <li class="flex items-start"><span class="pitch-icon">🚗</span>**CAR GIVEAWAY:** Showcase King Price's™ motor insurance by awarding a car to the top performer, fully branded for marketing.</li>
+                            <li class="flex items-start"><span class="pitch-icon">👨‍👩‍👧‍👦</span>**FAMILY INSURANCE PACKAGES:** Position King Price™ as a family-friendly insurer by offering discounted or free policies to participants.</li>
+                            <li class="flex items-start"><span class="pitch-icon">📦</span>**FIRST-OF-ITS-KIND CRATES:** Highlight King Price™ as an innovative brand with crates that double as memorabilia and marketing tools.</li>
+                        </ul>
+                    </div>
+
+                    <div class="card p-8 mt-8">
+                        <h3 class="text-2xl font-bold dashboard-primary-text mb-4">Activation Plan</h3>
+                        <p class="text-muted mb-4">A phased approach to maximize reach and engagement.</p>
+                        <ul class="list-none text-left space-y-3 text-muted">
+                            <li class="flex items-start"><span class="pitch-icon">1️⃣</span>**PHASE 1: PILOT ROLLOUT**</li>
+                            <ul class="list-disc list-inside ml-8 text-muted">
+                                <li>Timeline: First quarter of implementation.</li>
+                                <li>Locations: Gauteng, Alexandra, and rural regions.</li>
+                                <li>Activities: Branded crate distribution and QR code promotions.</li>
+                            </ul>
+                            <li class="flex items-start mt-4"><span class="pitch-icon">2️⃣</span>**PHASE 2: NATIONAL EXPANSION**</li>
+                            <ul class="list-disc list-inside ml-8 text-muted">
+                                <li>Timeline: Mid-year.</li>
+                                <li>Events: Integration into all Fruitful Crate Dance™ showcases and competitions.</li>
+                                <li>Incentives: Car giveaway and insurance packages to drive participation.</li>
+                            </ul>
+                            <li class="flex items-start mt-4"><span class="pitch-icon">3️⃣</span>**PHASE 3: DATA-DRIVEN OPTIMIZATION**</li>
+                            <ul class="list-disc list-inside ml-8 text-muted">
+                                <li>Timeline: Year-end.</li>
+                                <li>Focus: Refining strategies based on sign-ups, impressions, and audience feedback.</li>
+                            </ul>
+                        </ul>
+                    </div>
+
+                    <div class="card p-8 mt-8">
+                        <h3 class="text-2xl font-bold dashboard-primary-text mb-4">ROI and Data Metrics</h3>
+                        <p class="text-muted mb-4">Measurable outcomes to track the success of the partnership.</p>
+                        <ul class="list-none text-left space-y-3 text-muted">
+                            <li class="flex items-start"><span class="pitch-icon">📈</span>**KEY METRICS TO TRACK:**</li>
+                            <ul class="list-disc list-inside ml-8 text-muted">
+                                <li>**Impressions:** Digital reach through social media, event livestreams, and partner promotions.</li>
+                                <li>**Engagements:** QR code scans, website visits, and sign-up conversions.</li>
+                                <li>**Community Impact:** Number of crates distributed, rural activations held, and participants engaged.</li>
+                                <li>**Brand Lift:** Surveys and feedback to measure improved brand perception.</li>
+                            </ul>
+                            <li class="flex items-start mt-4"><span class="pitch-icon">💰</span>**PROJECTED ROI:**</li>
+                            <ul class="list-disc list-inside ml-8 text-muted">
+                                <li>**Platinum Tier:** 5x ROI with increased market share and brand loyalty.</li>
+                                <li>**Gold Tier:** 3x ROI through enhanced regional awareness.</li>
+                                <li>**Silver Tier:** 2x ROI from targeted engagements.</li>
+                            </ul>
+                        </ul>
+                    </div>
+
+                    <div class="card p-8 mt-8">
+                        <h3 class="text-2xl font-bold dashboard-primary-text mb-4">Next Steps</h3>
+                        <ul class="list-none text-left space-y-3 text-muted">
+                            <li class="flex items-start"><span class="pitch-icon">✅</span>**DRAFT APPROVAL:** Review and finalize the detailed proposal.</li>
+                            <li class="flex items-start"><span class="pitch-icon">🤝</span>**PRESENTATION:** Schedule a meeting with King Price's™ marketing team to present the proposal.</li>
+                            <li class="flex items-start"><span class="pitch-icon">🗓️</span>**ACTIVATION PLANNING:** Collaborate on designs & rollout schedules.</li>
+                        </ul>
+                    </div>
+
+                    <div class="card p-8 mt-8">
+                        <h3 class="text-2xl font-bold dashboard-primary-text mb-4">The Fruitful Promise & Strategic Goals</h3>
+                        <p class="text-muted mb-4">Our vision for transformation and measurable impact.</p>
+                        <ul class="list-none text-left space-y-3 text-muted">
+                            <li class="flex items-start"><span class="pitch-icon">🌟</span>**VISION:** "If you want to change the fruits you are growing, change the seed." The Fruitful Crate Dancing Showcase transforms South Africa's vibrant street artistry into a nationally recognized platform, inspiring youth empowerment, celebrating creativity, and creating economic opportunities.</li>
+                            <li class="flex items-start mt-4"><span class="pitch-icon">🎯</span>**STRATEGIC GOALS:**</li>
+                            <ul class="list-disc list-inside ml-8 text-muted">
+                                <li>**TALENT IDENTIFICATION AND DEVELOPMENT:** Host regional auditions across South Africa to identify top crate dancers and crews. Structure the competition in progressive rounds (mirroring global standards like Idols) to develop skills.</li>
+                                <ul class="list-disc list-inside ml-12 text-muted">
+                                    <li>ROUND 1: Open auditions to uncover raw talent.</li>
+                                    <li>ROUND 2: Selected dancers undergo mentorship and present choreographed routines.</li>
+                                    <li>ROUND 3: Performers collaborate on group performances.</li>
+                                    <li>FINAL ROUNDS: Top participants refine acts with professional support, culminating in a high-impact, live National Grand Finale.</li>
+                                </ul>
+                                <li class="flex items-start mt-4"><span class="list-item-icon"></span>**COMPETITIONS AND SHOWCASES:** Discover, elevate, and celebrate crate dancers nationwide while building cultural and economic impact.</li>
+                                <ul class="list-disc list-inside ml-8 text-muted">
+                                    <li>Regional Auditions: Host across urban centers, townships, and underserved communities.</li>
+                                    <li>Regional Showcases: Top performers compete in live regional events with brand activations and local vendor support.</li>
+                                    <li>National Competition & Grand Finale: Rewards include cash prizes, performance opportunities, career-building exposure, and mentorship programs.</li>
+                                    <li>Live and Digital Streaming: Performances broadcast through partnerships with Netflix, Showmax, and Red Bull for national and global exposure.</li>
+                                </ul>
+                                <li class="flex items-start mt-4"><span class="list-item-icon"></span>**PARTNERSHIPS AND SPONSORSHIPS:** Forge strategic partnerships with brands, cultural organizations, and sponsors (e.g., Coca-Cola, MTN, Red Bull) for funding, resources, and promotional support.</li>
+                                <li class="flex items-start mt-4"><span class="list-item-icon"></span>**ECONOMIC EMPOWERMENT:** Enable participants to earn income through sponsored performances, merchandise sales, and digital content monetization. Introduce platforms like Fruitful Sekelbos Tank™ to support local artists by facilitating bulk purchases, providing branding/packaging/production support, and connecting artists to corporate markets (Mr Price Home, Makro, Builders Warehouse, Woolworths).</li>
+                                <li class="flex items-start mt-4"><span class="list-item-icon"></span>**COMMUNITY AND CULTURAL IMPACT:** Highlight crate dancing as a symbol of innovation, creativity, and resilience. Inspire youth to pursue passions, fostering purpose, pride, and opportunity.</li>
+                            </ul>
+                        </ul>
+                    </div>
+
+                    <div class="card p-8 mt-8">
+                        <h3 class="text-2xl font-bold dashboard-primary-text mb-4">Red Bull Vintage Crates Initiative</h3>
+                        <p class="text-muted mb-4">A strategic collaboration to enhance performance and branding.</p>
+                        <ul class="list-none text-left space-y-3 text-muted">
+                            <li class="flex items-start"><span class="pitch-icon">🥤</span>**Design & Production:** Smaller vintage crates, proportional to 12 Red Bull Large cans, for better ergonomics and maneuverability. Designed for durability and safety.</li>
+                            <li class="flex items-start"><span class="pitch-icon"> branding</span>**Unique Branding Opportunity:** Reinforces Red Bull's association with energy, creativity, and youth empowerment, enhancing performance quality and creating an iconic, branded element.</li>
+                            <li class="flex items-start"><span class="pitch-icon"> reach</span>**UNMATCHED REACH:** Through live events, digital streaming, and viral social campaigns, Red Bull will engage millions of South African youth and connect globally.</li>
+                            <li class="flex items-start"><span class="pitch-icon"> legacy</span>**CREATE LEGACY:** Turn crate dancing into an annual platform that empowers youth, inspires generations, and sets new standards for artistic recognition in South Africa.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Product Portfolio Section -->
+                <section id="products-portfolio" class="content-section hidden mb-8 p-6 dashboard-card-bg rounded-lg shadow-xl">
+                    <h2 class="text-3xl font-bold dashboard-primary-text mb-6">Comprehensive Product Portfolio</h2>
+                    <p class="text-muted mb-4">King Price™ offers a diverse range of innovative insurance solutions across personal, commercial, and life segments.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="card border-t-4 border-kp-gold-accent">
+                            <h3 class="text-2xl font-bold dashboard-primary-text mb-4">Personal Insurance 🚗</h3>
+                            <ul class="list-disc list-inside text-left space-y-2 text-muted flex-grow">
+                                <li>**Car Insurance:** Comprehensive, Agreed Value, Theft & Write-off, Third Party.</li>
+                                <li>**R1 Insurance:** Add-on for bicycles, golf clubs, hearing aids, motorbike gear.</li>
+                                <li>**Personal Accident:** Lump sum for disability/accidental death.</li>
+                                <li>Home contents, buildings, specialized items, portable possessions.</li>
+                            </ul>
+                        </div>
+                        <div class="card border-t-4 border-kp-red-highlight">
+                            <h3 class="text-2xl font-bold dashboard-primary-text mb-4">Commercial Insurance 🏢</h3>
+                            <ul class="list-disc list-inside text-left space-y-2 text-muted flex-grow">
+                                <li>**Agri Insurance:** Crops, livestock, "Pay as you farm" for vehicles.</li>
+                                <li>**Business Insurance:** All Risk, Motor, Office Contents, Business Interruption.</li>
+                                <li>**Community Insurance:** For schemes, includes fidelity & public liability.</li>
+                                <li>**Engineering Insurance:** Contractors All Risk, Plant All Risk, Electronic Equipment.</li>
+                                <li>Exclusively via broker network for tailored advice.</li>
+                            </ul>
+                        </div>
+                        <div class="card border-t-4 border-kp-red-royal">
+                            <h3 class="text-2xl font-bold dashboard-primary-text mb-4">Life Insurance (King Price Livin'™) ❤️</h3>
+                            <ul class="list-disc list-inside text-left space-y-2 text-muted flex-grow">
+                                <li>**Funeral Cover:** Up to R100,000, doubles for accidental death.</li>
+                                <li>**Life & Credit Life:** Various credit life & employee benefits.</li>
+                                <li>**Employee Benefits:** Group life, disability, critical illness.</li>
+                                <li>**Estate Product:** Financial protection, covers legal/admin costs.</li>
+                                <li>Ambitious goal to insure 5 million lives within 5 years.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Market Position & Growth Section -->
+                <section id="market-and-growth" class="content-section hidden mb-8 p-6 dashboard-card-bg rounded-lg shadow-xl">
+                    <h2 class="text-3xl font-bold dashboard-primary-text mb-6">Market Position & Growth Trajectory</h2>
+                    <p class="text-muted mb-4">King Price™ continues its impressive growth, disrupting a competitive market and expanding its global footprint.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="card p-6 text-center">
+                            <div class="kpi-value text-5xl">R5.2B</div>
+                            <div class="kpi-label text-xl mt-2">Company Valuation</div>
+                        </div>
+                        <div class="card p-6 text-center">
+                            <div class="kpi-value text-5xl">>20%</div>
+                            <div class="kpi-label text-xl mt-2">Sustained Growth</div>
+                        </div>
+                        <div class="card p-6 text-center">
+                            <div class="kpi-value text-5xl">40%</div>
+                            <div class="kpi-label text-xl mt-2">Highest YoY Growth (2019)</div>
+                        </div>
+                        <div class="card p-6 text-center">
+                            <div class="kpi-value text-5xl">Namibia</div>
+                            <div class="kpi-label text-xl mt-2">Fastest Growing Insurer</div>
+                        </div>
+                    </div>
+                    <div class="mt-8">
+                        <h3 class="text-2xl font-bold dashboard-primary-text mb-4">Global Ambition: easySure™ in Europe</h3>
+                        <p class="max-w-2xl mx-auto text-muted">
+                            King Price™ is strategically expanding into Europe under the 'easySure™' brand, leveraging the internationally recognized 'easy' name. This move positions them as a global insurtech innovator, aiming to export their disruptive model and tech-driven approach beyond South Africa.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- SWOT Analysis Section -->
+                <section id="swot-analysis" class="content-section hidden mb-8 p-6 dashboard-card-bg rounded-lg shadow-xl">
+                    <h2 class="text-3xl font-bold dashboard-primary-text mb-6">Strategic Outlook: SWOT Summary</h2>
+                    <p class="text-muted mb-4">A concise overview of King Price's™ internal capabilities and external market dynamics.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="card">
+                            <h3 class="text-2xl font-bold dashboard-primary-text mb-4">Strengths</h3>
+                            <ul class="list-disc list-inside text-left space-y-2 text-muted">
+                                <li>Innovative decreasing premium model.</li>
+                                <li>High customer trust and positive sentiment.</li>
+                                <li>Advanced technological agility and AI investment.</li>
+                                <li>Strong brand identity and unique marketing.</li>
+                                <li>Rapid, sustained market share growth.</li>
+                                <li>Deep social impact and purpose-driven culture.</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h3 class="text-2xl font-bold dashboard-primary-text mb-4">Weaknesses</h3>
+                            <ul class="list-disc list-inside text-left space-y-2 text-muted">
+                                <li>Reported policy transparency issues (excesses, driver declarations).</li>
+                                <li>Premium increases at renewal causing customer friction.</li>
+                                <li>Reliance on brokers for commercial lines.</li>
+                                <li>Potential for misunderstanding complex offers.</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h3 class="text-2xl font-bold dashboard-primary-text mb-4">Opportunities</h3>
+                            <ul class="list-disc list-inside text-left space-y-2 text-muted">
+                                <li>Massive growth potential in Life Insurance (5M lives goal).</li>
+                                <li>International expansion (easySure™ in Europe, other continents).</li>
+                                <li>Deeper AI leverage for hyper-personalization & self-service.</li>
+                                <li>Innovation in risk mitigation (climate, cyber).</li>
+                                <li>**Partnership with B-BBEE Level 1, 100% black-owned supplier.**</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h3 class="text-2xl font-bold dashboard-primary-text mb-4">Threats</h3>
+                            <ul class="list-disc list-inside text-left space-y-2 text-muted">
+                                <li>Intense competition from established SA players.</li>
+                                <li>SA economic instability and high inflation.</li>
+                                <li>Deteriorating national infrastructure (loadshedding, water).</li>
+                                <li>Growing sophistication of cyber threats.</li>
+                                <li>Regulatory changes and reputational risk.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Strategic Focus Areas Section -->
+                <section id="strategic-focus" class="content-section hidden mb-8 p-6 dashboard-card-bg rounded-lg shadow-xl">
+                    <h2 class="text-3xl font-bold dashboard-primary-text mb-6">Strategic Focus Areas for Continued Leadership</h2>
+                    <p class="text-muted mb-4">To solidify its market position and fully realize its "Higher purpose," King Price™ should prioritize these key areas.</p>
+                    <div class="card text-left max-w-4xl mx-auto p-8">
+                        <ul class="space-y-5">
+                            <li class="flex items-start">
+                                <span class="text-3xl text-accent-green mr-4">1.</span>
+                                <div>
+                                    <h4 class="font-bold text-xl dashboard-primary-text">Enhance Policy Transparency & Clarity</h4>
+                                    <p class="text-muted">Implement clearer, mandatory disclosures for excesses and simplify policy wording. Develop dynamic systems for declaring occasional drivers to prevent claim issues.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-3xl text-accent-green mr-4">2.</span>
+                                <div>
+                                    <h4 class="font-bold text-xl dashboard-primary-text">Optimize Premium Renewal Strategy</h4>
+                                    <p class="text-muted">Proactively communicate renewal changes with detailed reasons. Leverage data for personalized offers and introduce loyalty incentives for claim-free clients across all product lines.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-3xl text-accent-green mr-4">3.</span>
+                                <div>
+                                    <h4 class="font-bold text-xl dashboard-primary-text">Deepen AI for Proactive Customer Engagement</h4>
+                                    <p class="text-muted">Expand AI-driven proactive outreach based on predictive analytics. Develop end-to-end self-service journeys across all digital channels, freeing agents for complex issues.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-3xl text-accent-green mr-4">4.</span>
+                                <div>
+                                    <h4 class="font-bold text-xl dashboard-primary-text">Forge Strategic Partnerships</h4>
+                                    <p class="text-muted">Invest in targeted broker enablement programs. Explore collaborations with InsurTechs for emerging risks (cyber, climate). Engage with communities for proactive risk mitigation programs.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Smart Grid Details Section -->
+                <section id="smart-grid-details" class="content-section hidden mb-8 p-6 dashboard-card-bg rounded-lg shadow-xl">
+                    <h2 class="text-3xl font-bold dashboard-primary-text mb-6">The Fruitful Crate Dance™ Smart Grid</h2>
+                    <p class="text-muted mb-4">This comprehensive, AI-driven digital ecosystem is the backbone supporting the entire Fruitful Crate Dance™ movement, ensuring precision, scalability, and measurable impact.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="smart-grid-module-card">
+                            <h4 class="flex items-center"><i class="fas fa-home module-icon"></i> Home (Landing Page)</h4>
+                            <p class="text-muted text-sm">Dynamic hero image with dancing crates, rotating sponsor banners, brief welcome text. Features animated Fruitful™ tree, crate dancers, and a call-to-action to join the movement.</p>
+                            <ul class="mt-2">
+                                <li>- Welcome Banner: Animated Fruitful™ tree + crate dancers scene</li>
+                                <li>- Brand Loop: Auto-loop of sponsors (Pepsi, KFC, Shoprite)</li>
+                                <li>- Scroll Trigger: Scrolls to Events / Modules</li>
+                            </ul>
+                        </div>
+                        <div class="smart-grid-module-card">
+                            <h4 class="flex items-center"><i class="fas fa-calendar-alt module-icon"></i> Events Page</h4>
+                            <p class="text-muted text-sm">Show upcoming Crate Dance™ events, including auditions, regional showcases, and brand collaborations.</p>
+                            <ul class="mt-2">
+                                <li>- Event Grid: Interactive map + event cards</li>
+                                <li>- Register CTA: Button linked to onboarding portal</li>
+                                <li>- Archive: Past events and winners</li>
+                            </ul>
+                        </div>
+                        <div class="smart-grid-module-card">
+                            <h4 class="flex items-center"><i class="fas fa-shield-alt module-icon"></i> FAA Edge™ Compliance Core</h4>
+                            <p class="text-muted text-sm">The legal and verification backbone, ensuring FAA™ Inline Verification™ for all actions. **Current Status: Complete (coded).**</p>
+                            <ul class="mt-2">
+                                <li>- FAA™ Inline Verification™ Protocol Dashboard</li>
+                                <li>- Legal Ledger for IP Actions</li>
+                                <li>- Secure Payment & Contract Chain</li>
+                                <li>- Sponsor Legal Tier Interface</li>
+                            </ul>
+                        </div>
+                        <div class="smart-grid-module-card">
+                            <h4 class="flex items-center"><i class="fas fa-user-plus module-icon"></i> Partner Onboarding Portal</h4>
+                            <p class="text-muted text-sm">Facilitates registration, licensing, and sponsorship, with tiered Crate Levels and a comprehensive sponsor gateway. **Current Status: Ready for export.**</p>
+                            <ul class="mt-2">
+                                <li>- Crate Tier Selection (1–5)</li>
+                                <li>- Sponsorship Application Portal</li>
+                                <li>- Vendor Licensing Module</li>
+                                <li>- Regional Logic Gate Manager</li>
+                            </ul>
+                        </div>
+                        <div class="smart-grid-module-card">
+                            <h4 class="flex items-center"><i class="fas fa-store module"></i> Fruitful Marketplace Core</h4>
+                            <p class="text-muted text-sm">Manages product display and checkout, with logic-based personalization for Crate, Banimal™, and Samfox™ items. **Current Status: Integration-ready.**</p>
+                            <ul class="mt-2">
+                                <li>- Featured Product Grid</li>
+                                <li>- Banimal™ Merch Showcase</li>
+                                <li>- Samfox™ Apparel Scroll</li>
+                                <li>- Logic-Based Personalization Filter</li>
+                                <li>- Checkout Sponsorship Route</li>
+                            </ul>
+                        </div>
+                        <div class="smart-grid-module-card">
+                            <h4 class="flex items-center"><i class="fas fa-street-view module-icon"></i> Showcase Management Engine</h4>
+                            <p class="text-muted text-sm">The street activation layer, managing Crate Dance™ events, brand panel placement, and cultural traffic logs. **Current Status: Blueprint ready.**</p>
+                            <ul class="mt-2">
+                                <li>- Crate Activation Schedule</li>
+                                <li>- Brand Integration Overlay</li>
+                                <li>- City-Specific Showcase Roster</li>
+                                <li>- Measurable Footprint Tracker</li>
+                            </ul>
+                        </div>
+                        <div class="smart-grid-module-card">
+                            <h4 class="flex items-center"><i class="fas fa-palette module-icon"></i> Design Competition Engine</h4>
+                            <p class="text-muted text-sm">Handles apparel/crate/user design intake, with Myth Compass™ + Lore AI score = payout, printing rights. **Current Status: Logic built, UI pending.**</p>
+                            <ul class="mt-2">
+                                <li>- Design Submission Page</li>
+                                <li>- Lore AI + Myth Compass™ Dashboard</li>
+                                <li>- Winner Licensing Display</li>
+                                <li>- Crate Printing Pipeline</li>
+                            </ul>
+                        </div>
+                        <div class="smart-grid-module-card">
+                            <h4 class="flex items-center"><i class="fas fa-hand-holding-heart module-icon"></i> Banimal™ Giving Loop</h4>
+                            <p class="text-muted text-sm">The child-facing donation and reward system: 1 purchase = 1 meal + 1 Kind Creatures Archive entry. **Current Status: Structure set.**</p>
+                            <ul class="mt-2">
+                                <li>- Meal Tracker + Stats</li>
+                                <li>- Kind Creatures Archive Grid</li>
+                                <li>- NGO Partner List</li>
+                                <li>- Real-Time Child Feed Log</li>
+                            </ul>
+                        </div>
+                        <div class="smart-grid-module-card">
+                            <h4 class="flex items-center"><i class="fas fa-chart-pie module-icon"></i> Crate Intelligence Grid</h4>
+                            <p class="text-muted text-sm">Real-time dashboard metrics, including logic spread, riddle patterns, and LSM data. **Current Status: Backend queued.**</p>
+                            <ul class="mt-2">
+                                <li>- Riddle Pattern Map</li>
+                                <li>- Crate Reach Analytics (by race, age, region)</li>
+                                <li>- NGO Impact Tracker</li>
+                                <li>- Design Spread Grid</li>
+                            </ul>
+                        </div>
+                        <div class="smart-grid-module-card">
+                            <h4 class="flex items-center"><i class="fas fa-brain module-icon"></i> Myth Tech Stack (Optional Layer)</h4>
+                            <p class="text-muted text-sm">Provides immersive AI + digital relics, including GPS-tracked crates, Foxed AI™, NFT riddles, and digital scrolls. **Current Status: Concept finalized.**</p>
+                            <ul class="mt-2">
+                                <li>- GPS Tracked Crates Map</li>
+                                <li>- NFT Myth Riddle Collection</li>
+                                <li>- Foxed AI™ Avatar Summons</li>
+                                <li>- Digital Scroll Archive</li>
+                            </ul>
+                        </div>
+                        <div class="smart-grid-module-card">
+                            <h4 class="flex items-center"><i class="fas fa-tshirt module-icon"></i> Foxed™ Design Relay Node</h4>
+                            <p class="text-muted text-sm">Manages 1/1 apparel logic drop, with Myth Compass™ scoring → rare reward drop. **Current Status: Logic defined, UI pending.**</p>
+                            <ul class="mt-2">
+                                <li>- Rare Drop Archive</li>
+                                <li>- Scoring Thresholds</li>
+                                <li>- Claim Page (Token Gate)</li>
+                                <li>- Hall of Foxed Legends</li>
+                            </ul>
+                        </div>
+                        <div class="smart-grid-module-card">
+                            <h4 class="flex items-center"><i class="fas fa-map-marked-alt module-icon"></i> Regional Deployment Model</h4>
+                            <p class="text-muted text-sm">Details regional roles: South Africa (IP HQ + Tier 1 shows), Nigeria (Brand pilot, vendor entry), Brazil (Event ready region), Japan (Utility crate innovation).</p>
+                        </div>
+                        <div class="smart-grid-module-card">
+                            <h4 class="flex items-center"><i class="fas fa-sync-alt module-icon"></i> Sponsor Logic Loop</h4>
+                            <p class="text-muted text-sm">Defines input triggers and outputs: $1 Sponsor Payment → 1 child insight fed, data logged; Crate Dance Tier 1 → Brand or NGO logic, cost saving, discount unlocked; Banimal™ Sale → Meal + riddle + reef unlock; Design Entry → Myth Compass™ score, licensing reward.</p>
+                        </div>
+                        <div class="smart-grid-module-card">
+                            <h4 class="flex items-center"><i class="fas fa-lock module-icon"></i> IP Governance + Licensing Grid</h4>
+                            <p class="text-muted text-sm">Outlines protection and export methods for IP elements: Crate Dance™ Brand (Sovereign, License Tiers), Banimal™ (Common Law, TM, Myth Pack™ Protocol), Samfox™ (FAA Internal, Controlled Office Merch Logic Grid), FAA Cognitive Lock (Not for resale).</p>
+                        </div>
+                        <div class="smart-grid-module-card">
+                            <h4 class="flex items-center"><i class="fas fa-code-branch module-icon"></i> Next Modules (Pipeline)</h4>
+                            <p class="text-muted text-sm">Future development pipeline: Investor Deck (HIGH), Sponsor Dashboard (MED), Story Capture Engine (MED), Myth Riddle Packs (READY), Crate ROI Tracker (HIGH), Foxed Mobile Deployment (HIGH), Logic Grid Sync Engine (MED), Live CrateCam™ Feed (HIGH).</p>
+                        </ul>
+                    </div>
+                    <div class="text-center mt-8">
+                        <p class="text-lg font-semibold text-muted">FAA™ Systems online. Crates are live.</p>
+                        <p class="text-xl font-bold text-kp-red-royal">Let’s shake the grid.</p>
+                    </div>
+                </section>
+
+                <!-- Sponsorship Packages Section -->
+                <section id="sponsorship-packages" class="content-section hidden mb-8 p-6 dashboard-card-bg rounded-lg shadow-xl">
+                    <h2 class="text-3xl font-bold dashboard-primary-text mb-6">Sponsorship Packages</h2>
+                    <p class="text-muted mb-4">Choose the perfect tier to maximize your brand's impact and engagement with the Fruitful Global Crate Dance Showcase.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="tier-card p-6 text-center">
+                            <h3 class="text-2xl font-bold dashboard-secondary-text mb-4">Bronze Tier</h3>
+                            <p class="text-muted mb-4">**R500,000**</p>
+                            <ul class="benefit-list list-none text-left flex-grow">
+                                <li><i class="fas fa-check-circle"></i> Local event branding.</li>
+                                <li><i class="fas fa-check-circle"></i> Social media mentions.</li>
+                                <li><i class="fas fa-check-circle"></i> Basic data insights.</li>
+                                <li><i class="fas fa-check-circle"></i> 5,000 meals donated.</li>
+                            </ul>
+                            <button class="cta-button mt-4 w-full" onclick="selectPackage('Bronze', 500000)">Select Bronze</button>
+                        </div>
+                        <div class="tier-card p-6 text-center">
+                            <h3 class="text-2xl font-bold dashboard-secondary-text mb-4">Silver Tier</h3>
+                            <p class="text-muted mb-4">**R1,500,000**</p>
+                            <ul class="benefit-list list-none text-left flex-grow">
+                                <li><i class="fas fa-check-circle"></i> Regional event branding.</li>
+                                <li><i class="fas fa-check-circle"></i> Dedicated social campaigns.</li>
+                                <li><i class="fas fa-check-circle"></i> Enhanced data analytics.</li>
+                                <li><i class="fas fa-check-circle"></i> 15,000 meals donated.</li>
+                            </ul>
+                            <button class="cta-button mt-4 w-full" onclick="selectPackage('Silver', 1500000)">Select Silver</button>
+                        </div>
+                        <div class="tier-card p-6 text-center highlight">
+                            <h3 class="text-2xl font-bold dashboard-primary-text mb-4">Gold Tier</h3>
+                            <p class="text-muted mb-4">**R2,500,000**</p>
+                            <ul class="benefit-list list-none text-left flex-grow">
+                                <li><i class="fas fa-check-circle"></i> National event branding.</li>
+                                <li><i class="fas fa-check-circle"></i> Integrated marketing campaigns.</li>
+                                <li><i class="fas fa-check-circle"></i> Advanced audience insights.</li>
+                                <li><i class="fas fa-check-circle"></i> 25,000 meals donated.</li>
+                                <li><i class="fas fa-check-circle"></i> Media partnership opportunities.</li>
+                            </ul>
+                            <button class="cta-button mt-4 w-full" onclick="selectPackage('Gold', 2500000)">Select Gold</button>
+                        </div>
+                        <div class="tier-card p-6 text-center">
+                            <h3 class="text-2xl font-bold dashboard-secondary-text mb-4">Platinum Tier</h3>
+                            <p class="text-muted mb-4">**R5,000,000**</p>
+                            <ul class="benefit-list list-none text-left flex-grow">
+                                <li><i class="fas fa-check-circle"></i> Exclusive national rights.</li>
+                                <li><i class="fas fa-check-circle"></i> Major media integration (Netflix/Showmax documentary).</li>
+                                <li><i class="fas fa-check-circle"></i> Full access to data grid.</li>
+                                <li><i class="fas fa-check-circle"></i> 50,000 meals donated.</li>
+                                <li><i class="fas fa-check-circle"></i> Custom activations & product placement.</li>
+                            </ul>
+                            <button class="cta-button mt-4 w-full" onclick="selectPackage('Platinum', 5000000)">Select Platinum</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Value Giving Loop Section -->
+                <section id="value-giving-loop" class="content-section hidden mb-8 p-6 dashboard-card-bg rounded-lg shadow-xl">
+                    <h2 class="text-3xl font-bold dashboard-primary-text mb-6">The King Price™ Value Giving Loop</h2>
+                    <p class="text-muted mb-4">Our partnership creates a powerful cycle of value, connecting business success with tangible social impact.</p>
+
+                    <div class="value-loop-card p-8 rounded-lg shadow-md mb-8">
+                        <h3 class="text-2xl font-bold dashboard-secondary-text mb-4">How it Works:</h3>
+                        <ul class="list-none text-left space-y-3 text-muted">
+                            <li class="flex items-start"><span class="list-item-icon">1.</span> **Sponsorship Investment:** King Price™ invests in the Fruitful Global Crate Dance Showcase.</li>
+                            <li class="flex items-start"><span class="list-item-icon">2.</span> **Brand Exposure & Data:** This investment fuels massive brand visibility and generates invaluable consumer data through event participation and sign-ups.</li>
+                            <li class="flex items-start"><span class="list-item-icon">3.</span> **New Business & Growth:** Increased brand awareness and data insights drive new policy acquisitions and market share growth for King Price™.</li>
+                            <li class="flex items-start"><span class="list-item-icon">4.</span> **Social Impact:** A portion of the revenue generated, or a direct commitment from sponsorship, is channeled into charitable initiatives, specifically providing meals to children through the Banimal™ Giving Loop.</li>
+                            <li class="flex items-start"><span class="list-item-icon">5.</span> **Enhanced Brand Reputation:** King Price's™ commitment to social good further strengthens its reputation as a purpose-driven insurer, fostering deeper customer loyalty and attracting new clients.</li>
+                            <li class="flex items-start"><span class="list-item-icon">6.</span> **Loop Continues:** This enhanced reputation and continued growth enable further investment, perpetuating the cycle of business success and social impact.</li>
+                        </ul>
+                    </div>
+
+                    <div class="chart-container dashboard-card-bg rounded-lg p-4">
+                        <canvas id="valueLoopChart"></canvas>
+                    </div>
+
+                    <p class="text-muted mt-8 text-center">Every investment in the Fruitful Global Crate Dance Showcase directly contributes to both King Price's™ market dominance and a significant positive social change in South Africa.</p>
+                </section>
+
+                <!-- Financial Projections Section -->
+                <section id="financial-projections" class="content-section hidden mb-8 p-6 dashboard-card-bg rounded-lg shadow-xl">
+                    <h2 class="text-3xl font-bold dashboard-primary-text mb-6">Financial Projections & Revenue Streams</h2>
+                    <p class="text-muted mb-4">Projected financial growth and a breakdown of revenue sources from the Fruitful Global Crate Dance Showcase partnership.</p>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="chart-container dashboard-card-bg rounded-lg p-4">
+                            <h3 class="text-xl font-bold dashboard-secondary-text mb-4">Projected Revenue Growth (5 Years)</h3>
+                            <canvas id="revenueProjectionChart"></canvas>
+                        </div>
+                        <div class="chart-container dashboard-card-bg rounded-lg p-4">
+                            <h3 class="text-xl font-bold dashboard-secondary-text mb-4">Revenue Breakdown by Source</h3>
+                            <canvas id="revenueBreakdownChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card p-8 mt-8">
+                        <h3 class="text-2xl font-bold dashboard-primary-text mb-4">Key Financial Highlights:</h3>
+                        <ul class="list-none text-left space-y-3 text-muted">
+                            <li class="flex items-start"><span class="list-item-icon">📈</span> **Accelerated Growth:** The partnership is projected to significantly accelerate King Price's™ revenue growth, particularly in the life insurance sector and new motor policy acquisitions.</li>
+                            <li class="flex items-start"><span class="list-item-icon">💰</span> **Diversified Revenue:** Revenue streams extend beyond direct policy sales to include high-margin sponsorship fees, merchandise sales, and licensing opportunities.</li>
+                            <li class="flex items-start"><span class="list-item-icon">🎯</span> **Targeted Market Penetration:** Direct engagement with rural and youth markets through the Crate Dance events provides a cost-effective channel for customer acquisition previously difficult to reach.</li>
+                            <li class="flex items-start"><span class="list-item-icon">📊</span> **Data Monetization:** The rich data collected from participant sign-ups and engagement offers valuable insights for product development and targeted marketing, further boosting profitability.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Crate Manufacturing Section -->
+                <section id="crate-manufacturing" class="content-section hidden mb-8 p-6 dashboard-card-bg rounded-lg shadow-xl">
+                    <h2 class="text-3xl font-bold dashboard-primary-text mb-6">Crate Manufacturing & Lifecycle</h2>
+                    <p class="text-muted mb-4">The custom-designed, branded crates are central to the Fruitful Global Crate Dance Showcase, serving as both performance tools and long-term marketing assets.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="card">
+                            <h3 class="text-2xl font-bold dashboard-secondary-text mb-4">Manufacturing Process & Materials</h3>
+                            <ul class="list-none text-left space-y-2 text-muted">
+                                <li class="flex items-start"><span class="list-item-icon">🏭</span> **Local Production:** Crates are manufactured locally in South Africa by Mpack, supporting local industry and job creation.</li>
+                                <li class="flex items-start"><span class="list-item-icon">♻️</span> **Sustainable Materials:** Made from durable, recycled plastic, ensuring longevity and environmental responsibility.</li>
+                                <li class="flex items-start"><span class="list-item-icon">🎨</span> **King Price™ Branding:** Each crate features prominent King Price™ branding, transforming them into mobile billboards.</li>
+                                <li class="flex items-start"><span class="list-item-icon">📏</span> **Optimal Design:** Ergonomically designed for performance, ensuring safety and ease of use for dancers.</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h3 class="text-2xl font-bold dashboard-secondary-text mb-4">20-Year Lifecycle & Impact</h3>
+                            <ul class="list-none text-left space-y-2 text-muted">
+                                <li class="flex items-start"><span class="list-item-icon">⏳</span> **Extended Lifespan:** Mpack guarantees a 20-year recycling commitment, ensuring the crates remain in circulation for two decades.</li>
+                                <li class="flex items-start"><span class="list-item-icon">🌍</span> **Environmental Commitment:** This long lifecycle significantly reduces waste and promotes a circular economy.</li>
+                                <li class="flex items-start"><span class="list-item-icon">📊</span> **Continuous Exposure:** Over 400,000 branded crates will provide continuous, high-visibility brand exposure in urban and rural areas.</li>
+                                <li class="flex items-start"><span class="list-item-icon">💲</span> **Cost-Effective Marketing:** With an estimated cost of R71.50 excl. per crate, this represents an incredibly cost-effective, long-term marketing asset.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- B-BBEE Advantage Section -->
+                <section id="bbbee-advantage" class="content-section hidden mb-8 p-6 dashboard-card-bg rounded-lg shadow-xl">
+                    <h2 class="text-3xl font-bold dashboard-primary-text mb-6">B-BBEE Advantage & Social Impact</h2>
+                    <p class="text-muted mb-4">Partnering with Fruitful Global Crate Dance Showcase, a B-BBEE Level 1, 100% black-owned supplier, significantly enhances King Price's™ B-BBEE score and demonstrates tangible social investment.</p>
+
+                    <div class="bbbee-section-card mb-8">
+                        <h3 class="bbbee-title">Empowering South Africa Together</h3>
+                        <p class="bbbee-subtitle">
+                            This partnership is a strategic alignment with national development goals, providing King Price™ with a **significant B-BBEE advantage** and demonstrating authentic commitment to socio-economic transformation.
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                            <div class="bbbee-point">
+                                <span class="bbbee-point-icon"><i class="fas fa-certificate"></i></span>
+                                <div class="bbbee-point-text">
+                                    <h4 class="font-bold text-xl mb-1 text-white">B-BBEE Level 1 Status:</h4>
+                                    <p>Fruitful Global Crate Dance Showcase operates as a **Level 1 B-BBEE contributor**, ensuring maximum procurement recognition for King Price™.</p>
+                                </div>
+                            </div>
+                            <div class="bbbee-point">
+                                <span class="bbbee-point-icon"><i class="fas fa-hand-holding-usd"></i></span>
+                                <div class="bbbee-point-text">
+                                    <h4 class="font-bold text-xl mb-1 text-white">100% Black-Owned:</h4>
+                                    <p>Our status as a **100% black-owned entity** directly contributes to King Price's™ Supplier Development and Enterprise Development targets.</p>
+                                </div>
+                            </div>
+                            <div class="bbbee-point">
+                                <span class="bbbee-point-icon"><i class="fas fa-users"></i></span>
+                                <div class="bbbee-point-text">
+                                    <h4 class="font-bold text-xl mb-1 text-white">Youth & Community Empowerment:</h4>
+                                    <p>The showcase directly invests in **youth development**, skills transfer, and economic opportunities for underserved communities across South Africa.</p>
+                                </div>
+                            </div>
+                            <div class="bbbee-point">
+                                <span class="bbbee-point-icon"><i class="fas fa-chart-line"></i></span>
+                                <div class="bbbee-point-text">
+                                    <h4 class="font-bold text-xl mb-1 text-white">Measurable Socio-Economic Impact:</h4>
+                                    <p>Beyond B-BBEE points, this partnership delivers **quantifiable social returns**, enhancing King Price's™ corporate social responsibility profile.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card p-8 mt-8">
+                        <h3 class="text-2xl font-bold dashboard-primary-text mb-4">Strategic Benefits for King Price™:</h3>
+                        <ul class="list-none text-left space-y-3 text-muted">
+                            <li class="flex items-start"><span class="list-item-icon">⭐</span> **Maximized B-BBEE Score:** Achieve optimal points under the Procurement, Enterprise Development, and Socio-Economic Development elements.</li>
+                            <li class="flex items-start"><span class="list-item-icon">🤝</span> **Authentic Social Investment:** Demonstrate genuine commitment to transformation, resonating deeply with South African consumers and stakeholders.</li>
+                            <li class="flex items-start"><span class="list-item-icon">🚀</span> **Market Differentiation:** Stand out as a leader in both insurance innovation and social responsibility, attracting a broader customer base.</li>
+                            <li class="flex items-start"><span class="list-item-icon">🌐</span> **Expanded Reach:** Gain unparalleled access and positive association within diverse communities, particularly in rural and township areas.</li>
+                        </ul>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+
+        <!-- Footer -->
+        <footer class="py-8 px-6 md:px-12 text-center bg-kp-light-gray text-kp-medium-gray border-t border-kp-border-light">
+            <div class="flex flex-wrap justify-center mb-4 text-sm">
+                <a href="https://footer.global.repo.seedwave.faa.zone/privacy.html" class="hover:text-kp-red-royal transition-colors mx-2 my-1" data-i18n="footerPrivacy">Privacy</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/terms.html" class="hover:text-kp-red-royal transition-colors mx-2 my-1" data-i18n="footerTerms">Terms</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/contact.html" class="hover:text-kp-red-royal transition-colors mx-2 my-1" data-i18n="footerContact">Contact</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/copyright.html" class="hover:text-kp-red-royal transition-colors mx-2 my-1" data-i18n="footerCopyrightLink">Copyright</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/developers.html" class="hover:text-kp-red-royal transition-colors mx-2 my-1" data-i18n="footerDevelopers">Developers</a>
+                <a href="https://footer.global.repo.seedwave.zone/vaultmesh.html" class="hover:text-kp-red-royal transition-colors mx-2 my-1" data-i18n="footerVaultMeshLink">VaultMesh</a>
+                <a href="https://faa.zone/" class="hover:text-kp-red-royal transition-colors mx-2 my-1">FAA.Zone™</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/about.html" class="hover:text-kp-red-royal transition-colors mx-2 my-1" data-i18n="footerAboutLink">About</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/accessibility.html" class="hover:text-kp-red-royal transition-colors mx-2 my-1" data-i18n="footerAccessibility">Accessibility</a>
+            </div>
+            <span data-i18n="footerCopyright">&copy; 2025 FAA&trade; Treaty System&trade;. All Rights Reserved.</span> <span data-i18n="footerPoweredBy">Powered by <span class="emoji">🦍</span> glyphs + Vault API. Synced with Seedwave&trade;.</span>
+        </footer>
+
+        <script>
+            const kingPricePalette = {
+                primaryRed: '#B10F1F',    // Royal Red
+                primaryRedRgb: '177, 15, 31', // Added for rgba usage
+                highlightRed: '#D6001C',  // Highlight Red
+                shadowRed: '#522B39',     // Shadow Red
+                goldAccent: '#FFD700',    // Gold Accent
+                white: '#FFFFFF',
+                lightGray: '#F8F8F8',
+                mediumGray: '#555555',
+                darkGray: '#333333'
+            };
+
+            // --- Rhythmic Canvas Glyph Drawing Logic ---
+            const canvas = document.getElementById('rhythmicCanvas');
+            const ctx = canvas.getContext('2d');
+            let animationFrameId;
+
+            // Default canvas parameters - Adjusted for a strong, clear, Apple-like pulse
+            let defaultNumLines = 120; // Increased lines for a very dense, more impactful visual
+            let defaultLineFrequency = 0.006; // Wider, more prominent waves, slightly less than before to prevent overlap
+            let defaultLineSpeed = 0.002; // Slower movement for a calmer, more deliberate flow
+            let defaultLineAmplitudeFactor = 0.4; // Reduced amplitude to ensure waves fit vertically
+
+            let currentNumLines = defaultNumLines;
+            let currentLineFrequency = defaultLineFrequency;
+            let currentLineSpeed = defaultLineSpeed;
+            let currentLineAmplitudeFactor = defaultLineAmplitudeFactor;
+
+            // Set canvas size for responsiveness
+            function resizeCanvas() {
+                canvas.width = canvas.offsetWidth;
+                canvas.height = canvas.offsetHeight;
+                if (canvas.width < 300) canvas.width = 300;
+                if (canvas.height < 150) canvas.height = 150;
+                lineAmplitude = canvas.height * currentLineAmplitudeFactor;
+            }
+
+            let time = 0;
+            let lineAmplitude; // This will be set by resizeCanvas initially
+
+            function drawGlyph() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                const overlayAlpha = 0;
+                ctx.fillStyle = `rgba(255, 255, 255, ${overlayAlpha})`; 
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                time += currentLineSpeed;
+
+                const centerX = canvas.width / 2;
+                const noodleTargetWidthRatio = 0.6;
+                const noodleWidth = canvas.width * noodleTargetWidthRatio;
+                const noodleStartX = centerX - (noodleWidth / 2);
+                const noodleEndX = centerX + (noodleWidth / 2);
+
+                for (let i = 0; i < currentNumLines; i++) {
+                    ctx.beginPath();
+                    const offset = i * (Math.PI * 2 / currentNumLines) * 2; 
+                    
+                    // Dynamic hue based on time and line index, mapped to King Price reds/golds
+                    const baseHue = (time * 50 + i * 2.5);
+                    let colorHue = (baseHue % 360 + 360) % 360; // Ensure positive hue
+
+                    // Map hue to a range that favors reds and golds
+                    if (colorHue > 60 && colorHue < 200) { // If it's green-blue, shift towards red/yellow
+                        colorHue = (colorHue % 60) + (colorHue < 120 ? 0 : 300); // Map to 0-60 or 300-360
+                    } else if (colorHue >= 200 && colorHue < 300) { // If it's blue-magenta, shift towards red/purple
+                        colorHue = (colorHue % 60) + 270; // Map to 270-330
+                    }
+                    
+                    const saturation = 100;
+                    const lightness = 50 + Math.cos(time * 0.1 + i * 0.01) * 10;
+                    const opacity = 1.0;
+                    ctx.strokeStyle = `hsla(${colorHue}, ${saturation}%, ${lightness}%, ${opacity})`;
+
+                    ctx.lineWidth = 2.0;
+
+                    for (let x = 0; x < canvas.width; x += 5) {
+                        let effectiveAmplitudeScale = 0;
+
+                        if (x >= noodleStartX && x <= noodleEndX) {
+                            const normalizedNoodleX = (x - noodleStartX) / noodleWidth;
+                            effectiveAmplitudeScale = Math.pow(Math.cos((normalizedNoodleX - 0.5) * Math.PI), 2.0);
+                        }
+
+                        const y = Math.sin(x * currentLineFrequency + time + offset) * (lineAmplitude * (0.9 + Math.sin(time * 0.03 + i * 0.015) * 0.1) * effectiveAmplitudeScale)
+                                 + Math.sin(x * (currentLineFrequency * 2.5) + time * 0.8 + offset * 0.7) * (lineAmplitude * 0.15 * effectiveAmplitudeScale)
+                                 + Math.cos(x * (currentLineFrequency * 1.2) + time * 0.6 + offset * 1.3) * (lineAmplitude * 0.1 * effectiveAmplitudeScale)
+                                 + Math.sin(x * (currentLineFrequency * 3.0) + time * 1.0 + offset * 0.4) * (lineAmplitude * 0.08 * effectiveAmplitudeScale)
+                                 + canvas.height / 2;
+                        if (x === 0) {
+                            ctx.moveTo(x, y);
+                        } else {
+                            ctx.lineTo(x, y);
+                        }
+                    }
+                    ctx.stroke();
+                }
+
+                animationFrameId = requestAnimationFrame(drawGlyph);
+            }
+
+            window.addEventListener('load', () => {
+                resizeCanvas();
+                drawGlyph();
+                loadDayNightPreference();
+            });
+            window.addEventListener('resize', resizeCanvas);
+
+
+            // --- Day/Night Toggle Logic ---
+            const dayNightToggle = document.getElementById('dayNightToggle');
+            if (dayNightToggle) {
+                dayNightToggle.addEventListener('click', () => {
+                    const isDarkMode = !document.body.classList.contains('dark-mode');
+                    document.body.classList.toggle('dark-mode');
+                    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+                    dayNightToggle.innerHTML = isDarkMode ? '<i class="fas fa-sun"></i> Day/Night' : '<i class="fas fa-moon"></i> Day/Night';
+                    // Re-render charts to apply new theme colors
+                    if (activeSectionId === 'value-giving-loop') {
+                        createValueLoopChart();
+                    } else if (activeSectionId === 'financial-projections') {
+                        createRevenueProjectionChart();
+                        createRevenueBreakdownChart();
+                    }
+                });
+            }
+
+            function loadDayNightPreference() {
+                const savedTheme = localStorage.getItem('theme');
+                const dayNightToggle = document.getElementById('dayNightToggle');
+                const isDarkMode = savedTheme === 'dark';
+
+                if (isDarkMode) {
+                    document.body.classList.add('dark-mode');
+                    if (dayNightToggle) dayNightToggle.innerHTML = '<i class="fas fa-sun"></i> Day/Night';
+                } else {
+                    document.body.classList.remove('dark-mode');
+                    if (dayNightToggle) dayNightToggle.innerHTML = '<i class="fas fa-moon"></i> Day/Night';
+                }
+            }
+
+            // Hamburger menu toggle for mobile
+            document.addEventListener('DOMContentLoaded', () => {
+                const mainNav = document.querySelector('.main-nav');
+                const hamburgerMenu = document.querySelector('.hamburger-menu');
+
+                if (hamburgerMenu && mainNav) {
+                    hamburgerMenu.addEventListener('click', () => {
+                        mainNav.classList.toggle('active');
+                    });
+                }
+
+                // Close mobile nav on link click
+                document.querySelectorAll('.main-nav .nav-list a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        if (mainNav.classList.contains('active')) {
+                            mainNav.classList.remove('active');
+                        }
+                    });
+                });
+
+                // Smooth scrolling for internal links (kept for any potential future internal links)
+                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                    anchor.addEventListener('click', function (e) {
+                        const href = this.getAttribute('href');
+                        if (href && href.length > 1) {
+                            e.preventDefault(); // Prevent default anchor behavior
+                            const targetElement = document.querySelector(href);
+                            if (targetElement) {
+                                targetElement.scrollIntoView({
+                                    behavior: 'smooth'
+                                });
+                            }
+                        }
+                    });
+                });
+
+                // Attach event listeners to sidebar navigation items
+                document.querySelectorAll('.sidebar-nav-item').forEach(item => {
+                    item.addEventListener('click', function(e) {
+                        // Check if the link is an internal section link (has data-section-id)
+                        if (this.hasAttribute('data-section-id')) {
+                            e.preventDefault(); // Prevent default anchor behavior only for internal links
+                            const sectionId = this.getAttribute('data-section-id');
+                            if (sectionId) {
+                                showSection(sectionId);
+                            }
+                        }
+                        // For external links (without data-section-id), allow default behavior
+                    });
+                });
+            });
+
+            // --- Chart Data (adapted for King Price colors) ---
+            let sponsorshipData;
+            let revenueProjectionData;
+            let revenueBreakdownData;
+
+            // --- Chart Creation Functions ---
+            let valueLoopChartInstance = null;
+            const createValueLoopChart = () => {
+                const ctx = document.getElementById('valueLoopChart');
+                if (!ctx) return;
+
+                if (valueLoopChartInstance) {
+                    valueLoopChartInstance.destroy();
+                }
+
+                valueLoopChartInstance = new Chart(ctx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: sponsorshipData.labels,
+                        datasets: [
+                            {
+                                label: 'Investment (ZAR)',
+                                data: sponsorshipData.investment,
+                                backgroundColor: kingPricePalette.primaryRed,
+                                yAxisID: 'y',
+                            },
+                            {
+                                label: 'Meals Donated',
+                                data: sponsorshipData.meals,
+                                backgroundColor: kingPricePalette.highlightRed,
+                                yAxisID: 'y1',
+                            }
+                        ]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        responsive: true,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Sponsorship Investment vs. Social Impact',
+                                color: document.body.classList.contains('dark-mode') ? kingPricePalette.white : kingPricePalette.darkGray
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            if (context.dataset.yAxisID === 'y') {
+                                                label += new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR' }).format(context.parsed.y);
+                                            } else {
+                                                label += context.parsed.y.toLocaleString() + ' meals';
+                                            }
+                                        }
+                                        return label;
+                                    },
+                                    title: function(tooltipItems) {
+                                        const item = tooltipItems[0];
+                                        let label = item.chart.data.labels[item.dataIndex];
+                                        if (Array.isArray(label)) {
+                                            return label.join(' ');
+                                        } else {
+                                            return label;
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                                title: {
+                                    display: true,
+                                    text: 'Investment (ZAR)',
+                                    color: document.body.classList.contains('dark-mode') ? kingPricePalette.white : kingPricePalette.darkGray
+                                },
+                                ticks: {
+                                    callback: function(value, index, values) {
+                                        return 'R' + value / 1000000 + 'M';
+                                    },
+                                    color: document.body.classList.contains('dark-mode') ? kingPricePalette.mutedTextDark : kingPricePalette.mediumGray
+                                }
+                            },
+                            y1: {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                title: {
+                                    display: true,
+                                    text: 'Meals Donated',
+                                    color: document.body.classList.contains('dark-mode') ? kingPricePalette.white : kingPricePalette.darkGray
+                                },
+                                grid: {
+                                    drawOnChartArea: false,
+                                },
+                                ticks: {
+                                    callback: function(value, index, values) {
+                                        return value / 1000 + 'k';
+                                    },
+                                    color: document.body.classList.contains('dark-mode') ? kingPricePalette.mutedTextDark : kingPricePalette.mediumGray
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    color: document.body.classList.contains('dark-mode') ? kingPricePalette.mutedTextDark : kingPricePalette.mediumGray
+                                }
+                            }
+                        }
+                    }
+                });
+            };
+            
+            let revenueProjectionChartInstance = null;
+            const createRevenueProjectionChart = () => {
+                const ctx = document.getElementById('revenueProjectionChart');
+                if (!ctx) return;
+
+                if (revenueProjectionChartInstance) {
+                    revenueProjectionChartInstance.destroy();
+                }
+
+                revenueProjectionChartInstance = new Chart(ctx.getContext('2d'), {
+                    type: 'line',
+                    data: revenueProjectionData,
+                    options: {
+                        maintainAspectRatio: false,
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: { 
+                                    display: true, 
+                                    text: 'Revenue in Millions (ZAR)',
+                                    color: document.body.classList.contains('dark-mode') ? kingPricePalette.white : kingPricePalette.darkGray
+                                },
+                                ticks: {
+                                    color: document.body.classList.contains('dark-mode') ? kingPricePalette.mutedTextDark : kingPricePalette.mediumGray
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    color: document.body.classList.contains('dark-mode') ? kingPricePalette.mutedTextDark : kingPricePalette.mediumGray
+                                }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    title: function(tooltipItems) {
+                                        const item = tooltipItems[0];
+                                        let label = item.chart.data.labels[item.dataIndex];
+                                        if (Array.isArray(label)) {
+                                            return label.join(' ');
+                                        } else {
+                                            return label;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            };
+
+            let revenueBreakdownChartInstance = null;
+            const createRevenueBreakdownChart = () => {
+                const ctx = document.getElementById('revenueBreakdownChart');
+                if (!ctx) return;
+
+                if (revenueBreakdownChartInstance) {
+                    revenueBreakdownChartInstance.destroy();
+                }
+
+                revenueBreakdownChartInstance = new Chart(ctx.getContext('2d'), {
+                    type: 'doughnut',
+                    data: revenueBreakdownData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    color: document.body.classList.contains('dark-mode') ? kingPricePalette.white : kingPricePalette.darkGray
+                                }
+                            },
+                            title: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    title: function(tooltipItems) {
+                                        const item = tooltipItems[0];
+                                        let label = item.chart.data.labels[item.dataIndex];
+                                        if (Array.isArray(label)) {
+                                            return label.join(' ');
+                                        } else {
+                                            return label;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                });
+            };
+            
+            // --- Dashboard & Section Management ---
+            let activeSectionId = 'overview-king-price'; // Default visible section
+
+            function showSection(sectionId) {
+                // Hide all content sections
+                document.querySelectorAll('main .content-section').forEach(section => {
+                    section.classList.add('hidden');
+                });
+
+                // Show the selected section
+                const targetSection = document.getElementById(sectionId);
+                if (targetSection) {
+                    targetSection.classList.remove('hidden');
+                    activeSectionId = sectionId; // Update active section tracking
+                }
+
+                // Update navigation link active state
+                document.querySelectorAll('nav a').forEach(link => {
+                    link.classList.remove('active');
+                    // Use data-section-id for comparison
+                    if (link.getAttribute('data-section-id') === sectionId) {
+                        link.classList.add('active');
+                    }
+                });
+
+                // Specific handling for maps section to load Leaflet
+                if (sectionId === 'maps') { // This section is not in the provided HTML, but keeping the logic in case it's added later
+                    initLeafletMap();
+                }
+                // Re-render charts when their sections become visible
+                if (sectionId === 'value-giving-loop') {
+                    createValueLoopChart();
+                } else if (sectionId === 'financial-projections') {
+                    createRevenueProjectionChart();
+                    createRevenueBreakdownChart();
+                }
+            }
+
+            // --- Maps Initialization Functions ---
+            let leafletMapInstance = null; // To store Leaflet map instance
+
+            function initLeafletMap() {
+                const mapContainer = document.getElementById("leaflet-map-container");
+                if (!mapContainer || leafletMapInstance) return;
+
+                mapContainer.style.height = '400px'; 
+                mapContainer.style.width = '100%';
+
+                leafletMapInstance = L.map(mapContainer).setView([-25.7479, 28.2293], 13); // Centered on Pretoria, SA
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(leafletMapInstance);
+                L.marker([-25.7479, 28.2293]).addTo(leafletMapInstance)
+                    .bindPopup("<b>King Price HQ</b><br>Pretoria, South Africa.").openPopup();
+            }
+
+            // --- Package Selection for Checkout ---
+            function selectPackage(packageName, price) {
+                console.log(`Selected package: ${packageName} for R${price.toLocaleString()} for payment.`);
+                
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-kp-red-royal text-white p-6 rounded-lg shadow-lg z-50 text-center';
+                messageDiv.innerHTML = `
+                    <p class="text-2xl font-bold mb-4">Package Selected!</p>
+                    <p class="text-lg mb-4">You've selected the ${packageName} Package.</p>
+                    <p class="text-xl font-bold text-kp-gold-accent">Proceeding to Payment for R${price.toLocaleString()}.</p>
+                    <button class="mt-6 bg-kp-gold-accent text-kp-red-royal font-bold py-2 px-4 rounded-md" onclick="this.parentNode.remove()">OK</button>
+                `;
+                document.body.appendChild(messageDiv);
+            }
+
+
+            // --- On Load Initializations ---
+            document.addEventListener('DOMContentLoaded', () => {
+                // Initialize chart data
+                sponsorshipData = {
+                    labels: ['Bronze', 'Silver', 'Gold', 'National'],
+                    investment: [500000, 1500000, 2500000, 5000000],
+                    meals: [5000, 15000, 25000, 50000]
+                };
+
+                revenueProjectionData = {
+                    labels: ['Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5'],
+                    datasets: [{
+                        label: 'Projected Revenue (in Millions ZAR)',
+                        data: [25, 60, 120, 250, 406],
+                        fill: true,
+                        backgroundColor: 'rgba(177, 15, 31, 0.2)',
+                        borderColor: 'rgba(177, 15, 31, 1)',
+                        tension: 0.4
+                    }]
+                };
+                
+                revenueBreakdownData = {
+                    labels: ['Sponsorships', 'Merchandise', 'Licensing', 'Ticket Sales', 'Other'],
+                    datasets: [{
+                        label: 'Revenue Breakdown',
+                        data: [40, 30, 15, 10, 5],
+                        backgroundColor: [
+                            kingPricePalette.primaryRed,
+                            kingPricePalette.shadowRed,
+                            kingPricePalette.goldAccent,
+                            kingPricePalette.highlightRed,
+                            kingPricePalette.mediumGray
+                        ],
+                        hoverOffset: 4
+                    }]
+                };
+
+                // Set initial active section
+                showSection(activeSectionId);
+            });
+        </script>
+    </body>
+</html>

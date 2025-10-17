@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fruitful Global | SecureSign™ NDA Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* Fruitful Global Color Palette and Base Styles */
+    :root {
+        --primary-color: #0071e3; /* Apple Blue */
+        --secondary-color: #30d158; /* Apple Green */
+        --text-color-light: #f5f5f7; /* Light text on dark backgrounds */
+        --text-color-dark: #1d1d1f; /* Dark text on light backgrounds */
+        --bg-color-dark: #1a1a1c; /* Deep black/dark grey */
+        --card-bg-dark: #2a2a2e; /* Darker grey for card backgrounds */
+        --border-color-dark: #3a3a3e; /* Subtle dark border */
+        --accent-gold: #B8860B; /* Corporate gold accent */
+        --status-error: #ef4444; /* Red for security notes */
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      background-color: var(--bg-color-dark); /* Dark background */
+      color: var(--text-color-light); /* Light text */
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    .header-section {
+      background-color: var(--card-bg-dark); /* Darker header background */
+      color: var(--text-color-light);
+      padding: 2.5rem 2rem;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      border-bottom: 1px solid var(--border-color-dark);
+    }
+    .header-section h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      color: #FFFFFF; /* Fruitful part in white */
+      line-height: 1;
+    }
+    .header-section h1 span {
+        color: var(--accent-gold); /* Gold for "SecureSign™" */
+        font-size: 0.9em;
+        letter-spacing: -0.02em;
+    }
+    .header-section p {
+      font-size: 1.1rem;
+      font-weight: 400;
+      opacity: 0.9;
+    }
+    .header-section .cta-group a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.8rem 1.8rem;
+      font-weight: 700;
+      font-size: 1rem;
+      border-radius: 25px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+    .header-section .cta-group .btn-primary { /* Changed to btn-primary for standard action */
+      background-color: var(--primary-color);
+      color: white;
+    }
+    .header-section .cta-group .btn-primary:hover {
+      background-color: #0066cc;
+      transform: translateY(-2px) scale(1.02);
+    }
+    .header-section .cta-group .btn-secondary { /* Changed to btn-secondary for secondary action */
+      background-color: var(--secondary-color);
+      color: var(--bg-color-dark);
+    }
+    .header-section .cta-group .btn-secondary:hover {
+      background-color: #28a745;
+      transform: translateY(-2px) scale(1.02);
+    }
+
+    .main-content-area {
+      flex-grow: 1;
+      padding: 2rem;
+    }
+    .form-section-panel {
+      background-color: var(--card-bg-dark);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      border: 1px solid var(--border-color-dark);
+      margin-bottom: 2rem;
+    }
+    .form-section-panel h3 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: var(--accent-gold);
+      border-bottom: 1px solid var(--border-color-dark);
+      padding-bottom: 0.75rem;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--text-color-light);
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color-dark);
+      background-color: #3a3a3e;
+      color: var(--text-color-light);
+      font-size: 1rem;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.3);
+    }
+    .file-input-container {
+      border: 2px dashed var(--border-color-dark);
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+      position: relative;
+      overflow: hidden;
+      background-color: #3a3a3e;
+    }
+    .file-input-container:hover, .file-input-container.drag-over {
+      border-color: var(--primary-color);
+      background-color: rgba(0, 113, 227, 0.1);
+    }
+    .file-input-container.file-selected {
+        border-color: var(--secondary-color); /* Green border when file is selected */
+        background-color: rgba(48, 209, 88, 0.1); /* Light green background when file is selected */
+    }
+    .file-input-container p {
+        color: #b0b0b0;
+        font-size: 0.95rem;
+        margin: 0;
+    }
+    .file-input-container input[type="file"] {
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+    .file-name-display {
+        font-size: 0.8rem;
+        color: var(--secondary-color);
+        margin-top: 0.5rem;
+        word-break: break-all;
+    }
+    .submit-button {
+      width: 100%;
+      padding: 1rem;
+      background-color: var(--primary-color);
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 113, 227, 0.3);
+    }
+    .submit-button:hover {
+      background-color: #0066cc;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 113, 227, 0.4);
+    }
+    .terms-checkbox {
+        display: flex;
+        align-items: flex-start;
+        margin-top: 1.5rem;
+    }
+    .terms-checkbox label {
+      color: var(--text-color-light);
+      font-size: 0.95rem;
+      line-height: 1.4;
+      margin-top: 0; /* Override default label margin-top */
+      margin-bottom: 0; /* Override default label margin-bottom */
+    }
+    .terms-checkbox input[type="checkbox"] {
+      width: 1.25rem;
+      height: 1.25rem;
+      margin-right: 0.5rem;
+      background-color: #3a3a3e;
+      border: 1px solid var(--border-color-dark);
+      border-radius: 0.25rem;
+      vertical-align: middle;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      cursor: pointer;
+      flex-shrink: 0; /* Prevent checkbox from shrinking */
+    }
+    .terms-checkbox input[type="checkbox"]:checked {
+      background-color: var(--secondary-color);
+      border-color: var(--secondary-color);
+    }
+    .terms-checkbox input[type="checkbox"]:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(48, 209, 88, 0.4);
+    }
+
+    footer {
+      background-color: var(--card-bg-dark);
+      color: #888;
+      padding: 1.5rem;
+      text-align: center;
+      font-size: 0.8rem;
+      line-height: 1.5;
+      border-top: 1px solid var(--border-color-dark);
+    }
+    footer span {
+      display: block;
+      margin-top: 0.5rem;
+    }
+    footer .penalty-text {
+      font-weight: 600;
+      color: var(--status-error);
+    }
+
+    /* Modal Styling */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.75);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .modal-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    .modal-content {
+      background: var(--card-bg-dark);
+      color: var(--text-color-light);
+      padding: 2.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      text-align: center;
+      max-width: 90%;
+      width: 450px;
+      transform: translateY(-20px);
+      transition: transform 0.3s ease;
+      border: 1px solid var(--border-color-dark);
+    }
+    .modal-overlay.show .modal-content {
+      transform: translateY(0);
+    }
+    .modal-content h3 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--secondary-color);
+      margin-bottom: 1rem;
+    }
+    .modal-content p {
+      color: #b0b0b0;
+      margin-bottom: 1.5rem;
+    }
+    .modal-content button {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      font-weight: 600;
+      border-radius: 8px;
+      transition: background-color 0.2s ease;
+    }
+    .modal-content button:hover {
+      background-color: #0066cc;
+    }
+
+    /* API Key Index Section */
+    .api-key-index-panel {
+        background-color: var(--card-bg-dark);
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        border: 1px solid var(--border-color-dark);
+        margin-top: 2rem;
+    }
+    .api-key-index-panel h3 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--accent-gold);
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid var(--border-color-dark);
+        padding-bottom: 0.75rem;
+        text-align: left;
+    }
+    .api-key-index-panel table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1.5rem;
+        text-align: left;
+    }
+    .api-key-index-panel th, .api-key-index-panel td {
+        padding: 0.9rem;
+        border-bottom: 1px solid var(--border-color-dark);
+    }
+    .api-key-index-panel th {
+        background-color: #1a1a1a;
+        color: var(--accent-gold);
+        font-weight: 600;
+    }
+    .api-key-index-panel tr:hover {
+        background-color: #3a3a3e;
+    }
+    .api-key-index-panel .api-key-value {
+        font-family: 'monospace';
+        font-size: 0.88rem;
+        color: #b0b0b0;
+        word-break: break-all;
+    }
+    .api-key-index-panel .api-key-location {
+        color: #888;
+        font-size: 0.8rem;
+    }
+
+    .action-button {
+        background-color: var(--secondary-color);
+        color: var(--bg-color-dark);
+        padding: 0.8rem 1.8rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 8px rgba(48, 209, 88, 0.2);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .action-button:hover {
+        background-color: #28a745;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(48, 209, 88, 0.4);
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .header-section {
+            padding: 1.5rem 1rem;
+        }
+        .header-section h1 {
+            font-size: 2rem;
+        }
+        .header-section p {
+            font-size: 0.9rem;
+        }
+        .header-section .cta-group {
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .main-content-area {
+            padding: 1rem;
+        }
+        .form-section-panel {
+            padding: 1.5rem;
+        }
+        .form-section-panel h3 {
+            font-size: 1.5rem;
+        }
+        label {
+            font-size: 0.9rem;
+        }
+        input, select, textarea {
+            padding: 0.6rem;
+            font-size: 0.9rem;
+        }
+        .file-input-container {
+            padding: 1rem;
+        }
+        .file-input-container p {
+            font-size: 0.85rem;
+        }
+        .submit-button {
+            padding: 0.8rem 1.2rem;
+            font-size: 1rem;
+        }
+        .terms-checkbox label {
+            font-size: 0.85rem;
+        }
+        .api-key-index-panel h3 {
+            font-size: 1.5rem;
+        }
+        .api-key-index-panel table th, .api-key-index-panel table td {
+            padding: 0.6rem;
+            font-size: 0.8rem;
+        }
+        .api-key-index-panel .api-key-value {
+            font-size: 0.75rem;
+        }
+        .api-key-index-panel .security-note {
+            font-size: 0.8rem;
+        }
+        .modal-content {
+            padding: 1.5rem;
+            width: 95%;
+        }
+        .modal-content h3 {
+            font-size: 1.8rem;
+        }
+        .modal-content p {
+            font-size: 1rem;
+        }
+    }
+  </style>
+</head>
+<body class="antialiased">
+
+  <header class="header-section">
+    <h1 class="font-extrabold">Fruitful Global | <span>SecureSign™</span></h1>
+    <p class="font-light">Smart Legal Signature Engine for Fruitful Global</p>
+    <div class="mt-8 flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 cta-group">
+      <a href="#start-nda" class="btn-primary">
+        Start FAA NDA
+      </a>
+      <a href="/legal/fruitful_holdings_nda.pdf" download="Fruitful_Holdings_NDA.pdf" id="requestNdaBtn" class="btn-secondary">
+        Request Fruitful Holdings NDA
+      </a>
+    </div>
+  </header>
+
+  <div class="main-content-area container mx-auto px-4 py-8 flex-grow">
+    <div id="start-nda" class="form-section-panel max-w-4xl mx-auto my-8">
+      <h2 class="text-3xl font-bold mb-6 text-center" style="color: var(--text-color-light);">FAA™ NDA Submission Portal</h2>
+      <p class="text-lg mb-8 text-center" style="color: #b0b0b0;">Please provide the following details to securely log your NDA under FAA™’s Atom-Level Verification™ Protocol. All fields are mandatory.</p>
+
+      <form id="ndaForm" action="/submit-nda" method="POST" enctype="multipart/form-data" class="space-y-8">
+
+        <div class="p-6 rounded-lg shadow-inner form-section-panel" style="background-color: #1a1a1a; border-color: #333;">
+          <h3 class="text-2xl font-semibold mb-6 border-b pb-3" style="color: var(--accent-gold); border-color: var(--border-color-dark);">1. Personal Details</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="firstName">First Name(s)</label>
+              <input type="text" id="firstName" name="firstName" required>
+            </div>
+            <div>
+              <label for="surname">Surname</label>
+              <input type="text" id="surname" name="surname" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-lg shadow-inner form-section-panel" style="background-color: #1a1a1a; border-color: #333;">
+          <h3 class="text-2xl font-semibold mb-6 border-b pb-3" style="color: var(--accent-gold); border-color: var(--border-color-dark);">2. Identification Details</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="idType">ID Type</label>
+              <select id="idType" name="idType" required>
+                <option value="">Select ID Type</option>
+                <option value="national_id">National ID</option>
+                <option value="passport">Passport</option>
+              </select>
+            </div>
+            <div>
+              <label for="idNumber">ID Number</label>
+              <input type="text" id="idNumber" name="idNumber" required>
+            </div>
+            <div>
+              <label for="issuingCountry">Issuing Country (for Passport)</label>
+              <input type="text" id="issuingCountry" name="issuingCountry">
+            </div>
+            <div>
+              <label for="nationality">Nationality</label>
+              <input type="text" id="nationality" name="nationality" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-lg shadow-inner form-section-panel" style="background-color: #1a1a1a; border-color: #333;">
+          <h3 class="text-2xl font-semibold mb-6 border-b pb-3" style="color: var(--accent-gold); border-color: var(--border-color-dark);">3. Contact & Domicilium Address</h3>
+          <div class="grid grid-cols-1 gap-6">
+            <div>
+              <label for="addressLine1">Street Address Line 1</label>
+              <input type="text" id="addressLine1" name="addressLine1" required>
+            </div>
+            <div>
+              <label for="addressLine2">Street Address Line 2 (Optional)</label>
+              <input type="text" id="addressLine2" name="addressLine2">
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label for="city">City/Town</label>
+                <input type="text" id="city" name="city" required>
+              </div>
+              <div>
+                <label for="provinceState">Province/State</label>
+                <input type="text" id="provinceState" name="provinceState" required>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label for="zipCode">Zip/Postal Code</label>
+                <input type="text" id="zipCode" name="zipCode" required>
+              </div>
+              <div>
+                <label for="country">Country</label>
+                <select id="country" name="country" required>
+                  <option value="">Select Country</option>
+                  <option value="ZA">South Africa</option>
+                  <option value="US">United States</option>
+                  <option value="GB">United Kingdom</option>
+                  <option value="CN">China</option>
+                  <option value="AU">Australia</option>
+                  <option value="DE">Germany</option>
+                  <option value="IN">India</option>
+                </select>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <label for="telNumber">Telephone Number (Landline)</label>
+                <input type="tel" id="telNumber" name="telNumber">
+              </div>
+              <div>
+                <label for="cellNumber">Cell Number</label>
+                <input type="tel" id="cellNumber" name="cellNumber" required>
+              </div>
+              <div>
+                <label for="additionalMobile">Additional Mobile (Optional)</label>
+                <input type="tel" id="additionalMobile" name="additionalMobile">
+              </div>
+            </div>
+            <div>
+              <label for="email">Email Address</label>
+              <input type="email" id="email" name="email" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-lg shadow-inner form-section-panel" style="background-color: #1a1a1a; border-color: #333;">
+          <h3 class="text-2xl font-semibold mb-6 border-b pb-3" style="color: var(--accent-gold); border-color: var(--border-color-dark);">4. Employment Details</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="employment">Employer/Company Name</label>
+              <input type="text" id="employment" name="employment" required>
+            </div>
+            <div>
+              <label for="position">Position/Title</label>
+              <input type="text" id="position" name="position" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-lg shadow-inner form-section-panel" style="background-color: #1a1a1a; border-color: #333;">
+          <h3 class="text-2xl font-semibold mb-6 border-b pb-3" style="color: var(--accent-gold); border-color: var(--border-color-dark);">5. Sector Selection</h3>
+          <p class="text-sm mb-4" style="color: #b0b0b0;">Please select **up to 5** sectors that are most relevant to your activities.</p>
+          <div>
+            <label for="sectors">Relevant Sectors</label>
+            <select id="sectors" name="sectors" multiple required class="h-48 overflow-y-auto"></select>
+            <p id="sectorHelpText" class="text-xs text-red-500 mt-1 hidden">You can select a maximum of 5 sectors.</p>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-lg shadow-inner form-section-panel" style="background-color: #1a1a1a; border-color: #333;">
+          <h3 class="text-2xl font-semibold mb-6 border-b pb-3" style="color: var(--accent-gold); border-color: var(--border-color-dark);">6. Metrics & References</h3>
+          <div class="grid grid-cols-1 gap-6">
+            <div>
+              <label for="metrics">Key Metrics You've Worked With</label>
+              <textarea id="metrics" name="metrics" rows="4" required placeholder="e.g., Conversion Rate, User Engagement, ROI, Throughput, Efficiency Gains, Specific KPIs..."></textarea>
+              <p class="text-xs mt-1" style="color: #888;">Please describe relevant metrics and your experience with them.</p>
+            </div>
+            <div>
+              <label for="urlsReferences">Relevant URLs / Online References</label>
+              <textarea id="urlsReferences" name="urlsReferences" rows="4" required placeholder="e.g., GitHub repositories, LinkedIn profiles, portfolio websites, project URLs, academic papers, online articles..."></textarea>
+              <p class="text-xs mt-1" style="color: #888;">Provide links to your work, profiles, or any other relevant online references. Please separate multiple entries with a new line or comma.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-lg shadow-inner form-section-panel" style="background-color: #1a1a1a; border-color: #333;">
+          <h3 class="text-2xl font-semibold mb-6 border-b pb-3" style="color: var(--accent-gold); border-color: var(--border-color-dark);">7. Supporting Legal Documentation (Uploads)</h3>
+          <p class="text-sm mb-6" style="color: #b0b0b0;">Please upload the required documents by clicking or dragging files into the designated areas. Accepted formats: PDF, JPG, PNG.</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="ndaFile">Signed NDA Document (PDF)</label>
+              <div class="file-input-container relative">
+                <p class="text-gray-500 text-sm">Drag & drop your file here, or click to browse</p>
+                <input type="file" id="ndaFile" name="ndaFile" accept="application/pdf" required>
+              </div>
+              <p id="ndaFileName" class="text-xs text-gray-500 mt-1"></p>
+            </div>
+            <div>
+              <label for="ciproDocs">CIPRO Documents (e.g., Company Registration Certificate)</label>
+              <div class="file-input-container relative">
+                <p class="text-gray-500 text-sm">Drag & drop your file here, or click to browse</p>
+                <input type="file" id="ciproDocs" name="ciproDocs" accept="application/pdf,image/*" required>
+              </div>
+              <p id="ciproDocsName" class="text-xs text-gray-500 mt-1"></p>
+            </div>
+            <div>
+              <label for="directorsId">Directors ID (if applicable)</label>
+              <div class="file-input-container relative">
+                <p class="text-gray-500 text-sm">Drag & drop your file here, or click to browse</p>
+                <input type="file" id="directorsId" name="directorsId" accept="application/pdf,image/*">
+              </div>
+              <p id="directorsIdName" class="text-xs text-gray-500 mt-1"></p>
+            </div>
+            <div>
+              <label for="vcat">VCAT (Verification of Company Address/Taxation)</label>
+              <div class="file-input-container relative">
+                <p class="text-gray-500 text-sm">Drag & drop your file here, or click to browse</p>
+                <input type="file" id="vcat" name="vcat" accept="application/pdf,image/*" required>
+              </div>
+              <p id="vcatName" class="text-xs text-gray-500 mt-1"></p>
+            </div>
+            <div>
+              <label for="comaspnytDocs">COMASPNYT Docs (Company Articles, Shareholder Register, Financials, Tax etc.)</label>
+              <div class="file-input-container relative">
+                <p class="text-gray-500 text-sm">Drag & drop your file here, or click to browse</p>
+                <input type="file" id="comaspnytDocs" name="comaspnytDocs" accept="application/pdf,image/*" required>
+              </div>
+              <p id="comaspnytDocsName" class="text-xs text-gray-500 mt-1"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-start terms-checkbox" style="color: var(--text-color-light);">
+          <input type="checkbox" id="termsAgree" required>
+          <label for="termsAgree">
+            I agree to the FAA™ legal terms and Inline Verification™ protocols, acknowledging that all provided information is accurate and authentic.
+          </label>
+        </div>
+
+        <button type="submit" class="submit-button">
+          Submit Comprehensive NDA Application
+        </button>
+      </form>
+    </div>
+
+    <!-- API Key Index Section -->
+    <div class="api-key-index-panel">
+        <h2 class="text-2xl font-bold" style="color: var(--text-color-light);">Consolidated API Key Index</h2>
+        <div class="security-note">
+            <strong>Important Security Note:</strong> Directly embedding API keys and sensitive credentials in client-side HTML or JavaScript is generally not recommended for production environments. This exposes your keys, making them vulnerable to misuse. For deployed applications, it is strongly advised to use a secure backend server to proxy your API requests and manage these keys via environment variables or a dedicated secrets management system.
+        </div>
+        <table class="api-key-table">
+            <thead>
+                <tr>
+                    <th>API/Service</th>
+                    <th>Key/Credential Details</th>
+                    <th>Embedded Locations</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="apiKeysTableBody">
+                <!-- API keys will be loaded here by JavaScript -->
+            </tbody>
+        </table>
+        <div class="text-center mt-6">
+            <button class="action-button" onclick="showCustomModal('Generate Key', 'Simulating new API key generation. In a real system, this would securely interact with a backend service.')">
+                <i class="fas fa-plus-circle mr-2"></i> Generate New API Key
+            </button>
+        </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    &copy; 2025 Heyns Schoeman™ & Rossouw Schoeman™. All rights reserved. <br>
+    <span>FAA™, SecureSign™, Inline Verification™, Atom-Level Verification™ and all sub-brand systems are protected under the FAA™ Omni Enforcement Charter™.</span><br>
+    <span class="penalty-text">Unauthorized use incurs penalties of up to $50,000 USD/month.</span>
+  </footer>
+
+  <div id="successModal" class="modal-overlay">
+    <div class="modal-content">
+      <h3 class="text-2xl font-bold mb-4" style="color: var(--secondary-color);">Success!</h3>
+      <p id="modalMessage" class="text-gray-700 mb-6" style="color: #b0b0b0;"></p>
+      <button onclick="closeModal()" class="px-6 py-2 font-bold rounded-lg" style="background-color: var(--primary-color); color: white;">Close</button>
+    </div>
+  </div>
+
+  <script>
+    // --- Global Data Definitions ---
+    const apiKeysData = [
+        { service: "PayPal (SDK)", key: "BAAGdPecRsf6dw_nIrWqUen0GdW0UsBZapp1Gn62xkPdD-Vqc-4lqWAidKK8LOObXux8pHJGjXknZoar6Q", locations: ["Various checkout scrolls"] },
+        { service: "PayPal (Hosted Button)", key: "EMWGPGHNN8Y8E", context: "(Starter Package)", locations: ["HotStack™", "Various landing pages"] },
+        { service: "PayPal (Hosted Button)", key: "QGU3ZUQCMD49Q", context: "(Pro Package)", locations: ["HotStack™", "Larger brand sites"] },
+        { service: "PayPal (Hosted Button)", key: "9C88S44F93M5J", context: "(Enterprise Package)", locations: ["HotStack™", "Enterprise solutions"] },
+        { service: "PayPal (Hosted Button)", key: "YOUR_BANIMAL_PAYPAL_BUTTON_ID_HERE", context: "(Banimal Loop Plan - Placeholder)", locations: ["Banimal Loop Plan site"] },
+        { service: "Google Maps", key: "AIzaSyBPG8dG29cl0TvYRGyLozejGed5Wj5Ab80", locations: ["Location-based microsites"] },
+        { service: "Spotify (Access Token)", key: "BQBDSZ232IQmSLV1BROkxqdwNMoGhtitKOJBjDzE-Lu9YKsSK1RKVwXNfYfncP2wf6Fj6xcYlnGD75baEqOmd3XtxhU...", locations: ["Music/media scrolls"] },
+        { service: "Gemini AI", key: "AIzaSyBGSDZATtITv5iIoB3rgKHBpWx9MrufxXE", locations: ["AI-powered insights scrolls", "Baobab Terminal"] },
+        { service: "Xero (Client ID)", key: "81B3573D453040508996432C5DAD565B", locations: ["Accounting/payroll integration scrolls"] },
+        { service: "Xero (Client Secret)", key: "FIaJGmsaCcKR3Z8kWxPnQd04EhYy6_bImPmoitQDP1U6Smaq", locations: ["Accounting/payroll integration scrolls"] },
+        { service: "Xero (Redirect URI)", key: "https://seedwave.faa.zone/admin_panel_xero.html", locations: ["Xero OAuth setup"] },
+        { service: "Xero (Webhook Key)", key: "2fd5LQV0TQDI3572Er/sg66zqEbl8mFWRyfX3XkoKFZGRLK2cZPGpWV/j4yMTU7aUpbgBCfeZkuHnQIwD/0igw==", locations: ["Xero webhook configurations"] }
+    ];
+
+    const sectorList = {
+        "careers": "💼 Careers",
+        "vendor": "🤝 Vendor",
+        "service-provider": "🛠️ Service Provider",
+        "agriculture": "🌱 Agriculture & Biotech",
+        "fsf": "🥦 Food, Soil & Farming",
+        "banking": "🏦 Banking & Finance",
+        "creative": "🖋️ Creative Tech",
+        "logistics": "📦 Logistics & Packaging",
+        "education-ip": "📚 Education & IP",
+        "fashion": "✂ Fashion & Identity",
+        "gaming": "🎮 Gaming & Simulation",
+        "health": "🧠 Health & Hygiene",
+        "housing": "🏗️ Housing & Infrastructure",
+        "justice": "⚖ Justice & Ethics",
+        "knowledge": "📖 Knowledge & Archives",
+        "micromesh": "☰ Micro-Mesh Logistics",
+        "media": "🎬 Motion, Media & Sonic",
+        "nutrition": "✿ Nutrition & Food Chain",
+        "ai-logic": "🧠 AI, Logic & Grid",
+        "packaging": "📦 Packaging & Materials",
+        "quantum": "✴️ Quantum Protocols",
+        "ritual": "☯ Ritual & Culture",
+        "saas": "🔑 SaaS & Licensing",
+        "trade": "🧺 Trade Systems",
+        "utilities": "🔋 Utilities & Energy",
+        "voice": "🎙️ Voice & Audio",
+        "webless": "📡 Webless Tech & Nodes",
+        "nft": "🔁 NFT & Ownership",
+        "education-youth": "🎓 Education & Youth",
+        "zerowaste": "♻️ Zero Waste",
+        "professional": "🧾 Professional Services",
+        "payroll-mining": "🪙 Payroll Mining & Accounting",
+        "mining": "⛏️ Mining & Resources",
+        "wildlife": "🦁 Wildlife & Habitat",
+        "admin-panel": "⚙️ Admin Panel"
+    };
+
+    // JavaScript for Modal/Popup functionality
+    const successModal = document.getElementById('successModal');
+    const modalMessage = document.getElementById('modalMessage');
+
+    function showModal(message) {
+      modalMessage.textContent = message;
+      successModal.classList.add('show');
+    }
+
+    function closeModal() {
+      successModal.classList.remove('show');
+    }
+
+    // Populate Sectors Dropdown and enforce selection limit
+    const sectorsSelect = document.getElementById('sectors');
+    const sectorHelpText = document.getElementById('sectorHelpText');
+    const maxSectors = 5;
+
+    // Add initial options for Career, Vendor, Service Provider
+    const initialSectors = {
+        "careers": "💼 Careers",
+        "vendor": "🤝 Vendor",
+        "service-provider": "🛠️ Service Provider"
+    };
+
+    // Populate initial options
+    for (const key in initialSectors) {
+        const option = document.createElement('option');
+        option.value = key;
+        option.textContent = initialSectors[key];
+        sectorsSelect.appendChild(option);
+    }
+
+    // Populate other sectors
+    for (const key in sectorList) {
+        // Skip initial sectors to avoid duplication if they are also in sectorList
+        if (!initialSectors[key]) {
+            const option = document.createElement('option');
+            option.value = key;
+            option.textContent = sectorList[key];
+            sectorsSelect.appendChild(option);
+        }
+    }
+
+
+    sectorsSelect.addEventListener('change', function() {
+      if (this.selectedOptions.length > maxSectors) {
+        sectorHelpText.classList.remove('hidden');
+        // Deselect the last selected option to enforce the limit
+        const lastSelected = this.selectedOptions[this.selectedOptions.length - 1];
+        lastSelected.selected = false;
+      } else {
+        sectorHelpText.classList.add('hidden');
+      }
+    });
+
+    // Handle NDA Document Download success
+    document.getElementById('requestNdaBtn').addEventListener('click', function(event) {
+      // Small delay to allow download to initiate before showing popup
+      setTimeout(() => {
+        showModal('The Fruitful Holdings NDA document has been successfully downloaded.');
+      }, 500); // Adjust delay if needed
+    });
+
+
+    // Handle File Input display name and visual feedback
+    document.querySelectorAll('.file-input-container input[type="file"]').forEach(input => {
+      const fileNameDisplay = document.getElementById(input.id + 'Name');
+      input.addEventListener('change', function() {
+        if (this.files.length > 0) {
+          fileNameDisplay.textContent = `Selected: ${this.files[0].name}`;
+          input.closest('.file-input-container').classList.add('file-selected'); /* Add class for visual feedback */
+        } else {
+          fileNameDisplay.textContent = '';
+          input.closest('.file-input-container').classList.remove('file-selected');
+        }
+      });
+      // Basic drag-and-drop visual feedback (does not handle actual file drop here)
+      const container = input.closest('.file-input-container');
+      container.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        container.classList.add('drag-over');
+      });
+      container.addEventListener('dragleave', () => {
+        if (input.files.length === 0) { // Only revert if no file is selected
+          container.classList.remove('drag-over');
+        }
+      });
+      container.addEventListener('drop', (e) => {
+        e.preventDefault();
+        container.classList.remove('drag-over');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+          input.files = files; // Assign the dropped files to the input
+          const event = new Event('change'); // Trigger change event
+          input.dispatchEvent(event);
+        }
+      });
+    });
+
+
+    // Handle Form Submission success
+    document.getElementById('ndaForm').addEventListener('submit', async function(event) {
+      event.preventDefault(); // Prevent default form submission
+
+      // Validate sector selection before submission
+      if (sectorsSelect.selectedOptions.length === 0) {
+        showModal('Please select at least one sector.');
+        sectorsSelect.focus();
+        return; // Stop submission
+      }
+      if (sectorsSelect.selectedOptions.length > maxSectors) {
+          showModal(`You can select a maximum of ${maxSectors} sectors. Please adjust your selection.`);
+          sectorsSelect.focus();
+          return;
+      }
+
+
+      const form = event.target;
+      const formData = new FormData(form);
+
+      // Append all selected sectors to formData as an array
+      const selectedSectors = Array.from(sectorsSelect.selectedOptions).map(option => option.value);
+      formData.append('sectors', JSON.stringify(selectedSectors)); // Send as JSON string
+
+
+      try {
+        const response = await fetch(form.action, {
+          method: form.method,
+          body: formData
+        });
+
+        if (response.ok) {
+          showModal('Your comprehensive NDA application has been successfully received!');
+          form.reset(); // Clear the form after successful submission
+          // Reset file input displays
+          document.querySelectorAll('.file-input-container input[type="file"]').forEach(input => {
+            document.getElementById(input.id + 'Name').textContent = '';
+            input.closest('.file-input-container').classList.remove('file-selected');
+          });
+          sectorHelpText.classList.add('hidden'); // Hide sector error if form reset
+        } else {
+          // Handle server-side errors
+          const errorText = await response.text();
+          showModal(`Submission failed: ${errorText || 'Please try again.'}`);
+        }
+      } catch (error) {
+        // Handle network errors
+        showModal(`Network error: ${error.message || 'Please check your internet connection.'}`);
+      }
+    });
+
+    // Render API Keys Table
+    function renderApiKeysTable() {
+        const tableBody = document.getElementById('apiKeysTableBody');
+        if (!tableBody) return;
+
+        tableBody.innerHTML = ''; // Clear existing rows
+
+        apiKeysData.forEach(key => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>
+                    <strong class="text-gray-100">${key.service}</strong><br>
+                    ${key.context ? `<span class="text-xs text-gray-400">(${key.context})</span>` : ''}
+                </td>
+                <td class="api-key-value">${key.key}</td>
+                <td class="api-key-location">${key.locations.join(', ')}</td>
+                <td>
+                    <button class="action-button text-sm px-3 py-1"
+                            onclick="showModal('Action', 'Simulating revoke/regenerate for ${key.service}. In a real system, this would interact with the API provider.')">
+                        <i class="fas fa-redo-alt mr-1"></i> Manage
+                    </button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        renderApiKeysTable();
+    });
+  </script>
+
+</body>
+</html>

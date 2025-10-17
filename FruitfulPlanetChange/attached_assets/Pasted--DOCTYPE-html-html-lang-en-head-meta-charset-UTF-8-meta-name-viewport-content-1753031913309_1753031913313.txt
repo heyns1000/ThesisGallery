@@ -1,0 +1,2728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="pageTitle">🌱Fruitful Innovations - Your Future, Today</title>
+    <link rel="icon" href="/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Base Styles - Apple inspired cleanliness */
+        body {
+            font-family: 'Inter', sans-serif; /* Closest free alternative to San Francisco */
+            background-color: #f5f5f7; /* Very light gray, almost white */
+            color: #1d1d1f; /* Near black for primary text */
+            line-height: 1.4; /* Tighter line height for Apple feel */
+            -webkit-font-smoothing: antialiased; /* Smoother font rendering */
+            -moz-osx-font-smoothing: grayscale;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #f5f5f7;
+        }
+        body.dark-mode header {
+            background-color: rgba(26, 26, 26, 0.9);
+            border-bottom-color: #333;
+            box-shadow: 0 1px 0 rgba(255,255,255,0.05);
+        }
+        body.dark-mode header h1 {
+            color: #f5f5f7;
+        }
+        body.dark-mode header nav a {
+            color: #f5f5f7; /* Light text in dark mode for visibility */
+        }
+        body.dark-mode header nav a:hover {
+            color: #66b2ff; /* Lighter blue for dark mode hover */
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        body.dark-mode header nav a.px-4 { /* SecureSign button in dark mode */
+            background-color: #66b2ff;
+            color: #1d1d1f;
+            box-shadow: 0 1px 3px rgba(255,255,255,0.1);
+            border-color: #66b2ff; /* Ensure border color matches */
+        }
+        body.dark-mode header nav a.px-4:hover {
+            background-color: #7abaff;
+            box-shadow: 0 2px 5px rgba(255,255,255,0.15);
+        }
+
+        body.dark-mode .hero-section {
+            background-color: #0d1a26; /* Darker blue for hero */
+            color: #f5f5f7;
+        }
+        body.dark-mode .hero-section h2 {
+            color: #f5f5f7;
+        }
+        body.dark-mode .hero-section h2 span {
+            color: #66b2ff;
+        }
+        body.dark-mode .hero-section p {
+            color: #e0e0e0; /* Adjusted for better visibility in dark mode */
+        }
+        body.dark-mode .cta-button {
+            background: #66b2ff;
+            color: #1a1a1a;
+            box-shadow: 0 1px 3px rgba(255,255,255,0.1);
+        }
+        body.dark-mode .cta-button:hover {
+            background-color: #7abaff;
+            box-shadow: 0 2px 5px rgba(255,255,255,0.15);
+        }
+        body.dark-mode .cta-button-secondary {
+            background-color: #2a2a2a;
+            color: #e0e0e0; /* Adjusted for better visibility in dark mode */
+            border-color: #444;
+        }
+        body.dark-mode .cta-button-secondary:hover {
+            background-color: #3a3a3a;
+            color: #f5f5f7;
+            box-shadow: 0 1px 3px rgba(255,255,255,0.05);
+        }
+
+        /* Header specific styling for default (light) mode */
+        header {
+            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white */
+            backdrop-filter: blur(10px); /* Frosted glass effect */
+            border-bottom: 1px solid #e8e8ed; /* Subtle bottom border */
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        header h1 {
+            color: #1d1d1f; /* Dark text for logo */
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+        header nav a {
+            color: #1d1d1f; /* Ensure dark color for links on light header */
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.5rem 0.8rem;
+            border-radius: 6px;
+            transition: all 0.2s ease-in-out;
+            position: relative;
+        }
+        header nav a:hover {
+            color: #0071e3; /* Apple blue on hover */
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+        header nav a.px-4 { /* Sign Up button */
+            background-color: #0071e3; /* Apple blue */
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #0071e3; /* Ensure border is visible and matches */
+        }
+        header nav a.px-4:hover {
+            background-color: #0077ed;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+
+        .hero-section {
+            background-color: rgb(220, 240, 255); /* Very light pastel blue background */
+            min-height: 70vh;
+            padding: 6rem 1.5rem;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            box-shadow: none;
+            color: #1d1d1f;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        /* Canvas for spiderweb background */
+        .hero-section canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            z-index: 0;
+            background-color: transparent;
+        }
+        .hero-content {
+            max-width: 800px;
+            position: relative;
+            z-index: 1;
+        }
+        .hero-section h2 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: #1d1d1f;
+            line-height: 1.1;
+        }
+        .hero-section h2 span {
+            color: #0071e3;
+        }
+        .hero-section p {
+            font-size: 1.2rem;
+            font-weight: 400;
+            color: #424245;
+            margin-top: 1.5rem;
+            margin-bottom: 2.5rem;
+            line-height: 1.5;
+        }
+        .cta-button {
+            background: #0071e3;
+            color: white;
+            padding: 0.8rem 1.8rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+        .cta-button:hover {
+            background-color: #0077ed;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+        .cta-button span {
+            display: none;
+        }
+
+        .cta-button-secondary {
+            background-color: #f0f0f0;
+            color: #424245;
+            box-shadow: none;
+            border: 1px solid #dcdcdc;
+        }
+        .cta-button-secondary:hover {
+            background-color: #e8e8ed;
+            color: #1d1d1f;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        section {
+            padding: 8rem 2rem;
+            background-color: #ffffff;
+            box-shadow: none;
+            border-bottom: 1px solid #e8e8ed;
+            text-align: center;
+        }
+        body.dark-mode section {
+            background-color: #2a2a2a;
+            border-bottom-color: #333;
+            color: #f5f5f7;
+        }
+        section:last-of-type {
+            border-bottom: none;
+        }
+        section h2, section h3 {
+            color: #1d1d1f;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 2rem;
+            font-size: 2.2rem;
+        }
+        body.dark-mode section h2, body.dark-mode section h3 {
+            color: #f5f5f7;
+        }
+        section p {
+            color: #424245;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+        body.dark-mode section p {
+            color: #e0e0e0; /* Adjusted for better visibility in dark mode */
+        }
+
+        .feature-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            border: 1px solid #e8e8ed;
+            text-align: left;
+        }
+        body.dark-mode .feature-card {
+            background-color: #3a3a3a;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            border-color: #4a4a4a;
+        }
+        .feature-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+        }
+        body.dark-mode .feature-card:hover {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+        .feature-card div:first-child {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #0071e3;
+        }
+        body.dark-mode .feature-card div:first-child {
+            color: #66b2ff;
+        }
+        .feature-card h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 0.5rem;
+        }
+        body.dark-mode .feature-card h4 {
+            color: #f5f5f7;
+        }
+        .feature-card p {
+            font-size: 0.95rem;
+            color: #6e6e73;
+        }
+        body.dark-mode .feature-card p {
+            color: #e0e0e0; /* Adjusted for better visibility in dark mode */
+        }
+
+        /* Targeted Compression for Features Section */
+        #features {
+            padding-top: 4rem; /* Reduced from 8rem */
+            padding-bottom: 4rem; /* Reduced from 8rem */
+        }
+        #features h3 {
+            margin-bottom: 3rem; /* Reduced from 4rem */
+        }
+        .feature-card {
+            padding: 1.5rem; /* Reduced from 2rem */
+        }
+        .feature-card div:first-child {
+            font-size: 2rem; /* Reduced from 2.5rem */
+            margin-bottom: 0.8rem; /* Reduced from 1rem */
+        }
+        .feature-card h4 {
+            font-size: 1.1rem; /* Reduced from 1.2rem */
+            margin-bottom: 0.4rem; /* Reduced from 0.5rem */
+        }
+        .feature-card p {
+            font-size: 0.85rem; /* Reduced from 0.95rem */
+            line-height: 1.3; /* Slightly tighter line height */
+        }
+
+
+        /* Targeted Compression for FAA™ Share Signal */
+        #shareprice {
+            padding-top: 3rem; /* Reduced from 6rem */
+            padding-bottom: 3rem; /* Reduced from 6rem */
+        }
+        #shareprice h2 {
+            font-size: 1.5rem; /* Reduced from 1.8rem */
+        }
+        #price {
+            font-size: 2.5rem; /* Reduced from 3rem */
+        }
+        #timestamp {
+            font-size: 0.75rem; /* Reduced from 0.85rem */
+        }
+
+        /* Targeted Compression for Seedwave Brand Growth */
+        #seedwave {
+            padding-top: 4rem; /* Reduced from 8rem */
+            padding-bottom: 4rem; /* Reduced from 8rem */
+        }
+        #seedwave h2 {
+            font-size: 1.8rem; /* Reduced from 2.2rem */
+            margin-bottom: 1.5rem; /* Reduced from 2rem */
+        }
+        #seedwave .w-full {
+            padding: 1rem; /* Reduced from 1.5rem */
+        }
+
+        /* Targeted Compression for Founder's Glyph™ */
+        section.bg-gray-700 { /* This is the Founder's Glyph section */
+            padding-top: 4rem; /* Reduced from 8rem */
+            padding-bottom: 4rem; /* Reduced from 8rem */
+        }
+        section.bg-gray-700 h2 {
+            font-size: 2rem; /* Reduced from 2.5rem */
+        }
+        section.bg-gray-700 p {
+            font-size: 1rem; /* Reduced from 1.1rem */
+            margin-bottom: 1rem; /* Reduced from 2.5rem */
+            margin-top: 1rem; /* Reduced from 6rem for first p, 2rem for others */
+        }
+        section.bg-gray-700 p:first-of-type {
+            margin-top: 0; /* No top margin for the very first paragraph in this section */
+        }
+        section.bg-gray-700 p.italic {
+            margin-top: 1rem; /* Adjusted margin */
+        }
+        section.bg-gray-700 p.font-semibold {
+            margin-top: 1rem; /* Adjusted margin */
+        }
+
+
+        #vault-access {
+            background-color: #ffffff;
+            padding: 6rem 2rem;
+            border-bottom: 1px solid #e8e8ed;
+        }
+        body.dark-mode #vault-access {
+            background-color: #2a2a2a;
+            border-bottom-color: #333;
+        }
+        #vault-access h3 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #1d1d1f;
+            margin-bottom: 2.5rem;
+        }
+        #vault-access .w-full.h-\[800px\] {
+            background-color: #f0f0f0;
+            border: 1px solid #dcdcdc;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        body.dark-mode #vault-access .w-full.h-\[800px\] {
+            background-color: #1a1a1a;
+            border-color: #444;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .terminal-btn {
+            background-color: #f0f0f0;
+            color: #424245;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid #dcdcdc;
+            cursor: pointer;
+        }
+        body.dark-mode .terminal-btn {
+            background-color: #3a3a3a;
+            color: #e0e0e0; /* Adjusted for better visibility in dark mode */
+            border-color: #4a4a4a;
+            box-shadow: 0 1px 3px rgba(255,255,255,0.05);
+        }
+        .terminal-btn:hover {
+            background-color: #e8e8ed;
+            color: #1d1d1f;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        body.dark-mode .terminal-btn:hover {
+            background-color: #4a4a4a;
+            color: #f5f5f7;
+            box_shadow: 0 2px 5px rgba(255,255,255,0.1);
+        }
+        .terminal-btn.ring {
+            border-color: #0071e3;
+            box-shadow: 0 0 0 2px #0071e3;
+        }
+        body.dark-mode .terminal-btn.ring {
+            border-color: #66b2ff;
+            box-shadow: 0 0 0 2px #66b2ff;
+        }
+
+        section.bg-gray-800.text-center {
+            background-color: #f5f5f7;
+            padding: 6rem 2rem;
+            border-bottom: 1px solid #e8e8ed;
+        }
+        body.dark-mode section.bg-gray-800.text-center {
+            background-color: #1a1a1a;
+            border-bottom-color: #333;
+        }
+        section.bg-gray-800.text-center h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #1d1d1f;
+            margin-bottom: 2.5rem;
+        }
+        .glyph {
+            background-color: #ffffff;
+            color: #424245;
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid #e8e8ed;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        body.dark-mode .glyph {
+            background-color: #3a3a3a;
+            color: #e0e0e0; /* Adjusted for better visibility in dark mode */
+            box-shadow: 0 1px 3px rgba(255,255,255,0.05);
+            border-color: #4a4a4a;
+        }
+        .glyph:hover {
+            background-color: #f0f0f0;
+            color: #1d1d1f;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        body.dark-mode .glyph:hover {
+            background-color: #4a4a4a;
+            color: #f5f5f7;
+            box_shadow: 0 2px 5px rgba(255,255,255,0.1);
+        }
+
+        #treaty {
+            background-color: #ffffff;
+            padding: 6rem 2rem;
+            border-bottom: 1px solid #e8e8ed;
+        }
+        body.dark-mode #treaty {
+            background-color: #2a2a2a;
+            border-bottom-color: #333;
+        }
+        #treaty h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #1d1d1f;
+            margin-bottom: 1.5rem;
+        }
+        #treaty p {
+            font-size: 1.1rem;
+            color: #424245;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 2rem;
+        }
+        body.dark-mode #treaty p {
+            color: #e0e0e0; /* Adjusted for better visibility in dark mode */
+        }
+        #treaty blockquote {
+            font-size: 1.5rem;
+            color: #1d1d1f;
+            font-weight: 600;
+            line-height: 1.4;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        body.dark-mode #treaty blockquote {
+            color: #f5f5f7;
+        }
+        #treaty blockquote::before, #treaty blockquote::after {
+            content: '“';
+            font-size: 2.5em;
+            line-height: 0.1;
+            vertical-align: -0.4em;
+            color: #dcdcdc;
+            margin-right: 0.1em;
+        }
+        body.dark-mode #treaty blockquote::before, body.dark-mode #treaty blockquote::after {
+            color: #444;
+        }
+
+        section.bg-gray-900.text-green-400 {
+            background-color: #1d1d1f;
+            color: #00e393;
+            padding: 4rem 1.5rem;
+            border-bottom: 1px solid #333;
+        }
+        body.dark-mode section.bg-gray-900.text-green-400 {
+            background-color: #0a0a0a;
+            border-bottom-color: #222;
+        }
+        section.bg-gray-900.text-green-400 pre {
+            background-color: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        body.dark-mode section.bg-gray-900.text-green-400 pre {
+            background-color: #000;
+            border-color: #222;
+            box-shadow: inset 0 1px 3px rgba(255,255,255,0.1);
+        }
+
+        #vaultmesh-section {
+            background-color: #f5f5f7;
+            padding: 6rem 2rem;
+            color: #1d1d1f;
+            border-bottom: 1px solid #e8e8ed;
+        }
+        body.dark-mode #vaultmesh-section {
+            background-color: #1a1a1a;
+            border-bottom-color: #333;
+        }
+        #vaultmesh-section h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #1d1d1f;
+            margin-bottom: 1.5rem;
+        }
+        #vaultmesh-section h2.text-purple-400 {
+            color: #0071e3;
+        }
+        #vaultmesh-section h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        body.dark-mode #vaultmesh-section h3 {
+            color: #f5f5f7;
+        }
+        #vaultmesh-section p {
+            font-size: 1.05rem;
+            color: #424245;
+            line-height: 1.5;
+        }
+        body.dark-mode #vaultmesh-section p {
+            color: #e0e0e0; /* Adjusted for better visibility in dark mode */
+        }
+        #vaultmesh-section ul {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+            color: #424245;
+        }
+        body.dark-mode #vaultmesh-section ul {
+            color: #e0e0e0; /* Adjusted for better visibility in dark mode */
+        }
+        #vaultmesh-section ul.list-decimal {
+            list-style-type: decimal;
+        }
+        #vaultmesh-section code {
+            background-color: #e8e8ed;
+            padding: 0.2em 0.4em;
+            border-radius: 4px;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            color: #1d1d1f;
+        }
+        body.dark-mode #vaultmesh-section code {
+            background-color: #3a3a3a;
+            color: #f5f5f7;
+        }
+        .vaultmesh-main-content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .vaultmesh-container-section {
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+        }
+        body.dark-mode .vaultmesh-container-section {
+            background-color: #2a2a2a;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            border-color: #4a4a4a;
+        }
+        .vaultmesh-container-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+        }
+        body.dark-mode .vaultmesh-container-section:hover {
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+        }
+        .vaultmesh-container-section h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #007aff;
+            margin-bottom: 1.25rem;
+            letter-spacing: -0.02em;
+        }
+        body.dark-mode .vaultmesh-container-section h3 {
+            color: #66b2ff;
+        }
+        .vaultmesh-iframe-wrapper {
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #333;
+            background-color: #000;
+            height: 250px;
+            width: 100%;
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+        body.dark-mode .vaultmesh-iframe-wrapper {
+            border-color: #666;
+            background-color: #000;
+            color: #888;
+        }
+        .vaultmesh-iframe-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        /* Styles for the insight output */
+        .insight-output {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            background-color: #f0f0f0;
+            border: 1px solid #e8e8ed;
+            text-align: left;
+            font-size: 0.9rem;
+            color: #333;
+            line-height: 1.4;
+        }
+        body.dark-mode .insight-output {
+            background-color: #3a3a3a;
+            border-color: #4a4a4a;
+            color: #ffffff; /* Changed to white for dark mode */
+        }
+        .insight-output.loading {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+        }
+        body.dark-mode .insight-output.loading {
+            color: #ffffff; /* Changed to white for dark mode */
+        }
+
+
+        #about {
+            background-color: #ffffff;
+            padding: 6rem 2rem;
+            color: #1d1d1f;
+            border-bottom: 1px solid #e8e8ed;
+        }
+        body.dark-mode #about {
+            background-color: #2a2a2a;
+            border-bottom-color: #333;
+        }
+        #about h3 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #1d1d1f;
+            margin-bottom: 1.5rem;
+        }
+        #about p {
+            font-size: 1.1rem;
+            color: #424245;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        body.dark-mode #about p {
+            color: #e0e0e0; /* Adjusted for better visibility in dark mode */
+        }
+
+        #cta {
+            background: #f5f5f7;
+            padding: 6rem 2rem;
+            color: #1d1d1f;
+            text-align: center;
+        }
+        body.dark-mode #cta {
+            background: #1a1a1a;
+        }
+        #cta h3 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1d1d1f;
+            margin-bottom: 1.5rem;
+        }
+        #cta p {
+            font-size: 1.2rem;
+            color: #424245;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 2.5rem;
+        }
+        body.dark-mode #cta p {
+            color: #e0e0e0; /* Adjusted for better visibility in dark mode */
+        }
+
+        footer {
+            background-color: #f5f5f7;
+            color: #6e6e73;
+            padding: 2rem;
+            font-size: 0.85rem;
+            border-top: 1px solid #e8e8ed;
+            text-align: center;
+        }
+        body.dark-mode footer {
+            background-color: #1a1a1a;
+            color: #888;
+            border-top-color: #333;
+        }
+        footer a {
+            color: #6e6e73;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        body.dark-mode footer a {
+            color: #e0e0e0; /* Adjusted for better visibility in dark mode */
+        }
+        footer a:hover {
+            color: #1d1d1f;
+        }
+        body.dark-mode footer a:hover {
+            color: #f5f5f7;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .hero-section h2 {
+                font-size: 2.8rem;
+            }
+            .hero-section p {
+                font-size: 1rem;
+            }
+            .cta-button {
+                padding: 0.7rem 1.5rem;
+                font-size: 0.9rem;
+            }
+            header nav {
+                flex-wrap: wrap;
+                justify-content: center;
+                margin-top: 1rem;
+            }
+            header nav a {
+                margin: 0.25rem 0.5rem;
+            }
+            section {
+                padding: 4rem 1.5rem;
+            }
+            section h2, section h3 {
+                font-size: 1.8rem;
+                margin-bottom: 1.5rem;
+            }
+            section p {
+                font-size: 1rem;
+            }
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+            #shareprice h2 {
+                font-size: 1.5rem;
+            }
+            #price {
+                font-size: 2.5rem;
+            }
+            #vault-access .w-full.h-\[800px\] {
+                height: 500px;
+            }
+            .terminal-btn {
+                padding: 0.8rem 1rem;
+                font-size: 0.9rem;
+            }
+            #treaty blockquote {
+                font-size: 1.2rem;
+            }
+            #vaultmesh-section h2, #vaultmesh-section h3 {
+                font-size: 1.8rem;
+            }
+            #vaultmesh-section p, #vaultmesh-section ul li {
+                font-size: 0.95rem;
+            }
+            #cta h3 {
+                font-size: 2rem;
+            }
+            #cta p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="py-4 px-6 md:px-12 flex flex-col sm:flex-row justify-between items-center text-white">
+        <h1 class="text-2xl font-extrabold tracking-tight mb-4 sm:mb-0" data-i18n="fruitfulBrand">Fruitful™</h1>
+        <nav class="flex flex-wrap justify-center sm:justify-end items-center space-x-2 sm:space-x-4">
+            <a href="#features" class="transition-colors duration-200" data-i18n="navFeatures">Features</a>
+            <a href="#shareprice" class="transition-colors duration-200" data-i18n="navSignal">Signal</a>
+            <a href="#vault-access" class="transition-colors duration-200" data-i18n="navVault">Vault</a>
+            <a href="#treaty" class="transition-colors duration-200" data-i18n="navTreaty">Treaty</a>
+            <a href="#vaultmesh-section" class="transition-colors duration-200" data-i18n="navVaultMesh">VaultMesh</a>
+            <a href="#about" class="transition-colors duration-200" data-i18n="navAbout">About</a>
+            <a href="https://fruitfulcratedance.com/" class="transition-colors duration-200" data-i18n="navCrateDance">Fruitful Crate Dance</a>
+            <a href="https://faa.zone/careers/hiring-homepage.html" class="transition-colors duration-200" data-i18n="navCareers">Careers</a>
+            <a href="https://faa.zone/legal/securesign.html" class="transition-colors duration-200 font-semibold px-4 py-2 rounded-full" data-i18n="navSecureSign">SecureSign</a>
+            <a href="signup.html" class="px-4 py-2 rounded-full font-semibold transition-colors duration-200" data-i18n="navSignUp">Sign Up</a>
+
+            <!-- Language and Day/Night Toggles -->
+            <div class="flex items-center space-x-2 ml-4">
+                <select id="language-toggle" class="p-2 rounded-full text-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-100">
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                    <option value="fr">Français</option>
+                    <option value="ar">العربية</option>
+                    <option value="zh">中文</option>
+                </select>
+                <button id="theme-toggle" class="p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-100">
+                    ☀️
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero-section">
+        <canvas id="spiderwebCanvas"></canvas>
+
+        <div class="hero-content">
+            <h2 class="text-5xl md:text-6xl font-extrabold mb-6 leading-tight" data-i18n="heroHeadline">
+                Innovate. Connect. <span>Thrive.</span>
+            </h2>
+            <p class="text-xl md:text-2xl mb-10 max-w-2xl mx-auto" data-i18n="heroDescription">
+                Discover a new era of collaboration and sustainable growth with Fruitful's cutting-edge platform.
+            </p>
+            <div class="flex flex-row justify-center items-center space-x-4 flex-wrap gap-4"> <!-- Restored horizontal button layout -->
+                <a href="https://fruitful.faa.zone/omnigrid.html" class="cta-button" data-i18n="ctaExplore">
+                    Explore Ecosystem
+                </a>
+                <a href="https://baobab.faa.zone" class="cta-button cta-button-secondary" data-i18n="ctaBaobab">
+                    Baobab Network
+                </a>
+                <a href="https://fruitfulcratedance.com/" class="cta-button cta-button-secondary" data-i18n="ctaCrateDance">
+                    Fruitful Crate Dance
+                </a>
+                <a href="admin-login.html" class="cta-button cta-button-secondary" data-i18n="ctaAdminLogin">
+                    Admin Login
+                </a>
+                <a href="contact-us.html" class="cta-button cta-button-secondary" data-i18n="ctaContactUs">
+                    Contact Us
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="py-8 md:py-12 px-6 md:px-12"> <!-- Adjusted padding -->
+        <div class="max-w-6xl mx-auto">
+            <h3 class="text-4xl font-bold text-center mb-10" data-i18n="featuresHeadline"> <!-- Adjusted margin-bottom -->
+                Unlock Your Potential with Our Core Features
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="feature-card">
+                    <div>💡</div>
+                    <h4 data-i18n="featureAIInsightTitle">AI-Powered Insights</h4>
+                    <p data-i18n="featureAIInsightDesc">
+                        Leverage advanced AI to gain deep insights, optimize operations, and make smarter decisions.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div>🤝</div>
+                    <h4 data-i18n="featureCollaborationTitle">Global Collaboration</h4>
+                    <p data-i18n="featureCollaborationDesc">
+                        Connect with thousands of independent brands and partners worldwide, fostering a network of mutual growth.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div>🌱</div>
+                    <h4 data-i18n="featureSustainableTitle">Sustainable Solutions</h4>
+                    <p data-i18n="featureSustainableDesc">
+                        Champion eco-friendly practices and contribute to a healthier planet through our curated marketplace.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div>🔒</div>
+                    <h4 data-i18n="featureSecureVaultMeshTitle">Secure VaultMesh™</h4>
+                    <p data-i18n="featureSecureVaultMeshDesc">
+                        Protect your data and transactions with our state-of-the-art blockchain-inspired security protocols.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div>📈</div>
+                    <h4 data-i18n="featureAnalyticsTitle">Real-time Analytics</h4>
+                    <p data-i18n="featureAnalyticsDesc">
+                        Monitor your progress and impact with intuitive dashboards and real-time performance metrics.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div>🌐</div>
+                    <h4 data-i18n="featureOmniScrollTitle">OmniScroll Integration</h4>
+                    <p data-i18n="featureOmniScrollDesc">
+                        Seamlessly integrate with our OmniScroll ledger for transparent and efficient record-keeping.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="shareprice" class="py-6 text-center"> <!-- Further reduced padding -->
+        <h2 class="text-3xl font-semibold mb-2" data-i18n="signalTitle">FAA™ Share Signal</h2>
+        <div id="price" class="text-5xl font-bold">$88.88</div>
+        <div class="text-sm text-gray-400 mt-1" data-i18n="signalLastUpdated">Last updated: <span id="timestamp">Live</span></div>
+    </section>
+
+    <section id="seedwave" class="py-8 px-6 text-center"> <!-- Further reduced padding -->
+        <h2 class="text-4xl font-bold mb-8" data-i18n="seedwaveTitle">🌱 Seedwave Brand Growth 🌱</h2>
+        <div class="w-full max-w-4xl mx-auto p-6 rounded-xl shadow-lg">
+            <canvas id="brandChart"></canvas>
+        </div>
+    </section>
+
+    <section class="py-8 px-6 text-center"> <!-- Further reduced padding -->
+        <h2 class="text-4xl font-bold mb-8" data-i18n="founderGlyphTitle">🧬 Founder's Glyph™</h2>
+        <p class="max-w-3xl mx-auto text-xl leading-relaxed mb-2" data-i18n="founderGlyphPara1"> <!-- Further reduced margin-bottom -->
+            FAA™ wasn’t built like a typical startup. It emerged — out of silence, out of signal, out of glyphs and patterns that refused to be ignored.
+            What you're seeing isn't a site. It’s a vault interface. A codebase of culture. A trust-machine powered by real human intelligence.
+        </p>
+        <p class="mt-2 max-w-2xl mx-auto italic" data-i18n="founderGlyphPara2"> <!-- Further reduced margin-top -->
+            Where others scale with speed, we scale with meaning. Every brand here agreed to something deeper than growth — they signed a Treaty.
+            That’s why this isn’t eCommerce. It’s TreatyCommerce™.
+        </p>
+        <p class="mt-2 font-semibold" data-i18n="founderGlyphSignature">— Written from the edge of code & culture 🌍 FAA.Zone Founder Glyph Activated™</p> <!-- Further reduced margin-top -->
+    </section>
+
+    <section id="vault-access" class="py-16 px-6">
+        <h3 class="text-4xl font-bold text-center mb-10" data-i18n="sectorTerminalsTitle">🔐 Sector Terminals</h3>
+
+        <div class="w-full max-w-6xl mx-auto mb-10">
+            <div class="w-full h-[800px] border-4 rounded-xl shadow-2xl overflow-hidden">
+                <iframe
+                    id="vault-frame"
+                    src=""
+                    class="w-full h-full rounded-xl"
+                    frameborder="0"
+                    title="VaultMaster Terminal"
+                    sandbox="allow-scripts allow-same-origin allow-forms"
+                ></iframe>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            <button onclick="loadTerminal('vault-master.html')" class="terminal-btn p-6" data-i18n="terminalVaultMaster">🦍 VaultMaster Terminal</button>
+            <button onclick="loadTerminal('cube-lattice.html')" class="terminal-btn p-6" data-i18n="terminalCubeLattice">🧱 Cube Lattice GPT</button>
+            <button onclick="loadTerminal('global-view.html')" class="terminal-btn p-6" data-i18n="terminalGlobalView">🌍 Global View GPT</button>
+            <button onclick="loadTerminal('freight-ops.html')" class="terminal-btn p-6" data-i18n="terminalFreightOps">🚚 Freight Ops GPT</button>
+            <button onclick="loadTerminal('loop-watch.html')" class="terminal-btn p-6" data-i18n="terminalLoopWatch">♻️ Loop Watch GPT</button>
+            <button onclick="loadTerminal('seedwave.html')" class="terminal-btn p-6" data-i18n="terminalSeedwave">🌱 Seedwave GPT</button>
+            <button onclick="loadTerminal('distribution.html')" class="terminal-btn p-6" data-i18n="terminalDistribution">📦 Distribution GPT</button>
+            <button onclick="loadTerminal('signal.html')" class="terminal-btn p-6" data-i18n="terminalSignal">🔐 Signal GPT</button>
+            <button onclick="loadTerminal('faa-brands.html')" class="terminal-btn p-6" data-i18n="terminalFAABrands">📦 7038 FAA Brands</button>
+
+            <!-- NEW TERMINAL BUTTONS ADDED HERE -->
+            <button onclick="loadTerminal(allSectorsData['faa.zone'].baseUrl)" class="terminal-btn p-6" data-i18n="terminalFAAZonePortal">🌐 FAA.Zone Portal</button>
+            <button onclick="loadTerminal(allSectorsData['seedwave'].baseUrl)" class="terminal-btn p-6" data-i18n="terminalSeedwavePlatform">🌱 Seedwave Platform</button>
+            <button onclick="loadTerminal(allSectorsData['fruitful'].baseUrl)" class="terminal-btn p-6" data-i18n="terminalFruitfulGlobal">🍎 Fruitful Global</button>
+            <button onclick="loadTerminal(allSectorsData['omnigrid'].baseUrl)" class="terminal-btn p-6" data-i18n="terminalOmniGridSystem">🔗 OmniGrid System</button>
+            <button onclick="loadTerminal(allSectorsData['portal'].baseUrl)" class="terminal-btn p-6" data-i18n="terminalCentralPortal">🏛️ Central Portal</button>
+            <button onclick="loadTerminal(allSectorsData['legal'].baseUrl)" class="terminal-btn p-6" data-i18n="terminalLegalCompliance">⚖️ Legal & Compliance</button>
+            <button onclick="loadTerminal(allSectorsData['vaultmesh'].baseUrl)" class="terminal-btn p-6" data-i18n="terminalVaultMeshPlatform">🔐 VaultMesh</button>
+            <button onclick="loadTerminal(allSectorsData['baobab'].baseUrl)" class="terminal-btn p-6" data-i18n="terminalBaobabNetwork">🌳 Baobab Network</button>
+            <button onclick="loadTerminal(allSectorsData['samfox'].baseUrl)" class="terminal-btn p-6" data-i18n="terminalSamFoxInitiative">🦊 SamFox Initiative</button>
+            <button onclick="loadTerminal(allSectorsData['tripot'].baseUrl)" class="terminal-btn p-6" data-i18n="terminalTripotInnovations">🧪 Tripot Innovations</button>
+            <button onclick="loadTerminal(allSectorsData['noodle.juice'].baseUrl)" class="terminal-btn p-6" data-i18n="terminalNoodleJuice">🍜 Noodle Juice</button>
+            <button onclick="loadTerminal(allSectorsData['payment'].baseUrl)" class="terminal-btn p-6" data-i18n="terminalSecurePayments">💳 Secure Payments</button>
+            <button onclick="loadTerminal(allSectorsData['careers'].baseUrl)" class="terminal-btn p-6" data-i18n="terminalCareersAtFruitful">💼 Careers at Fruitful</button>
+            <button onclick="loadTerminal(allSectorsData['admin-panel'].baseUrl)" class="terminal-btn p-6" data-i18n="terminalAdminPanel">⚙️ Admin & Manual Sync Panel</button>
+        </div>
+    </section>
+
+    <section class="py-16 px-6 text-center">
+        <h2 class="text-4xl font-bold mb-8" data-i18n="sectorScrollsTitle">🧬 Sector Scrolls</h2>
+        <div id="sector-glyphs-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
+            </div>
+        <div id="sector-content-container" class="mt-10 px-6 max-w-6xl mx-auto"></div>
+    </section>
+
+    <section id="treaty" class="py-16 px-6 text-center">
+        <h2 class="text-4xl font-bold mb-6" data-i18n="treatySystemTitle">📜 Treaty System™</h2>
+        <p class="max-w-2xl mx-auto text-lg mb-8" data-i18n="treatySystemDesc">The FAA™ Treaty Layer binds interface to intention. This is not UI. This is glyph-encoded law.</p>
+        <blockquote class="text-2xl italic font-semibold" data-i18n="treatySystemQuote">"FAA™ isn't a site. It's the shape of alignment — and 🦍 holds the flame."</blockquote>
+    </section>
+
+    <section class="py-10 text-xs text-center bg-gray-900 text-green-400">
+        <pre class="max-w-2xl mx-auto p-4 rounded-lg overflow-auto"><code>{
+    "signal": "omnidrop",
+    "origin": "If you dont like the fruits you are growing, change the seed™ / FAA Vault Layer",
+    "payload": {
+        "type": "scroll",
+        "value": "homepage + VaultRouter + all terminal iframe buttons live + Treaty Grid"
+    }
+}</code></pre>
+    </section>
+
+    <section id="vaultmesh-section" class="py-20 px-6">
+        <div class="max-w-4xl mx-auto text-left space-y-6">
+
+            <h2 class="text-4xl font-bold text-center" data-i18n="vaultMeshSummaryTitle">🧠 VaultMesh™: Executive Summary</h2>
+
+            <p class="text-center" data-i18n="vaultMeshSummaryPara1">VaultMesh™ is an intelligent data orchestration framework designed for the segmentation, synchronization, and secure deployment of high-value digital assets—referred to as scrolls—across decentralized and permissioned networks such as FAA.Zone™.</p>
+
+            <ul class="list-disc ml-6 space-y-2">
+                <li data-i18n="vaultMeshSummaryListItem1">Captures metadata-rich content streams (chats, code, brands, assets)</li>
+                <li data-i18n="vaultMeshSummaryListItem2">Assigns them to programmable claim structures (ScrollClaims™)</li>
+                <li data-i18n="vaultMeshSummaryListItem3">Secures their lineage using OmniSignal™, PulseGrid™, and GhostTrace™ layers</li>
+                <li data-i18n="vaultMeshSummaryListItem4">Enforces royalty logic, scroll integrity, and traceability on-chain and off-grid</li>
+            </ul>
+
+            <p class="text-center" data-i18n="vaultMeshSummaryPara2">VaultMesh™ powers high-tier operations like HSOMNI9000™, enabling Diamond-tier deployments, cross-sector scroll claims, and enterprise-scale content monetization with full compliance and provenance.</p>
+
+            <p class="text-center" data-i18n="vaultMeshSummaryPara3">The framework is deeply integrated with platforms such as <code>vault.faa.zone™</code>, where scrolls tied to brands like Fruitful Global Planet™ are securely hosted, organized into structured sectors, and deployed through FAA.Zone™-compliant channels.</p>
+
+            <p class="text-center" data-i18n="vaultMeshSummaryPara4">A critical operator in this ecosystem is HSOMNI9000™, the certified scroll class which governs Diamond-tier logic, enforces 10–11% royalty triggers, and auto-deploys ScrollClaims™ with real-time ClaimRoot™ verification.</p>
+
+            <h3 class="text-2xl font-semibold mt-10 text-center" data-i18n="vaultMeshIndexTitle">📖 VaultMesh™ Index</h3>
+            <ul class="list-decimal ml-6 space-y-2">
+                <li data-i18n="vaultMeshIndex1">Introduction to VaultMesh™</li>
+                <li data-i18n="vaultMeshIndex2">Core System Components</li>
+                <li data-i18n="vaultMeshIndex3">ScrollClaim™ Infrastructure</li>
+                <li data-i18n="vaultMeshIndex4">Data Flow and Claim Lifecycle</li>
+                <li data-i18n="vaultMeshIndex5">Tiering, Royalties, and Compliance</li>
+                <li data-i18n="vaultMeshIndex6">Integration with FAA.Zone™</li>
+                <li data-i18n="vaultMeshIndex7">Market Segments & Use Cases</li>
+                <li data-i18n="vaultMeshIndex8">Revenue Streams & Monetization</li>
+                <li data-i18n="vaultMeshIndex9">Technology Roadmap</li>
+                <li data-i18n="vaultMeshIndex10">Team & Governance</li>
+            </ul>
+
+            <div class="vaultmesh-main-content">
+                <div class="vaultmesh-container-section">
+                    <h3 data-i18n="vaultMeshSection1Title">1. Introduction to VaultMesh™</h3>
+                    <p data-i18n="vaultMeshSection1Desc">VaultMesh™ transforms disorganized digital content into claimable, trackable assets. It bridges enterprise content systems, decentralized data vaults, and monetization layers through FAA-compliant infrastructure.</p>
+                    <button class="generate-insight-btn p-2 mt-4 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors duration-200">✨ Generate Insight</button>
+                    <div class="insight-output mt-4 p-3 bg-gray-50 rounded-lg dark:bg-gray-800"></div>
+                    <div class="vaultmesh-iframe-wrapper">
+                        <iframe srcdoc='<!DOCTYPE html><html><head><style>body { margin: 0; overflow: hidden; background-color: #000; display: flex; justify-content: center; align-items: center; } canvas { display: block; background-color: #000; width: 100%; height: 100%; }</style></head><body><canvas id="pulseCanvas"></canvas><script>const canvas = document.getElementById("pulseCanvas"); const ctx = canvas.getContext("2d"); let width, height; const setCanvasSize = () => { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }; setCanvasSize(); window.addEventListener("resize", setCanvasSize); let hue = 200; let radius = 0; let maxRadius = Math.min(width, height) * 0.3; let minRadius = maxRadius * 0.2; let growing = true; let pulseSpeed = 0.05; class Particle { constructor(x, y, color, size, velocity) { this.x = x; this.y = y; this.color = color; this.size = size; this.velocity = velocity; this.alpha = 1; } draw() { ctx.save(); ctx.globalAlpha = this.alpha; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fillStyle = this.color; ctx.fill(); ctx.restore(); } update() { this.x += this.velocity.x; this.y += this.velocity.y; this.alpha -= 0.01; this.size *= 0.98; } } let particles = []; function animatePulse() { ctx.clearRect(0, 0, width, height); if (growing) { radius += pulseSpeed * 5; if (radius > maxRadius) { radius = maxRadius; growing = false; } } else { radius -= pulseSpeed * 5; if (radius < minRadius) { radius = minRadius; growing = true; } } hue = (hue + 0.5) % 360; const color = `hsla(${hue}, 100%, 50%, 0.7)`; ctx.beginPath(); ctx.arc(width / 2, height / 2, radius, 0, Math.PI * 2); ctx.fillStyle = color; ctx.fill(); const glowRadius = radius + (maxRadius - radius) * 0.2; const glowAlpha = 0.5 - (Math.abs(radius - (minRadius + maxRadius) / 2) / ((maxRadius - minRadius) / 2)) * 0.5; ctx.beginPath(); ctx.arc(width / 2, height / 2, glowRadius, 0, Math.PI * 2); ctx.strokeStyle = `hsla(${hue + 30}, 100%, 60%, ${Math.max(0, glowAlpha)})`; ctx.lineWidth = 5; ctx.stroke(); if (Math.random() < 0.2) { const angle = Math.random() * Math.PI * 2; const speed = Math.random() * 2 + 0.5; const x = width / 2 + Math.cos(angle) * radius; const y = height / 2 + Math.sin(angle) * radius; particles.push(new Particle( x, y, `hsla(${hue + Math.random() * 60}, 100%, 70%, 0.8)`, Math.random() * 2 + 1, { x: Math.cos(angle) * speed, y: Math.sin(angle) * speed } )); } for (let i = 0; i < particles.length; i++) { particles[i].update(); particles[i].draw(); } particles = particles.filter(p => p.alpha > 0.05 && p.size > 0.5); requestAnimationFrame(animatePulse); } animatePulse();</script></body></html>'></iframe>
+                    </div>
+                </div>
+
+                <div class="vaultmesh-container-section">
+                    <h3 data-i18n="vaultMeshSection2Title">2. Core System Components</h3>
+                    <ul class="list-disc ml-6 space-y-1">
+                        <li data-i18n="vaultMeshSection2ListItem1">VaultDNA™: Immutable identifiers for scroll content</li>
+                        <li data-i18n="vaultMeshSection2ListItem2">ClaimRoot™: Origin anchor & timestamp</li>
+                        <li data-i18n="vaultMeshSection2ListItem3">ScrollClaim™ Contracts: Programmable wrappers</li>
+                        <li data-i18n="vaultMeshSection2ListItem4">PulseGrid™ Sync: Real-time scroll presence & sync</li>
+                        <li data-i18n="vaultMeshSection2ListItem5">OmniSignal™: Global scroll verification</li>
+                        <li data-i18n="vaultMeshSection2ListItem6">GhostTrace™ Gen2: Scroll interaction backtrace</li>
+                    </ul>
+                    <button class="generate-insight-btn p-2 mt-4 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors duration-200">✨ Generate Insight</button>
+                    <div class="insight-output mt-4 p-3 bg-gray-50 rounded-lg dark:bg-gray-800"></div>
+                    <div class="vaultmesh-iframe-wrapper">
+                        <iframe srcdoc='<!DOCTYPE html><html><head><style>body { margin: 0; overflow: hidden; background-color: #000; display: flex; justify-content: center; align-items: center; } canvas { display: block; background-color: #000; width: 100%; height: 100%; }</style></head><body><canvas id="pulseCanvas"></canvas><script>const canvas = document.getElementById("pulseCanvas"); const ctx = canvas.getContext("2d"); let width, height; const setCanvasSize = () => { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }; setCanvasSize(); window.addEventListener("resize", setCanvasSize); let hue = 220; let radius = 0; let maxRadius = Math.min(width, height) * 0.3; let minRadius = maxRadius * 0.2; let growing = true; let pulseSpeed = 0.06; class LineParticle { constructor(x, y, color, length, angle, velocity) { this.x = x; this.y = y; this.color = color; this.length = length; this.angle = angle; this.velocity = velocity; this.alpha = 1; } draw() { ctx.save(); ctx.globalAlpha = this.alpha; ctx.beginPath(); ctx.moveTo(this.x, this.y); ctx.lineTo(this.x + Math.cos(this.angle) * this.length, this.y + Math.sin(this.angle) * this.length); ctx.strokeStyle = this.color; ctx.lineWidth = 1.5; ctx.stroke(); ctx.restore(); } update() { this.x += this.velocity.x; this.y += this.velocity.y; this.alpha -= 0.015; this.length *= 0.99; } } let lineParticles = []; function animatePulse() { ctx.clearRect(0, 0, width, height); if (growing) { radius += pulseSpeed * 5; if (radius > maxRadius) { radius = maxRadius; growing = false; } } else { radius -= pulseSpeed * 5; if (radius < minRadius) { radius = minRadius; growing = true; } } hue = (hue + 0.7) % 360; const color = `hsla(${hue}, 100%, 50%, 0.7)`; ctx.beginPath(); ctx.arc(width / 2, height / 2, radius, 0, Math.PI * 2); ctx.fillStyle = color; ctx.fill(); if (Math.random() < 0.15) { const angle = Math.random() * Math.PI * 2; const speed = Math.random() * 3 + 1; const x = width / 2 + Math.cos(angle) * radius; const y = height / 2 + Math.sin(angle) * radius; lineParticles.push(new LineParticle( x, y, `hsla(${hue + Math.random() * 60}, 100%, 70%, 0.8)`, Math.random() * 20 + 10, angle, { x: Math.cos(angle) * speed, y: Math.sin(angle) * speed } )); } for (let i = 0; i < lineParticles.length; i++) { lineParticles[i].update(); lineParticles[i].draw(); } lineParticles = lineParticles.filter(p => p.alpha > 0.05 && p.length > 1); requestAnimationFrame(animatePulse); } animatePulse();</script></body></html>'></iframe>
+                    </div>
+                </div>
+
+                <div class="vaultmesh-container-section">
+                    <h3 data-i18n="vaultMeshSection3Title">3. ScrollClaim™ Infrastructure</h3>
+                    <ul class="list-disc ml-6 space-y-1">
+                        <li data-i18n="vaultMeshSection3ListItem1">Set tier access (e.g., Diamond)</li>
+                        <li data-i18n="vaultMeshSection3ListItem2">Define royalty logic (10–11%)</li>
+                        <li data-i18n="vaultMeshSection3ListItem3">Lock scrolls with PulseGrid™ sync and OmniSignal™</li>
+                        <li data-i18n="vaultMeshSection3ListItem4">Deploy via FAA.Zone™ with compliant ZIP bundles</li>
+                    </ul>
+                    <button class="generate-insight-btn p-2 mt-4 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors duration-200">✨ Generate Insight</button>
+                    <div class="insight-output mt-4 p-3 bg-gray-50 rounded-lg dark:bg-gray-800"></div>
+                    <div class="vaultmesh-iframe-wrapper">
+                        <iframe srcdoc='<!DOCTYPE html><html><head><style>body { margin: 0; overflow: hidden; background-color: #000; display: flex; justify-content: center; align-items: center; } canvas { display: block; background-color: #000; width: 100%; height: 100%; }</style></head><body><canvas id="pulseCanvas"></canvas><script>const canvas = document.getElementById("pulseCanvas"); const ctx = canvas.getContext("2d"); let width, height; const setCanvasSize = () => { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }; setCanvasSize(); window.addEventListener("resize", setCanvasSize); let hue = 240; let radius = 0; let maxRadius = Math.min(width, height) * 0.3; let minRadius = maxRadius * 0.2; let growing = true; let pulseSpeed = 0.04; function animatePulse() { ctx.clearRect(0, 0, width, height); if (growing) { radius += pulseSpeed * 5; if (radius > maxRadius) { radius = maxRadius; growing = false; } } else { radius -= pulseSpeed * 5; if (radius < minRadius) { radius = minRadius; growing = true; } } hue = (hue + 0.3) % 360; const color = `hsla(${hue}, 80%, 60%, 0.7)`; ctx.beginPath(); ctx.arc(width / 2, height / 2, radius, 0, Math.PI * 2); ctx.fillStyle = color; ctx.fill(); for (let i = 1; i <= 3; i++) { const ringRadius = radius + (i * 10); const ringAlpha = 0.5 - (i * 0.1); if (ringRadius < Math.max(width, height) * 0.5) { ctx.beginPath(); ctx.arc(width / 2, height / 2, ringRadius, 0, Math.PI * 2); ctx.strokeStyle = `hsla(${hue + i * 20}, 90%, 70%, ${Math.max(0, ringAlpha)})`; ctx.lineWidth = 2; ctx.stroke(); } } requestAnimationFrame(animatePulse); } animatePulse();</script></body></html>'></iframe>
+                    </div>
+                </div>
+
+                <div class="vaultmesh-container-section">
+                    <h3 data-i18n="vaultMeshSection4Title">4. Data Flow and Claim Lifecycle</h3>
+                    <ul class="list-decimal ml-6 space-y-1">
+                        <li data-i18n="vaultMeshSection4ListItem1">Ingest — content enters VaultMesh™</li>
+                        <li data-i18n="vaultMeshSection4ListItem2">Encode — metadata & VaultDNA™ attached</li>
+                        <li data-i18n="vaultMeshSection4ListItem3">Wrap — ScrollClaim™ smart-wrapped</li>
+                        <li data-i18n="vaultMeshSection4ListItem4">Deploy — FAA.Zone™ push (ZIP, manifest, HTML)</li>
+                        <li data-i18n="vaultMeshSection4ListItem5">Sync — PulseGrid™ status & OmniSignal™ locked</li>
+                        <li data-i18n="vaultMeshSection4ListItem6">Enforce — Royalties, access & scroll activity logged via GhostTrace™</li>
+                    </ul>
+                    <button class="generate-insight-btn p-2 mt-4 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors duration-200">✨ Generate Insight</button>
+                    <div class="insight-output mt-4 p-3 bg-gray-50 rounded-lg dark:bg-gray-800"></div>
+                    <div class="vaultmesh-iframe-wrapper">
+                        <iframe srcdoc='<!DOCTYPE html><html><head><style>body { margin: 0; overflow: hidden; background-color: #000; display: flex; justify-content: center; align-items: center; } canvas { display: block; background-color: #000; width: 100%; height: 100%; }</style></head><body><canvas id="pulseCanvas"></canvas><script>const canvas = document.getElementById("pulseCanvas"); const ctx = canvas.getContext("2d"); let width, height; const setCanvasSize = () => { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }; setCanvasSize(); window.addEventListener("resize", setCanvasSize); let hue = 260; let radius = 0; let maxRadius = Math.min(width, height) * 0.3; let minRadius = maxRadius * 0.2; let growing = true; let pulseSpeed = 0.07; class SquareParticle { constructor(x, y, color, size, velocity) { this.x = x; this.y = y; this.color = color; this.size = size; this.velocity = velocity; this.alpha = 1; this.rotation = Math.random() * Math.PI * 2; this.rotationSpeed = Math.random() * 0.05 - 0.025; } draw() { ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.rotation); ctx.globalAlpha = this.alpha; ctx.fillStyle = this.color; ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size); ctx.restore(); } update() { this.x += this.velocity.x; this.y += this.velocity.y; this.alpha -= 0.01; this.size *= 0.97; this.rotation += this.rotationSpeed; } } let squareParticles = []; function animatePulse() { ctx.clearRect(0, 0, width, height); if (growing) { radius += pulseSpeed * 5; if (radius > maxRadius) { radius = maxRadius; growing = false; } } else { radius -= pulseSpeed * 5; if (radius < minRadius) { radius = minRadius; growing = true; } } hue = (hue + 0.9) % 360; const color = `hsla(${hue}, 90%, 60%, 0.8)`; ctx.beginPath(); ctx.rect(width / 2 - radius / 2, height / 2 - radius / 2, radius, radius); ctx.fillStyle = color; ctx.fill(); if (Math.random() < 0.2) { const angle = Math.random() * Math.PI * 2; const speed = Math.random() * 2 + 1; const x = width / 2 + Math.cos(angle) * radius; const y = height / 2 + Math.sin(angle) * radius; squareParticles.push(new SquareParticle( x, y, `hsla(${hue + Math.random() * 60}, 90%, 70%, 0.8)`, Math.random() * 8 + 4, { x: Math.cos(angle) * speed, y: Math.sin(angle) * speed } )); } for (let i = 0; i < squareParticles.length; i++) { squareParticles[i].update(); squareParticles[i].draw(); } squareParticles = squareParticles.filter(p => p.alpha > 0.05 && p.size > 0.5); requestAnimationFrame(animatePulse); } animatePulse();</script></body></html>'></iframe>
+                    </div>
+                </div>
+
+                <div class="vaultmesh-container-section">
+                    <h3 data-i18n="vaultMeshSection5Title">5. Tiering, Royalties, and Compliance</h3>
+                    <ul class="list-disc ml-6 space-y-1">
+                        <li data-i18n="vaultMeshSection5ListItem1">Diamond Tier: 10–11% royalty enforced</li>
+                        <li data-i18n="vaultMeshSection5ListItem2">SmartWallet Integration: ScrollClaim™ payments and transfers</li>
+                        <li data-i18n="vaultMeshSection5ListItem3">VaultPay™ Tier III: Required for commercial deployments</li>
+                        <li data-i18n="vaultMeshSection5ListItem4">Compliance: FAA scroll ID, ClaimRoot™ hash, and royalty schema</li>
+                    </ul>
+                    <button class="generate-insight-btn p-2 mt-4 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors duration-200">✨ Generate Insight</button>
+                    <div class="insight-output mt-4 p-3 bg-gray-50 rounded-lg dark:bg-gray-800"></div>
+                    <div class="vaultmesh-iframe-wrapper">
+                        <iframe srcdoc='<!DOCTYPE html><html><head><style>body { margin: 0; overflow: hidden; background-color: #000; display: flex; justify-content: center; align-items: center; } canvas { display: block; background-color: #000; width: 100%; height: 100%; }</style></head><body><canvas id="pulseCanvas"></canvas><script>const canvas = document.getElementById("pulseCanvas"); const ctx = canvas.getContext("2d"); let width, height; const setCanvasSize = () => { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }; setCanvasSize(); window.addEventListener("resize", setCanvasSize); let hue = 280; let pulseStrength = 0; let growing = true; let pulseSpeed = 0.08; function animatePulse() { ctx.clearRect(0, 0, width, height); if (growing) { pulseStrength += pulseSpeed; if (pulseStrength > 1) { pulseStrength = 1; growing = false; } } else { pulseStrength -= pulseSpeed; if (pulseStrength < 0) { pulseStrength = 0; growing = true; } } hue = (hue + 1.2) % 360; const color = `hsla(${hue}, 100%, 70%, ${0.5 + pulseStrength * 0.5})`; ctx.fillStyle = color; ctx.fillRect(0, 0, width, height); const centerX = width / 2; const centerY = height / 2; const glowRadius = Math.min(width, height) * 0.15 * pulseStrength; ctx.beginPath(); ctx.arc(centerX, centerY, glowRadius, 0, Math.PI * 2); const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, glowRadius); gradient.addColorStop(0, `hsla(${hue}, 100%, 80%, ${pulseStrength})`); gradient.addColorStop(1, `hsla(${hue}, 100%, 50%, 0)`); ctx.fillStyle = gradient; ctx.fill(); requestAnimationFrame(animatePulse); } animatePulse();</script></body></html>'></iframe>
+                    </div>
+                </div>
+
+                <div class="vaultmesh-container-section">
+                    <h3 data-i18n="vaultMeshSection6Title">6. Integration with FAA.Zone™</h3>
+                    <ul class="list-disc ml-6 space-y-1">
+                        <li data-i18n="vaultMeshSection6ListItem1">Native support for /public/diamond/ structure</li>
+                        <li data-i18n="vaultMeshSection6ListItem2">ZIP, HTML, Manifest deployment bundles</li>
+                        <li data-i18n="vaultMeshSection6ListItem3">ClaimRoot™ timestamp validation</li>
+                        <li data-i18n="vaultMeshSection6ListItem4">Seamless PulseGrid™ auto-sync for live claim state</li>
+                        <li data-i18n="vaultMeshSection6ListItem5">Brand hosting via vault.faa.zone™</li>
+                    </ul>
+                    <button class="generate-insight-btn p-2 mt-4 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors duration-200">✨ Generate Insight</button>
+                    <div class="insight-output mt-4 p-3 bg-gray-50 rounded-lg dark:bg-gray-800"></div>
+                    <div class="vaultmesh-iframe-wrapper">
+                        <iframe srcdoc='<!DOCTYPE html><html><head><style>body { margin: 0; overflow: hidden; background-color: #000; display: flex; justify-content: center; align-items: center; } canvas { display: block; background-color: #000; width: 100%; height: 100%; }</style></head><body><canvas id="pulseCanvas"></canvas><script>const canvas = document.getElementById("pulseCanvas"); const ctx = canvas.getContext("2d"); let width, height; const setCanvasSize = () => { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }; setCanvasSize(); window.addEventListener("resize", setCanvasSize); let hue = 300; let radius = 0; let maxRadius = Math.min(width, height) * 0.3; let minRadius = maxRadius * 0.2; let growing = true; let pulseSpeed = 0.05; class Orb { constructor(x, y, radius, color, velocity) { this.x = x; this.y = y; this.color = color; this.radius = radius; this.velocity = velocity; this.alpha = 1; } draw() { ctx.save(); ctx.globalAlpha = this.alpha; ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fillStyle = this.color; ctx.fill(); ctx.restore(); } update() { this.x += this.velocity.x; this.y += this.velocity.y; this.alpha -= 0.008; this.radius *= 0.995; } } let orbs = []; function animatePulse() { ctx.clearRect(0, 0, width, height); if (growing) { radius += pulseSpeed * 5; if (radius > maxRadius) { radius = maxRadius; growing = false; } } else { radius -= pulseSpeed * 5; if (radius < minRadius) { radius = minRadius; growing = true; } } hue = (hue + 0.6) % 360; const color = `hsla(${hue}, 80%, 60%, 0.7)`; ctx.beginPath(); ctx.arc(width / 2, height / 2, radius, 0, Math.PI * 2); ctx.fillStyle = color; ctx.fill(); if (Math.random() < 0.1) { const numOrbs = Math.floor(Math.random() * 3) + 1; for (let i = 0; i < numOrbs; i++) { const angle = Math.random() * Math.PI * 2; const speed = Math.random() * 1.5 + 0.5; orbs.push(new Orb( width / 2, height / 2, Math.random() * 3 + 1, `hsla(${hue + Math.random() * 60}, 100%, 70%, 0.8)`, { x: Math.cos(angle) * speed, y: Math.sin(angle) * speed } )); } } for (let i = 0; i < orbs.length; i++) { orbs[i].update(); orbs[i].draw(); } orbs = orbs.filter(o => o.alpha > 0.05 && o.radius > 0.5); requestAnimationFrame(animatePulse); } animatePulse();</script></body></html>'></iframe>
+                    </div>
+                </div>
+
+                <div class="vaultmesh-container-section">
+                    <h3 data-i18n="vaultMeshSection7Title">7. Market Segments & Use Cases</h3>
+                    <ul class="list-disc ml-6 space-y-1">
+                        <li data-i18n="vaultMeshSection7ListItem1">GPT Conversations & Expert Threads</li>
+                        <li data-i18n="vaultMeshSection7ListItem2">Knowledge/Training Archives</li>
+                        <li data-i18n="vaultMeshSection7ListItem3">Creative IP Scrolls (music, literature, visuals)</li>
+                        <li data-i18n="vaultMeshSection7ListItem4">GeoSector Deployment Archives</li>
+                        <li data-i18n="vaultMeshSection7ListItem5">Enterprise Scroll Logs & Audit Trails</li>
+                    </ul>
+                    <button class="generate-insight-btn p-2 mt-4 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors duration-200">✨ Generate Insight</button>
+                    <div class="insight-output mt-4 p-3 bg-gray-50 rounded-lg dark:bg-gray-800"></div>
+                    <div class="vaultmesh-iframe-wrapper">
+                        <iframe srcdoc='<!DOCTYPE html><html><head><style>body { margin: 0; overflow: hidden; background-color: #000; display: flex; justify-content: center; align-items: center; } canvas { display: block; background-color: #000; width: 100%; height: 100%; }</style></head><body><canvas id="pulseCanvas"></canvas><script>const canvas = document.getElementById("pulseCanvas"); const ctx = canvas.getContext("2d"); let width, height; const setCanvasSize = () => { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }; setCanvasSize(); window.addEventListener("resize", setCanvasSize); let hue = 320; let pulseIntensity = 0; let growing = true; let pulseSpeed = 0.05; function animatePulse() { ctx.clearRect(0, 0, width, height); if (growing) { pulseIntensity += pulseSpeed; if (pulseIntensity > 1) { pulseIntensity = 1; growing = false; } } else { pulseIntensity -= pulseSpeed; if (pulseIntensity < 0) { pulseIntensity = 0; growing = true; } } hue = (hue + 0.8) % 360; const glowAlpha = pulseIntensity * 0.3; ctx.fillStyle = `hsla(${hue}, 100%, 50%, ${glowAlpha})`; ctx.fillRect(0, 0, width, height); const gridSize = 20 + (1 - pulseIntensity) * 50; const lineWidth = 1 + pulseIntensity * 2; const lineAlpha = 0.2 + pulseIntensity * 0.5; ctx.strokeStyle = `hsla(${hue + 40}, 100%, 80%, ${lineAlpha})`; ctx.lineWidth = lineWidth; for (let x = 0; x <= width; x += gridSize) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke(); } for (let y = 0; y <= height; y += gridSize) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.lineTo(width, y); ctx.stroke(); } requestAnimationFrame(animatePulse); } animatePulse();</script></body></html>'></iframe>
+                    </div>
+                </div>
+
+                <div class="vaultmesh-container-section">
+                    <h3 data-i18n="vaultMeshSection8Title">8. Revenue Streams & Monetization</h3>
+                    <ul class="list-disc ml-6 space-y-1">
+                        <li data-i18n="vaultMeshSection8ListItem1">Diamond Royalties (10–11%)</li>
+                        <li data-i18n="vaultMeshSection8ListItem2">Scroll Packaging Fees</li>
+                        <li data-i18n="vaultMeshSection8ListItem3">VaultMesh™ API Subscriptions</li>
+                        <li data-i18n="vaultMeshSection8ListItem4">PulseGrid™ and OmniSignal™ Licensing</li>
+                    </ul>
+                    <button class="generate-insight-btn p-2 mt-4 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors duration-200">✨ Generate Insight</button>
+                    <div class="insight-output mt-4 p-3 bg-gray-50 rounded-lg dark:bg-gray-800"></div>
+                    <div class="vaultmesh-iframe-wrapper">
+                        <iframe srcdoc='<!DOCTYPE html><html><head><style>body { margin: 0; overflow: hidden; background-color: #000; display: flex; justify-content: center; align-items: center; } canvas { display: block; background-color: #000; width: 100%; height: 100%; }</style></head><body><canvas id="pulseCanvas"></canvas><script>const canvas = document.getElementById("pulseCanvas"); const ctx = canvas.getContext("2d"); let width, height; const setCanvasSize = () => { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }; setCanvasSize(); window.addEventListener("resize", setCanvasSize); let hue = 340; let outerRadius = 0; let innerRadius = 0; let maxOuterRadius = Math.min(width, height) * 0.4; let minOuterRadius = maxOuterRadius * 0.1; let growing = true; let pulseSpeed = 0.06; function animatePulse() { ctx.clearRect(0, 0, width, height); if (growing) { outerRadius += pulseSpeed * 5; if (outerRadius > maxOuterRadius) { outerRadius = maxRadius; growing = false; } } else { outerRadius -= pulseSpeed * 5; if (outerRadius < minOuterRadius) { outerRadius = minRadius; growing = true; } } innerRadius = outerRadius * 0.6; hue = (hue + 1.0) % 360; ctx.beginPath(); ctx.arc(width / 2, height / 2, outerRadius, 0, Math.PI * 2); ctx.strokeStyle = `hsla(${hue}, 100%, 70%, 0.8)`; ctx.lineWidth = 3; ctx.stroke(); ctx.beginPath(); ctx.arc(width / 2, height / 2, innerRadius, 0, Math.PI * 2); ctx.strokeStyle = `hsla(${hue + 40}, 100%, 60%, 0.6)`; ctx.lineWidth = 2; ctx.stroke(); requestAnimationFrame(animatePulse); } animatePulse();</script></body></html>'></iframe>
+                    </div>
+                </div>
+
+                <div class="vaultmesh-container-section">
+                    <h3 data-i18n="vaultMeshSection9Title">9. Technology Roadmap</h3>
+                    <ul class="list-disc ml-6 space-y-1">
+                        <li data-i18n="vaultMeshSection9ListItem1">Q2 2025: ScrollClaim™ v2.2 with multi-claim staking</li>
+                        <li data-i18n="vaultMeshSection9ListItem2">Q3 2025: GhostTrace™ Gen3 with forensic backtrace tooling</li>
+                        <li data-i18n="vaultMeshSection9ListItem3">Q4 2025: Autonomous AI Sector Agents</li>
+                        <li data-i18n="vaultMeshSection9ListItem4">Q1 2026: Inter-vault Federation</li>
+                    </ul>
+                    <button class="generate-insight-btn p-2 mt-4 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors duration-200">✨ Generate Insight</button>
+                    <div class="insight-output mt-4 p-3 bg-gray-50 rounded-lg dark:bg-gray-800"></div>
+                    <div class="vaultmesh-iframe-wrapper">
+                        <iframe srcdoc='<!DOCTYPE html><html><head><style>body { margin: 0; overflow: hidden; background-color: #000; display: flex; justify-content: center; align-items: center; } canvas { display: block; background-color: #000; width: 100%; height: 100%; }</style></head><body><canvas id="pulseCanvas"></canvas><script>const canvas = document.getElementById("pulseCanvas"); const ctx = canvas.getContext("2d"); let width, height; const setCanvasSize = () => { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }; setCanvasSize(); window.addEventListener("resize", setCanvasSize); let hue = 10; let pulseScale = 0; let growing = true; let pulseSpeed = 0.04; class Dot { constructor(x, y, radius, color) { this.x = x; this.y = y; this.radius = radius; this.color = color; this.alpha = 1; } draw() { ctx.save(); ctx.globalAlpha = this.alpha; ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fillStyle = this.color; ctx.fill(); ctx.restore(); } update() { this.alpha -= 0.01; this.radius *= 0.98; } } let dots = []; function animatePulse() { ctx.clearRect(0, 0, width, height); if (growing) { pulseScale += pulseSpeed; if (pulseScale > 1) { pulseScale = 1; growing = false; } } else { pulseScale -= pulseSpeed; if (pulseScale < 0) { pulseScale = 0; growing = true; } } hue = (hue + 0.5) % 360; const currentRadius = Math.min(width, height) * 0.1 * pulseScale; ctx.beginPath(); ctx.arc(width / 2, height / 2, currentRadius, 0, Math.PI * 2); ctx.fillStyle = `hsla(${hue}, 70%, 60%, ${pulseScale * 0.8})`; ctx.fill(); if (Math.random() < 0.1) { const angle = Math.random() * Math.PI * 2; const speed = Math.random() * 2 + 0.5; dots.push(new Dot( width / 2 + Math.cos(angle) * currentRadius, height / 2 + Math.sin(angle) * currentRadius, Math.random() * 2 + 1, `hsla(${hue + Math.random() * 60}, 100%, 70%, 0.8)` )); } for (let i = 0; i < dots.length; i++) { dots[i].update(); dots[i].draw(); } dots = dots.filter(d => d.alpha > 0.05 && d.radius > 0.5); requestAnimationFrame(animatePulse); } animatePulse();</script></body></html>'></iframe>
+                    </div>
+                </div>
+
+                <div class="vaultmesh-container-section">
+                    <h3 data-i18n="vaultMeshSection10Title">10. Team & Governance</h3>
+                    <ul class="list-disc ml-6 space-y-1">
+                        <li data-i18n="vaultMeshSection10ListItem1">FAA-certified engineers (scroll claimers)</li>
+                        <li data-i18n="vaultMeshSection10ListItem2">Scroll Ministers: Compliance + tiering</li>
+                        <li data-i18n="vaultMeshSection10ListItem3">Vault Admins: Metadata + ClaimRoot™ enforcement</li>
+                        <li data-i18n="vaultMeshSection10ListItem4">HSOMNI9000™ Operators: Diamond-tier execution agents</li>
+                    </ul>
+                    <button class="generate-insight-btn p-2 mt-4 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors duration-200">✨ Generate Insight</button>
+                    <div class="insight-output mt-4 p-3 bg-gray-50 rounded-lg dark:bg-gray-800"></div>
+                    <div class="vaultmesh-iframe-wrapper">
+                        <iframe srcdoc='<!DOCTYPE html><html><head><style>body { margin: 0; overflow: hidden; background-color: #000; display: flex; justify-content: center; align-items: center; } canvas { display: block; background-color: #000; width: 100%; height: 100%; }</style></head><body><canvas id="pulseCanvas"></canvas><script>const canvas = document.getElementById("pulseCanvas"); const ctx = canvas.getContext("2d"); let width, height; const setCanvasSize = () => { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }; setCanvasSize(); window.addEventListener("resize", setCanvasSize); let hue = 30; let pulseWave = 0; let pulseSpeed = 0.03; class Ripple { constructor(x, y, startRadius, endRadius, color) { this.x = x; this.y = y; this.color = color; this.alpha = 1; this.speed = (endRadius - startRadius) / 60; } draw() { ctx.save(); ctx.globalAlpha = this.alpha; ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.strokeStyle = this.color; ctx.lineWidth = 2; ctx.stroke(); ctx.restore(); } update() { this.radius += this.speed; this.alpha -= 0.01; } } let ripples = []; function animatePulse() { ctx.clearRect(0, 0, width, height); pulseWave += pulseSpeed; const currentPulseSize = Math.sin(pulseWave) * (Math.min(width, height) * 0.1) + (Math.min(width, height) * 0.2); hue = (hue + 0.5) % 360; const color = `hsla(${hue}, 90%, 60%, 0.8)`; ctx.beginPath(); ctx.arc(width / 2, height / 2, currentPulseSize, 0, Math.PI * 2); ctx.fillStyle = color; ctx.fill(); if (Math.sin(pulseWave) > 0.95 && ripples.length < 5) { ripples.push(new Ripple( width / 2, height / 2, currentPulseSize, Math.min(width, height) * 0.4, `hsla(${hue + 60}, 90%, 70%, 0.8)` )); } for (let i = 0; i < ripples.length; i++) { ripples[i].update(); ripples[i].draw(); } ripples = ripples.filter(r => r.alpha > 0.05 && r.radius < r.endRadius); requestAnimationFrame(animatePulse); } animatePulse();</script></body></html>'></iframe>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-sm mt-10 text-center" data-i18n="exportPlan">📎 This plan can now be exported as HTML, PDF, or ZIP.</p>
+        </div>
+    </section>
+
+    <section id="about" class="py-16 md:py-24 px-6 md:px-12 text-center">
+        <div class="max-w-4xl mx-auto">
+            <h3 class="text-4xl font-bold mb-8" data-i18n="aboutTitle">About Fruitful Innovations</h3>
+            <p class="text-lg leading-relaxed mb-6" data-i18n="aboutPara1">
+                At Fruitful, we believe in a future where technology empowers positive change. Our platform is designed to break down traditional barriers, fostering a collaborative ecosystem where businesses and individuals can thrive while making a meaningful impact on the world.
+            </p>
+            <p class="text-lg leading-relaxed" data-i18n="aboutPara2">
+                We are committed to transparency, sustainability, and innovation, driven by a powerful AI that ensures fairness, efficiency, and personalized experiences for every user. Join us in building a more fruitful planet.
+            </p>
+        </div>
+    </section>
+
+    <section id="cta" class="py-16 md:py-24 px-6 md:px-12 text-center">
+        <div class="max-w-3xl mx-auto">
+            <h3 class="text-4xl font-extrabold mb-8 leading-tight" data-i18n="ctaTitle">
+                Ready to Transform Your Future?
+            </h3>
+            <p class="text-xl mb-10" data-i18n="ctaDesc">
+                Join the Fruitful community today and start your journey towards innovation, connection, and a sustainable tomorrow.
+            </p>
+            <a href="signup.html" class="cta-button" data-i18n="ctaSignUpButton">
+                Sign Up Now
+            </a>
+        </div>
+    </section>
+
+    <footer class="py-8 px-6 md:px-12 text-center">
+        <div class="flex flex-wrap justify-center mb-4 text-sm">
+            <a href="https://footer.global.repo.seedwave.faa.zone/privacy.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerPrivacy">Privacy</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/terms.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerTerms">Terms</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/contact.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerContact">Contact</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/copyright.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerCopyrightLink">Copyright</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/developers.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerDevelopers">Developers</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/vaultmesh.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerVaultMeshLink">VaultMesh</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/fruitful.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerFruitfulLink">Fruitful</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/faa.zone.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerFAAZoneLink">FAA.Zone</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/about.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors" data-i18n="footerAboutLink">About</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/accessibility.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors" data-i18n="footerAccessibility">Accessibility</a>
+        </div>
+        <span data-i18n="footerCopyright">© 2025 FAA™ Treaty System™. All Rights Reserved.</span> <span data-i18n="footerPoweredBy">Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.</span>
+    </footer>
+
+    <script>
+        // Define all sectors data for consistent management
+        const allSectorsData = {
+            "agriculture": { name: "🌱 Agriculture & Biotech", baseUrl: "https://agriculture.seedwave.faa.zone/index.html" },
+            "fsf": { name: "🥦 Food, Soil & Farming", baseUrl: "https://fsf.seedwave.faa.zone/index.html" },
+            "banking": { name: "🏦 Banking & Finance", baseUrl: "https://banking.seedwave.faa.zone/index.html" },
+            "creative": { name: "🖋️ Creative Tech", baseUrl: "https://creative.seedwave.faa.zone/index.html" },
+            "logistics": { name: "📦 Logistics & Packaging", baseUrl: "https://logistics.seedwave.faa.zone/index.html" },
+            "education-ip": { name: "📚 Education & IP", baseUrl: "https://education-ip.seedwave.faa.zone/index.html" },
+            "fashion": { name: "✂ Fashion & Identity", baseUrl: "https://fashion.seedwave.faa.zone/index.html" },
+            "gaming": { name: "🎮 Gaming & Simulation", baseUrl: "https://gaming.seedwave.faa.zone/index.html" },
+            "health-hygiene": { name: "🧴 Health & Hygiene", baseUrl: "https://health.seedwave.faa.zone/index.html" },
+            "housing": { name: "🏗️ Housing & Infrastructure", baseUrl: "https://housing.seedwave.faa.zone/index.html" },
+            "justice": { name: "⚖ Justice & Ethics", baseUrl: "https://justice.seedwave.faa.zone/index.html" },
+            "knowledge": { name: "🧠 Knowledge & Archives", baseUrl: "https://knowledge.seedwave.faa.zone/index.html" },
+            "micromesh": { name: "☰ Micro-Mesh Logistics", baseUrl: "https://micromesh.seedwave.faa.zone/index.html" },
+            "media": { name: "🎬 Motion, Media & Sonic", baseUrl: "https://media-sonic.seedwave.faa.zone/index.html" },
+            "nutrition": { name: "✿ Nutrition & Food Chain", baseUrl: "https://nutrition.seedwave.faa.zone/index.html" },
+            "ai-logic": { name: "🧠 AI, Logic & Grid Systems", baseUrl: "https://ai-logic.seedwave.faa.zone/index.html" },
+            "packaging": { name: "📦 Packaging & Materials", baseUrl: "https://packaging.seedwave.faa.zone/index.html" },
+            "quantum": { name: "✴️ Quantum Protocols", baseUrl: "https://quantum.seedwave.faa.zone/index.html" },
+            "ritual": { name: "☯ Ritual & Culture", baseUrl: "https://ritual.seedwave.faa.zone/index.html" },
+            "saas": { name: "🔑 SaaS & Licensing", baseUrl: "https://saas.seedwave.faa.zone/index.html" },
+            "trade": { name: "🧺 Trade Systems", baseUrl: "https://trade.seedwave.faa.zone/index.html" },
+            "utilities": { name: "🔋 Utilities & Energy", baseUrl: "https://utilities.seedwave.faa.zone/index.html" },
+            "voice": { name: "🎙️ Voice & Audio", baseUrl: "https://voice.seedwave.faa.zone/index.html" },
+            "webless": { name: "📡 Webless Tech & Nodes", baseUrl: "https://webless.seedwave.faa.zone/index.html" },
+            "nft": { name: "🔁 NFT & Ownership", baseUrl: "https://nft.seedwave.faa.zone/index.html" },
+            "education-youth": { name: "🎓 Education & Youth", baseUrl: "https://education-youth.seedwave.faa.zone/index.html" },
+            "zerowaste": { name: "♻️ Zero Waste", baseUrl: "https://zerowaste.seedwave.faa.zone/index.html" },
+            "professional": { name: "🧾 Professional Services", baseUrl: "https://professional.seedwave.faa.zone/index.html" },
+            "payroll-mining": { name: "💰 Payroll Mining & Accounting", baseUrl: "https://payroll-mining.seedwave.faa.zone/index.html" },
+            "mining": { name: "⛏️ Mining & Resources", baseUrl: "https://mining.seedwave.faa.zone/index.html" },
+            "wildlife": { name: "🚁 Wildlife Sector", baseUrl: "https://wildlife.seedwave.faa.zone/index.html" },
+
+            // NEW SECTORS ADDED (these will remain as scrolls unless explicitly moved)
+            "robotics": { name: "🤖 Robotics & Automation", baseUrl: "https://robotics.seedwave.faa.zone/index.html" },
+            "space-tech": { name: "🚀 Space Technology", baseUrl: "https://space-tech.seedwave.faa.zone/index.html" },
+            "biometrics": { name: "👁️ Biometrics & Security", baseUrl: "https://biometrics.seedwave.faa.zone/index.html" },
+            "smart-cities": { name: "🏙️ Smart Cities", baseUrl: "https://smart-cities.seedwave.faa.zone/index.html" },
+            "toynest": { name: "🧸 Fruitful Smart Toys™ 🌈", baseUrl: "https://toynest.seedwave.faa.zone/dashboard.html" },
+            "lesotho": { name: "🇱🇸 Lesotho: A Kingdom's Future, A Chief's Vision", baseUrl: "https://lesotho.faa.zone/index.html" },
+
+            // Top-level custom domains (from seedwave-menu-nest, now treated as terminals)
+            "faa.zone": { name: "🌐 FAA.Zone Portal", baseUrl: "https://faa.zone/index.html" },
+            "seedwave": { name: "🌱 Seedwave Platform", baseUrl: "https://seedwave.faa.zone/welocme.html" },
+            "vaultmesh": { name: "🔐 VaultMesh", baseUrl: "https://vaultmesh.faa.zone/index.html" },
+            "baobab": { name: "🌳 Baobab Network", baseUrl: "https://baobab.faa.zone/index.html" },
+            "fruitful": { name: "🍎 Fruitful Global", baseUrl: "https://fruitful.faa.zone/index.html" },
+            "samfox": { name: "🦊 SamFox Initiative", baseUrl: "https://samfox.faa.zone/global_templates/hotstack.html" },
+            "tripot": { name: "🧪 Tripot Innovations", baseUrl: "https://tripot.faa.zone/index.html" },
+            "legal": { name: "⚖️ Legal & Compliance", baseUrl: "https://legal.faa.zone/index.html" },
+            "omnigrid": { name: "🔗 OmniGrid System", baseUrl: "https://fruitful.faa.zone/omnigrid.html" },
+            "portal": { name: "🏛️ Central Portal", baseUrl: "https://portal.faa.zone/index.html" },
+            "careers": { name: "💼 Careers at Fruitful", baseUrl: "https://faa.zone/careers/hiring-homepage.html" },
+            "payment": { name: "💳 Secure Payments", baseUrl: "https://payment.faa.zone/fruitful_payment.html" },
+            "noodle.juice": { name: "🍜 Noodle Juice", baseUrl: "https://noodle.juice.faa.zone/fruitful_music.html" },
+            "admin-panel": { name: "⚙️ Admin & Manual Sync Panel", baseUrl: "https://seedwave.faa.zone/admin-panel.html" }, // Moved here as a terminal
+        };
+
+        // Language Data (English, Spanish, French, Arabic, Chinese)
+        const languageData = {
+            en: {
+                pageTitle: '🌱Fruitful Innovations - Your Future, Today',
+                fruitfulBrand: 'Fruitful™',
+                navFeatures: 'Features',
+                navSignal: 'Signal',
+                navVault: 'Vault',
+                navTreaty: 'Treaty',
+                navVaultMesh: 'VaultMesh',
+                navAbout: 'About',
+                navCrateDance: 'Fruitful Crate Dance',
+                navCareers: 'Careers',
+                navSecureSign: 'SecureSign',
+                navSignUp: 'Sign Up',
+                heroHeadline: 'Innovate. Connect. <span>Thrive.</span>',
+                heroDescription: "Discover a new era of collaboration and sustainable growth with Fruitful's cutting-edge platform.",
+                ctaExplore: 'Explore Ecosystem',
+                ctaBaobab: 'Baobab Network',
+                ctaCrateDance: 'Fruitful Crate Dance',
+                ctaAdminLogin: 'Admin Login',
+                ctaContactUs: 'Contact Us',
+                featuresHeadline: 'Unlock Your Potential with Our Core Features',
+                featureAIInsightTitle: 'AI-Powered Insights',
+                featureAIInsightDesc: 'Leverage advanced AI to gain deep insights, optimize operations, and make smarter decisions.',
+                featureCollaborationTitle: 'Global Collaboration',
+                featureCollaborationDesc: 'Connect with thousands of independent brands and partners worldwide, fostering a network of mutual growth.',
+                featureSustainableTitle: 'Sustainable Solutions',
+                featureSustainableDesc: 'Champion eco-friendly practices and contribute to a healthier planet through our curated marketplace.',
+                featureSecureVaultMeshTitle: 'Secure VaultMesh™',
+                featureSecureVaultMeshDesc: 'Protect your data and transactions with our state-of-the-art blockchain-inspired security protocols.',
+                featureAnalyticsTitle: 'Real-time Analytics',
+                featureAnalyticsDesc: 'Monitor your progress and impact with intuitive dashboards and real-time performance metrics.',
+                featureOmniScrollTitle: 'OmniScroll Integration',
+                featureOmniScrollDesc: 'Seamlessly integrate with our OmniScroll ledger for transparent and efficient record-keeping.',
+                signalTitle: 'FAA™ Share Signal',
+                signalLastUpdated: 'Last updated: <span id="timestamp">Live</span>',
+                seedwaveTitle: '🌱 Seedwave Brand Growth 🌱',
+                founderGlyphTitle: '🧬 Founder\'s Glyph™',
+                founderGlyphPara1: 'FAA™ wasn’t built like a typical startup. It emerged — out of silence, out of signal, out of glyphs and patterns that refused to be ignored. What you\'re seeing isn\'t a site. It’s a vault interface. A codebase of culture. A trust-machine powered by real human intelligence.',
+                founderGlyphPara2: 'Where others scale with speed, we scale with meaning. Every brand here agreed to something deeper than growth — they signed a Treaty. That’s why this isn’t eCommerce. It’s TreatyCommerce™.',
+                founderGlyphSignature: '— Written from the edge of code & culture 🌍 FAA.Zone Founder Glyph Activated™',
+                sectorTerminalsTitle: '🔐 Sector Terminals',
+                terminalVaultMaster: '🦍 VaultMaster Terminal',
+                terminalCubeLattice: '🧱 Cube Lattice GPT',
+                terminalGlobalView: '🌍 Global View GPT',
+                terminalFreightOps: '🚚 Freight Ops GPT',
+                terminalLoopWatch: '♻️ Loop Watch GPT',
+                terminalSeedwave: '🌱 Seedwave GPT',
+                terminalDistribution: '📦 Distribution GPT',
+                terminalSignal: '🔐 Signal GPT',
+                terminalFAABrands: '📦 7038 FAA Brands',
+                // NEW TERMINAL NAMES FOR TRANSLATION
+                terminalFAAZonePortal: '🌐 FAA.Zone Portal',
+                terminalSeedwavePlatform: '🌱 Seedwave Platform',
+                terminalFruitfulGlobal: '🍎 Fruitful Global',
+                terminalOmniGridSystem: '🔗 OmniGrid System',
+                terminalCentralPortal: '🏛️ Central Portal',
+                terminalLegalCompliance: '⚖️ Legal & Compliance',
+                terminalVaultMeshPlatform: '🔐 VaultMesh',
+                terminalBaobabNetwork: '🌳 Baobab Network',
+                terminalSamFoxInitiative: '🦊 SamFox Initiative',
+                terminalTripotInnovations: '🧪 Tripot Innovations',
+                terminalNoodleJuice: '🍜 Noodle Juice',
+                terminalSecurePayments: '💳 Secure Payments',
+                terminalCareersAtFruitful: '💼 Careers at Fruitful',
+                terminalAdminPanel: '⚙️ Admin & Manual Sync Panel',
+
+                sectorScrollsTitle: '🧬 Sector Scrolls',
+                treatySystemTitle: '📜 Treaty System™',
+                treatySystemDesc: 'The FAA™ Treaty Layer binds interface to intention. This is not UI. This is glyph-encoded law.',
+                treatySystemQuote: '"FAA™ isn\'t a site. It\'s the shape of alignment — and 🦍 holds the flame."',
+                vaultMeshSummaryTitle: '🧠 VaultMesh™: Executive Summary',
+                vaultMeshSummaryPara1: 'VaultMesh™ is an intelligent data orchestration framework designed for the segmentation, synchronization, and secure deployment of high-value digital assets—referred to as scrolls—across decentralized and permissioned networks such as FAA.Zone™.',
+                vaultMeshSummaryListItem1: 'Captures metadata-rich content streams (chats, code, brands, assets)',
+                vaultMeshSummaryListItem2: 'Assigns them to programmable claim structures (ScrollClaims™)',
+                vaultMeshSummaryListItem3: 'Secures their lineage using OmniSignal™, PulseGrid™, and GhostTrace™ layers',
+                vaultMeshSummaryListItem4: 'Enforces royalty logic, scroll integrity, and traceability on-chain and off-grid',
+                vaultMeshSummaryPara2: 'VaultMesh™ powers high-tier operations like HSOMNI9000™, enabling Diamond-tier deployments, cross-sector scroll claims, and enterprise-scale content monetization with full compliance and provenance.',
+                vaultMeshSummaryPara3: 'The framework is deeply integrated with platforms such as <code>vault.faa.zone™</code>, where scrolls tied to brands like Fruitful Global Planet™ are securely hosted, organized into structured sectors, and deployed through FAA.Zone™-compliant channels.',
+                vaultMeshSummaryPara4: 'A critical operator in this ecosystem is HSOMNI9000™, the certified scroll class which governs Diamond-tier logic, enforces 10–11% royalty triggers, and auto-deploys ScrollClaims™ with real-time ClaimRoot™ verification.',
+                vaultMeshIndexTitle: '📖 VaultMesh™ Index',
+                vaultMeshIndex1: 'Introduction to VaultMesh™',
+                vaultMeshIndex2: 'Core System Components',
+                vaultMeshIndex3: 'ScrollClaim™ Infrastructure',
+                vaultMeshIndex4: 'Data Flow and Claim Lifecycle',
+                vaultMeshIndex5: 'Tiering, Royalties, and Compliance',
+                vaultMeshIndex6: 'Integration with FAA.Zone™',
+                vaultMeshIndex7: 'Market Segments & Use Cases',
+                vaultMeshIndex8: 'Revenue Streams & Monetization',
+                vaultMeshIndex9: 'Technology Roadmap',
+                vaultMeshIndex10: 'Team & Governance',
+                vaultMeshSection1Title: '1. Introduction to VaultMesh™',
+                vaultMeshSection1Desc: 'VaultMesh™ transforms disorganized digital content into claimable, trackable assets. It bridges enterprise content systems, decentralized data vaults, and monetization layers through FAA-compliant infrastructure.',
+                vaultMeshSection2Title: '2. Core System Components',
+                vaultMeshSection2ListItem1: 'VaultDNA™: Immutable identifiers for scroll content',
+                vaultMeshSection2ListItem2: 'ClaimRoot™: Origin anchor & timestamp',
+                vaultMeshSection2ListItem3: 'ScrollClaim™ Contracts: Programmable wrappers',
+                vaultMeshSection2ListItem4: 'PulseGrid™ Sync: Real-time scroll presence & sync',
+                vaultMeshSection2ListItem5: 'OmniSignal™: Global scroll verification',
+                vaultMeshSection2ListItem6: 'GhostTrace™ Gen2: Scroll interaction backtrace',
+                vaultMeshSection3Title: '3. ScrollClaim™ Infrastructure',
+                vaultMeshSection3ListItem1: 'Set tier access (e.g., Diamond)',
+                vaultMeshSection3ListItem2: 'Define royalty logic (10–11%)',
+                vaultMeshSection3ListItem3: 'Lock scrolls with PulseGrid™ sync and OmniSignal™',
+                vaultMeshSection3ListItem4: 'Deploy via FAA.Zone™ with compliant ZIP bundles',
+                vaultMeshSection4Title: '4. Data Flow and Claim Lifecycle',
+                vaultMeshSection4ListItem1: 'Ingest — content enters VaultMesh™',
+                vaultMeshSection4ListItem2: 'Encode — metadata & VaultDNA™ attached',
+                vaultMeshSection4ListItem3: 'Wrap — ScrollClaim™ smart-wrapped',
+                vaultMeshSection4ListItem4: 'Deploy — FAA.Zone™ push (ZIP, manifest, HTML)',
+                vaultMeshSection4ListItem5: 'Sync — PulseGrid™ status & OmniSignal™ locked',
+                vaultMeshSection4ListItem6: 'Enforce — Royalties, access & scroll activity logged via GhostTrace™',
+                vaultMeshSection5Title: '5. Tiering, Royalties, and Compliance',
+                vaultMeshSection5ListItem1: 'Diamond Tier: 10–11% royalty enforced',
+                vaultMeshSection5ListItem2: 'SmartWallet Integration: ScrollClaim™ payments and transfers',
+                vaultMeshSection5ListItem3: 'VaultPay™ Tier III: Required for commercial deployments',
+                vaultMeshSection5ListItem4: 'Compliance: FAA scroll ID, ClaimRoot™ hash, and royalty schema',
+                vaultMeshSection6Title: '6. Integration with FAA.Zone™',
+                vaultMeshSection6ListItem1: 'Native support for /public/diamond/ structure',
+                vaultMeshSection6ListItem2: 'ZIP, HTML, Manifest deployment bundles',
+                vaultMeshSection6ListItem3: 'ClaimRoot™ timestamp validation',
+                vaultMeshSection6ListItem4: 'Seamless PulseGrid™ auto-sync for live claim state',
+                vaultMeshSection6ListItem5: 'Brand hosting via vault.faa.zone™',
+                vaultMeshSection7Title: '7. Market Segments & Use Cases',
+                vaultMeshSection7ListItem1: 'GPT Conversations & Expert Threads',
+                vaultMeshSection7ListItem2: 'Knowledge/Training Archives',
+                vaultMeshSection7ListItem3: 'Creative IP Scrolls (music, literature, visuals)',
+                vaultMeshSection7ListItem4: 'GeoSector Deployment Archives',
+                vaultMeshSection7ListItem5: 'Enterprise Scroll Logs & Audit Trails',
+                vaultMeshSection8Title: '8. Revenue Streams & Monetization',
+                vaultMeshSection8ListItem1: 'Diamond Royalties (10–11%)',
+                vaultMeshSection8ListItem2: 'Scroll Packaging Fees',
+                vaultMeshSection8ListItem3: 'VaultMesh™ API Subscriptions',
+                vaultMeshSection8ListItem4: 'PulseGrid™ and OmniSignal™ Licensing',
+                vaultMeshSection9Title: '9. Technology Roadmap',
+                vaultMeshSection9ListItem1: 'Q2 2025: ScrollClaim™ v2.2 with multi-claim staking',
+                vaultMeshSection9ListItem2: 'Q3 2025: GhostTrace™ Gen3 with forensic backtrace tooling',
+                vaultMeshSection9ListItem3: 'Q4 2025: Autonomous AI Sector Agents',
+                vaultMeshSection9ListItem4: 'Q1 2026: Inter-vault Federation',
+                vaultMeshSection10Title: '10. Team & Governance',
+                vaultMeshSection10ListItem1: 'FAA-certified engineers (scroll claimers)',
+                vaultMeshSection10ListItem2: 'Scroll Ministers: Compliance + tiering',
+                vaultMeshSection10ListItem3: 'Vault Admins: Metadata + ClaimRoot™ enforcement',
+                vaultMeshSection10ListItem4: 'HSOMNI9000™ Operators: Diamond-tier execution agents',
+                exportPlan: '📎 This plan can now be exported as HTML, PDF, or ZIP.',
+                aboutTitle: 'About Fruitful Innovations',
+                aboutPara1: 'At Fruitful, we believe in a future where technology empowers positive change. Our platform is designed to break down traditional barriers, fostering a collaborative ecosystem where businesses and individuals can thrive while making a meaningful impact on the world.',
+                aboutPara2: 'We are committed to transparency, sustainability, and innovation, driven by a powerful AI that ensures fairness, efficiency, and personalized experiences for every user. Join us in building a more fruitful planet.',
+                ctaTitle: 'Ready to Transform Your Future?',
+                ctaDesc: 'Join the Fruitful community today and start your journey towards innovation, connection, and a sustainable tomorrow.',
+                ctaSignUpButton: 'Sign Up Now',
+                generateInsightButton: 'Generate Insight',
+                footerCopyright: '© 2025 FAA™ Treaty System™. All Rights Reserved.',
+                footerPoweredBy: 'Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.',
+                // NEW SECTOR NAMES FOR TRANSLATION
+                robotics: '🤖 Robotics & Automation',
+                spaceTech: '🚀 Space Technology',
+                biometrics: '👁️ Biometrics & Security',
+                smartCities: '🏙️ Smart Cities',
+                payrollMining: '💰 Payroll Mining & Accounting', // Updated name
+                adminPanel: '⚙️ Admin & Manual Sync Panel', // Updated name
+                wildlifeSector: '🚁 Wildlife Sector', // Updated name
+                educationIP: '📚 Education & IP', // Updated name
+                healthHygiene: '🧴 Health & Hygiene', // Updated name
+                toynest: '🧸 Fruitful Smart Toys™ 🌈', // New sector added
+                lesotho: '🇱🇸 Lesotho: A Kingdom\'s Future, A Chief\'s Vision', // New sector added
+            },
+            es: {
+                pageTitle: '🌱Fruitful Innovations - Tu Futuro, Hoy',
+                fruitfulBrand: 'Fruitful™',
+                navFeatures: 'Características',
+                navSignal: 'Señal',
+                navVault: 'Bóveda',
+                navTreaty: 'Tratado',
+                navVaultMesh: 'VaultMesh',
+                navAbout: 'Nosotros',
+                navCrateDance: 'Danza de Cestas Frutales',
+                navCareers: 'Carreras',
+                navSecureSign: 'Firma Segura',
+                navSignUp: 'Registrarse',
+                heroHeadline: 'Innova. Conecta. <span>Prospera.</span>',
+                heroDescription: "Descubre una nueva era de colaboración y crecimiento sostenible con la innovadora plataforma de Fruitful.",
+                ctaExplore: 'Explorar Ecosistema',
+                ctaBaobab: 'Red Baobab',
+                ctaCrateDance: 'Danza de Cestas Frutales',
+                ctaAdminLogin: 'Acceso de Administrador',
+                ctaContactUs: 'Contáctanos',
+                featuresHeadline: 'Libera Tu Potencial con Nuestras Características Clave',
+                featureAIInsightTitle: 'Insights Impulsados por IA',
+                featureAIInsightDesc: 'Aprovecha la IA avanzada para obtener información profunda, optimizar operaciones y tomar decisiones más inteligentes.',
+                featureCollaborationTitle: 'Colaboración Global',
+                featureCollaborationDesc: 'Conéctate con miles de marcas y socios independientes en todo el mundo, fomentando una red de crecimiento mutuo.',
+                featureSustainableTitle: 'Soluciones Sostenibles',
+                featureSustainableDesc: 'Promueve prácticas ecológicas y contribuye a un planeta más saludable a través de nuestro mercado curado.',
+                featureSecureVaultMeshTitle: 'VaultMesh™ Seguro',
+                featureSecureVaultMeshDesc: 'Protege tus datos y transacciones con nuestros protocolos de seguridad de última generación inspirados en blockchain.',
+                featureAnalyticsTitle: 'Análisis en Tiempo Real',
+                featureAnalyticsDesc: 'Monitorea tu progreso e impacto con paneles intuitivos y métricas de rendimiento en tiempo real.',
+                featureOmniScrollTitle: 'Integración OmniScroll',
+                featureOmniScrollDesc: 'Integra sin problemas con nuestro libro mayor OmniScroll para un registro transparente y eficiente.',
+                signalTitle: 'Señal de Acciones de FAA™',
+                signalLastUpdated: 'Última actualización: <span id="timestamp">En vivo</span>',
+                seedwaveTitle: '🌱 Crecimiento de Marca Seedwave 🌱',
+                founderGlyphTitle: '🧬 Glifo del Fundador™',
+                founderGlyphPara1: 'FAA™ no fue construida como una startup típica. Surgió — del silencio, de la señal, de glifos y patrones que se negaron a ser ignorados. Lo que ves no es un sitio. Es una interfaz de bóveda. Una base de código de cultura. Una máquina de confianza impulsada por inteligencia humana real.',
+                founderGlyphPara2: 'Donde otros escalan con velocidad, nosotros escalamos con significado. Every brand here agreed to something deeper than growth — they signed a Treaty. That’s why this isn’t eCommerce. It’s TreatyCommerce™.',
+                founderGlyphSignature: '— Escrito desde el borde del código y la cultura 🌍 Glifo del Fundador de FAA.Zone™ Activado',
+                sectorTerminalsTitle: '🔐 Terminales de Sector',
+                terminalVaultMaster: '🦍 Terminal VaultMaster',
+                terminalCubeLattice: '🧱 Rejilla de Cubos GPT',
+                terminalGlobalView: '🌍 Vista Global GPT',
+                terminalFreightOps: '🚚 Operaciones de Carga GPT',
+                terminalLoopWatch: '♻️ Vigilancia de Bucle GPT',
+                terminalSeedwave: '🌱 Seedwave GPT',
+                terminalDistribution: '📦 Distribución GPT',
+                terminalSignal: '🔐 Señal GPT',
+                terminalFAABrands: '📦 7038 Marcas FAA',
+                // NEW TERMINAL NAMES FOR TRANSLATION
+                terminalFAAZonePortal: '🌐 Portal FAA.Zone',
+                terminalSeedwavePlatform: '🌱 Plataforma Seedwave',
+                terminalFruitfulGlobal: '🍎 Fruitful Global',
+                terminalOmniGridSystem: '🔗 Sistema OmniGrid',
+                terminalCentralPortal: '🏛️ Portal Central',
+                terminalLegalCompliance: '⚖️ Legal y Cumplimiento',
+                terminalVaultMeshPlatform: '🔐 VaultMesh',
+                terminalBaobabNetwork: '🌳 Red Baobab',
+                terminalSamFoxInitiative: '🦊 Iniciativa SamFox',
+                terminalTripotInnovations: '🧪 Innovaciones Tripot',
+                terminalNoodleJuice: '🍜 Noodle Juice',
+                terminalSecurePayments: '💳 Pagos Seguros',
+                terminalCareersAtFruitful: '💼 Carreras en Fruitful',
+                terminalAdminPanel: '⚙️ Panel de Administración y Sincronización Manual',
+
+                sectorScrollsTitle: '🧬 Scrolls de Sector',
+                treatySystemTitle: '📜 Sistema de Tratados™',
+                treatySystemDesc: 'La Capa de Tratados de FAA™ une la interfaz con la intención. Esto no es UI. Esto es ley codificada por glifos.',
+                treatySystemQuote: '"FAA™ no es un sitio. Es la forma de la alineación — y 🦍 sostiene la llama."',
+                vaultMeshSummaryTitle: '🧠 VaultMesh™: Resumen Ejecutivo',
+                vaultMeshSummaryPara1: 'VaultMesh™ es un marco de orquestación de datos inteligente diseñado para la segmentación, sincronización y despliegue seguro de activos digitales de alto valor—denominados scrolls—a través de redes descentralizadas y permisionadas como FAA.Zone™.',
+                vaultMeshSummaryListItem1: 'Captura flujos de contenido ricos en metadatos (chats, código, marcas, activos)',
+                vaultMeshSummaryListItem2: 'Los asigna a estructuras de reclamación programables (ScrollClaims™)',
+                vaultMeshSummaryListItem3: 'Asegura su linaje utilizando las capas OmniSignal™, PulseGrid™ y GhostTrace™',
+                vaultMeshSummaryListItem4: 'Aplica lógica de regalías, integridad de scrolls y trazabilidad en cadena y fuera de la red',
+                vaultMeshSummaryPara2: 'VaultMesh™ impulsa operaciones de alto nivel como HSOMNI9000™, permitiendo despliegues de nivel Diamante, reclamaciones de scrolls intersectoriales y monetización de contenido a escala empresarial con total cumplimiento y procedencia.',
+                vaultMeshSummaryPara3: 'El marco está profundamente integrado con plataformas como <code>vault.faa.zone™</code>, donde los scrolls vinculados a marcas como Fruitful Global Planet™ se alojan de forma segura, se organizan en sectores estructurados y se despliegan a través de canales compatibles con FAA.Zone™.',
+                vaultMeshSummaryPara4: 'Un operador crítico en este ecosistema es HSOMNI9000™, la clase de scroll certificada que rige la lógica de nivel Diamante, aplica disparadores de regalías del 10–11% y despliega automáticamente ScrollClaims™ con verificación en tiempo real de ClaimRoot™.',
+                vaultMeshIndexTitle: '📖 Índice de VaultMesh™',
+                vaultMeshIndex1: 'Introducción a VaultMesh™',
+                vaultMeshIndex2: 'Componentes del Sistema Central',
+                vaultMeshIndex3: 'Infraestructura de ScrollClaim™',
+                vaultMeshIndex4: 'Flujo de Datos y Ciclo de Vida de la Reclamación',
+                vaultMeshIndex5: 'Nivelación, Regalías y Cumplimiento',
+                vaultMeshIndex6: 'Integración con FAA.Zone™',
+                vaultMeshIndex7: 'Segmentos de Mercado y Casos de Uso',
+                vaultMeshIndex8: 'Fuentes de Ingresos y Monetización',
+                vaultMeshIndex9: 'Hoja de Ruta Tecnológica',
+                vaultMeshIndex10: 'Equipo y Gobernanza',
+                vaultMeshSection1Title: '1. Introducción a VaultMesh™',
+                vaultMeshSection1Desc: 'VaultMesh™ transforma el contenido digital desorganizado en activos reclamables y rastreables. Une sistemas de contenido empresarial, bóvedas de datos descentralizadas y capas de monetización a través de una infraestructura compatible con FAA.',
+                vaultMeshSection2Title: '2. Componentes del Sistema Central',
+                vaultMeshSection2ListItem1: 'VaultDNA™: Identificadores inmutables para el contenido del scroll',
+                vaultMeshSection2ListItem2: 'ClaimRoot™: Anclaje de origen y marca de tiempo',
+                vaultMeshSection2ListItem3: 'Contratos ScrollClaim™: Envolturas programables',
+                vaultMeshSection2ListItem4: 'Sincronización PulseGrid™: Presencia y sincronización del scroll en tiempo real',
+                vaultMeshSection2ListItem5: 'OmniSignal™: Verificación global del scroll',
+                vaultMeshSection2ListItem6: 'GhostTrace™ Gen2: Rastreo inverso de la interacción del scroll',
+                vaultMeshSection3Title: '3. Búsqueda de ScrollClaim™',
+                vaultMeshSection3ListItem1: 'Establecer acceso por nivel (p. ej., Diamante)',
+                vaultMeshSection3ListItem2: 'Definir la lógica de regalías (10–11%)',
+                vaultMeshSection3ListItem3: 'Bloquear scrolls con sincronización PulseGrid™ y OmniSignal™',
+                vaultMeshSection3ListItem4: 'Desplegar a través de FAA.Zone™ con paquetes ZIP compatibles',
+                vaultMeshSection4Title: '4. Flujo de Datos y Ciclo de Vida de la Reclamación',
+                vaultMeshSection4ListItem1: 'Ingestar — el contenido entra en VaultMesh™',
+                vaultMeshSection4ListItem2: 'Codificar — metadatos y VaultDNA™ adjuntos',
+                vaultMeshSection4ListItem3: 'Envolver — ScrollClaim™ con envoltura inteligente',
+                vaultMeshSection4ListItem4: 'Desplegar — envío a FAA.Zone™ (ZIP, manifiesto, HTML)',
+                vaultMeshSection4ListItem5: 'Muzamien — estado de PulseGrid™ y OmniSignal™ bloqueados',
+                vaultMeshSection4ListItem6: 'Aplicar — Regalías, acceso y actividad del scroll registrados a través de GhostTrace™',
+                vaultMeshSection5Title: '5. Nivelación, Regalías y Cumplimiento',
+                vaultMeshSection5ListItem1: 'Nivel Diamante: Regalías del 10–11% aplicadas',
+                vaultMeshSection5ListItem2: 'Integración SmartWallet: Pagos y transferencias de ScrollClaim™',
+                vaultMeshSection5ListItem3: 'VaultPay™ Nivel III: Requerido para despliegues comerciales',
+                vaultMeshSection5ListItem4: 'Cumplimiento: ID de scroll de FAA, hash de ClaimRoot™ y esquema de regalías',
+                vaultMeshSection6Title: '6. Integración con FAA.Zone™',
+                vaultMeshSection6ListItem1: 'Soporte nativo para la estructura /public/diamond/',
+                vaultMeshSection6ListItem2: 'Paquetes de despliegue ZIP, HTML, Manifiesto',
+                vaultMeshSection6ListItem3: 'Validación de marca de tiempo de ClaimRoot™',
+                vaultMeshSection6ListItem4: 'Sincronización automática sin problemas de PulseGrid™ para el estado de reclamación en vivo',
+                vaultMeshSection6ListItem5: 'Alojamiento de marca a través de vault.faa.zone™',
+                vaultMeshSection7Title: '7. Segmentos de Mercado y Casos de Uso',
+                vaultMeshSection7ListItem1: 'Conversaciones GPT y Hilos de Expertos',
+                vaultMeshSection7ListItem2: 'Archivos de Conocimiento/Formación',
+                vaultMeshSection7ListItem3: 'Scrolls de Propiedad Intelectual Creativa (música, literatura, visuales)',
+                vaultMeshSection7ListItem4: 'Archivos de Despliegue GeoSector',
+                vaultMeshSection7ListItem5: 'Registros de Scrolls Empresariales y Pistas de Auditoría',
+                vaultMeshSection8Title: '8. Fuentes de Ingresos y Monetización',
+                vaultMeshSection8ListItem1: 'Regalías de Diamante (10–11%)',
+                vaultMeshSection8ListItem2: 'Tarifas de Embalaje de Scrolls',
+                vaultMeshSection8ListItem3: 'Suscripciones a la API de VaultMesh™',
+                vaultMeshSection8ListItem4: 'Licencias de PulseGrid™ y OmniSignal™',
+                vaultMeshSection9Title: '9. Hoja de Ruta Tecnológica',
+                vaultMeshSection9ListItem1: 'Q2 2025: ScrollClaim™ v2.2 con stake de múltiples reclamaciones',
+                vaultMeshSection9ListItem2: 'Q3 2025: GhostTrace™ Gen3 con herramientas forenses de rastreo inverso',
+                vaultMeshSection9ListItem3: 'Q4 2025: Agentes Autónomos de IA de Sector',
+                vaultMeshSection9ListItem4: 'Q1 2026: Federación Inter-bóveda',
+                vaultMeshSection10Title: '10. Equipo y Gobernanza',
+                vaultMeshSection10ListItem1: 'Ingenieros certificados por la FAA (reclamantes de scrolls)',
+                vaultMeshSection10ListItem2: 'Ministros de Scrolls: Cumplimiento + nivelación',
+                vaultMeshSection10ListItem3: 'Administradores de Bóvedas: Metadatos + aplicación de ClaimRoot™',
+                vaultMeshSection10ListItem4: 'Operadores HSOMNI9000™: Agentes de ejecución de nivel Diamante',
+                exportPlan: '📎 Este plan can now be exported as HTML, PDF, or ZIP。',
+                aboutTitle: 'About Fruitful Innovations',
+                aboutPara1: 'At Fruitful, we believe in a future where technology empowers positive change. Our platform is designed to break down traditional barriers, fostering a collaborative ecosystem where businesses and individuals can thrive while making a meaningful impact on the world.',
+                aboutPara2: 'We are committed to transparency, sustainability, and innovation, driven by a powerful AI that ensures fairness, efficiency, and personalized experiences for every user. Join us in building a more fruitful planet.',
+                ctaTitle: 'Ready to Transform Your Future?',
+                ctaDesc: 'Join the Fruitful community today and start your journey towards innovation, connection, and a sustainable tomorrow.',
+                ctaSignUpButton: 'Sign Up Now',
+                generateInsightButton: 'Generate Insight',
+                footerCopyright: '© 2025 FAA™ Treaty System™. All Rights Reserved.',
+                footerPoweredBy: 'Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.',
+                // NEW SECTOR NAMES FOR TRANSLATION
+                robotics: '🤖 Robotics & Automation',
+                spaceTech: '🚀 Space Technology',
+                biometrics: '👁️ Biometrics & Security',
+                smartCities: '🏙️ Smart Cities',
+                payrollMining: '💰 Payroll Mining & Accounting', // Updated name
+                adminPanel: '⚙️ Admin & Manual Sync Panel', // Updated name
+                wildlifeSector: '🚁 Wildlife Sector', // Updated name
+                educationIP: '📚 Education & IP', // Updated name
+                healthHygiene: '🧴 Health & Hygiene', // Updated name
+                toynest: '🧸 Fruitful Smart Toys™ 🌈', // New sector added
+                lesotho: '🇱🇸 Lesotho: A Kingdom\'s Future, A Chief\'s Vision', // New sector added
+            },
+            fr: {
+                pageTitle: '🌱Fruitful Innovations - Votre Futur, Aujourd\'hui',
+                fruitfulBrand: 'Fruitful™',
+                navFeatures: 'Fonctionnalités',
+                navSignal: 'Signal',
+                navVault: 'Coffre',
+                navTreaty: 'Traité',
+                navVaultMesh: 'VaultMesh',
+                navAbout: 'À propos',
+                navCrateDance: 'Danse de Caisse Fruitful',
+                navCareers: 'Carrières',
+                navSecureSign: 'Signature Sécurisée',
+                navSignUp: 'S\'inscrire',
+                heroHeadline: 'Innover. Connecter. <span>Prospérer.</span>',
+                heroDescription: "Découvrez une nouvelle ère de collaboration et de croissance durable avec la plateforme de pointe de Fruitful.",
+                ctaExplore: 'Explorer l\'écosystème',
+                ctaBaobab: 'Réseau Baobab',
+                ctaCrateDance: 'Danse de Caisse Fruitful',
+                ctaAdminLogin: 'Connexion Admin',
+                ctaContactUs: 'Nous contacter',
+                featuresHeadline: 'Libérez Votre Potentiel avec Nos Fonctionnalités Clés',
+                featureAIInsightTitle: 'Insights basés sur l\'IA',
+                featureAIInsightDesc: 'Tirez parti de l\'IA avancée pour obtenir des informations approfondies, optimiser les opérations et prendre des décisions plus intelligentes.',
+                featureCollaborationTitle: 'Collaboration Mondiale',
+                featureCollaborationDesc: 'Connectez-vous avec des milliers de marques et de partenaires indépendants dans le monde entier, favorisant un réseau de croissance mutuelle.',
+                featureSustainableTitle: 'Solutions Durables',
+                featureSustainableDesc: 'Promouvez les pratiques respectueuses de l\'environnement et contribuez à une planète plus saine grâce à notre marché sélectionné.',
+                featureSecureVaultMeshTitle: 'VaultMesh™ Sécurisé',
+                featureSecureVaultMeshDesc: 'Protégez vos données et transactions avec nos protocoles de sécurité de pointe inspirés de la blockchain.',
+                featureAnalyticsTitle: 'Analyses en Temps Réel',
+                featureAnalyticsDesc: 'Surveillez vos progrès et votre impact avec des tableaux de bord intuitifs et des métriques de performance en temps réel.',
+                featureOmniScrollTitle: 'Intégration OmniScroll',
+                featureOmniScrollDesc: 'Intégrez en toute transparence avec notre grand livre OmniScroll pour une tenue de registres transparente et efficace.',
+                signalTitle: 'Signal d\'actions FAA™',
+                signalLastUpdated: 'Dernière mise à jour: <span id="timestamp">En direct</span>',
+                seedwaveTitle: '🌱 Croissance de la Marque Seedwave 🌱',
+                founderGlyphTitle: '🧬 Glyphe du Fondateur™',
+                founderGlyphPara1: 'FAA™ n\'a pas été construite comme une startup typique. Elle a émergé — du silence, du signal, des glyphes et des motifs qui ont refusé d\'être ignorés. Ce que vous voyez n\'est pas un site. C\'est une interface de coffre-fort. Une base de code de culture. Une machine de confiance alimentée par une intelligence humaine réelle.',
+                founderGlyphPara2: 'Là où d\'autres évoluent avec la vitesse, nous évoluons avec le sens. Chaque marque ici a accepté quelque chose de plus profond que la croissance — elle a signé un Traité. C\'est pourquoi ce n\'est pas du commerce électronique. C\'est du TreatyCommerce™.',
+                founderGlyphSignature: '— Écrit depuis la frontière du code et de la culture 🌍 Glyphe du Fondateur de FAA.Zone™ Activé',
+                sectorTerminalsTitle: '🔐 Terminaux de Secteur',
+                terminalVaultMaster: '🦍 Terminal VaultMaster',
+                terminalCubeLattice: '🧱 Cube Lattice GPT',
+                terminalGlobalView: '🌍 Vue Mondiale GPT',
+                terminalFreightOps: '🚚 Opérations de Fret GPT',
+                terminalLoopWatch: '♻️ Surveillance de Boucle GPT',
+                terminalSeedwave: '🌱 Seedwave GPT',
+                terminalDistribution: '📦 Distribution GPT',
+                terminalSignal: '🔐 Signal GPT',
+                terminalFAABrands: '📦 7038 Marques FAA',
+                terminalFAAZonePortal: '🌐 Portail FAA.Zone',
+                terminalSeedwavePlatform: '🌱 Plateforme Seedwave',
+                terminalFruitfulGlobal: '🍎 Fruitful Global',
+                terminalOmniGridSystem: '🔗 Système OmniGrid',
+                terminalCentralPortal: '🏛️ Portail Central',
+                terminalLegalCompliance: '⚖️ Conformité Légale',
+                terminalVaultMeshPlatform: '🔐 VaultMesh',
+                terminalBaobabNetwork: '🌳 Réseau Baobab',
+                terminalSamFoxInitiative: '🦊 Initiative SamFox',
+                terminalTripotInnovations: '🧪 Innovations Tripot',
+                terminalNoodleJuice: '🍜 Noodle Juice',
+                terminalSecurePayments: '💳 Paiements Sécurisés',
+                terminalCareersAtFruitful: '💼 Carrières chez Fruitful',
+                terminalAdminPanel: '⚙️ Panneau Admin & Synchronisation Manuelle',
+                sectorScrollsTitle: '🧬 Scrolls de Secteur',
+                treatySystemTitle: '📜 Système de Traité™',
+                treatySystemDesc: 'La couche de traité FAA™ lie l\'interface à l\'intention. Ce n\'est pas une UI. C\'est une loi encodée par glyphe.',
+                treatySystemQuote: '"FAA™ n\'est pas un site. C\'est la forme de l\'alignement — et 🦍 tient la flamme."',
+                vaultMeshSummaryTitle: '🧠 VaultMesh™: Résumé Exécutif',
+                vaultMeshSummaryPara1: 'VaultMesh™ est un cadre d\'orchestration de données intelligent conçu pour la segmentation, la synchronisation et le déploiement sécurisé d\'actifs numériques de grande valeur—appelés scrolls—à travers des réseaux décentralisés et permissionnés tels que FAA.Zone™.',
+                vaultMeshSummaryListItem1: 'Capture les flux de contenu riches en métadonnées (chats, code, marques, actifs)',
+                vaultMeshSummaryListItem2: 'Les attribue à des structures de réclamation programmables (ScrollClaims™)',
+                vaultMeshSummaryListItem3: 'Sécurise leur lignée en utilisant les couches OmniSignal™, PulseGrid™ et GhostTrace™',
+                vaultMeshSummaryListItem4: 'Applique la logique de redevance, l\'intégrité des scrolls et la traçabilité on-chain et off-grid',
+                vaultMeshSummaryPara2: 'VaultMesh™ alimente les opérations de haut niveau comme HSOMNI9000™, permettant des déploiements de niveau Diamant, des réclamations de scrolls intersectorielles et la monétisation de contenu à l\'échelle de l\'entreprise avec une conformité et une provenance complètes.',
+                vaultMeshSummaryPara3: 'Le cadre est profondément intégré aux plateformes telles que <code>vault.faa.zone™</code>, où les scrolls liés à des marques comme Fruitful Global Planet™ sont hébergés en toute sécurité, organisés en secteurs structurés et déployés via des canaux conformes à FAA.Zone™.',
+                vaultMeshSummaryPara4: 'Un opérateur critique dans cet écosystème est HSOMNI9000™, la classe de scroll certifiée qui régit la logique de niveau Diamant, applique des déclencheurs de redevance de 10 à 11 % et déploie automatiquement les ScrollClaims™ avec une vérification en temps réel de ClaimRoot™.',
+                vaultMeshIndexTitle: '📖 Index VaultMesh™',
+                vaultMeshIndex1: 'Introduction à VaultMesh™',
+                vaultMeshIndex2: 'Composants du Système Central',
+                vaultMeshIndex3: 'Infrastructure ScrollClaim™',
+                vaultMeshIndex4: 'Flux de Données et Cycle de Vie des Réclamations',
+                vaultMeshIndex5: 'Nivellement, Redevances et Conformité',
+                vaultMeshIndex6: 'Intégration avec FAA.Zone™',
+                vaultMeshIndex7: 'Segments de Marché et Cas d\'Utilisation',
+                vaultMeshIndex8: 'Sources de Revenus et Monétisation',
+                vaultMeshIndex9: 'Feuille de Route Technologique',
+                vaultMeshIndex10: 'Équipe et Gouvernance',
+                vaultMeshSection1Title: '1. Introduction à VaultMesh™',
+                vaultMeshSection1Desc: 'VaultMesh™ transforme le contenu numérique désorganisé en actifs réclamables et traçables. Il relie les systèmes de contenu d\'entreprise, les coffres-forts de données décentralisés et les couches de monétisation via une infrastructure conforme à la FAA.',
+                vaultMeshSection2Title: '2. Composants du Système Central',
+                vaultMeshSection2ListItem1: 'VaultDNA™: Identifiants immuables pour le contenu des scrolls',
+                vaultMeshSection2ListItem2: 'ClaimRoot™: Ancre d\'origine et horodatage',
+                vaultMeshSection2ListItem3: 'Contrats ScrollClaim™: Wrappers programmables',
+                vaultMeshSection2ListItem4: 'Synchronisation PulseGrid™: Présence et synchronisation des scrolls en temps réel',
+                vaultMeshSection2ListItem5: 'OmniSignal™: Vérification globale des scrolls',
+                vaultMeshSection2ListItem6: 'GhostTrace™ Gen2: Traçage arrière des interactions des scrolls',
+                vaultMeshSection3Title: '3. Infrastructure ScrollClaim™',
+                vaultMeshSection3ListItem1: 'Définir l\'accès par niveau (ex: Diamant)',
+                vaultMeshSection3ListItem2: 'Définir la logique de redevance (10-11%)',
+                vaultMeshSection3ListItem3: 'Verrouiller les scrolls avec la synchronisation PulseGrid™ et OmniSignal™',
+                vaultMeshSection3ListItem4: 'Déployer via FAA.Zone™ avec des bundles ZIP conformes',
+                vaultMeshSection4Title: '4. Flux de Données et Cycle de Vie des Réclamations',
+                vaultMeshSection4ListItem1: 'Ingérer — le contenu entre dans VaultMesh™',
+                vaultMeshSection4ListItem2: 'Encoder — métadonnées et VaultDNA™ attachés',
+                vaultMeshSection4ListItem3: 'Envelopper — ScrollClaim™ smart-wrapped',
+                vaultMeshSection4ListItem4: 'Déployer — push FAA.Zone™ (ZIP, manifeste, HTML)',
+                vaultMeshSection4ListItem5: 'Synchroniser — statut PulseGrid™ et OmniSignal™ verrouillés',
+                vaultMeshSection4ListItem6: 'Appliquer — Redevances, accès et activité des scrolls enregistrés via GhostTrace™',
+                vaultMeshSection5Title: '5. Nivellement, Redevances et Conformité',
+                vaultMeshSection5ListItem1: 'Niveau Diamant: 10–11% de redevance appliquée',
+                vaultMeshSection5ListItem2: 'Intégration SmartWallet: Paiements et transferts de ScrollClaim™',
+                vaultMeshSection5ListItem3: 'VaultPay™ Niveau III: Requis pour les déploiements commerciaux',
+                vaultMeshSection5ListItem4: 'Conformité: ID de scroll FAA, hachage ClaimRoot™ et schéma de redevance',
+                vaultMeshSection6Title: '6. Intégration avec FAA.Zone™',
+                vaultMeshSection6ListItem1: 'Support natif pour la structure /public/diamond/',
+                vaultMeshSection6ListItem2: 'Bundles de déploiement ZIP, HTML, Manifeste',
+                vaultMeshSection6ListItem3: 'Validation de l\'horodatage ClaimRoot™',
+                vaultMeshSection6ListItem4: 'Synchronisation automatique fluide de PulseGrid™ pour l\'état de réclamation en direct',
+                vaultMeshSection6ListItem5: 'Hébergement de marque via vault.faa.zone™',
+                vaultMeshSection7Title: '7. Segments de Marché et Cas d\'Utilisation',
+                vaultMeshSection7ListItem1: 'Conversations GPT et Fils d\'Experts',
+                vaultMeshSection7ListItem2: 'Archives de Connaissances/Formation',
+                vaultMeshSection7ListItem3: 'Scrolls IP Créatifs (musique, littérature, visuels)',
+                vaultMeshSection7ListItem4: 'Archives de Déploiement GeoSector',
+                vaultMeshSection7ListItem5: 'Journaux de Scrolls d\'Entreprise et Pistes d\'Audit',
+                vaultMeshSection8Title: '8. Sources de Revenus et Monétisation',
+                vaultMeshSection8ListItem1: 'Redevances Diamant (10–11%)',
+                vaultMeshSection8ListItem2: 'Frais d\'Emballage de Scrolls',
+                vaultMeshSection8ListItem3: 'Abonnements API VaultMesh™',
+                vaultMeshSection8ListItem4: 'Licences PulseGrid™ et OmniSignal™',
+                vaultMeshSection9Title: '9. Feuille de Route Technologique',
+                vaultMeshSection9ListItem1: 'T2 2025: ScrollClaim™ v2.2 avec staking multi-réclamations',
+                vaultMeshSection9ListItem2: 'T3 2025: GhostTrace™ Gen3 avec outils de traçage forensique',
+                vaultMeshSection9ListItem3: 'T4 2025: Agents de Secteur IA Autonomes',
+                vaultMeshSection9ListItem4: 'T1 2026: Fédération Inter-coffres',
+                vaultMeshSection10Title: '10. Équipe et Gouvernance',
+                vaultMeshSection10ListItem1: 'Ingénieurs certifiés FAA (réclamants de scrolls)',
+                vaultMeshSection10ListItem2: 'Ministres des Scrolls: Conformité + nivellement',
+                vaultMeshSection10ListItem3: 'Admins de Coffre: Métadonnées + application de ClaimRoot™',
+                vaultMeshSection10ListItem4: 'Opérateurs HSOMNI9000™: Agents d\'exécution de niveau Diamant',
+                exportPlan: '📎 Ce plan peut maintenant être exporté en HTML, PDF ou ZIP.',
+                aboutTitle: 'À propos de Fruitful Innovations',
+                aboutPara1: 'Chez Fruitful, nous croyons en un avenir où la technologie favorise un changement positif. Notre plateforme est conçue pour abattre les barrières traditionnelles, favorisant un écosystème collaboratif où les entreprises et les individus peuvent prospérer tout en ayant un impact significatif sur le monde.',
+                aboutPara2: 'Nous nous engageons en faveur de la transparence, de la durabilité et de l\'innovation, animés par une IA puissante qui garantit l\'équité, l\'efficacité et des expériences personnalisées pour chaque utilisateur. Rejoignez-nous pour construire une planète plus fructueuse.',
+                ctaTitle: 'Prêt à Transformer Votre Futur?',
+                ctaDesc: 'Rejoignez la communauté Fruitful aujourd\'hui et commencez votre voyage vers l\'innovation, la connexion et un avenir durable.',
+                ctaSignUpButton: 'S\'inscrire Maintenant',
+                generateInsightButton: 'Générer un Insight',
+                footerCopyright: '© 2025 FAA™ Treaty System™. Tous droits réservés.',
+                footerPoweredBy: 'Propulsé par 🦍 glyphes + API Vault. Synchronisé avec Seedwave™.',
+                robotics: '🤖 Robotique & Automatisation',
+                spaceTech: '🚀 Technologie Spatiale',
+                biometrics: '👁️ Biométrie & Sécurité',
+                smartCities: '🏙️ Villes Intelligentes',
+                payrollMining: '💰 Minage de Paie & Comptabilité',
+                adminPanel: '⚙️ Panneau Admin & Synchronisation Manuelle',
+                wildlifeSector: '🚁 Secteur Faune',
+                educationIP: '📚 Éducation & IP',
+                healthHygiene: '🧴 Santé & Hygiène',
+                toynest: '🧸 Jouets Intelligents Fruitful™ 🌈',
+                lesotho: '🇱🇸 Lesotho: Vision d\'un Royaume, Vision d\'un Chef',
+            },
+            ar: {
+                pageTitle: '🌱ابتكارات مثمرة - مستقبلك، اليوم',
+                fruitfulBrand: 'Fruitful™',
+                navFeatures: 'الميزات',
+                navSignal: 'الإشارة',
+                navVault: 'الخزنة',
+                navTreaty: 'المعاهدة',
+                navVaultMesh: 'فولت ميش',
+                navAbout: 'حول',
+                navCrateDance: 'رقصة صندوق فواكه',
+                navCareers: 'الوظائف',
+                navSecureSign: 'توقيع آمن',
+                navSignUp: 'التسجيل',
+                heroHeadline: 'ابتكر. اتصل. <span>ازدهر.</span>',
+                heroDescription: "اكتشف حقبة جديدة من التعاون والنمو المستدام مع منصة Fruitful المتطورة.",
+                ctaExplore: 'استكشف النظام البيئي',
+                ctaBaobab: 'شبكة باوباب',
+                ctaCrateDance: 'رقصة صندوق فواكه',
+                ctaAdminLogin: 'تسجيل دخول المسؤول',
+                ctaContactUs: 'اتصل بنا',
+                featuresHeadline: 'أطلق العنان لإمكانياتك مع ميزاتنا الأساسية',
+                featureAIInsightTitle: 'رؤى مدعومة بالذكاء الاصطناعي',
+                featureAIInsightDesc: 'استفد من الذكاء الاصطناعي المتقدم للحصول على رؤى عميقة وتحسين العمليات واتخاذ قرارات أكثر ذكاءً.',
+                featureCollaborationTitle: 'التعاون العالمي',
+                featureCollaborationDesc: 'تواصل مع الآلاف من العلامات التجارية والشركاء المستقلين في جميع أنحاء العالم، مما يعزز شبكة من النمو المتبادل.',
+                featureSustainableTitle: 'حلول مستدامة',
+                featureSustainableDesc: 'ادعم الممارسات الصديقة للبيئة وساهم في كوكب أكثر صحة من خلال سوقنا المنسق.',
+                featureSecureVaultMeshTitle: 'VaultMesh™ آمن',
+                featureSecureVaultMeshDesc: 'احمِ بياناتك ومعاملاتك باستخدام بروتوكولات الأمان المتطورة المستوحاة من blockchain.',
+                featureAnalyticsTitle: 'تحليلات في الوقت الفعلي',
+                featureAnalyticsDesc: 'راقب تقدمك وتأثيرك باستخدام لوحات معلومات بديهية ومقاييس أداء في الوقت الفعلي.',
+                featureOmniScrollTitle: 'تكامل OmniScroll',
+                featureOmniScrollDesc: 'تكامل بسلاسة مع دفتر الأستاذ OmniScroll الخاص بنا لحفظ السجلات بشفافية وكفاءة.',
+                signalTitle: 'إشارة سهم FAA™',
+                signalLastUpdated: 'آخر تحديث: <span id="timestamp">مباشر</span>',
+                seedwaveTitle: '🌱 نمو العلامة التجارية Seedwave 🌱',
+                founderGlyphTitle: '🧬 رمز المؤسس™',
+                founderGlyphPara1: 'لم يتم بناء FAA™ كشركة ناشئة نموذجية. لقد ظهرت - من الصمت، من الإشارة، من الرموز والأنماط التي رفضت أن يتم تجاهلها. ما تراه ليس موقعًا. إنها واجهة قبو. قاعدة بيانات ثقافية. آلة ثقة مدعومة بالذكاء البشري الحقيقي.',
+                founderGlyphPara2: 'حيث يتوسع الآخرون بالسرعة، نحن نتوسع بالمعنى. وافقت كل علامة تجارية هنا على شيء أعمق من النمو - لقد وقعوا معاهدة. لهذا السبب هذا ليس تجارة إلكترونية. إنها تجارة معاهدة™.',
+                founderGlyphSignature: '— كُتب من حافة الكود والثقافة 🌍 تم تفعيل رمز مؤسس FAA.Zone™',
+                sectorTerminalsTitle: '🔐 محطات القطاع',
+                terminalVaultMaster: '🦍 محطة VaultMaster',
+                terminalCubeLattice: '🧱 شبكة المكعبات GPT',
+                terminalGlobalView: '🌍 عرض عالمي GPT',
+                terminalFreightOps: '🚚 عمليات الشحن GPT',
+                terminalLoopWatch: '♻️ مراقبة الحلقة GPT',
+                terminalSeedwave: '🌱 Seedwave GPT',
+                terminalDistribution: '📦 توزيع GPT',
+                terminalSignal: '🔐 إشارة GPT',
+                terminalFAABrands: '📦 7038 علامة تجارية FAA',
+                terminalFAAZonePortal: '🌐 بوابة FAA.Zone',
+                terminalSeedwavePlatform: '🌱 منصة Seedwave',
+                terminalFruitfulGlobal: '🍎 Fruitful Global',
+                terminalOmniGridSystem: '🔗 نظام OmniGrid',
+                terminalCentralPortal: '🏛️ البوابة المركزية',
+                terminalLegalCompliance: '⚖️ قانوني وامتثال',
+                terminalVaultMeshPlatform: '🔐 VaultMesh',
+                terminalBaobabNetwork: '🌳 شبكة باوباب',
+                terminalSamFoxInitiative: '🦊 مبادرة SamFox',
+                terminalTripotInnovations: '🧪 ابتكارات Tripot',
+                terminalNoodleJuice: '🍜 Nضودل جوس',
+                terminalSecurePayments: '💳 المدفوعات الآمنة',
+                terminalCareersAtFruitful: '💼 وظائف في Fruitful',
+                terminalAdminPanel: '⚙️ لوحة الإدارة والمزامنة اليدوية',
+                sectorScrollsTitle: '🧬 لفائف القطاع',
+                treatySystemTitle: '📜 نظام المعاهدة™',
+                treatySystemDesc: 'تربط طبقة معاهدة FAA™ الواجهة بالنية. هذه ليست واجهة مستخدم. هذا قانون مشفر بالرموز.',
+                treatySystemQuote: '"FAA™ ليس موقعًا. إنه شكل التوافق - و 🦍 يحمل الشعلة."',
+                vaultMeshSummaryTitle: '🧠 VaultMesh™: ملخص تنفيذي',
+                vaultMeshSummaryPara1: 'VaultMesh™ هو إطار عمل ذكي لتنسيق البيانات مصمم لتجزئة الأصول الرقمية عالية القيمة—المشار إليها باسم اللفائف—ومزامنتها ونشرها بشكل آمن عبر الشبكات اللامركزية والمصرح بها مثل FAA.Zone™.',
+                vaultMeshSummaryListItem1: 'يلتقط تدفقات المحتوى الغنية بالبيانات الوصفية (المحادثات، الرموز، العلامات التجارية، الأصول)',
+                vaultMeshSummaryListItem2: 'يعينها لهياكل المطالبة القابلة للبرمجة (ScrollClaims™)',
+                vaultMeshSummaryListItem3: 'يؤمن سلالتها باستخدام طبقات OmniSignal™ و PulseGrid™ و GhostTrace™',
+                vaultMeshSummaryListItem4: 'يفرض منطق الإتاوات وسلامة اللفائف وإمكانية تتبعها على السلسلة وخارج الشبكة',
+                vaultMeshSummaryPara2: 'يدعم VaultMesh™ العمليات عالية المستوى مثل HSOMNI9000™، مما يتيح عمليات النشر من الفئة الماسية ومطالبات اللفائف عبر القطاعات وتحقيق الدخل من المحتوى على نطاق المؤسسة مع الامتثال الكامل والأصل.',
+                vaultMeshSummaryPara3: 'يتكامل الإطار بعمق مع منصات مثل <code>vault.faa.zone™</code>، حيث يتم استضافة اللفائف المرتبطة بعلامات تجارية مثل Fruitful Global Planet™ بشكل آمن، وتنظيمها في قطاعات منظمة، ونشرها عبر قنوات متوافقة مع FAA.Zone™.',
+                vaultMeshSummaryPara4: 'يعد HSOMNI9000™ عاملًا حاسمًا في هذا النظام البيئي، وهو فئة اللفائف المعتمدة التي تحكم منطق الفئة الماسية، وتفرض مشغلات الإتاوات بنسبة 10-11%، وتنشر ScrollClaims™ تلقائيًا مع التحقق من ClaimRoot™ في الوقت الفعلي.',
+                vaultMeshIndexTitle: '📖 فهرس VaultMesh™',
+                vaultMeshIndex1: 'مقدمة إلى VaultMesh™',
+                vaultMeshIndex2: 'مكونات النظام الأساسية',
+                vaultMeshIndex3: 'البنية التحتية لـ ScrollClaim™',
+                vaultMeshIndex4: 'تدفق البيانات ودورة حياة المطالبة',
+                vaultMeshIndex5: 'التصنيف، الإتاوات، والامتثال',
+                vaultMeshIndex6: 'التكامل مع FAA.Zone™',
+                vaultMeshIndex7: 'قطاعات السوق وحالات الاستخدام',
+                vaultMeshIndex8: 'مصادر الإيرادات وتحقيق الدخل',
+                vaultMeshIndex9: 'خارطة طريق التكنولوجيا',
+                vaultMeshIndex10: 'الفريق والحوكمة',
+                vaultMeshSection1Title: '1. مقدمة إلى VaultMesh™',
+                vaultMeshSection1Desc: 'يحول VaultMesh™ المحتوى الرقمي غير المنظم إلى أصول قابلة للمطالبة والتتبع. إنه يربط أنظمة محتوى المؤسسات وخزائن البيانات اللامركزية وطبقات تحقيق الدخل من خلال بنية تحتية متوافقة مع FAA.',
+                vaultMeshSection2Title: '2. مكونات النظام الأساسية',
+                vaultMeshSection2ListItem1: 'VaultDNA™: معرفات غير قابلة للتغيير لمحتوى اللفائف',
+                vaultMeshSection2ListItem2: 'ClaimRoot™: نقطة ارتكاز الأصل والطابع الزمني',
+                vaultMeshSection2ListItem3: 'عقود ScrollClaim™: أغلفة قابلة للبرمجة',
+                vaultMeshSection2ListItem4: 'مزامنة PulseGrid™: وجود اللفائف ومزامنتها في الوقت الفعلي',
+                vaultMeshSection2ListItem5: 'OmniSignal™: التحقق العالمي من اللفائف',
+                vaultMeshSection2ListItem6: 'GhostTrace™ Gen2: تتبع تفاعل اللفائف',
+                vaultMeshSection3Title: '3. البنية التحتية لـ ScrollClaim™',
+                vaultMeshSection3ListItem1: 'تعيين الوصول إلى الطبقة (مثل Diamond)',
+                vaultMeshSection3ListItem2: 'تحديد منطق الإتاوات (10-11%)',
+                vaultMeshSection3ListItem3: 'قفل اللفائف بمزامنة PulseGrid™ و OmniSignal™',
+                vaultMeshSection3ListItem4: 'النشر عبر FAA.Zone™ مع حزم ZIP متوافقة',
+                vaultMeshSection4Title: '4. تدفق البيانات ودورة حياة المطالبة',
+                vaultMeshSection4ListItem1: 'الاستيعاب - يدخل المحتوى إلى VaultMesh™',
+                vaultMeshSection4ListItem2: 'الترميز - يتم إرفاق البيانات الوصفية و VaultDNA™',
+                vaultMeshSection4ListItem3: 'التغليف - تغليف ScrollClaim™ الذكي',
+                vaultMeshSection4ListItem4: 'النشر - دفع FAA.Zone™ (ZIP، بيان، HTML)',
+                vaultMeshSection4ListItem5: 'المزامنة - حالة PulseGrid™ و OmniSignal™ مقفلة',
+                vaultMeshSection4ListItem6: 'الإنفاذ - الإتاوات والوصول ونشاط اللفائف مسجل عبر GhostTrace™',
+                vaultMeshSection5Title: '5. التصنيف، الإتاوات، والامتثال',
+                vaultMeshSection5ListItem1: 'الطبقة الماسية: يتم فرض إتاوة بنسبة 10-11%',
+                vaultMeshSection5ListItem2: 'تكامل SmartWallet: مدفوعات وتحويلات ScrollClaim™',
+                vaultMeshSection5ListItem3: 'VaultPay™ الطبقة الثالثة: مطلوب لعمليات النشر التجارية',
+                vaultMeshSection5ListItem4: 'الامتثال: معرف FAA لللفائف، تجزئة ClaimRoot™، ومخطط الإتاوات',
+                vaultMeshSection6Title: '6. التكامل مع FAA.Zone™',
+                vaultMeshSection6ListItem1: 'دعم أصلي لهيكل /public/diamond/',
+                vaultMeshSection6ListItem2: 'حزم نشر ZIP، HTML، Manifest',
+                vaultMeshSection6ListItem3: 'التحقق من الطابع الزمني لـ ClaimRoot™',
+                vaultMeshSection6ListItem4: 'مزامنة PulseGrid™ التلقائية السلسة لحالة المطالبة المباشرة',
+                vaultMeshSection6ListItem5: 'استضافة العلامة التجارية عبر vault.faa.zone™',
+                vaultMeshSection7Title: '7. قطاعات السوق وحالات الاستخدام',
+                vaultMeshSection7ListItem1: 'محادثات GPT ومواضيع الخبراء',
+                vaultMeshSection7ListItem2: 'أرشيفات المعرفة/التدريب',
+                vaultMeshSection7ListItem3: 'لفائف الملكية الفكرية الإبداعية (الموسيقى، الأدب، المرئيات)',
+                vaultMeshSection7ListItem4: 'أرشيفات نشر GeoSector',
+                vaultMeshSection7ListItem5: 'سجلات لفائف المؤسسة ومسارات التدقيق',
+                vaultMeshSection8Title: '8. مصادر الإيرادات وتحقيق الدخل',
+                vaultMeshSection8ListItem1: 'إتاوات الماس (10-11%)',
+                vaultMeshSection8ListItem2: 'رسوم تغليف اللفائف',
+                vaultMeshSection8ListItem3: 'اشتراكات VaultMesh™ API',
+                vaultMeshSection8ListItem4: 'ترخيص PulseGrid™ و OmniSignal™',
+                vaultMeshSection9Title: '9. خارطة طريق التكنولوجيا',
+                vaultMeshSection9ListItem1: 'الربع الثاني 2025: ScrollClaim™ v2.2 مع تجميع المطالبات المتعددة',
+                vaultMeshSection9ListItem2: 'الربع الثالث 2025: GhostTrace™ Gen3 مع أدوات التتبع الجنائي',
+                vaultMeshSection9ListItem3: 'الربع الرابع 2025: وكلاء قطاع الذكاء الاصطناعي المستقلون',
+                vaultMeshSection9ListItem4: 'الربع الأول 2026: اتحاد بين الخزائن',
+                vaultMeshSection10Title: '10. الفريق والحوكمة',
+                vaultMeshSection10ListItem1: 'مهندسو FAA المعتمدون (مطالبو اللفائف)',
+                vaultMeshSection10ListItem2: 'وزراء اللفائف: الامتثال + التصنيف',
+                vaultMeshSection10ListItem3: 'مسؤولو الخزائن: البيانات الوصفية + إنفاذ ClaimRoot™',
+                vaultMeshSection10ListItem4: 'مشغلو HSOMNI9000™: وكلاء تنفيذ من الفئة الماسية',
+                exportPlan: '📎 يمكن الآن تصدير هذه الخطة بتنسيق HTML أو PDF أو ZIP.',
+                aboutTitle: 'حول ابتكارات Fruitful',
+                aboutPara1: 'في Fruitful، نؤمن بمستقبل تمكّن فيه التكنولوجيا التغيير الإيجابي. تم تصميم منصتنا لكسر الحواجز التقليدية، وتعزيز نظام بيئي تعاوني حيث يمكن للشركات والأفراد الازدهار مع إحداث تأثير كبير على العالم.',
+                aboutPara2: 'نحن ملتزمون بالشفافية والاستدامة والابتكار، مدفوعين بذكاء اصطناعي قوي يضمن العدالة والكفاءة والتجارب الشخصية لكل مستخدم. انضم إلينا في بناء كوكب أكثر إثمارًا.',
+                ctaTitle: 'هل أنت مستعد لتغيير مستقبلك؟',
+                ctaDesc: 'انضم إلى مجتمع Fruitful اليوم وابدأ رحلتك نحو الابتكار والتواصل ومستقبل مستدام.',
+                ctaSignUpButton: 'سجل الآن',
+                generateInsightButton: 'توليد رؤية',
+                footerCopyright: '© 2025 FAA™ Treaty System™. جميع الحقوق محفوظة.',
+                footerPoweredBy: 'مدعوم بواسطة 🦍 الرموز + Vault API. متزامن مع Seedwave™.',
+                robotics: '🤖 الروبوتات والأتمتة',
+                spaceTech: '🚀 تكنولوجيا الفضاء',
+                biometrics: '👁️ القياسات الحيوية والأمن',
+                smartCities: '🏙️ المدن الذكية',
+                payrollMining: '💰 تعدين الرواتب والمحاسبة',
+                adminPanel: '⚙️ لوحة الإدارة والمزامنة اليدوية',
+                wildlifeSector: '🚁 قطاع الحياة البرية',
+                educationIP: '📚 التعليم والملكية الفكرية',
+                healthHygiene: '🧴 الصحة والنظافة',
+                toynest: '🧸 ألعاب Fruitful الذكية™ 🌈',
+                lesotho: '🇱🇸 ليسوتو: مستقبل مملكة، رؤية رئيس',
+            },
+            // Chinese (zh) translations - full content provided below
+            zh: {
+                pageTitle: '🌱丰硕创新 - 您的未来，从今天开始',
+                fruitfulBrand: 'Fruitful™',
+                navFeatures: '功能',
+                navSignal: '信号',
+                navVault: '金库',
+                navTreaty: '条约',
+                navVaultMesh: '金库网格',
+                navAbout: '关于',
+                navCrateDance: '丰硕板条箱之舞',
+                navCareers: '职业',
+                navSecureSign: '安全签署',
+                navSignUp: '注册',
+                heroHeadline: '创新. 连接. <span>繁荣.</span>',
+                heroDescription: "通过Fruitful的尖端平台，发现协作和可持续发展的新纪元。",
+                ctaExplore: '探索生态系统',
+                ctaBaobab: '猴面包树网络',
+                ctaCrateDance: '丰硕板条箱之舞',
+                ctaAdminLogin: '管理员登录',
+                ctaContactUs: '联系我们',
+                featuresHeadline: '通过我们的核心功能释放您的潜力',
+                featureAIInsightTitle: 'AI驱动的洞察',
+                featureAIInsightDesc: '利用先进的AI获取深度洞察，优化运营，做出更明智的决策。',
+                featureCollaborationTitle: '全球协作',
+                featureCollaborationDesc: '与全球数千个独立品牌和合作伙伴建立联系，培养互惠互利的增长网络。',
+                featureSustainableTitle: '可持续解决方案',
+                featureSustainableDesc: '通过我们精选的市场，倡导环保实践，为更健康的地球做出贡献。',
+                featureSecureVaultMeshTitle: '安全金库网格™',
+                featureSecureVaultMeshDesc: '使用我们最先进的区块链启发式安全协议保护您的数据和交易。',
+                featureAnalyticsTitle: '实时分析',
+                featureAnalyticsDesc: '通过直观的仪表板和实时性能指标监控您的进度和影响。',
+                featureOmniScrollTitle: 'OmniScroll集成',
+                featureOmniScrollDesc: '与我们的OmniScroll账本无缝集成，实现透明高效的记录保存。',
+                signalTitle: 'FAA™ 股票信号',
+                signalLastUpdated: '最后更新: <span id="timestamp">实时</span>',
+                seedwaveTitle: '🌱 Seedwave 品牌成长 🌱',
+                founderGlyphTitle: '🧬 创始人符文™',
+                founderGlyphPara1: 'FAA™并非典型的初创公司。它诞生于寂静、信号、以及那些不容忽视的符文和模式之中。您所看到的并非一个网站。它是一个金库界面。一个文化代码库。一台由真实人类智能驱动的信任机器。',
+                founderGlyphPara2: '当其他人追求速度时，我们追求意义。这里的每一个品牌都同意了比增长更深层的承诺——他们签署了一份条约。这就是为什么这不是电子商务。它是条约商务™。',
+                founderGlyphSignature: '— 撰写于代码与文化边缘 🌍 FAA.Zone 创始人符文已激活™',
+                sectorTerminalsTitle: '🔐 扇区终端',
+                terminalVaultMaster: '🦍 金库主终端',
+                terminalCubeLattice: '🧱 立方晶格GPT',
+                terminalGlobalView: '🌍 全球视图GPT',
+                terminalFreightOps: '🚚 货运操作GPT',
+                terminalLoopWatch: '♻️ 循环监控GPT',
+                terminalSeedwave: '🌱 Seedwave GPT',
+                terminalDistribution: '📦 分布GPT',
+                terminalSignal: '🔐 信号GPT',
+                terminalFAABrands: '📦 7038个FAA品牌',
+                terminalFAAZonePortal: '🌐 FAA.Zone 门户',
+                terminalSeedwavePlatform: '🌱 Seedwave 平台',
+                terminalFruitfulGlobal: '🍎 丰硕全球',
+                terminalOmniGridSystem: '🔗 OmniGrid 系统',
+                terminalCentralPortal: '🏛️ 中央门户',
+                terminalLegalCompliance: '⚖️ 法律与合规',
+                terminalVaultMeshPlatform: '🔐 金库网格',
+                terminalBaobabNetwork: '🌳 猴面包树网络',
+                terminalSamFoxInitiative: '🦊 SamFox 倡议',
+                terminalTripotInnovations: '🧪 Tripot 创新',
+                terminalNoodleJuice: '🍜 Noodle Juice',
+                terminalSecurePayments: '💳 安全支付',
+                terminalCareersAtFruitful: '💼 丰硕职业',
+                terminalAdminPanel: '⚙️ 管理面板与手动同步',
+
+                sectorScrollsTitle: '🧬 扇区卷轴',
+                treatySystemTitle: '📜 条约系统™',
+                treatySystemDesc: 'FAA™ 条约层将界面与意图绑定。这不是用户界面。这是符文编码的法律。',
+                treatySystemQuote: '"FAA™ 不是一个网站。它是对齐的形状——🦍 掌握着火焰。"',
+                vaultMeshSummaryTitle: '🧠 金库网格™：执行摘要',
+                vaultMeshSummaryPara1: 'VaultMesh™ 是一个智能数据编排框架，旨在对高价值数字资产（称为卷轴）进行分段、同步和安全部署，跨越 FAA.Zone™ 等去中心化和许可网络。',
+                vaultMeshSummaryListItem1: '捕获富含元数据的内容流（聊天、代码、品牌、资产）',
+                vaultMeshSummaryListItem2: '将它们分配给可编程的声明结构（ScrollClaims™）',
+                vaultMeshSummaryListItem3: '使用 OmniSignal™、PulseGrid™ 和 GhostTrace™ 层保护其血统',
+                vaultMeshSummaryListItem4: '在链上和离线强制执行版税逻辑、卷轴完整性和可追溯性',
+                vaultMeshSummaryPara2: 'VaultMesh™ 为 HSOMNI9000™ 等高级操作提供支持，支持钻石级部署、跨扇区卷轴声明以及具有完全合规性和出处的企业级内容货币化。',
+                vaultMeshSummaryPara3: '该框架与 <code>vault.faa.zone™</code> 等平台深度集成，其中与 Fruitful Global Planet™ 等品牌相关的卷轴安全托管，组织成结构化扇区，并通过符合 FAA.Zone™ 的渠道部署。',
+                vaultMeshSummaryPara4: '一个关键操作员在生态系统是 HSOMNI9000™，这是一个经过认证的卷轴类，它管理钻石级逻辑，强制执行 10-11% 的版税触发器，并使用实时 ClaimRoot™ 验证自动部署 ScrollClaims™。',
+                vaultMeshIndexTitle: '📖 金库网格™ 索引',
+                vaultMeshIndex1: '金库网格™ 简介',
+                vaultMeshIndex2: '核心系统组件',
+                vaultMeshIndex3: 'ScrollClaim™ 基础设施',
+                vaultMeshIndex4: '数据流和声明生命周期',
+                vaultMeshIndex5: '分层、版税和合规性',
+                vaultMeshIndex6: '与 FAA.Zone™ 集成',
+                vaultMeshIndex7: '市场细分和用例',
+                vaultMeshIndex8: '收入来源和货币化',
+                vaultMeshIndex9: '技术路线图',
+                vaultMeshIndex10: '团队与治理',
+                vaultMeshSection1Title: '1. 金库网格™ 简介',
+                vaultMeshSection1Desc: '金库网格™ 将无序的数字内容转换为可声明、可追踪的资产。它通过符合 FAA 的基础设施，连接企业内容系统、去中心化数据金库和货币化层。',
+                vaultMeshSection2Title: '2. 核心系统组件',
+                vaultMeshSection2ListItem1: 'VaultDNA™：卷轴内容不可变标识符',
+                vaultMeshSection2ListItem2: 'ClaimRoot™：源锚点和时间戳',
+                vaultMeshSection2ListItem3: 'ScrollClaim™ 合约：可编程包装器',
+                vaultMeshSection2ListItem4: 'PulseGrid™ 同步：实时卷轴存在和同步',
+                vaultMeshSection2ListItem5: 'OmniSignal™：全球卷轴验证',
+                vaultMeshSection2ListItem6: 'GhostTrace™ Gen2：卷轴交互回溯',
+                vaultMeshSection3Title: '3. ScrollClaim™ 基础设施',
+                vaultMeshSection3ListItem1: '设置层级访问（例如，钻石）',
+                vaultMeshSection3ListItem2: '定义版税逻辑（10-11%）',
+                vaultMeshSection3ListItem3: '使用 PulseGrid™ 同步和 OmniSignal™ 锁定卷轴',
+                vaultMeshSection3ListItem4: '通过 FAA.Zone™ 部署符合 ZIP 规范的捆绑包',
+                vaultMeshSection4Title: '4. 数据流和声明生命周期',
+                vaultMeshSection4ListItem1: '摄取 — 内容进入 VaultMesh™',
+                vaultMeshSection4ListItem2: '编码 — 附加元数据和 VaultDNA™',
+                vaultMeshSection4ListItem3: '包装 — ScrollClaim™ 智能包装',
+                vaultMeshSection4ListItem4: '部署 — FAA.Zone™ 推送（ZIP、清单、HTML）',
+                vaultMeshSection4ListItem5: '同步 — PulseGrid™ 状态和 OmniSignal™ 锁定',
+                vaultMeshSection4ListItem6: '强制执行 — 通过 GhostTrace™ 记录版税、访问和卷轴活动',
+                vaultMeshSection5Title: '5. 分层、版税和合规性',
+                vaultMeshSection5ListItem1: '钻石层：执行 10-11% 版税',
+                vaultMeshSection5ListItem2: '智能钱包集成：ScrollClaim™ 支付和转账',
+                vaultMeshSection5ListItem3: 'VaultPay™ III 级：商业部署所需',
+                vaultMeshSection5ListItem4: '合规性：FAA 卷轴 ID、ClaimRoot™ 哈希和版税方案',
+                vaultMeshSection6Title: '6. 与 FAA.Zone™ 集成',
+                vaultMeshSection6ListItem1: '原生支持 /public/diamond/ 结构',
+                vaultMeshSection6ListItem2: 'ZIP、HTML、Manifest 部署包',
+                vaultMeshSection6ListItem3: 'ClaimRoot™ 时间戳验证',
+                vaultMeshSection6ListItem4: '实时 Claim 状态的无缝 PulseGrid™ 自动同步',
+                vaultMeshSection6ListItem5: '通过 vault.faa.zone™ 托管品牌',
+                vaultMeshSection7Title: '7. 市场细分和用例',
+                vaultMeshSection7ListItem1: 'GPT 对话和专家主题',
+                vaultMeshSection7ListItem2: '知识/培训档案',
+                vaultMeshSection7ListItem3: '创意 IP 卷轴（音乐、文学、视觉）',
+                vaultMeshSection7ListItem4: 'GeoSector 部署档案',
+                vaultMeshSection7ListItem5: '企业卷轴日志和审计跟踪',
+                vaultMeshSection8Title: '8. 收入来源和货币化',
+                vaultMeshSection8ListItem1: '钻石版税（10-11%）',
+                vaultMeshSection8ListItem2: '卷轴包装费',
+                vaultMeshSection8ListItem3: 'VaultMesh™ API 订阅',
+                vaultMeshSection8ListItem4: 'PulseGrid™ 和 OmniSignal™ 许可',
+                vaultMeshSection9Title: '9. 技术路线图',
+                vaultMeshSection9ListItem1: '2025 年第二季度：ScrollClaim™ v2.2，支持多声明质押',
+                vaultMeshSection9ListItem2: '2025 年第三季度：GhostTrace™ Gen3，支持法医回溯工具',
+                vaultMeshSection9ListItem3: 'Q4 2025: Autonomous AI Sector Agents',
+                vaultMeshSection9ListItem4: 'Q1 2026: Federación Inter-bóveda',
+                vaultMeshSection10Title: '10. 团队与治理',
+                vaultMeshSection10ListItem1: 'FAA 认证工程师（卷轴声明者）',
+                vaultMeshSection10ListItem2: '卷轴部长：合规性 + 分层',
+                vaultMeshSection10ListItem3: '金库管理员：元数据 + ClaimRoot™ 强制执行',
+                vaultMeshSection10ListItem4: 'Operadores HSOMNI9000™: Agents de ejecución de nivel Diamante',
+                exportPlan: '📎 此计划现在可以导出为 HTML、PDF 或 ZIP。',
+                aboutTitle: '关于丰硕创新',
+                aboutPara1: '在丰硕，我们相信技术赋能积极变革的未来。我们的平台旨在打破传统障碍，培育一个协作生态系统，让企业和个人在对世界产生有意义影响的同时蓬勃发展。',
+                aboutPara2: '我们致力于透明度、可持续性和创新，由强大的 AI 驱动，确保为每个用户提供公平、高效和个性化的体验。加入我们，共同建设一个更加丰硕的星球。',
+                ctaTitle: '准备好改变您的未来了吗？',
+                ctaDesc: '立即加入丰硕社区，开始您的创新、连接和可持续明天的旅程。',
+                ctaSignUpButton: '立即注册',
+                generateInsightButton: '生成洞察',
+                footerCopyright: '© 2025 FAA™ 条约系统™。保留所有权利。',
+                footerPoweredBy: '由 🦍 符文 + 金库 API 提供支持。与 Seedwave™ 同步。',
+            }
+        };
+
+        // Function to load terminal content into the iframe
+        function loadTerminal(url) {
+            const vaultFrame = document.getElementById('vault-frame');
+            vaultFrame.src = url;
+            // Remove ring from all buttons and add to the clicked one
+            document.querySelectorAll('.terminal-btn').forEach(btn => btn.classList.remove('ring', 'ring-blue-500'));
+            // Use event.currentTarget to ensure the clicked button is targeted
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('ring', 'ring-blue-500');
+            }
+        }
+
+        // Script for Share Signal (mock price update)
+        function updateSharePrice() {
+            const mockPrice = (80 + Math.random() * 10).toFixed(2);
+            document.getElementById('price').innerText = `$${mockPrice}`;
+            document.getElementById('timestamp').innerText = new Date().toLocaleTimeString();
+        }
+        // Update every 9 seconds
+        setInterval(updateSharePrice, 9000);
+        // Initial call to display price immediately
+        updateSharePrice();
+
+        // Chart.js for Seedwave Growth
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('brandChart')?.getContext('2d');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+                        datasets: [{
+                            label: 'Treaty Brands Activated',
+                            data: [3, 7, 13, 21],
+                            borderWidth: 2,
+                            borderColor: '#0071e3',
+                            tension: 0.4,
+                            fill: true,
+                            backgroundColor: 'rgba(0, 113, 227, 0.1)',
+                            pointRadius: 4,
+                            pointBackgroundColor: '#0071e3',
+                            pointBorderColor: '#fff',
+                            pointHoverRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: '#e8e8ed',
+                                    drawBorder: false
+                                },
+                                ticks: {
+                                    color: '#6e6e73'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: '#e8e8ed',
+                                    drawBorder: false
+                                },
+                                ticks: {
+                                    color: '#6e6e73'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false,
+                                labels: {
+                                    color: '#424245'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+
+        // Get the container for sector glyphs
+        const sectorGlyphsContainer = document.getElementById('sector-glyphs-container');
+        if (sectorGlyphsContainer) {
+            // Clear existing hardcoded glyphs
+            sectorGlyphsContainer.innerHTML = '';
+
+            // Define slugs for items that should be treated as terminals (top-level domains)
+            const topLevelTerminalSlugs = [
+                "faa.zone", "seedwave", "fruitful", "omnigrid", "portal", "legal",
+                "vaultmesh", "baobab", "samfox", "tripot", "noodle.juice", "payment", "careers",
+                "admin-panel" // This was already in allSectorsData but now explicitly a terminal
+            ];
+
+            // Define a comprehensive order for display, prioritizing new sectors and then existing ones
+            const displayOrder = [
+                // New sectors (these will remain as scrolls)
+                "robotics", "space-tech", "biometrics", "smart-cities", "toynest", "lesotho",
+                // Existing sectors (alphabetical, with specific renames)
+                "agriculture", "ai-logic", "banking", "creative", "education-ip",
+                "education-youth", "fashion", "fsf", "gaming", "health-hygiene", "housing",
+                "justice", "knowledge", "logistics", "media", "micromesh", "mining",
+                "nft", "nutrition", "packaging", "payroll-mining", "professional",
+                "quantum", "ritual", "saas", "trade", "utilities", "voice", "webless",
+                "wildlife", "zerowaste"
+            ];
+
+            const sortedSectorSlugs = Object.keys(allSectorsData).filter(slug => !topLevelTerminalSlugs.includes(slug)).sort((a, b) => {
+                const indexA = displayOrder.indexOf(a);
+                const indexB = displayOrder.indexOf(b);
+
+                if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+                if (indexA !== -1) return -1;
+                if (indexB !== -1) return 1;
+                return allSectorsData[a].name.localeCompare(allSectorsData[b].name); // Sort by display name if not in explicit order
+            });
+
+            sortedSectorSlugs.forEach(slug => {
+                const sector = allSectorsData[slug];
+                if (!sector) return; // Skip if data is somehow missing
+
+                const display = sector.name;
+                const url = sector.baseUrl;
+
+                const glyphLink = document.createElement('a');
+                glyphLink.href = url;
+                glyphLink.className = "glyph";
+                glyphLink.setAttribute('data-vault', slug);
+                glyphLink.innerHTML = display; // display includes the emoticon and text
+
+                glyphLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const clickedSectorSlug = e.currentTarget.getAttribute('data-vault');
+                    const iframeUrl = allSectorsData[clickedSectorSlug]?.baseUrl;
+                    const sectorContentContainer = document.getElementById('sector-content-container');
+
+                    if (iframeUrl) {
+                        // Show loading message
+                        sectorContentContainer.innerHTML =
+                            `<div class="text-gray-600 dark:text-gray-400 text-sm mb-2 text-center py-4">🔄 Loading sector: ${allSectorsData[clickedSectorSlug].name}...</div>
+                            <iframe src="${iframeUrl}" class="w-full h-[900px] border-none rounded-xl bg-gray-100 dark:bg-gray-900"></iframe>`;
+
+                        // Smooth scroll to the content container
+                        sectorContentContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                    } else {
+                        sectorContentContainer.innerHTML =
+                            `<div class="text-red-500 text-sm mb-2 text-center py-4">Error: Sector URL not found for ${clickedSectorSlug}.</div>`;
+                    }
+                });
+                sectorGlyphsContainer.appendChild(glyphLink);
+            });
+        }
+
+        // Spiderweb background logic
+        const spiderwebCanvas = document.getElementById('spiderwebCanvas');
+        const ctx = spiderwebCanvas.getContext('2d');
+
+        let heroSectionWidth;
+        let heroSectionHeight;
+
+        // Array to hold all particles
+        const particles = [];
+        // Number of particles - Responsive based on screen width
+        let numParticles;
+        const numParticlesDesktop = 1000; // Adjusted for better performance
+        const numParticlesMobile = 800; // Kept for mobile performance
+
+        // Maximum distance for lines to be drawn between particles
+        const maxDistance = 90; // Slightly increased to compensate for fewer particles
+        // Maximum distance for particles to react to the mouse
+        const mouseDistance = 180;
+
+        // Mouse object to track its position relative to the hero section
+        const mouse = {
+            x: null,
+            y: null,
+            radius: 150
+        };
+
+        // Function to update canvas dimensions based on hero section size
+        function updateCanvasDimensions() {
+            const heroSection = document.querySelector('.hero-section');
+            if (heroSection) {
+                heroSectionWidth = heroSection.clientWidth;
+                heroSectionHeight = heroSection.clientHeight;
+                spiderwebCanvas.width = heroSectionWidth;
+                spiderwebCanvas.height = heroSectionHeight;
+
+                // Set numParticles based on screen width
+                if (heroSectionWidth > 768) { // Assuming 768px as breakpoint for desktop
+                    numParticles = numParticlesDesktop;
+                } else {
+                    numParticles = numParticlesMobile;
+                }
+            }
+        }
+
+        // Event listener for mouse movement relative to the canvas
+        spiderwebCanvas.addEventListener('mousemove', function(event) {
+            const rect = spiderwebCanvas.getBoundingClientRect();
+            mouse.x = event.clientX - rect.left;
+            mouse.y = event.clientY - rect.top;
+        });
+
+        // Event listener for mouse leaving the canvas (reset mouse position)
+        spiderwebCanvas.addEventListener('mouseout', function() {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        // Event listener for window resizing
+        window.addEventListener('resize', function() {
+            updateCanvasDimensions();
+            initParticles(); // Re-initialize particles to apply new density
+        });
+
+        /**
+         * Represents a single particle in the spiderweb.
+         * @param {number} x - Initial x-coordinate.
+         * @param {number} y - Initial y-coordinate.
+         * @param {number} directionX - Initial x-direction of movement (-1 or 1).
+         * @param {number} directionY - Initial y-direction of movement (-1 or 1).
+         * @param {number} size - Initial radius of the particle.
+         * @param {string} color - Color of the particle.
+         */
+        class Particle {
+            constructor(x, y, directionX, directionY, size, color) {
+                this.x = x;
+                this.y = y;
+                this.directionX = directionX;
+                this.directionY = directionY;
+                this.baseSize = size;
+                this.size = size;
+                this.color = color;
+                this.baseOpacity = 0.7;
+                this.opacity = 0.7;
+                this.pulseOffset = Math.random() * Math.PI * 2;
+            }
+
+            /**
+             * Draws the particle on the canvas.
+             */
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                ctx.fillStyle = `rgba(0, 0, 0, ${this.opacity})`;
+                ctx.fill();
+            }
+
+            /**
+             * Updates the particle's position and handles boundary collisions.
+             */
+            update() {
+                if (this.x + this.size > heroSectionWidth || this.x - this.size < 0) {
+                    this.directionX = -this.directionX;
+                }
+                if (this.y + this.size > heroSectionHeight || this.y - this.size < 0) {
+                    this.directionY = -this.directionY;
+                }
+
+                this.x += this.directionX * 3;
+                this.y += this.directionY * 3;
+
+                const pulseSpeed = 0.05;
+                const pulseMagnitude = 0.05; /* Reduced pulse magnitude */
+                this.opacity = this.baseOpacity + Math.sin(Date.now() * pulseSpeed + this.pulseOffset) * pulseMagnitude;
+                this.opacity = Math.max(0.4, Math.min(1, this.opacity));
+
+                if (mouse.x !== null && mouse.y !== null) {
+                    let dx = mouse.x - this.x;
+                    let dy = mouse.y - this.y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < mouse.radius + this.size) {
+                        let forceDirectionX = dx / distance;
+                        let forceDirectionY = dy / distance;
+                        let force = (mouse.radius + this.size - distance) / (mouse.radius + this.size);
+                        let repulsionStrength = 7;
+                        let directionX = forceDirectionX * force * repulsionStrength;
+                        let directionY = forceDirectionY * force * repulsionStrength;
+
+                        this.x -= directionX;
+                        this.y -= directionY;
+
+                        let normalizedDistance = distance / (mouse.radius + this.size);
+                        this.size = this.baseSize * Math.max(0.1, normalizedDistance);
+                        this.opacity = this.baseOpacity * Math.max(0.1, normalizedDistance);
+                        this.opacity = Math.min(1, this.opacity);
+                    } else {
+                        if (this.size < this.baseSize) {
+                            this.size += 0.1;
+                            if (this.size > this.baseSize) this.size = this.baseSize;
+                        }
+                    }
+                } else {
+                    if (this.size < this.baseSize) {
+                        this.size += 0.1;
+                        if (this.size > this.baseSize) this.size = this.baseSize;
+                    }
+                }
+                this.draw();
+            }
+        }
+
+        /**
+         * Initializes the particles array with random positions, sizes, and directions.
+         */
+        function initParticles() {
+            particles.length = 0;
+            for (let i = 0; i < numParticles; i++) {
+                let size = (Math.random() * 1.0) + 0.5;
+                let x = (Math.random() * ((heroSectionWidth - size * 2) - (size * 2)) + size * 2);
+                let y = (Math.random() * ((heroSectionHeight - size * 2) - (size * 2)) + size * 2);
+                let directionX = (Math.random() * 2) - 1;
+                let directionY = (Math.random() * 2) - 1;
+                let color = 'rgba(0, 0, 0, 0.7)';
+                particles.push(new Particle(x, y, directionX, directionY, size, color));
+            }
+        }
+
+        let hue = 0;
+
+        /**
+         * Connects particles with lines if they are within a certain distance.
+         */
+        function connectParticles() {
+            let opacity = 1;
+            hue = (hue + 2.5) % 360;
+
+            for (let a = 0; a < particles.length; a++) {
+                for (let b = a; b < particles.length; b++) {
+                    let distance = Math.sqrt(
+                        ((particles[a].x - particles[b].x) * (particles[a].x - particles[b].x)) +
+                        ((particles[a].y - particles[b].y) * (particles[a].y - particles[b].y))
+                    );
+                    if (distance < maxDistance) {
+                        opacity = 1 - (distance / maxDistance);
+                        ctx.strokeStyle = `hsla(${hue}, 90%, 50%, ${opacity})`;
+                        ctx.lineWidth = 1; /* Reduced line width */
+                        ctx.beginPath();
+                        ctx.moveTo(particles[a].x, particles[a].y);
+                        ctx.lineTo(particles[b].x, particles[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        /**
+         * The main animation loop.
+         */
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, heroSectionWidth, heroSectionHeight);
+
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+            }
+            connectParticles();
+        }
+
+        // Initialize canvas dimensions and particles when the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCanvasDimensions();
+            initParticles();
+            animate();
+        });
+
+        // --- API Key Integrations ---
+        const googleMapsApiKey = "AIzaSyBPG8dG29cl0TvYRGyLozejGed5Wj5Ab80";
+        const payPalSdkKey = "BAAGdPecRsf6dw_nIrWqUen0GdW0UsBZapp1Gn62xkPdD-Vqc-4lqWAidKK8LOObXux8pHJGjXknZoar6Q";
+        const payPalHostedButtonStarter = "EMWGPGHNN8Y8E";
+        const payPalHostedButtonPro = "QGU3ZUQCMD49Q";
+        const payPalHostedButtonEnterprise = "9C88S44F93M5J";
+        const payPalHostedButtonBanimal = "YOUR_BANIMAL_PAYPAL_BUTTON_ID_HERE";
+        const spotifyAccessToken = "BQBDSZ232IQmSLVbROkxqdwNMoGhtitKOJBjDzE-Lu9YKsSK1RKVwXNfYfncP2wf6Fj6xcYlnGD75baEqOmd3XtxhU...";
+        const geminiApiKey = "AIzaSyBGSDZATtITv5iIoB3rgKHBpWx9MrufxXE";
+        const xeroClientId = "81B3573D453040508996432C5DAD565B";
+        const xeroClientSecret = "FIaJGmsaCcKR3Z3kWnQd04EhYy6_bImPmoitQDP1U6Smaq";
+        const xeroRedirectUri = "https://seedwave.faa.zone/admin_panel_xero.html";
+        const xeroWebhookKey = "2fd5LQV0TQDI3572Er/sg66zqEbl8mFWRyfX3XkoKFZGRLK2cZPGpWV/j4yMTU7aUpbgBCfeZkuHnQIwD/0igw==";
+        // --- End API Key Integrations ---
+
+        // Language & Theme Toggle Logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggle = document.getElementById('theme-toggle');
+            const languageToggle = document.getElementById('language-toggle');
+            const body = document.body;
+            const insightButtons = document.querySelectorAll('.generate-insight-btn');
+
+            // Load saved theme
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                body.classList.add('dark-mode');
+                themeToggle.innerText = '🌙';
+            } else {
+                themeToggle.innerText = '☀️';
+            }
+
+            // Load saved language
+            const savedLang = localStorage.getItem('language') || 'en';
+            languageToggle.value = savedLang;
+            updateLanguage(savedLang);
+
+            // Theme toggle event listener
+            themeToggle.addEventListener('click', () => {
+                if (body.classList.contains('dark-mode')) {
+                    body.classList.remove('dark-mode');
+                    localStorage.setItem('theme', 'light');
+                    themeToggle.innerText = '☀️';
+                } else {
+                    body.classList.add('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                    themeToggle.innerText = '🌙';
+                }
+            });
+
+            // Language toggle event listener
+            languageToggle.addEventListener('change', (event) => {
+                const newLang = event.target.value;
+                updateLanguage(newLang);
+                localStorage.setItem('language', newLang);
+            });
+
+            // Function to update text content based on selected language
+            function updateLanguage(lang) {
+                const elements = document.querySelectorAll('[data-i18n]');
+                elements.forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    if (languageData[lang] && languageData[lang][key]) {
+                        // Handle potential HTML within translations (e.g., <span> in headline)
+                        el.innerHTML = languageData[lang][key];
+                    }
+                });
+                // Update dynamic text like page title
+                document.title = languageData[lang]?.pageTitle || 'Fruitful Innovations';
+
+                // Update text for insight buttons based on language
+                insightButtons.forEach(button => {
+                    if (languageData[lang] && languageData[lang].generateInsightButton) {
+                        button.innerText = `✨ ${languageData[lang].generateInsightButton}`;
+                    } else {
+                        button.innerText = `✨ Generate Insight`;
+                    }
+                });
+            }
+
+            // Gemini AI Integration for VaultMesh Insights
+            // Map vaultMeshSection titles to their corresponding languageData keys for content extraction
+            const vaultMeshSectionContentKeys = {
+                '1. Introduction to VaultMesh™': 'vaultMeshSection1Desc',
+                '2. Core System Components': 'vaultMeshSection2ListItem1', // Taking the first item as a sample
+                '3. ScrollClaim™ Infrastructure': 'vaultMeshSection3ListItem1',
+                '4. Data Flow and Claim Lifecycle': 'vaultMeshSection4ListItem1',
+                '5. Tiering, Royalties, and Compliance': 'vaultMeshSection5ListItem1',
+                '6. Integration with FAA.Zone™': 'vaultMeshSection6ListItem1',
+                '7. Market Segments & Use Cases': 'vaultMeshSection7ListItem1',
+                '8. Revenue Streams & Monetization': 'vaultMeshSection8ListItem1',
+                '9. Technology Roadmap': 'vaultMeshSection9ListItem1',
+                '10. Team & Governance': 'vaultMeshSection10ListItem1',
+            };
+
+            insightButtons.forEach(button => {
+                button.addEventListener('click', async (event) => {
+                    const sectionContainer = event.target.closest('.vaultmesh-container-section');
+                    const sectionTitleElement = sectionContainer.querySelector('h3[data-i18n]');
+                    const sectionTitle = sectionTitleElement ? languageData[localStorage.getItem('language') || 'en'][sectionTitleElement.getAttribute('data-i18n')] : '';
+
+                    const insightOutputDiv = sectionContainer.querySelector('.insight-output');
+                    let sectionText = '';
+
+                    // Attempt to get the full English text from languageData for the LLM prompt
+                    const currentLang = localStorage.getItem('language') || 'en';
+                    if (languageData['en']) { // Always use English content for LLM input for consistency
+                        const contentKey = Object.keys(vaultMeshSectionContentKeys).find(key => languageData['en'][vaultMeshSectionContentKeys[key]] === sectionContainer.querySelector('p[data-i18n]')?.innerText || languageData['en'][key] === sectionTitle);
+
+                        if (contentKey && languageData['en'][vaultMeshSectionContentKeys[contentKey]]) {
+                             sectionText = sectionTitle + ": " + languageData['en'][vaultMeshSectionContentKeys[contentKey]];
+                             // If it's a list, concatenate all list items
+                             const listItems = sectionContainer.querySelectorAll('ul li[data-i18n]');
+                             if (listItems.length > 0) {
+                                 sectionText = sectionTitle + ": " + Array.from(listItems).map(li => languageData['en'][li.getAttribute('data-i18n')]).join('; ');
+                             } else {
+                                 sectionText = sectionTitle + ": " + languageData['en'][sectionTitleElement.getAttribute('data-i18n')];
+                             }
+
+                        } else {
+                            // Fallback to directly reading visible text content if data-i18n key is not found
+                            const paragraph = sectionContainer.querySelector('p');
+                            const ul = sectionContainer.querySelector('ul');
+                            if (paragraph) sectionText += paragraph.innerText + "\n";
+                            if (ul) sectionText += Array.from(ul.querySelectorAll('li')).map(li => li.innerText).join('\n') + "\n";
+                        }
+                    } else {
+                        // Fallback to directly reading visible text content if languageData is not robust
+                        const paragraph = sectionContainer.querySelector('p');
+                        const ul = sectionContainer.querySelector('ul');
+                        if (paragraph) sectionText += paragraph.innerText + "\n";
+                        if (ul) sectionText += Array.from(ul.querySelectorAll('li')).map(li => li.innerText).join('\n') + "\n";
+                    }
+
+                    if (!sectionText.trim()) {
+                        insightOutputDiv.innerHTML = '<span class="text-red-500">Could not extract content for insight.</span>';
+                        return;
+                    }
+
+                    insightOutputDiv.innerHTML = '<div class="loading">Generating insight...</div>';
+
+                    try {
+                        let chatHistory = [];
+                        const prompt = `Generate a concise, insightful summary (max 3 sentences) for the following FAA VaultMesh section titled "${sectionTitle}":\n\n${sectionText}`;
+                        chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+
+                        const payload = { contents: chatHistory };
+                        const apiKey = geminiApiKey; // Use the provided API key
+                        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        const result = await response.json();
+
+                        if (result.candidates && result.candidates.length > 0 &&
+                            result.candidates[0].content && result.candidates[0].content.parts &&
+                            result.candidates[0].content.parts.length > 0) {
+                            const text = result.candidates[0].content.parts[0].text;
+                            insightOutputDiv.innerHTML = `<strong>Insight:</strong> ${text}`;
+                        } else {
+                            insightOutputDiv.innerHTML = '<span class="text-red-500">Failed to generate insight. Please try again.</span>';
+                        }
+                    } catch (error) {
+                        console.error("Error calling Gemini API:", error);
+                        insightOutputDiv.innerHTML = `<span class="text-red-500">Error: ${error.message || 'Failed to connect to AI service.'}</span>`;
+                    }
+                });
+            });
+
+            // Initial call to update insight button text
+            updateLanguage(savedLang);
+        });
+    </script>
+
+</body>
+</html>

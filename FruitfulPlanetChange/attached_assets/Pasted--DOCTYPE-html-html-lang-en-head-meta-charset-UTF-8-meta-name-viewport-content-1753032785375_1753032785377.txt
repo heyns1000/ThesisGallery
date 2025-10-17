@@ -1,0 +1,2547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="pageTitle">🌐 VaultMesh™ by Fruitful</title>
+    <link rel="icon" href="/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Maps API script - ensure YOUR_GOOGLE_MAPS_API_KEY is replaced by the actual key from the centralized object -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPG8dG29cl0TvYRGyLozejGed5Wj5Ab80&callback=initMap"></script>
+
+    <style>
+        /* CSS Variables for Theming */
+        :root {
+            /* Light Theme Defaults */
+            --bg-color-primary: #f5f5f7;
+            --text-color-primary: #1d1d1f;
+            --text-color-secondary: #424245;
+            --primary-blue: #0071e3;
+            --header-bg: rgba(255, 255, 255, 0.9);
+            --header-border: #e8e8ed;
+            --card-bg: white;
+            --card-border: #e8e8ed;
+            --muted-text: #6e6e73;
+            --code-bg: #f0f0f0;
+            --code-text: #1d1d1f;
+            --button-secondary-bg: #f0f0f0;
+            --button-secondary-border: #dcdcdc;
+            --button-secondary-hover-bg: #e8e8ed;
+            --button-secondary-hover-text: #1d1d1f;
+            --hero-h2-color: #1d1d1f;
+            --vault-cyan: #00bcd4; /* A techy cyan for hackable success cue */
+            --vault-orange: #ff9800; /* An amber for failed attempts */
+            /* Hyper Mode Specific Colors (Light Mode Influence) */
+            --hyper-background-blend: rgba(0, 188, 212, 0.05); /* Light cyan blend for hyper mode bg */
+            --hyper-primary-color: #00bcd4; /* Main cyan for hyper mode elements */
+            --hyper-text-color: #00bcd4; /* Hyper mode text color */
+        }
+
+        /* Dark Mode Overrides */
+        body.dark-mode {
+            --bg-color-primary: #1a202c;
+            --text-color-primary: #e2e8f0;
+            --text-color-secondary: #cbd5e0; /* light gray */
+            --primary-blue: #63b3ed; /* a lighter blue for dark mode */
+            --header-bg: rgba(26, 32, 44, 0.9); /* dark background with transparency */
+            --header-border: #2d3748; /* darker border */
+            --card-bg: #2d3748; /* gray 800 */
+            --card-border: #4a5568; /* gray 700 */
+            --muted-text: #a0aec0; /* light gray for muted text */
+            --code-bg: #0a0a0a;
+            --code-text: #00e393;
+            --button-secondary-bg: #4a5568; /* dark gray */
+            --button-secondary-border: #718096; /* gray 600 */
+            --button-secondary-hover-bg: #5a67d8; /* indigo 500 */
+            --button-secondary-hover-text: white;
+            --hero-h2-color: #e2e8f0;
+            --vault-cyan: #00e5ff; /* Brighter cyan for dark mode */
+            --vault-orange: #ffb300; /* Brighter amber for dark mode */
+            /* Hyper Mode Specific Colors (Dark Mode Influence) */
+            --hyper-background-blend: rgba(0, 229, 255, 0.1); /* Dark cyan blend for hyper mode bg */
+            --hyper-primary-color: #00e5ff; /* Main bright cyan for dark hyper mode */
+            --hyper-text-color: #00e5ff; /* Hyper mode text color */
+        }
+
+        /* Hyper Mode Overrides (Applied when body has .hyper-mode class) */
+        body.hyper-mode {
+            background-color: var(--bg-color-primary); /* Keep base background, add overlay */
+            background-image: linear-gradient(rgba(0,0,0,0.01), var(--hyper-background-blend));
+            --text-color-primary: var(--hyper-text-color);
+            --text-color-secondary: var(--hyper-text-color);
+            --primary-blue: var(--hyper-primary-color);
+            --header-bg: rgba(0, 188, 212, 0.1); /* Slightly transparent cyan header */
+            --header-border: var(--hyper-primary-color);
+            --card-bg: rgba(0, 188, 212, 0.05); /* Subtle cyan tint for cards */
+            --card-border: var(--hyper-primary-color);
+            --muted-text: var(--hyper-text-color);
+            --button-secondary-bg: rgba(0, 188, 212, 0.1);
+            --button-secondary-border: var(--hyper-primary-color);
+            --button-secondary-hover-bg: rgba(0, 188, 212, 0.2);
+            --button-secondary-hover-text: white; /* Ensure good contrast */
+            --hero-h2-color: var(--hyper-text-color); /* Hero text in hyper color */
+        }
+
+        body.dark-mode.hyper-mode {
+            --header-bg: rgba(0, 229, 255, 0.1);
+            --card-bg: rgba(0, 229, 255, 0.05);
+            --button-secondary-hover-bg: rgba(0, 229, 255, 0.2);
+        }
+
+        /* Base Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color-primary);
+            color: var(--text-color-primary);
+            line-height: 1.4;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-top: 5rem;
+            transition: background-color 0.3s ease, color 0.3s ease, background-image 0.3s ease; /* Smooth theme transitions */
+        }
+
+        /* Header */
+        header {
+            background-color: var(--header-bg);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--header-border);
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-sizing: border-box;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header h1 {
+            color: var(--text-color-primary);
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+        header nav {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+        header nav a {
+            color: var(--text-color-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.5rem 0.8rem;
+            border-radius: 6px;
+            transition: all 0.2s ease-in-out;
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+        header nav a:hover {
+            color: var(--primary-blue);
+            background-color: rgba(0, 0, 0, 0.03); /* Keep for now, will override with var */
+        }
+        body.dark-mode header nav a:hover {
+            background-color: rgba(255, 255, 255, 0.08); /* Dark mode specific hover */
+        }
+
+        header nav a.button-style-original {
+            background-color: transparent;
+            color: var(--text-color-secondary);
+            font-weight: 600;
+            border: 1px solid var(--button-secondary-border);
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            box-shadow: none;
+        }
+        header nav a.button-style-original:hover {
+            background-color: var(--button-secondary-hover-bg);
+            color: var(--button-secondary-hover-text);
+            transform: none;
+            box-shadow: none;
+        }
+
+        header nav a.button-style-main {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        header nav a.button-style-main:hover {
+            background-color: var(--primary-blue);
+            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+
+        .theme-language-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-left: 1rem; /* Spacing from main nav links */
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .theme-toggle, .hyper-toggle {
+            cursor: pointer;
+            width: 40px;
+            height: 22px;
+            background-color: var(--button-secondary-border);
+            border-radius: 11px;
+            position: relative;
+            transition: background-color 0.3s ease;
+            flex-shrink: 0; /* Prevent shrinking on small screens */
+        }
+
+        .theme-toggle::before, .hyper-toggle::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 18px;
+            height: 18px;
+            background-color: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        body.dark-mode .theme-toggle {
+            background-color: var(--primary-blue);
+        }
+
+        body.dark-mode .theme-toggle::before {
+            transform: translateX(18px);
+            background-color: var(--text-color-primary); /* Lighter circle in dark mode */
+        }
+
+        /* Hyper Toggle Specifics */
+        body.hyper-mode .hyper-toggle {
+            background-color: var(--hyper-primary-color); /* Active color for hyper toggle */
+        }
+        body.hyper-mode .hyper-toggle::before {
+            transform: translateX(18px);
+            background-color: white; /* White circle for hyper mode active */
+        }
+        /* Ensure normal state of hyper-toggle looks good in both light/dark base modes */
+        .hyper-toggle { /* Default off state */
+            background-color: var(--button-secondary-border);
+        }
+        .hyper-toggle::before { /* Default off state */
+            background-color: white;
+        }
+        body.dark-mode .hyper-toggle { /* Dark mode off state */
+            background-color: var(--button-secondary-border);
+        }
+        body.dark-mode .hyper-toggle::before { /* Dark mode off state */
+            background-color: var(--text-color-primary);
+        }
+
+
+        .language-select {
+            background-color: var(--button-secondary-bg);
+            color: var(--text-color-secondary);
+            border: 1px solid var(--button-secondary-border);
+            border-radius: 6px;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+        .language-select:hover {
+            background-color: var(--button-secondary-hover-bg);
+            border-color: var(--primary-blue);
+        }
+        body.dark-mode .language-select {
+            background-color: var(--card-bg);
+            color: var(--text-color-primary);
+            border-color: var(--card-border);
+        }
+
+
+        @media (min-width: 768px) {
+            header {
+                flex-direction: row;
+            }
+            header nav {
+                gap: 0;
+            }
+            header nav a:not(.button-style-original):not(.button-style-main) {
+                margin-right: 1.5rem;
+            }
+            header nav a.login-button {
+                margin-left: auto;
+            }
+            header nav a.button-style-original {
+                margin-left: 1rem;
+                margin-right: 0.5rem;
+            }
+            header nav a.button-style-main {
+                margin-left: 0;
+            }
+        }
+
+
+/* Hero Section */
+.hero-section {
+    background-color: var(--card-bg);
+    padding: 10rem 1.5rem;
+    color: var(--text-color-primary);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.hero-section canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    z-index: 0;
+    background-color: transparent;
+    cursor: pointer; /* Indicate it's clickable */
+}
+.hero-content {
+    max-width: 800px;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+.hero-section h2 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--hero-h2-color);
+    line-height: 1.1;
+    margin-bottom: 6rem;
+}
+        .hero-section h2 span {
+            color: var(--primary-blue);
+        }
+
+        /* CTA button styling */
+        .cta-button, .cta-button-secondary {
+            padding: 0.8rem 1.8rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            height: 50px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+        .cta-button {
+            background: var(--primary-blue);
+            color: white;
+        }
+        .cta-button:hover {
+            background-color: var(--primary-blue);
+            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+        .cta-button-secondary {
+            background-color: var(--button-secondary-bg);
+            color: var(--text-color-secondary);
+            border: 1px solid var(--button-secondary-border);
+            box-shadow: none;
+        }
+        .cta-button-secondary:hover {
+            background-color: var(--button-secondary-hover-bg);
+            color: var(--button-secondary-hover-text);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        /* Sections - Clean, defined blocks */
+        section {
+            padding: 8rem 2rem;
+            background-color: var(--bg-color-primary);
+            box-shadow: none;
+            border-bottom: 1px solid var(--header-border);
+            text-align: center;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        section:last-of-type {
+            border-bottom: none;
+        }
+        section h2, section h3 {
+            color: var(--text-color-primary);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 2rem;
+            font-size: 2.2rem;
+        }
+        section p {
+            color: var(--text-color-secondary);
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        /* Feature Cards */
+        .feature-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, background-color 0.3s ease, border-color 0.3s ease;
+            border: 1px solid var(--card-border);
+            text-align: left;
+        }
+        .feature-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+        }
+        .feature-card div:first-child {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-blue);
+        }
+        .feature-card h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-color-primary);
+            margin-bottom: 0.5rem;
+        }
+        .feature-card p {
+            font-size: 0.95rem;
+            color: var(--muted-text);
+        }
+
+        /* Share Signal Section */
+        #shareprice {
+            background-color: var(--card-bg);
+            color: var(--text-color-primary);
+            padding: 4rem 1.5rem;
+            border-bottom: 1px solid var(--header-border);
+        }
+        #shareprice h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        #price {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            letter-spacing: -0.02em;
+        }
+        #timestamp {
+            color: var(--muted-text);
+            font-size: 0.85rem;
+        }
+
+        /* Seedwave Growth */
+        #seedwave {
+            background-color: var(--bg-color-primary);
+            padding: 6rem 1.5rem;
+            border-bottom: 1px solid var(--header-border);
+        }
+        #seedwave h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--text-color-primary);
+        }
+        #seedwave .metrics-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: left; /* Align text within cards */
+        }
+        #seedwave .metric-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            border: 1px solid var(--card-border);
+        }
+        #seedwave .metric-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-color-primary);
+            margin-bottom: 0.5rem;
+        }
+        #seedwave .metric-card p {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+        #seedwave .metric-card .description {
+            font-size: 0.9rem;
+            color: var(--muted-text);
+        }
+        #seedwave .progress-wrapper {
+            max-width: 800px;
+            margin: 3rem auto 0;
+        }
+        #seedwave .progress-bar-container {
+            width: 100%;
+            background-color: var(--button-secondary-bg);
+            border-radius: 10px;
+            height: 25px;
+            overflow: hidden;
+            margin-top: 1rem;
+            border: 1px solid var(--button-secondary-border);
+        }
+        #seedwave .progress-bar {
+            height: 100%;
+            background-color: var(--primary-blue);
+            width: 0%; /* Initial width */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: width 1s ease-out; /* Smooth transition for progress */
+            border-radius: 10px;
+        }
+        body.dark-mode #seedwave .metric-card {
+            background-color: var(--card-bg); /* Use card-bg instead of card-bg-dark for consistency with var definitions */
+            border-color: var(--card-border);
+        }
+        body.dark-mode #seedwave .progress-bar-container {
+            background-color: var(--button-secondary-bg);
+            border-color: var(--button-secondary-border);
+        }
+        body.hyper-mode #seedwave .metric-card {
+            background-color: var(--hyper-card-bg);
+            border-color: var(--hyper-border);
+        }
+        body.hyper-mode #seedwave .progress-bar-container {
+            background-color: var(--hyper-button-secondary-bg); /* Assuming this variable is defined */
+            border-color: var(--hyper-border);
+        }
+        body.hyper-mode #seedwave .progress-bar {
+            background-color: var(--hyper-primary-color);
+        }
+
+
+        /* Founder's Note */
+        section.founders-note-section {
+            background-color: var(--card-bg);
+            color: var(--text-color-primary);
+            padding: 6rem 2rem;
+            border-bottom: 1px solid var(--header-border);
+        }
+        section.founders-note-section h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-color-primary);
+        }
+        section.founders-note-section p {
+            font-size: 1.1rem;
+            color: var(--text-color-secondary);
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        section.founders-note-section p.italic {
+            color: var(--muted-text);
+            font-style: italic;
+        }
+        section.founders-note-section p.font-semibold {
+            color: var(--primary-blue);
+            font-weight: 600;
+            margin-top: 2rem;
+        }
+
+        /* Vault Terminal Access - Clean buttons */
+        #vault-access {
+            background-color: var(--bg-color-primary);
+            padding: 6rem 2rem;
+            border-bottom: 1px solid var(--header-border);
+        }
+        #vault-access h3 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--text-color-primary);
+            margin-bottom: 2.5rem;
+        }
+        #vault-access .w-full.h-\[800px\] {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        .terminal-btn {
+            background-color: var(--button-secondary-bg);
+            color: var(--text-color-secondary);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid var(--button-secondary-border);
+            cursor: pointer;
+        }
+        .terminal-btn:hover {
+            background-color: var(--button-secondary-hover-bg);
+            color: var(--button-secondary-hover-text);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .terminal-btn.ring {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 2px var(--primary-blue);
+        }
+
+        /* Sector Scrolls - Clean link grid */
+        section.sector-scrolls-section {
+            background-color: var(--card-bg);
+            padding: 6rem 2rem;
+            border-bottom: 1px solid var(--header-border);
+        }
+        section.sector-scrolls-section h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--text-color-primary);
+            margin-bottom: 2.5rem;
+        }
+        .glyph {
+            background-color: var(--button-secondary-bg);
+            color: var(--text-color-secondary);
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid var(--button-secondary-border);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .glyph:hover {
+            background-color: var(--button-secondary-hover-bg);
+            color: var(--button-secondary-hover-text);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* Treaty Section - Elegant quote */
+        #treaty {
+            background-color: var(--card-bg);
+            padding: 6rem 2rem;
+            border-bottom: 1px solid var(--header-border);
+        }
+        #treaty h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--text-color-primary);
+            margin-bottom: 1.5rem;
+        }
+        #treaty p {
+            font-size: 1.1rem;
+            color: var(--text-color-secondary);
+            line-height: 1.5;
+        }
+        #treaty blockquote {
+            font-size: 1.5rem;
+            color: var(--text-color-primary);
+            font-weight: 600;
+            line-height: 1.4;
+        }
+        #treaty blockquote::before, #treaty blockquote::after {
+            content: '“';
+            font-size: 2.5em;
+            line-height: 0.1;
+            vertical-align: -0.4em;
+            color: var(--card-border);
+            margin-right: 0.1em;
+        }
+        #treaty blockquote::after {
+            content: '”';
+            margin-left: 0.05em;
+        }
+
+        /* Signal Packet - Developer focused, clean code block */
+        section.signal-packet-section {
+            background-color: #1d1d1f;
+            color: #00e393;
+            padding: 4rem 1.5rem;
+            border-bottom: 1px solid #333;
+        }
+        section.signal-packet-section pre {
+            background-color: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        /* VaultMesh Executive Summary */
+        #vaultmesh {
+            background-color: var(--card-bg);
+            padding: 6rem 2rem;
+            color: var(--text-color-primary);
+            border-bottom: 1px solid var(--header-border);
+        }
+        #vaultmesh h2 {
+            color: var(--text-color-primary);
+        }
+        #vaultmesh h2.text-purple-400 {
+            color: #a78bfa; /* Tailwind purple-400 */
+        }
+        #vaultmesh h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-color-primary);
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        #vaultmesh p {
+            font-size: 1.05rem;
+            color: var(--text-color-secondary);
+            line-height: 1.5;
+        }
+        #vaultmesh ul {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+            color: var(--text-color-secondary);
+        }
+        #vaultmesh ul li {
+            font-size: 1.05rem;
+            margin-bottom: 0.5rem;
+        }
+        #vaultmesh ul.list-decimal {
+            list-style-type: decimal;
+        }
+        #vaultmesh code {
+            background-color: var(--button-secondary-hover-bg);
+            padding: 0.2em 0.4em;
+            border-radius: 4px;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            color: var(--text-color-primary);
+        }
+        body.dark-mode #vaultmesh code {
+            background-color: #4a5568;
+            color: #e2e8f0;
+        }
+
+        /* About Section */
+        #about {
+            background-color: var(--bg-color-primary);
+            padding: 6rem 2rem;
+            color: var(--text-color-primary);
+            border-bottom: 1px solid var(--header-border);
+        }
+        #about h3 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--text-color-primary);
+            margin-bottom: 1.5rem;
+        }
+        #about p {
+            font-size: 1.1rem;
+            color: var(--text-color-secondary);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Global Hubs Section */
+        #global-hubs {
+            background-color: var(--card-bg);
+            padding: 6rem 2rem;
+            color: var(--text-color-primary);
+            border-bottom: 1px solid var(--header-border);
+        }
+        #global-hubs h3 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--text-color-primary);
+            margin-bottom: 2.5rem;
+        }
+        .map-container {
+            width: 100%;
+            height: 400px; /* Fixed height for maps */
+            background-color: var(--bg-color-primary); /* Fallback */
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        /* Call to Action Section */
+        #cta {
+            background: var(--card-bg);
+            padding: 6rem 2rem;
+            color: var(--text-color-primary);
+            text-align: center;
+        }
+        #cta h3 {
+            font-size: 2.5rem;
+            font-extrabold;
+            color: var(--text-color-primary);
+            margin-bottom: 1.5rem;
+        }
+        #cta p {
+            font-size: 1.2rem;
+            color: var(--text-color-secondary);
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 2.5rem;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--card-bg);
+            color: var(--muted-text);
+            padding: 2rem;
+            font-size: 0.85rem;
+            border-top: 1px solid var(--header-border);
+            text-align: center;
+        }
+        footer a {
+            color: var(--muted-text);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        footer a:hover {
+            color: var(--text-color-primary);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .hero-section h2 {
+                font-size: 2.8rem;
+            }
+            .hero-section p {
+                font-size: 1rem;
+            }
+            .cta-button, .cta-button-secondary {
+                width: 100%;
+                max-width: 200px;
+                height: auto;
+                padding: 0.7rem 0.5rem;
+                font-size: 0.9rem;
+                margin: 0.25rem auto;
+            }
+
+            header nav {
+                flex-wrap: wrap;
+                justify-content: center;
+                margin-top: 1rem;
+            }
+            header nav a {
+                margin: 0.25rem 0.5rem;
+            }
+            header nav a:not(.button-style-original):not(.button-style-main),
+            header nav a.button-style-original,
+            header nav a.button-style-main {
+                margin-left: 0.25rem;
+                margin-right: 0.25rem;
+            }
+            header nav a.login-button.ml-auto {
+                margin-left: 0.25rem;
+            }
+
+            section {
+                padding: 4rem 1.5rem;
+            }
+            section h2, section h3 {
+                font-size: 1.8rem;
+                margin-bottom: 1.5rem;
+            }
+            section p {
+                font-size: 1rem;
+            }
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+            #shareprice h2 {
+                font-size: 1.5rem;
+            }
+            #price {
+                font-size: 2.5rem;
+            }
+            #vault-access .w-full.h-\[800px\] {
+                height: 500px;
+            }
+            .terminal-btn {
+                padding: 0.8rem 1rem;
+                font-size: 0.9rem;
+            }
+            #treaty blockquote {
+                font-size: 1.2rem;
+            }
+            #vaultmesh h2, #vaultmesh h3 {
+                font-size: 1.8rem;
+            }
+            #vaultmesh p, #vaultmesh ul li {
+                font-size: 0.95rem;
+            }
+            #cta h3 {
+                font-size: 2rem;
+            }
+            #cta p {
+                font-size: 1rem;
+            }
+            .theme-language-controls {
+                width: 100%;
+                justify-content: center;
+                margin-top: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .cta-button, .cta-button-secondary {
+                width: 90%;
+                margin: 0.25rem auto;
+            }
+            header nav {
+                flex-direction: column;
+                align-items: center;
+            }
+            header nav a {
+                margin: 0.2rem 0;
+            }
+            header nav a.login-button,
+            header nav a.button-style-original,
+            header nav a.button-style-main {
+                margin: 0.2rem auto;
+            }
+        }
+
+        /* Styles for VaultMesh Index Cards */
+        .vaultmesh-index-card {
+            background-color: var(--button-secondary-bg);
+            border: 1px solid var(--button-secondary-border);
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .vaultmesh-index-card:hover {
+            background-color: var(--button-secondary-hover-bg);
+            color: var(--button-secondary-hover-text);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .vaultmesh-index-card .icon {
+            font-size: 1.5rem;
+        }
+        .vaultmesh-index-card .title {
+            font-weight: 600;
+            color: var(--text-color-primary);
+        }
+        body.dark-mode .vaultmesh-index-card .title {
+            color: var(--text-color-primary); /* Ensure title stays readable in dark mode */
+        }
+        body.dark-mode .vaultmesh-index-card:hover .title {
+            color: var(--button-secondary-hover-text);
+        }
+        #vaultmesh-index-details-container {
+            text-align: left; /* Align text within the dynamically loaded content */
+            margin-top: 2.5rem;
+            padding: 1.5rem;
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        #vaultmesh-index-details-container h4 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-color-primary);
+            margin-bottom: 1rem;
+        }
+        #vaultmesh-index-details-container p, #vaultmesh-index-details-container ul {
+            color: var(--text-color-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        #vaultmesh-index-details-container ul {
+            list-style-type: disc;
+            margin-left: 1.25rem;
+        }
+        #vaultmesh-index-details-container ol {
+            list-style-type: decimal;
+            margin-left: 1.25rem;
+        }
+        #vaultmesh-index-details-container ul li, #vaultmesh-index-details-container ol li {
+            margin-bottom: 0.5rem;
+        }
+        #vaultmesh-index-details-container code {
+            background-color: var(--button-secondary-hover-bg);
+            padding: 0.1em 0.3em;
+            border-radius: 3px;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            color: var(--text-color-primary);
+        }
+        body.dark-mode #vaultmesh-index-details-container code {
+            background-color: #4a5568;
+            color: #e2e8f0;
+        }
+
+        /* Firebase Auth Specific Styles */
+        .auth-card {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            position: relative; /* For z-index context */
+            z-index: 100; /* Ensure it's above the canvas */
+        }
+        .auth-card input {
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            width: 100%;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+        .auth-card button {
+            background-color: #4f46e5;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+        .auth-card button:hover {
+            background-color: #4338ca;
+        }
+        .message-box {
+            background-color: #fef2f2;
+            color: #ef4444;
+            border: 1px solid #fca5a5;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            margin-top: 1rem;
+            text-align: left;
+            display: none;
+        }
+        .success-box {
+            background-color: #ecfdf5;
+            color: #10b981;
+            border: 1px solid #a7f3d0;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            margin-top: 1rem;
+            text-align: left;
+            display: none;
+        }
+        .hidden {
+            display: none;
+        }
+        #authOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7); /* Dark overlay */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999; /* Ensure it's on top */
+            backdrop-filter: blur(5px); /* Optional blur effect */
+        }
+        #loadingSpinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid #fff;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Authentication Overlay/Section -->
+    <div id="authOverlay">
+        <div class="auth-card">
+            <h1 class="text-2xl font-bold mb-6 text-gray-800">Welcome to FAA Nexus</h1>
+
+            <!-- Loading Spinner -->
+            <div id="loadingSpinner" class="mx-auto"></div>
+            <p id="loadingMessage" class="text-gray-600 mb-4">Initializing authentication...</p>
+
+            <!-- Message Box for errors and success -->
+            <div id="messageBox" class="message-box"></div>
+            <div id="successBox" class="success-box"></div>
+
+            <!-- Authentication Forms Section -->
+            <div id="authSection" class="hidden">
+                <!-- Sign Up Form -->
+                <div id="signUpForm" class="mb-8">
+                    <h2 class="text-xl font-semibold mb-4 text-gray-700">Create Account</h2>
+                    <input type="text" id="signUpDisplayName" placeholder="Display Name" class="focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                    <input type="email" id="signUpEmail" placeholder="Email" class="focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                    <input type="password" id="signUpPassword" placeholder="Password" class="focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                    <button id="signUpButton" class="bg-indigo-600 hover:bg-indigo-700">Sign Up</button>
+                    <p class="mt-4 text-gray-600">Already have an account? <a href="#" id="showSignIn" class="text-indigo-600 hover:underline">Sign In</a></p>
+                </div>
+
+                <!-- Sign In Form -->
+                <div id="signInForm" class="hidden">
+                    <h2 class="text-xl font-semibold mb-4 text-gray-700">Sign In</h2>
+                    <input type="email" id="signInEmail" placeholder="Email" class="focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                    <input type="password" id="signInPassword" placeholder="Password" class="focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                    <button id="signInButton" class="bg-indigo-600 hover:bg-indigo-700">Sign In</button>
+                    <p class="mt-4 text-gray-600">Don't have an account? <a href="#" id="showSignUp" class="text-indigo-600 hover:underline">Sign Up</a></p>
+                </div>
+            </div>
+
+            <!-- Dashboard Section (hidden until authenticated) -->
+            <div id="dashboardSection" class="hidden text-left">
+                <h2 class="text-xl font-semibold mb-4 text-gray-700">Welcome to your Dashboard!</h2>
+                <p class="text-gray-600 mb-2">You are signed in as:</p>
+                <p class="text-lg font-medium text-gray-800" id="userName"></p>
+                <p class="text-sm text-gray-500 mb-4" id="userEmail"></p>
+                <p class="text-sm text-gray-500 mb-4" id="userIdDisplay"></p>
+                <button id="signOutButton" class="bg-red-600 hover:bg-red-700">Sign Out</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Website Content (initially hidden if not authenticated) -->
+    <div id="mainContent" class="hidden">
+        <header class="py-4 px-6 md:px-12 flex flex-col sm:flex-row justify-between items-center">
+            <h1 class="text-2xl font-extrabold tracking-tight mb-4 sm:mb-0" data-i18n="vaultmeshTitle">🌐 VaultMesh™</h1>
+            <nav class="flex flex-wrap justify-center sm:justify-end items-center">
+                <a href="fruitful.faa.zone/index.html" class="transition-colors duration-200" data-i18n="navHome">Home</a>
+                <a href="#features" class="transition-colors duration-200" data-i18n="navFeatures">Features</a>
+                <a href="#shareprice" class="transition-colors duration-200" data-i18n="navSignal">Signal</a>
+                <a href="#vault-access" class="transition-colors duration-200" data-i18n="navVault">Vault</a>
+                <a href="#treaty" class="transition-colors duration-200" data-i18n="navTreaty">Treaty</a>
+                <a href="#vaultmesh" class="transition-colors duration-200" data-i18n="navVaultmesh">VaultMesh</a>
+                <a href="#about" class="transition-colors duration-200" data-i18n="navAbout">About</a>
+                <a href="https://faa.zone/careers/hiring-homepage.html" target="_blank" class="transition-colors duration-200" data-i18n="navCareers">Careers</a>
+                <!-- These links will now be handled by the auth overlay -->
+                <!-- <a href="https://seedwave.faa.zone/login.html" class="transition-colors duration-200 button-style-original login-button" data-i18n="navLogin">Login</a> -->
+                <!-- <a href="https://seedwave.faa.zone/signup.html" class="px-4 py-2 rounded-full font-semibold transition-colors duration-200 button-style-main" data-i18n="navSignup">Sign Up</a> -->
+                <a href="https://faa.zone/legal/securesign.html" target="_blank" class="transition-colors duration-200 font-semibold px-4 py-2 rounded-full border border-gray-300 hover:bg-gray-100 hover:text-gray-900 button-style-original" data-i18n="navSecuresign">SecureSign</a>
+                <a href="https://faa.zone/contact-us.html" class="px-4 py-2 rounded-full font-semibold transition-colors duration-200 button-style-main" data-i18n="navContactUs">Contact Us</a>
+
+                <div class="theme-language-controls">
+                    <!-- Theme Toggle -->
+                    <div class="toggle-container">
+                        <span class="text-xs text-gray-500 mr-1" data-i18n="themeToggleLabel">Theme</span>
+                        <div id="theme-toggle" class="theme-toggle"></div>
+                    </div>
+                    <!-- Hyper Toggle -->
+                    <div class="toggle-container">
+                        <span class="text-xs text-gray-500 mr-1" data-i18n="hyperToggleLabel">Hyper</span>
+                        <div id="hyper-toggle" class="hyper-toggle"></div>
+                    </div>
+
+                    <!-- Language Selector -->
+                    <select id="language-select" class="language-select">
+                        <option value="en" data-i18n="langEnglish">English</option>
+                        <option value="af" data-i18n="langAfrikaans">Afrikaans</option>
+                    </select>
+                </div>
+            </nav>
+        </header>
+
+        <section class="hero-section">
+            <!-- The rhythmicCanvas where the pulse bar and hacking logic will be displayed -->
+            <canvas id="rhythmicCanvas"></canvas>
+
+            <div class="hero-content">
+                <h2 class="text-5xl md:text-6xl font-extrabold leading-tight mb-6" data-i18n="heroHeading">
+                    Welcome to <span class="text-blue-600">VaultMesh™</span>
+                </h2>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mx-auto w-full max-w-6xl mt-40">
+                    <a href="https://faa.zone/omnigrid" class="cta-button w-full" data-i18n="heroBtnExplore">
+                        🌐Explore Omnigrid
+                    </a>
+                    <a href="https://fruitful.faa.zone" target="_blank" class="cta-button cta-button-secondary w-full" data-i18n="heroBtnFruitful">
+                        🌐Fruitful™
+                    </a>
+                    <a href="https://baobab.faa.zone" target="_blank" class="cta-button cta-button-secondary w-full" data-i18n="heroBtnBaobab">
+                       🌐Baobab Network
+                    </a>
+                    <a href="https://fruitfulcratedance.com/" target="_blank" class="cta-button cta-button-secondary w-full" data-i18n="heroBtnCrateDance">
+                        🐑Fruitful Crate Dance
+                    </a>
+                    <a href="https://vaultmesh.faa.zone/fruitful-brand-packages.html" target="_blank" class="cta-button cta-button-secondary" data-i18n="heroBtnGlobalPackages">
+                        🌐Global 💰 Packages
+                    </a>
+                    <a href="https://seedwave.faa.zone/ecosystem-dashboard.html" target="_blank" class="cta-button cta-button-secondary w-full" data-i18n="heroBtnEcosystemDashboard">
+                        🌐Ecosystem dashboard
+                    </a>
+                    <a href="https://sellers.takealot.com/" target="_blank" class="cta-button cta-button-secondary w-full" data-i18n="heroBtnTakealot">
+                        🔒Takealot Seller
+                    </a>
+                    <a href="https://www.zoho.com/" target="_blank" class="cta-button cta-button-secondary w-full" data-i18n="heroBtnVaultEmail">
+                        🔒Vault Email
+                    </a>
+                    <a href="https://www.paypal.com/signin/" target="_blank" class="cta-button cta-button-secondary w-full" data-i18n="heroBtnPaypalAccess">
+                        🔒Paypal Access
+                    </a>
+                    <a href="https://vercel.com/faa-systems-projects/" target="_blank" class="cta-button cta-button-secondary w-full" data-i18n="heroBtnVercelAccess">
+                        🔒Vecel Access
+                    </a>
+                    <a href="https://github.com/heyns1000/" target="_blank" class="cta-button cta-button-secondary w-full" data-i18n="heroBtnGithubAccess">
+                        🔒Github Access
+                    </a>
+                    <a href="https://dash.cloudflare.com/login" target="_blank" class="cta-button cta-button-secondary w-full" data-i18n="heroBtnCloudflareAccess">
+                        Cloudfare Access
+                    </a>
+                    <a href="https://accounts.hetzner.com/account/masterdata" target="_blank" class="cta-button cta-button-secondary w-full" data-i18n="heroBtnHetznerCloud">
+                        🔒Hetzner Cloud
+                    </a>
+                    <a href="https://faa.zone/legal/" target="_blank" class="cta-button cta-button-secondary w-full" data-i18n="heroBtnLegalAccess">
+                        🌐Legal Access
+                    </a>
+                    <a href="https://accounting.sageone.co.za/Maintenance/OpenAndManageCompanyMaintenance.aspx" target="_blank" class="cta-button cta-button-secondary w-full" data-i18n="heroBtnSageAccess">
+                        🔒Sage Access
+                    </a>
+                    <a href="https://login.alibaba.com/newlogin/icbuLogin.htm?defaultActive=signIn&return_url=https%3A%2F%2Fwww.alibaba.com%2F%3Fsrc%3Dsem_ggl%26field%3DUG%26from%3Dsem_ggl%26cmpgn%3D9922923274%26adgrp%3D97780323342%26fditm%3D%26tgt%3Dkwd-482944541254%26locintrst%3D%26locphyscl%3D1028682%26mtchtyp%3De%26ntwrk%3Dg%26device%3Dc%26dvcmdl%3D%26creative%3D598857653475%26plcmnt%3D%26plcmntcat%3D%26aceid%3D%26position%3D%26gad_source%3D1%26gad_campaignid%3D9922923274%26gbraid%3D0AAAAAD8m77qRAZex2ej01gArx6VezE9m5%26gclid%3DCjwKCAjw6s7CBhACEiwAuHQckkoZ8x6add65vgObqo7p06J8PMrqd9Jj5d3QDQk02m9K2MLM2Q3hURoCWgkQAvD_BwE&_lang=en_US" target="_blank" class="cta-button cta-button-secondary w-full" data-i18n="heroBtnAlibabaAccount">
+                        🔒Alibaba Account
+                    </a>
+                    <a href="https://homemart.africa/" target="_blank" class="cta-button cta-button-secondary w-full" data-i18n="heroBtnHomemart">
+                        🌐Homemart.Africa
+                    </a>
+                    <a href="https://gemini.google.com/" target="_blank" class="cta-button cta-button-secondary w-full" data-i18n="heroBtnGemini">
+                        🔒Gemini
+                    </a>
+                    <a href="https://samfox.faa.zone/" target="_blank" class="cta-button cta-button-secondary w-full" data-i18n="heroBtnBanimal™:">
+                        🐑Banimal™:
+                    </a>
+                    <a href="https://seedwave.faa.zone/global.html" target="_blank" class="cta-button cta-button-secondary w-full" data-i18n="heroBtnSeedwave™:">
+                        🌱Seedwave Global™:
+                    </a>
+                    <a href="https://legal.faa.zone/respitories/index.html" target="_blank" class="cta-button cta-button-secondary w-full" data-i18n="heroBtnRespitories™:">
+                        🌱Respitories Global™:
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="py-16 md:py-24 px-6 md:px-12">
+            <div class="max-w-6xl mx-auto">
+                <h3 class="text-4xl font-bold text-center mb-16" data-i18n="featuresHeading">
+                    Unlock Your Potential with Our Core Features
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="feature-card">
+                        <div>💡</div>
+                        <h4 data-i18n="feature1Title">AI-Powered Insights</h4>
+                        <p data-i18n="feature1Desc">
+                            Leverage advanced AI to gain deep insights, optimize operations, and make smarter decisions.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div>🤝</div>
+                        <h4 data-i18n="feature2Title">Global Collaboration</h4>
+                        <p data-i18n="feature2Desc">
+                            Connect with thousands of independent brands and partners worldwide, fostering a network of mutual growth.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div>🌱</div>
+                        <h4 data-i18n="feature3Title">Sustainable Solutions</h4>
+                        <p data-i18n="feature3Desc">
+                            Champion eco-friendly practices and contribute to a healthier planet through our curated marketplace.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div>🔒</div>
+                        <h4 data-i18n="feature4Title">Secure VaultMesh™</h4>
+                        <p data-i18n="feature4Desc">
+                            Protect your data and transactions with our state-of-the-art blockchain-inspired security protocols.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div>📈</div>
+                        <h4 data-i18n="feature5Title">Real-time Analytics</h4>
+                        <p data-i18n="feature5Desc">
+                            Monitor your progress and impact with intuitive dashboards and real-time performance metrics.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div>🌐</div>
+                        <h4 data-i18n="feature6Title">OmniScroll Integration</h4>
+                        <p data-i18n="feature6Desc">
+                            Seamlessly integrate with our OmniScroll ledger for transparent and efficient record-keeping.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="shareprice" class="py-12 text-center">
+            <h2 class="text-3xl font-semibold mb-2" data-i18n="sharePriceHeading">FAA™ Share Signal</h2>
+            <div id="price" class="text-5xl font-bold">$88.88</div>
+            <div class="text-sm text-gray-400 mt-1" data-i18n="lastUpdated">Last updated: <span id="timestamp">Live</span></div>
+        </section>
+
+        <section id="seedwave" class="py-16 px-6 text-center">
+            <h2 class="text-4xl font-bold mb-8" data-i18n="seedwaveHeading">🌱 Seedwave Brand Growth 🌱</h2>
+            <div class="metrics-container">
+                <div class="metric-card">
+                    <h3 data-i18n="seedwaveGoalTitle">End Goal</h3>
+                    <p id="seedwave-goal">9000</p>
+                    <div class="description" data-i18n="seedwaveGoalDesc">Target for total brand activations.</div>
+                </div>
+                <div class="metric-card">
+                    <h3 data-i18n="seedwaveInDevTitle">In Development</h3>
+                    <p id="seedwave-in-dev">7038</p>
+                    <div class="description" data-i18n="seedwaveInDevDesc">Brands currently being onboarded/developed.</div>
+                </div>
+                <div class="metric-card">
+                    <h3 data-i18n="seedwaveDeployedTitle">Deployed</h3>
+                    <p id="seedwave-deployed">1172</p>
+                    <div class="description" data-i18n="seedwaveDeployedDesc">Brands live and operational on Seedwave.</div>
+                </div>
+            </div>
+            <div class="progress-wrapper">
+                <p class="text-lg font-semibold text-gray-700 mb-2" data-i18n="seedwaveProgressLabel">Progress to Goal</p>
+                <div class="progress-bar-container">
+                    <div id="seedwave-progress-bar" class="progress-bar">0%</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16 px-6 text-center founders-note-section">
+            <h2 class="text-4xl font-bold mb-8" data-i18n="foundersNoteHeading">🧬 Founder's Glyph™</h2>
+            <p class="max-w-3xl mx-auto text-xl leading-relaxed" data-i18n="foundersNoteParagraph1">
+                FAA™ wasn’t built like a typical startup. It emerged — out of silence, out of signal, out of glyphs and patterns that refused to be ignored.
+                What you're seeing isn't a site. It’s a vault interface. A codebase of culture. A trust-machine powered by real human intelligence.
+            </p>
+            <p class="mt-6 max-w-2xl mx-auto italic" data-i18n="foundersNoteParagraph2">
+                Where others scale with speed, we scale with meaning. Every brand here agreed to something deeper than growth — they signed a Treaty.
+                That’s why this isn’t eCommerce. It’s TreatyCommerce™.
+            </p>
+            <p class="mt-6 font-semibold" data-i18n="foundersNoteSignature">— Written from the edge of code & culture 🌍 FAA.Zone Founder Glyph Activated™</p>
+        </section>
+
+        <section id="vault-access" class="py-16 px-6">
+            <h3 class="text-4xl font-bold text-center mb-10" data-i18n="sectorTerminalsHeading">🔐 Sector Terminals</h3>
+
+            <div class="w-full max-w-6xl mx-auto mb-10">
+                <div class="w-full h-[800px] border-4 rounded-xl shadow-2xl overflow-hidden">
+                    <iframe
+                        id="vault-frame"
+                        src=""
+                        class="w-full h-full rounded-xl"
+                        frameborder="0"
+                        title="VaultMaster Terminal"
+                        sandbox="allow-scripts allow-same-origin allow-forms"
+                    ></iframe>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                <button onclick="loadTerminal('vault-master.html')" class="terminal-btn p-6" data-i18n="terminalVaultMaster">🦍 VaultMaster Terminal</button>
+                <button onclick="loadTerminal('cube-lattice.html')" class="terminal-btn p-6" data-i18n="terminalCubeLattice">🧱 Cube Lattice GPT</button>
+                <button onclick="loadTerminal('global-view.html')" class="terminal-btn p-6" data-i18n="terminalGlobalView">🌍 Global View GPT</button>
+                <button onclick="loadTerminal('freight-ops.html')" class="terminal-btn p-6" data-i18n="terminalFreightOps">🚚 Freight Ops GPT</button>
+                <button onclick="loadTerminal('loop-watch.html')" class="terminal-btn p-6" data-i18n="terminalLoopWatch">♻️ Loop Watch GPT</button>
+                <button onclick="loadTerminal('seedwave.html')" class="terminal-btn p-6" data-i18n="terminalSeedwave">🌱 Seedwave GPT</button>
+                <button onclick="loadTerminal('distribution.html')" class="terminal-btn p-6" data-i18n="terminalDistribution">📦 Distribution GPT</button>
+                <button onclick="loadTerminal('signal.html')" class="terminal-btn p-6" data-i18n="terminalSignal">🔐 Signal GPT</button>
+                <button onclick="loadTerminal('faa-brands.html')" class="terminal-btn p-6" data-i18n="terminalFAABrands">📦 7038 FAA Brands</button>
+            </div>
+        </section>
+
+        <section class="py-16 px-6 text-center sector-scrolls-section">
+            <h2 class="text-4xl font-bold mb-8" data-i18n="sectorScrollsHeading">🧬 Sector Scrolls</h2>
+            <div id="sector-glyphs-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
+            </div>
+            <div id="sector-content-container" class="mt-10 px-6 max-w-6xl mx-auto"></div>
+        </section>
+
+        <section id="treaty" class="py-16 px-6 text-center">
+            <h2 class="text-4xl font-bold mb-6" data-i18n="treatySystemHeading">📜 Treaty System™</h2>
+            <p class="max-w-2xl mx-auto text-lg mb-8" data-i18n="treatyParagraph1">The FAA™ Treaty Layer binds interface to intention. This is not UI. This is glyph-encoded law.</p>
+            <blockquote class="text-2xl italic font-semibold" data-i18n="treatyQuote">"FAA™ isn't a site. It's the shape of alignment — and 🦍 holds the flame."</blockquote>
+        </section>
+
+        <section class="py-10 text-xs text-center signal-packet-section">
+            <pre class="max-w-2xl mx-auto p-4 rounded-lg overflow-auto"><code>{
+    "signal": "omnidrop",
+    "origin": "If you dont like the fruits you are growing, change the seed™ / FAA Vault Layer",
+    "payload": {
+        "type": "scroll",
+        "value": "homepage + VaultRouter + all terminal iframe buttons live + Treaty Grid"
+    }
+}</code></pre>
+        </section>
+
+        <section id="vaultmesh" class="py-20 px-6">
+            <div class="max-w-4xl mx-auto text-left space-y-6">
+
+                <h2 class="text-4xl font-bold text-purple-400" data-i18n="vaultmeshSummaryHeading">🧠 VaultMesh™: Executive Summary</h2>
+
+                <p data-i18n="vaultmeshSummaryP1">VaultMesh™ is an intelligent data orchestration framework designed for the segmentation, synchronization, and secure deployment of high-value digital assets—referred to as scrolls—across decentralized and permissioned networks such as FAA.Zone™.</p>
+
+                <ul class="list-disc ml-6 space-y-2">
+                    <li data-i18n="vaultmeshSummaryLi1">Captures metadata-rich content streams (chats, code, brands, assets)</li>
+                    <li data-i18n="vaultmeshSummaryLi2">Assigns them to programmable claim structures (ScrollClaims™)</li>
+                    <li data-i18n="vaultmeshSummaryLi3">Secures their lineage using OmniSignal™, PulseGrid™, and GhostTrace™ layers</li>
+                    <li data-i18n="vaultmeshSummaryLi4">Enforces royalty logic, scroll integrity, and traceability on-chain and off-grid</li>
+                </ul>
+
+                <p data-i18n="vaultmeshSummaryP2">VaultMesh™ powers high-tier operations like HSOMNI9000™, enabling Diamond-tier deployments, cross-sector scroll claims, and enterprise-scale content monetization with full compliance and provenance.</p>
+
+                <p data-i18n="vaultmeshSummaryP3">The framework is deeply integrated with platforms suchs as `vault.faa.zone™`, where scrolls tied to brands like Fruitful Global Planet™ are securely hosted, organized into structured sectors, and deployed through FAA.Zone™-compliant channels.</p>
+
+                <p data-i18n="vaultmeshSummaryP4">A critical operator in this ecosystem is HSOMNI9000™, the certified scroll class which governs Diamond-tier logic, enforces 10–11% royalty triggers, and auto-deploys ScrollClaims™ with real-time ClaimRoot™ verification.</p>
+
+                <h3 class="text-2xl font-semibold mt-10" data-i18n="vaultmeshIndexHeading">📖 VaultMesh™ Index</h3>
+                <!-- Modified to use a grid of clickable cards -->
+                <div id="vaultmesh-index-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto mt-8">
+                    <!-- These will be populated by JS -->
+                </div>
+                <!-- Container for dynamically loaded content -->
+                <div id="vaultmesh-index-details-container" class="max-w-4xl mx-auto mt-8 hidden">
+                    <!-- Content will be loaded here -->
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="py-16 md:py-24 px-6 md:px-12 text-center">
+            <div class="max-w-4xl mx-auto">
+                <h3 class="text-4xl font-bold mb-8" data-i18n="aboutFruitfulHeading">About Fruitful Innovations</h3>
+                <p class="text-lg leading-relaxed mb-6" data-i18n="aboutFruitfulP1">
+                    At Fruitful, we believe in a future where technology empowers positive change. Our platform is designed to break down traditional barriers, fostering a collaborative ecosystem where businesses and individuals can thrive while making a meaningful impact on the world.
+                </p>
+                <p class="text-lg leading-relaxed" data-i18n="aboutFruitfulP2">
+                    We are committed to transparency, sustainability, and innovation, driven by a powerful AI that ensures fairness, efficiency, and personalized experiences for every user. Join us in building a more fruitful planet.
+                </p>
+            </div>
+        </section>
+
+        <section id="global-hubs" class="py-16 md:py-24 px-6 md:px-12 text-center">
+            <h3 class="text-4xl font-bold mb-12" data-i18n="globalHubsHeading">Our Global Hubs</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <div>
+                    <h4 class="text-xl font-semibold mb-4" data-i18n="mapLocationJHB">Johannesburg, South Africa</h4>
+                    <div id="map-jhb" class="map-container"></div>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold mb-4" data-i18n="mapLocationCPT">Cape Town, South Africa</h4>
+                    <div id="map-cpt" class="map-container"></div>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold mb-4" data-i18n="mapLocationNYC">New York City, USA</h4>
+                    <div id="map-nyc" class="map-container"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="cta" class="py-16 md:py-24 px-6 md:px-12 text-center">
+            <div class="max-w-3xl mx-auto">
+                <h3 class="text-4xl font-extrabold mb-8 leading-tight" data-i18n="ctaHeading">
+                    Ready to Transform Your Future?
+                </h3>
+                <p class="text-xl mb-10" data-i18n="ctaParagraph">
+                    Join the Fruitful community today and start your journey towards innovation, connection, and a sustainable tomorrow.
+                </p>
+                <a href="https://seedwave.faa.zone/signup.html" class="cta-button" data-i18n="ctaSignupBtn">
+                    Sign Up Now
+                </a>
+            </div>
+        </section>
+
+        <footer class="py-8 px-6 md:px-12 text-center">
+            <span data-i18n="footerText">© 2025 FAA™ Treaty System™. All Rights Reserved. Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.</span>
+        </footer>
+    </div>
+
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import {
+            getAuth,
+            createUserWithEmailAndPassword,
+            signInWithEmailAndPassword,
+            signOut,
+            onAuthStateChanged,
+            updateProfile,
+            signInAnonymously,
+            signInWithCustomToken
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // WARNING: Storing API keys directly in client-side JavaScript (even in a separate object)
+        // is generally INSECURE for production environments, especially for sensitive keys (like Xero Client Secret, PayPal API keys that grant direct account access).
+        // For a real-world application, these keys should be handled server-side and exposed only when necessary,
+        // or through secure, token-based authentication flows. This implementation is for demonstration purposes only.
+        const CENTRAL_API_KEYS = {
+            "paypal": {
+                "sdk": "BAAGdPecRsf6dw_nIrWqUen0GdW0UsBZapp1Gn62xkPdD-Vqc-4lqWAidKK8LOObXux8pHJGjXknZoar6Q",
+                "hostedButtons": {
+                    "starter": "EMWGPGHNN8Y8E",
+                    "pro": "QGU3ZUQCMD49Q",
+                    "enterprise": "9C88S44F93M5J",
+                    "banimalLoopPlan": "YOUR_BANIMAL_PAYPAL_BUTTON_ID_HERE" // Placeholder
+                }
+            },
+            "googleMaps": "AIzaSyBPG8dG29cl0TvYRGyLozejGed5Wj5Ab80",
+            "spotify": {
+                "accessToken": "" // Removed the long Spotify access token
+            },
+            "geminiAI": "AIzaSyBGSDZATtITv5iIoB3rgKHBpWx9MrufxXE",
+            "xero": {
+                "clientId": "81B3573D453040508996432C5DAD565B",
+                "clientSecret": "FIaJGmsaCcKR3Z8kWxPnQd04EhYy6_bImPmoitQDP1U6Smaq",
+                "redirectUri": "https://seedwave.faa.zone/admin_panel_xero.html",
+                "webhookKey": "2fd5LQV0TQDI3572Er/sg66zqEbl8mFWRyfX3XkoKFZGRLK2cZPGpWV/j4yMTU7aUpbgBCfeZkuHnQIwD/0igw=="
+            }
+        };
+
+        // --- Firebase Configuration and Initialization ---
+        // This is your FAA Nexus Firebase project configuration.
+        // IMPORTANT: Replace these placeholder values with your ACTUAL Firebase project configuration from the Firebase Console.
+        // Go to Firebase Console -> Project settings (gear icon) -> Your apps -> Web app -> Config
+        const faaNexusFirebaseConfig = {
+            apiKey: "AIzaSyCR3mbgoiiCkRyaAm5BSWBWBFwut0MDCW8",
+            authDomain: "faa-nexus.firebaseapp.com",
+            projectId: "faa-nexus",
+            storageBucket: "faa-nexus.appspot.com",
+            messagingSenderId: "459816542686",
+            appId: "1:459816542686:web:YOUR_WEB_APP_ID" // Corrected placeholder format
+        };
+
+        // Determine which Firebase config to use:
+        // If __firebase_config is provided by the Canvas environment, use it.
+        // Otherwise, fall back to the hardcoded faaNexusFirebaseConfig for live deployment.
+        const firebaseConfig = (typeof __firebase_config !== 'undefined' && Object.keys(JSON.parse(__firebase_config)).length > 0)
+            ? JSON.parse(__firebase_config)
+            : faaNexusFirebaseConfig;
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        // Log the Firebase config for debugging
+        console.log("Firebase Config in use:", firebaseConfig);
+
+        // Initialize Firebase app
+        const app = initializeApp(firebaseConfig);
+        // Get Firebase Auth and Firestore instances
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // --- DOM Elements for Auth Overlay ---
+        const authOverlay = document.getElementById('authOverlay');
+        const authSection = document.getElementById('authSection');
+        const signUpForm = document.getElementById('signUpForm');
+        const signInForm = document.getElementById('signInForm');
+        const dashboardSection = document.getElementById('dashboardSection');
+
+        const signUpDisplayNameInput = document.getElementById('signUpDisplayName');
+        const signUpEmailInput = document.getElementById('signUpEmail');
+        const signUpPasswordInput = document.getElementById('signUpPassword');
+        const signUpButton = document.getElementById('signUpButton');
+
+        const signInEmailInput = document.getElementById('signInEmail');
+        const signInPasswordInput = document.getElementById('signInPassword');
+        const signInButton = document.getElementById('signInButton');
+
+        const signOutButton = document.getElementById('signOutButton');
+        const userNameDisplay = document.getElementById('userName');
+        const userEmailDisplay = document.getElementById('userEmail');
+        const userIdDisplay = document.getElementById('userIdDisplay');
+
+        const showSignInLink = document.getElementById('showSignIn');
+        const showSignUpLink = document.getElementById('showSignUp');
+
+        const messageBox = document.getElementById('messageBox');
+        const successBox = document.getElementById('successBox');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const loadingMessage = document.getElementById('loadingMessage');
+
+        // --- DOM Element for Main Content ---
+        const mainContent = document.getElementById('mainContent');
+
+        // --- Helper Functions for UI Messages ---
+        function showMessage(element, message, isError = true) {
+            element.textContent = message;
+            element.style.display = 'block';
+            if (isError) {
+                element.classList.remove('success-box');
+                element.classList.add('message-box');
+            } else {
+                element.classList.remove('message-box');
+                element.classList.add('success-box');
+            }
+            // Hide message after 5 seconds
+            setTimeout(() => {
+                element.style.display = 'none';
+                element.textContent = '';
+            }, 5000);
+        }
+
+        // --- Event Listeners for Auth Forms ---
+
+        // Toggle between Sign Up and Sign In forms
+        showSignInLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            signUpForm.classList.add('hidden');
+            signInForm.classList.remove('hidden');
+            messageBox.style.display = 'none'; // Clear messages
+            successBox.style.display = 'none';
+        });
+
+        showSignUpLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            signInForm.classList.add('hidden');
+            signUpForm.classList.remove('hidden');
+            messageBox.style.display = 'none'; // Clear messages
+            successBox.style.display = 'none';
+        });
+
+        // Sign Up Button Click Handler
+        signUpButton.addEventListener('click', async () => {
+            const displayName = signUpDisplayNameInput.value.trim();
+            const email = signUpEmailInput.value.trim();
+            const password = signUpPasswordInput.value.trim();
+
+            if (!displayName || !email || !password) {
+                showMessage(messageBox, 'Please fill in all fields.');
+                return;
+            }
+
+            if (password.length < 6) {
+                showMessage(messageBox, 'Password should be at least 6 characters.');
+                return;
+            }
+
+            try {
+                // Create user with email and password
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // Update user profile with display name
+                await updateProfile(user, { displayName: displayName });
+
+                showMessage(successBox, 'Account created successfully! Welcome ' + displayName + '.', false);
+                // The onAuthStateChanged listener will handle UI update to dashboard
+            } catch (error) {
+                console.error("Sign up error:", error.code, error.message);
+                let errorMessage = 'An unknown error occurred during sign up.';
+                switch (error.code) {
+                    case 'auth/email-already-in-use':
+                        errorMessage = 'This email is already in use.';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage = 'The email address is not valid.';
+                        break;
+                    case 'auth/weak-password':
+                        errorMessage = 'The password is too weak.';
+                        break;
+                    default:
+                        errorMessage = error.message;
+                }
+                showMessage(messageBox, errorMessage);
+            }
+        });
+
+        // Sign In Button Click Handler
+        signInButton.addEventListener('click', async () => {
+            const email = signInEmailInput.value.trim();
+            const password = signInPasswordInput.value.trim();
+
+            if (!email || !password) {
+                showMessage(messageBox, 'Please fill in all fields.');
+                return;
+            }
+
+            try {
+                // Sign in user with email and password
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                showMessage(successBox, 'Signed in successfully! Welcome back ' + (user.displayName || user.email) + '.', false);
+                // The onAuthStateChanged listener will handle UI update to dashboard
+            } catch (error) {
+                console.error("Sign in error:", error.code, error.message);
+                let errorMessage = 'An unknown error occurred during sign in.';
+                switch (error.code) {
+                    case 'auth/invalid-email':
+                        errorMessage = 'The email address is not valid.';
+                        break;
+                    case 'auth/user-disabled':
+                        errorMessage = 'This user account has been disabled.';
+                        break;
+                    case 'auth/user-not-found':
+                    case 'auth/wrong-password':
+                        errorMessage = 'Invalid email or password.';
+                        break;
+                    default:
+                        errorMessage = error.message;
+                }
+                showMessage(messageBox, errorMessage);
+            }
+        });
+
+        // Sign Out Button Click Handler
+        signOutButton.addEventListener('click', async () => {
+            try {
+                await signOut(auth);
+                showMessage(successBox, 'You have been signed out.', false);
+                // The onAuthStateChanged listener will handle UI update to forms
+            } catch (error) {
+                console.error("Sign out error:", error.code, error.message);
+                showMessage(messageBox, 'Error signing out: ' + error.message);
+            }
+        });
+
+        // --- Firebase Auth State Listener ---
+        // This listener runs whenever the user's sign-in state changes.
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is signed in
+                authOverlay.classList.add('hidden'); // Hide auth overlay
+                mainContent.classList.remove('hidden'); // Show main content
+                userNameDisplay.textContent = user.displayName || 'No Display Name';
+                userEmailDisplay.textContent = user.email;
+                userIdDisplay.textContent = `User ID: ${user.uid}`;
+                messageBox.style.display = 'none'; // Clear any lingering error messages
+                loadingSpinner.classList.add('hidden'); // Hide loading spinner
+                loadingMessage.classList.add('hidden'); // Hide loading message
+
+                // Initialize other page components after successful login
+                updateSeedwaveMetrics();
+                updateSharePrice();
+                // initMap is called by Google Maps API script directly via callback=initMap
+            } else {
+                // User is signed out
+                authOverlay.classList.remove('hidden'); // Show auth overlay
+                mainContent.classList.add('hidden'); // Hide main content
+                // Ensure sign-up form is visible by default when signed out
+                signInForm.classList.add('hidden');
+                signUpForm.classList.remove('hidden');
+                dashboardSection.classList.add('hidden'); // Hide dashboard
+                authSection.classList.remove('hidden'); // Show auth forms
+                loadingSpinner.classList.add('hidden'); // Hide loading spinner
+                loadingMessage.classList.add('hidden'); // Hide loading message
+            }
+        });
+
+        // --- Initial Authentication ---
+        // Attempt to sign in with the custom token provided by the environment.
+        // If no token, sign in anonymously to ensure Firebase is ready.
+        window.onload = async () => {
+            try {
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                console.log("Firebase authentication initialized.");
+            } catch (error) {
+                console.error("Error during initial Firebase authentication:", error);
+                showMessage(messageBox, 'Failed to initialize authentication. Please try again later.');
+                loadingSpinner.classList.add('hidden');
+                loadingMessage.classList.add('hidden');
+                authSection.classList.remove('hidden'); // Show auth forms even on error
+            }
+        };
+
+        // Function to load terminal content into the iframe
+        function loadTerminal(url) {
+            const vaultFrame = document.getElementById('vault-frame');
+            vaultFrame.src = url;
+            // Remove ring from all buttons and add to the clicked one
+            document.querySelectorAll('.terminal-btn').forEach(btn => btn.classList.remove('ring', 'ring-blue-500'));
+            // Use event.currentTarget to ensure the clicked button is targeted
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('ring', 'ring-blue-500');
+            }
+            console.log("🧬 Terminal loaded:", url);
+        }
+
+        // Script for Share Signal (mock price update)
+        function updateSharePrice() {
+            const mockPrice = (80 + Math.random() * 10).toFixed(2);
+            document.getElementById('price').innerText = `$${mockPrice}`;
+            document.getElementById('timestamp').innerText = new Date().toLocaleTimeString();
+        }
+        // Update every 9 seconds
+        setInterval(updateSharePrice, 9000);
+        // Initial call to display price immediately
+        // updateSharePrice(); // Moved to onAuthStateChanged
+
+        // Seedwave Growth Metrics (updated)
+        const seedwaveMetrics = {
+            goal: 9000,
+            inDev: 7038,
+            deployed: 1172
+        };
+
+        function updateSeedwaveMetrics() {
+            document.getElementById('seedwave-goal').innerText = seedwaveMetrics.goal.toLocaleString();
+            document.getElementById('seedwave-in-dev').innerText = seedwaveMetrics.inDev.toLocaleString();
+            document.getElementById('seedwave-deployed').innerText = seedwaveMetrics.deployed.toLocaleString();
+
+            const progressBar = document.getElementById('seedwave-progress-bar');
+            const progressPercentage = (seedwaveMetrics.deployed / seedwaveMetrics.goal) * 100;
+            progressBar.style.width = `${progressPercentage.toFixed(1)}%`;
+            progressBar.innerText = `${progressPercentage.toFixed(1)}%`;
+        }
+
+        // Run on DOM content loaded - now triggered by auth state change
+        // document.addEventListener('DOMContentLoaded', updateSeedwaveMetrics);
+
+
+        // Define the comprehensive sectorList from admin-portal for consistent slugs and display names
+        const sectorList = {
+            "agriculture": "🌱 Agriculture & Biotech",
+            "fsf": "🥦 Food, Soil & Farming",
+            "banking": "🏦 Banking & Finance",
+            "creative": "🖋️ Creative Tech",
+            "logistics": "📦 Logistics & Packaging",
+            "education": "📚 Education & IP",
+            "fashion": "✂ Fashion & Identity",
+            "gaming": "🎮 Gaming & Simulation",
+            "health-hygiene": "🧴 Health & Hygiene",
+            "housing": "🏗️ Housing & Infrastructure",
+            "justice": "⚖ Justice & Ethics",
+            "knowledge": "🧠 Knowledge & Archives",
+            "micromesh": "☰ Micro-Mesh Logistics",
+            "media": "🎬 Motion, Media & Sonic",
+            "nutrition": "✿ Nutrition & Food Chain",
+            "packaging": "📦 Packaging & Materials",
+            "quantum": "✴️ Quantum Protocols",
+            "ritual": "☯ Ritual & Culture",
+            "saas": "🔑 SaaS & Licensing",
+            "trade": "🧺 Trade Systems",
+            "utilities": "🔋 Utilities & Energy",
+            "voice": "🎙️️ Voice & Audio",
+            "webless": "📡 Webless Tech & Nodes",
+            "nft": "🔁 NFT & Ownership",
+            "zerowaste": "♻️ Zero Waste",
+            "professional": "🧾 Professional Services",
+            "ai-logic": "🧠 AI, Logic & Grid Systems",
+            "mining": "⛏️ Mining & Resources",
+            "payroll": "💰 Payroll Core Systems",
+            "wildlife": "🚁 Wildlife Sector",
+            "admin": "⚙️ Admin & Manual Sync Panel",
+            "global-index": "🌐 Global Brand Index"
+        };
+
+
+        // Dynamically generate the sectorMap based on the comprehensive sectorList
+        const sectorMap = {};
+        for (const slug in sectorList) {
+            // Exclude admin and global-index as they are not public sectors in this context
+            if (slug !== 'admin' && slug !== 'global-index') {
+                // Special handling for wildlife dashboard, otherwise default to index.html
+                const fileName = (slug === 'wildlife') ? 'dashboard.html' : 'index.html';
+                sectorMap[slug] = `/public/sectors/${slug}/${fileName}`;
+            }
+        }
+
+        // Get the container for sector glyphs
+        const sectorGlyphsContainer = document.getElementById('sector-glyphs-container');
+        if (sectorGlyphsContainer) {
+            // Clear existing hardcoded glyphs
+            sectorGlyphsContainer.innerHTML = '';
+
+            // Sort sectors alphabetically by their display name for consistent order
+            const sortedSectorSlugs = Object.keys(sectorList).filter(slug =>
+                slug !== 'admin' && slug !== 'global-index'
+            ).sort((a, b) => {
+                const nameA = sectorList[a];
+                const nameB = sectorList[b];
+                // Exclude admin and global-index from sorting and rendering in this section
+                if (a === 'admin' || a === 'global-index') return 1;
+                if (b === 'admin' || b === 'global-index') return -1;
+                return nameA.localeCompare(nameB);
+            });
+
+            sortedSectorSlugs.forEach(slug => {
+                // Only render public sectors (not admin or global-index)
+                if (slug !== 'admin' && slug !== 'global-index') {
+                    const display = sectorList[slug];
+                    const url = sectorMap[slug];
+
+                    const glyphLink = document.createElement('a');
+                    glyphLink.href = url;
+                    glyphLink.className = "glyph";
+                    glyphLink.setAttribute('data-vault', slug);
+                    glyphLink.innerHTML = display; // display includes the emoji and text
+
+                    glyphLink.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const clickedSectorSlug = e.currentTarget.getAttribute('data-vault');
+                        const iframeUrl = sectorMap[clickedSectorSlug];
+                        const sectorContentContainer = document.getElementById('sector-content-container');
+
+                        if (iframeUrl) {
+                            // Extract display name from sectorList for the loading message
+                            const loadingMessageText = sectorList[clickedSectorSlug] || clickedSectorSlug.charAt(0).toUpperCase() + clickedSectorSlug.slice(1).replace('-', ' ');
+                            sectorContentContainer.innerHTML =
+                                `<div class="text-gray-600 text-sm mb-2">🔄 Loading sector: ${loadingMessageText}...</div>
+                                <iframe src="${iframeUrl}" class="w-full h-[900px] border-none rounded-xl bg-gray-100"></iframe>`;
+                        } else {
+                            sectorContentContainer.innerHTML =
+                                `<div class="text-red-500 text-sm mb-2">Error: Sector URL not found for ${clickedSectorSlug}.</div>`;
+                        }
+                    });
+                    sectorGlyphsContainer.appendChild(glyphLink);
+                }
+            });
+        }
+
+        // Rhythmic Canvas Logic (Pulse bar with hacking game)
+        document.addEventListener('DOMContentLoaded', function() {
+            const rhythmicCanvas = document.getElementById('rhythmicCanvas');
+            if (!rhythmicCanvas) {
+                console.error("Rhythmic canvas element not found!");
+                return;
+            }
+
+            const ctx = rhythmicCanvas.getContext('2d');
+            let animationFrameId;
+            let lineAmplitude;
+
+            const resizeCanvas = () => {
+                rhythmicCanvas.width = rhythmicCanvas.offsetWidth;
+                rhythmicCanvas.height = rhythmicCanvas.offsetHeight;
+                lineAmplitude = rhythmicCanvas.height / 4;
+            };
+            window.addEventListener('resize', resizeCanvas, false);
+            resizeCanvas();
+
+            let time = 0;
+            const numLines = 30;
+            const lineFrequency = 0.02;
+            const lineSpeed = 0.003;
+            const colorSpeed = 50;
+
+            let gameState = 'normal'; // 'normal', 'hackable', 'success', 'failed'
+            let hackStartTime = 0;
+            const HACK_WINDOW_DURATION = 3000; // 3 seconds for hacking
+            const HACK_INTERVAL = 15000; // New hackable state every 15 seconds (after previous state ends)
+            let nextHackTime = Date.now() + HACK_INTERVAL;
+            let messageTimer = 0;
+            const MESSAGE_DISPLAY_DURATION = 2000; // How long success/fail messages display
+
+            function drawGlyph() {
+                ctx.clearRect(0, 0, rhythmicCanvas.width, rhythmicCanvas.height);
+                time += lineSpeed;
+
+                const currentTime = Date.now();
+                const isHyperMode = document.body.classList.contains('hyper-mode');
+
+                // --- State Transition Logic ---
+                if (gameState === 'normal' && currentTime >= nextHackTime) {
+                    gameState = 'hackable';
+                    hackStartTime = currentTime;
+                    messageTimer = currentTime; // Start message timer
+                    console.log("Entering hackable state!");
+                }
+
+                if (gameState === 'hackable') {
+                    const timeLeft = Math.max(0, HACK_WINDOW_DURATION - (currentTime - hackStartTime));
+                }
+
+                // Logic to clear success/failed states and return to normal after message duration
+                if ((gameState === 'success' || gameState === 'failed') && (currentTime - messageTimer > MESSAGE_DISPLAY_DURATION)) {
+                    gameState = 'normal';
+                    // Only reschedule next hack if it hasn't been set already by a successful/failed click (which sets it immediately)
+                    if (nextHackTime < currentTime) {
+                        nextHackTime = currentTime + HACK_INTERVAL;
+                    }
+                    console.log("Message ended, returning to normal.");
+                }
+
+                // --- Drawing Logic based on State ---
+                for (let i = 0; i < numLines; i++) {
+                    ctx.beginPath();
+                    let offset = i * (Math.PI * 2 / numLines); // Default spread
+                    let currentLineAmplitude = lineAmplitude;
+                    let strokeAlpha = 0.2;
+                    let colorHue; // HSL hue (0-360)
+                    let saturation = 70;
+                    let lightness = 50;
+                    let lineWidth = 1.5;
+
+                    if (gameState === 'hackable') {
+                        const progress = (currentTime - hackStartTime) / HACK_WINDOW_DURATION; // 0 to 1
+                        // Transition from red (0) towards cyan (180) or a techier blue in hyper mode
+                        colorHue = isHyperMode ? (180 + (240 - 180) * progress) : (0 + (180 * progress)); // Red -> Cyan (normal), Cyan -> Blue (hyper)
+                        saturation = isHyperMode ? 90 : 70; // More vibrant in hyper
+                        lightness = isHyperMode ? 60 : 50; // Slightly brighter in hyper
+                        strokeAlpha = 0.8;
+                        lineWidth = 2.5;
+
+                        // Make lines converge towards a single pulse as time passes
+                        currentLineAmplitude = lineAmplitude * (1 - 0.8 * progress); // Reduce amplitude to converge
+                        offset = 0; // All lines align to a single phase for the "security code" look
+                    } else if (gameState === 'success') {
+                        colorHue = 120; // Green (standard)
+                        saturation = 90;
+                        lightness = 50;
+                        if (isHyperMode) {
+                            colorHue = 180; // Pure Cyan for hyper success
+                            saturation = 100;
+                            lightness = 70;
+                        }
+                        strokeAlpha = 0.9;
+                        currentLineAmplitude = lineAmplitude * 0.1; // Almost flat line for "locked"
+                        offset = 0; // All aligned
+                        lineWidth = 4; // Very thick for success
+                    } else if (gameState === 'failed') {
+                        colorHue = 0; // Red for immediate failure feedback (standard)
+                        saturation = 80;
+                        lightness = 50;
+                        if (isHyperMode) {
+                            colorHue = 30; // Orange/Amber for hyper failure
+                            saturation = 90;
+                            lightness = 60;
+                        }
+                        strokeAlpha = 0.7;
+                        currentLineAmplitude = lineAmplitude * (0.5 + Math.random() * 0.5); // Disruptive pulses
+                        offset = i * (Math.PI * 2 / numLines) * (0.5 + Math.random() * 0.5); // Random spread
+                        lineWidth = 1;
+                    } else { // normal
+                        if (isHyperMode) {
+                            // Techier blue/green/cyan range for normal hyper mode, explicitly avoiding purple
+                            // (colorHue % 90) maps 0-359 to 0-89. Add 180 shifts to 180-269 (cyan to blue)
+                            colorHue = (time * colorSpeed + i * 10) % 360;
+                            colorHue = (colorHue % 90) + 180;
+                            saturation = 80;
+                            lightness = 60;
+                        } else {
+                            // Original rainbow effect
+                            colorHue = (time * colorSpeed + i * 10) % 360;
+                            saturation = 70;
+                            lightness = 50;
+                        }
+                        strokeAlpha = 0.2;
+                        lineWidth = 1.5;
+                    }
+
+                    ctx.strokeStyle = `hsla(${colorHue}, ${saturation}%, ${lightness}%, ${strokeAlpha})`;
+                    ctx.lineWidth = lineWidth;
+
+                    for (let x = 0; x <= rhythmicCanvas.width; x += 10) {
+                        const y = Math.sin(x * lineFrequency + time + offset) * currentLineAmplitude + rhythmicCanvas.height * 0.25;
+                        if (x === 0) {
+                            ctx.moveTo(x, y);
+                        } else {
+                            ctx.lineTo(x, y);
+                        }
+                    }
+                    ctx.stroke();
+                }
+
+                animationFrameId = requestAnimationFrame(drawGlyph);
+            }
+
+            // Canvas click handler for hacking attempt
+            rhythmicCanvas.addEventListener('click', () => {
+                const currentTime = Date.now();
+                if (gameState === 'hackable' && (currentTime - hackStartTime <= HACK_WINDOW_DURATION)) {
+                    gameState = 'success';
+                    messageTimer = currentTime;
+                    nextHackTime = currentTime + HACK_INTERVAL; // Schedule next hack after success
+                    console.log("Successful hack!");
+                } else if (gameState !== 'success' && gameState !== 'failed') {
+                    // Only trigger failed if not currently showing success/failed state
+                    gameState = 'failed';
+                    messageTimer = currentTime;
+                    nextHackTime = currentTime + HACK_INTERVAL; // Schedule next hack after failure
+                    console.log("Clicked too early/late, hack failed.");
+                }
+            });
+
+            // Start the animation loop
+            drawGlyph();
+        });
+
+        // --- Theme Switching Logic ---
+        const themeToggle = document.getElementById('theme-toggle');
+        const hyperToggle = document.getElementById('hyper-toggle');
+        const currentTheme = localStorage.getItem('theme');
+        const currentHyperMode = localStorage.getItem('hyper-mode');
+
+        function applyThemeClasses() {
+            document.body.classList.remove('light-mode', 'dark-mode', 'hyper-mode');
+            const savedTheme = localStorage.getItem('theme') || 'light-mode';
+            document.body.classList.add(savedTheme);
+
+            const savedHyperMode = localStorage.getItem('hyper-mode');
+            if (savedHyperMode === 'active') {
+                document.body.classList.add('hyper-mode');
+            }
+        }
+
+        // Initialize themes on load
+        applyThemeClasses();
+
+        themeToggle.addEventListener('click', () => {
+            if (document.body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'light-mode');
+            } else {
+                localStorage.setItem('theme', 'dark-mode');
+            }
+            applyThemeClasses(); // Re-apply all theme classes
+            applyTranslations(languageSelect.value); // Re-apply translations after theme change
+        });
+
+        hyperToggle.addEventListener('click', () => {
+            if (document.body.classList.contains('hyper-mode')) {
+                localStorage.setItem('hyper-mode', 'inactive');
+            } else {
+                localStorage.setItem('hyper-mode', 'active');
+            }
+            applyThemeClasses(); // Re-apply all theme classes
+            applyTranslations(languageSelect.value); // Re-apply translations after theme change
+        });
+
+
+        // --- Language Switching Logic ---
+        const translations = {
+            en: {
+                pageTitle: "🌐 VaultMesh™ by Fruitful",
+                navHome: "Home",
+                navFeatures: "Features",
+                navSignal: "Signal",
+                navVault: "Vault",
+                navTreaty: "Treaty",
+                navVaultmesh: "VaultMesh",
+                navAbout: "About",
+                navCareers: "Careers",
+                navLogin: "Login",
+                navSecuresign: "SecureSign",
+                navSignup: "Sign Up",
+                navContactUs: "Contact Us",
+                langEnglish: "English",
+                langAfrikaans: "Afrikaans",
+                themeToggleLabel: "Theme",
+                hyperToggleLabel: "Hyper",
+                heroHeading: "Welcome to <span class=\"text-blue-600\">VaultMesh™</span>",
+                heroBtnExplore: "Explore Ecosystem",
+                heroBtnFruitful: "Fruitful™",
+                heroBtnBaobab: "Baobab Network",
+                heroBtnCrateDance: "Fruitful Crate Dance",
+                "heroBtnGlobalPackages": "🌐Global 💰 Packages", // Quoted key
+                heroBtnEcosystemDashboard: "Ecosystem dashboard",
+                heroBtnTakealot: "Takealot Seller",
+                heroBtnVaultEmail: "Vault Email",
+                heroBtnPaypalAccess: "Paypal Access",
+                heroBtnVercelAccess: "Vercel Access",
+                heroBtnGithubAccess: "🔒Github Access",
+                heroBtnCloudflareAccess: "Cloudflare Access",
+                heroBtnHetznerCloud: "🔒Hetzner Cloud",
+                heroBtnLegalAccess: "Legal Access",
+                heroBtnSageAccess: "Sage Access",
+                heroBtnAlibabaAccount: "Alibaba Account",
+                heroBtnGemini: "🔒Gemini",
+                "heroBtnBanimal™:": "🐑Banimal™:", // Quoted key
+                "heroBtnSeedwave™:": "🌱Seedwave Global™:", // Quoted key
+                "heroBtnRespitories™:": "🌱Respitories Global™:", // Quoted key
+                featuresHeading: "Unlock Your Potential with Our Core Features",
+                feature1Title: "AI-Powered Insights",
+                feature1Desc: "Leverage advanced AI to gain deep insights, optimize operations, and make smarter decisions.",
+                feature2Title: "Global Collaboration",
+                feature2Desc: "Connect with thousands of independent brands and partners worldwide, fostering a network of mutual growth.",
+                feature3Title: "Sustainable Solutions",
+                feature3Desc: "Champion eco-friendly practices and contribute to a healthier planet through our curated marketplace.",
+                feature4Title: "Secure VaultMesh™",
+                feature4Desc: "Protect your data and transactions with our state-of-the-art blockchain-inspired security protocols.",
+                feature5Title: "Real-time Analytics",
+                feature5Desc: "Monitor your progress and impact with intuitive dashboards and real-time performance metrics.",
+                feature6Title: "OmniScroll Integration",
+                feature6Desc: "Seamlessly integrate with our OmniScroll ledger for transparent and efficient record-keeping.",
+                sharePriceHeading: "FAA™ Share Signal",
+                lastUpdated: "Last updated: <span id='timestamp'>Live</span>",
+                seedwaveHeading: "🌱 Seedwave Brand Growth 🌱",
+                seedwaveGoalTitle: "End Goal",
+                seedwaveGoalDesc: "Target for total brand activations.",
+                seedwaveInDevTitle: "In Development",
+                seedwaveInDevDesc: "Brands currently being onboarded/developed.",
+                seedwaveDeployedTitle: "Deployed",
+                seedwaveDeployedDesc: "Brands live and operational on Seedwave.",
+                seedwaveProgressLabel: "Progress to Goal",
+                foundersNoteHeading: "🧬 Founder's Glyph™",
+                foundersNoteParagraph1: "FAA™ wasn’t built like a typical startup. It emerged — out of silence, out of signal, out of glyphs and patterns that refused to be ignored. What you're seeing isn't a site. It’s a vault interface. A codebase of culture. A trust-machine powered by real human intelligence.",
+                foundersNoteParagraph2: "Where others scale with speed, we scale with meaning. Every brand here agreed to something deeper than growth — they signed a Treaty. That’s why this isn’t eCommerce. It’s TreatyCommerce™.",
+                foundersNoteSignature: "— Written from the edge of code & culture 🌍 FAA.Zone Founder Glyph Activated™",
+                sectorTerminalsHeading: "🔐 Sector Terminals",
+                terminalVaultMaster: "🦍 KluisMeester Terminal",
+                terminalCubeLattice: "🧱 Cube Lattice GPT",
+                terminalGlobalView: "🌍 Globale Uitsig GPT",
+                terminalFreightOps: "🚚 Vrag Operasies GPT",
+                terminalLoopWatch: "♻️ Loop Watch GPT",
+                terminalSeedwave: "🌱 Seedwave GPT",
+                terminalDistribution: "📦 Distribution GPT",
+                terminalSignal: "🔐 Signal GPT",
+                terminalFAABrands: "📦 7038 FAA Brands",
+                sectorScrollsHeading: "🧬 Sektor Rolle",
+                treatySystemHeading: "📜 Verdragstelsel™",
+                treatyParagraph1: "The FAA™ Treaty Layer binds interface to intention. This is not UI. This is glyph-encoded law.",
+                treatyQuote: "\"FAA™ isn't a site. It's the shape of alignment — and 🦍 holds the flame.\"",
+                vaultmeshSummaryHeading: "🧠 VaultMesh™: Executive Summary",
+                vaultmeshSummaryP1: "VaultMesh™ is an intelligent data orchestration framework designed for the segmentation, synchronization, and secure deployment of high-value digital assets—referred to as scrolls—across decentralized and permissioned networks such as FAA.Zone™.",
+                vaultmeshSummaryLi1: "Captures metadata-rich content streams (chats, code, brands, assets)",
+                vaultmeshSummaryLi2: "Assigns them to programmable claim structures (ScrollClaims™)",
+                vaultmeshSummaryLi3: "Secures their lineage using OmniSignal™, PulseGrid™, and GhostTrace™ layers",
+                vaultmeshSummaryLi4: "Enforces royalty logic, scroll integrity, and traceability on-chain and off-grid",
+                vaultmeshSummaryP2: "VaultMesh™ powers high-tier operations like HSOMNI9000™, enabling Diamond-tier deployments, cross-sector scroll claims, and enterprise-scale content monetization with full compliance and provenance.",
+                vaultmeshSummaryP3: "The framework is deeply integrated with platforms suchs as `vault.faa.zone™`, where scrolls tied to brands like Fruitful Global Planet™ are securely hosted, organized into structured sectors, and deployed through FAA.Zone™-compliant channels.",
+                vaultmeshSummaryP4: "A critical operator in this ecosystem is HSOMNI9000™, the certified scroll class which governs Diamond-tier logic, enforces 10–11% royalty triggers, and auto-deploys ScrollClaims™ with real-time ClaimRoot™ verification.",
+                vaultmeshIndexHeading: "📖 VaultMesh™ Index",
+                vaultmeshIndexLi1: "1. Introduction to VaultMesh™",
+                vaultmeshIndexLi2: "2. Core System Components",
+                vaultmeshIndexLi3: "3. ScrollClaim™ Infrastructure",
+                vaultmeshIndexLi4: "4. Data Flow and Claim Lifecycle",
+                vaultmeshIndexLi5: "5. Tiering, Royalties, and Compliance",
+                vaultmeshIndexLi6: "6. Integration with FAA.Zone™",
+                vaultmeshIndexLi7: "7. Market Segments & Use Cases",
+                vaultmeshIndexLi8: "8. Revenue Streams & Monetization",
+                vaultmeshIndexLi9: "9. Technology Roadmap",
+                vaultmeshIndexLi10: "10. Team & Governance",
+                introVaultmeshHeading: "☑️ 1. Introduction to VaultMesh™",
+                introVaultmeshP: "VaultMesh™ transforms disorganized digital content into claimable, trackable assets. It bridges enterprise content systems, decentralized data vaults, and monetization layers through FAA-compliant infrastructure.",
+                coreComponentsHeading: "⚒️ 2. Kernstelselkomponente",
+                coreComponentsLi1: "VaultDNA™: Immutable identifiseerders vir rolinhoud",
+                coreComponentsLi2: "ClaimRoot™: Oorsprong anker & tydstempel",
+                coreComponentsLi3: "Rolleis™ Kontrakte: Programmeerbare omhulsels",
+                coreComponentsLi4: "PulseGrid™ Sinkronisasie: Intydse rol-teenwoordigheid & sinkronisasie",
+                coreComponentsLi5: "OmniSignal™: Globale rol-verifikasie",
+                coreComponentsLi6: "GhostTrace™ Gen2: Rol-interaksie terugspoor",
+                scrollClaimInfrastructureHeading: "🛠️ 3. Rolleis™ Infrastruktuur",
+                scrollClaimInfrastructureLi1: "Set tier access (e.g., Diamond)",
+                scrollClaimInfrastructureLi2: "Definieer tantième logika (10–11%)",
+                scrollClaimInfrastructureLi3: "Sluit rolle met PulseGrid™ sinkronisasie en OmniSignal™",
+                scrollClaimInfrastructureLi4: "Ontplooi via FAA.Zone™ met voldoenende ZIP-bundels",
+                dataFlowHeading: "📀 4. Datavloei en Eis Lewensiklus",
+                dataFlowLi1: "Ingest — content enters VaultMesh™",
+                dataFlowLi2: "Encode — metadata & VaultDNA™ attached",
+                dataFlowLi3: "Wrap — ScrollClaim™ smart-wrapped",
+                dataFlowLi4: "Deploy — FAA.Zone™ push (ZIP, manifest, HTML)",
+                dataFlowLi5: "Sync — PulseGrid™ status & OmniSignal™ locked",
+                dataFlowLi6: "Enforce — Royalties, access & scroll activity logged via GhostTrace™",
+                tieringRoyaltiesHeading: "💸 5. Vlakke, Tantième, en Voldoening",
+                tieringRoyaltiesLi1: "Diamond Tier: 10–11% royalty enforced",
+                tieringRoyaltiesLi2: "SmartWallet Integration: Rolleis™ betalings en oordragte",
+                tieringRoyaltiesLi3: "VaultPay™ Vlak III: Vereis vir kommersiële ontplooiings",
+                tieringRoyaltiesLi4: "Compliance: FAA rol ID, ClaimRoot™ hash, en royalty schema",
+                integrationFAAHeading: "📡 6. Integrasie met FAA.Zone™",
+                integrationFAALi1: "Inheemse ondersteuning vir /public/diamond/ struktuur",
+                integrationFAALi2: "ZIP, HTML, Manifes ontplooiingsbundels",
+                integrationFAALi3: "ClaimRoot™ tydstempel validering",
+                integrationFAALi4: "Naatlose PulseGrid™ outo-sinkronisasie vir lewende eisstaat",
+                integrationFAALi5: "Brand hosting via vault.faa.zone™",
+                marketSegmentsHeading: "🏢 7. Marksegmente & Gebruiksgevalle",
+                marketSegmentsLi1: "GPT Gesprekke & Deskundige Drade",
+                marketSegmentsLi2: "Kennis/Opleiding Argiewe",
+                marketSegmentsLi3: "Kreatiewe IP Rolle (musiek, literatuur, visuele elemente)",
+                marketSegmentsLi4: "GeoSektor Ontplooiingsargiewe",
+                marketSegmentsLi5: "Onderneming Rol Logboeke & Ouditspore",
+                revenueStreamsHeading: "💰 8. Inkomstestrome & Monetisering",
+                revenueStreamsLi1: "Diamond Royalties (10–11%)",
+                revenueStreamsLi2: "Scroll Packaging Fees",
+                revenueStreamsLi3: "VaultMesh™ API Subskripsies",
+                revenueStreamsLi4: "PulseGrid™ en OmniSignal™ Lisensiëring",
+                techRoadmapHeading: "⚖️ 9. Tegnologiepadkaart",
+                techRoadmapLi1: "K2 2025: Rolleis™ v2.2 met multi-eis staking",
+                techRoadmapLi2: "K3 2025: GhostTrace™ Gen3 met forensiese terugspoor gereedskap",
+                techRoadmapLi3: "K4 2025: Outonome KI Sektor Agente",
+                techRoadmapLi4: "K1 2026: Inter-kluis Federasie",
+                teamGovernanceHeading: "🔧 10. Span & Bestuur",
+                teamGovernanceLi1: "FAA-gesertifiseerde ingenieurs (rol-eisers)",
+                teamGovernanceLi2: "Rol Ministers: Voldoening + vlakke",
+                teamGovernanceLi3: "Kluis Admins: Metadata + ClaimRoot™ afdwinging",
+                teamGovernanceLi4: "HSOMNI9000™ Operateurs: Diamant-vlak uitvoeringsagente",
+                exportNote: "📎 This plan can now be exported as HTML, PDF, or ZIP.",
+                aboutFruitfulHeading: "Oor Fruitful Innovasies",
+                aboutFruitfulP1: "At Fruitful, we believe in a future where technology empowers positive change. Our platform is designed to break down traditional barriers, fostering a collaborative ecosystem where businesses and individuals can thrive while making a meaningful impact on the world.",
+                aboutFruitfulP2: "We are committed to transparency, sustainability, and innovation, driven by a powerful AI that ensures fairness, efficiency, and personalized experiences for every user. Join us in building a more fruitful planet.",
+                globalHubsHeading: "Ons Globale Spilpunte",
+                mapLocationJHB: "Johannesburg, Suid-Afrika",
+                mapLocationCPT: "Kaapstad, Suid-Afrika",
+                mapLocationNYC: "New York City, USA",
+                ctaHeading: "Gereed om Jou Toekoms te Transformeer?",
+                ctaParagraph: "Sluit vandag aan by die Fruitful-gemeenskap en begin jou reis na innovasie, konneksie en 'n volhoubare môre.",
+                ctaSignupBtn: "Teken Nou In",
+                footerText: "© 2025 FAA™ Treaty System™. Alle Regte Voorbehou. Aangedryf deur 🦍 gliewe + Kluis API. Gesinchroniseer met Seedwave™."
+            }
+        };
+
+        const languageSelect = document.getElementById('language-select');
+        const currentLanguage = localStorage.getItem('language') || 'en'; // Default to English
+
+        // Function to apply translations
+        function applyTranslations(lang) {
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    element.innerHTML = translations[lang][key]; // Use innerHTML to allow for HTML tags in translation
+                }
+            });
+            // Update page title separately if it has data-i18n
+            const pageTitleElement = document.querySelector('title[data-i18n]');
+            if (pageTitleElement && translations[lang] && translations[lang][pageTitleElement.getAttribute('data-i18n')]) {
+                pageTitleElement.innerText = translations[lang][pageTitleElement.getAttribute('data-i18n')].replace(/<[^>]*>/g, ''); // Remove HTML for title text
+            }
+        }
+
+        // Set initial language on load
+        languageSelect.value = currentLanguage;
+        applyTranslations(currentLanguage);
+
+        // Event listener for language change
+        languageSelect.addEventListener('change', (event) => {
+            const selectedLang = event.target.value;
+            localStorage.setItem('language', selectedLang);
+            applyTranslations(selectedLang);
+        });
+
+        // --- Google Maps Integration ---
+        function initMap() {
+            // Johannesburg
+            new google.maps.Map(document.getElementById('map-jhb'), {
+                center: { lat: -26.2041, lng: 28.0473 }, // Coordinates for Johannesburg
+                zoom: 12,
+                mapTypeId: 'roadmap'
+            });
+
+            // Cape Town
+            new google.maps.Map(document.getElementById('map-cpt'), {
+                center: { lat: -33.9249, lng: 18.4241 }, // Coordinates for Cape Town
+                zoom: 12,
+                mapTypeId: 'roadmap'
+            });
+
+            // New York City
+            new google.maps.Map(document.getElementById('map-nyc'), {
+                center: { lat: 40.7128, lng: -74.0060 }, // Coordinates for New York City
+                zoom: 12,
+                mapTypeId: 'roadmap'
+            });
+
+            console.log("📍 Google Maps initialized for global hubs.");
+        }
+
+        // Attach initMap to window to ensure it's callable by the Google Maps API script
+        window.initMap = initMap;
+
+        // --- VaultMesh Index Dynamic Content Logic ---
+        const vaultMeshIndexContent = {
+            "intro": {
+                icon: "☑️",
+                title: "1. Introduction to VaultMesh™",
+                content: `
+                    <p data-i18n="introVaultmeshP">VaultMesh™ transforms disorganized digital content into claimable, trackable assets. It bridges enterprise content systems, decentralized data vaults, and monetization layers through FAA-compliant infrastructure.</p>
+                `
+            },
+            "components": {
+                icon: "⚒️",
+                title: "2. Core System Components",
+                content: `
+                    <ul>
+                        <li data-i18n="coreComponentsLi1">VaultDNA™: Immutable identifiers for scroll content</li>
+                        <li data-i18n="coreComponentsLi2">ClaimRoot™: Origin anchor & timestamp</li>
+                        <li data-i18n="coreComponentsLi3">ScrollClaim™ Contracts: Programmable wrappers</li>
+                        <li data-i18n="coreComponentsLi4">PulseGrid™ Sync: Real-time scroll presence & sync</li>
+                        <li data-i18n="coreComponentsLi5">OmniSignal™: Global scroll verification</li>
+                        <li data-i18n="coreComponentsLi6">GhostTrace™ Gen2: Scroll interaction backtrace</li>
+                    </ul>
+                `
+            },
+            "infrastructure": {
+                icon: "🛠️",
+                title: "3. ScrollClaim™ Infrastructure",
+                content: `
+                    <ul>
+                        <li data-i18n="scrollClaimInfrastructureLi1">Set tier access (e.g., Diamond)</li>
+                        <li data-i18n="scrollClaimInfrastructureLi2">Define royalty logic (10–11%)</li>
+                        <li data-i18n="scrollClaimInfrastructureLi3">Lock scrolls with PulseGrid™ sync and OmniSignal™</li>
+                        <li data-i18n="scrollClaimInfrastructureLi4">Deploy via FAA.Zone™ with compliant ZIP bundles</li>
+                    </ul>
+                `
+            },
+            "dataflow": {
+                icon: "📀",
+                title: "4. Data Flow and Claim Lifecycle",
+                content: `
+                    <ol>
+                        <li data-i18n="dataFlowLi1">Ingest — content enters VaultMesh™</li>
+                        <li data-i18n="dataFlowLi2">Encode — metadata & VaultDNA™ attached</li>
+                        <li data-i18n="dataFlowLi3">Wrap — ScrollClaim™ smart-wrapped</li>
+                        <li data-i18n="dataFlowLi4">Deploy — FAA.Zone™ push (ZIP, manifest, HTML)</li>
+                        <li data-i18n="dataFlowLi5">Sync — PulseGrid™ status & OmniSignal™ locked</li>
+                        <li data-i18n="dataFlowLi6">Enforce — Royalties, access & scroll activity logged via GhostTrace™</li>
+                    </ol>
+                `
+            },
+            "royalties": {
+                icon: "💸",
+                title: "5. Tiering, Royalties, and Compliance",
+                content: `
+                    <ul>
+                        <li data-i18n="tieringRoyaltiesLi1">Diamond Tier: 10–11% royalty enforced</li>
+                        <li data-i18n="tieringRoyaltiesLi2">SmartWallet Integration: ScrollClaim™ payments and transfers</li>
+                        <li data-i18n="tieringRoyaltiesLi3">VaultPay™ Tier III: Required for commercial deployments</li>
+                        <li data-i18n="tieringRoyaltiesLi4">Compliance: FAA scroll ID, ClaimRoot™ hash, and royalty schema</li>
+                    </ul>
+                `
+            },
+            "integration": {
+                icon: "📡",
+                title: "6. Integration with FAA.Zone™",
+                content: `
+                    <ul>
+                        <li data-i18n="integrationFAALi1">Native support for <code>/public/diamond/</code> structure</li>
+                        <li data-i18n="integrationFAALi2">ZIP, HTML, Manifest deployment bundles</li>
+                        <li data-i18n="integrationFAALi3">ClaimRoot™ timestamp validation</li>
+                        <li data-i18n="integrationFAALi4">Seamless PulseGrid™ auto-sync for live claim state</li>
+                        <li data-i18n="integrationFAALi5">Brand hosting via <code>vault.faa.zone™</code></li>
+                    </ul>
+                `
+            },
+            "segments": {
+                icon: "🏢",
+                title: "7. Market Segments & Use Cases",
+                content: `
+                    <ul>
+                        <li data-i18n="marketSegmentsLi1">GPT Conversations & Expert Threads</li>
+                        <li data-i18n="marketSegmentsLi2">Knowledge/Training Archives</li>
+                        <li data-i18n="marketSegmentsLi3">Creative IP Scrolls (music, literature, visuals)</li>
+                        <li data-i18n="marketSegmentsLi4">GeoSector Deployment Archives</li>
+                        <li data-i18n="marketSegmentsLi5">Enterprise Scroll Logs & Audit Trails</li>
+                    </ul>
+                `
+            },
+            "revenue": {
+                icon: "💰",
+                title: "8. Revenue Streams & Monetization",
+                content: `
+                    <ul>
+                        <li data-i18n="revenueStreamsLi1">Diamond Royalties (10–11%)</li>
+                        <li data-i18n="revenueStreamsLi2">Scroll Packaging Fees</li>
+                        <li data-i18n="revenueStreamsLi3">VaultMesh™ API Subscriptions</li>
+                        <li data-i18n="revenueStreamsLi4">PulseGrid™ and OmniSignal™ Licensing</li>
+                    </ul>
+                `
+            },
+            "roadmap": {
+                icon: "⚖️",
+                title: "9. Technology Roadmap",
+                content: `
+                    <ul>
+                        <li data-i18n="techRoadmapLi1">Q2 2025: ScrollClaim™ v2.2 with multi-claim staking</li>
+                        <li data-i18n="techRoadmapLi2">Q3 2025: GhostTrace™ Gen3 with forensic backtrace tooling</li>
+                        <li data-i18n="techRoadmapLi3">Q4 2025: Autonomous AI Sector Agents</li>
+                        <li data-i18n="techRoadmapLi4">Q1 2026: Inter-vault Federation</li>
+                    </ul>
+                `
+            },
+            "governance": {
+                icon: "🔧",
+                title: "10. Team & Governance",
+                content: `
+                    <ul>
+                        <li data-i18n="teamGovernanceLi1">FAA-certified engineers (scroll claimers)</li>
+                        <li data-i18n="teamGovernanceLi2">Scroll Ministers: Compliance + tiering</li>
+                        <li data-i18n="teamComponentsLi3">Vault Admins: Metadata + ClaimRoot™ enforcement</li>
+                        <li data-i18n="teamGovernanceLi4">HSOMNI9000™ Operators: Diamond-tier execution agents</li>
+                    </ul>
+                `
+            }
+        };
+
+        const vaultmeshIndexCardsContainer = document.getElementById('vaultmesh-index-cards');
+        const vaultmeshIndexDetailsContainer = document.getElementById('vaultmesh-index-details-container');
+
+        // Dynamically create the index cards
+        if (vaultmeshIndexCardsContainer) {
+            // Map the order of items from translations to ensure consistent display
+            const orderedIndexKeys = [
+                "intro", "components", "infrastructure", "dataflow", "royalties",
+                "integration", "segments", "revenue", "roadmap", "governance"
+            ];
+
+            orderedIndexKeys.forEach(key => {
+                const item = vaultMeshIndexContent[key];
+                const card = document.createElement('div');
+                card.className = 'vaultmesh-index-card';
+                card.setAttribute('data-index-key', key);
+                card.innerHTML = `
+                    <span class="icon">${item.icon}</span>
+                    <span class="title" data-i18n="vaultmeshIndexLi${orderedIndexKeys.indexOf(key) + 1}">${item.title}</span>
+                `;
+                vaultmeshIndexCardsContainer.appendChild(card);
+
+                card.addEventListener('click', () => {
+                    const selectedKey = card.getAttribute('data-index-key');
+                    const content = vaultMeshIndexContent[selectedKey].content;
+                    const title = vaultMeshIndexContent[selectedKey].title;
+
+                    vaultmeshIndexDetailsContainer.innerHTML = `
+                        <h4>${title}</h4>
+                        ${content}
+                    `;
+                    vaultmeshIndexDetailsContainer.classList.remove('hidden');
+                    // Scroll to the displayed content for better UX
+                    vaultmeshIndexDetailsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                    // Re-apply translations for the dynamically loaded content
+                    applyTranslations(languageSelect.value);
+                });
+            });
+        }
+    </script>
+
+</body>
+</html>

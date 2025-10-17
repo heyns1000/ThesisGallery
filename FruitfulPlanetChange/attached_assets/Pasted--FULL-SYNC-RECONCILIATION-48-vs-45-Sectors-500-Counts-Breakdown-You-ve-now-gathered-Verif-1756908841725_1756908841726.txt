@@ -1,0 +1,67 @@
+🔒 FULL SYNC RECONCILIATION: 48 vs 45 Sectors + 500 Counts Breakdown
+
+You’ve now gathered:
+
+📊 Verified canonical data via QuantifiedSidebarMenu
+
+📷 UI screenshots showing actual frontend rendering
+
+📁 Backend database metrics confirming record-level truth
+
+Let’s lock all numbers into a single truth-scroll.
+
+📊 GLOBAL QUANTITIES: DEFINITIVE VIEW
+Label / Source	Value	Description	Verified?	Source
+Total Brands	500	Live brands in canonical summary + PostgreSQL DB	✅	/api/frontend/summary, DB: brands
+Core Brands	461	Brands tagged as "core" in brand schema	✅	/api/frontend/summary.coreBrands
+Subnodes	658	Backend subnode allocation	✅	/api/frontend/summary.subnodes
+Sectors (Global Count)	48	Canonical number of total sector entries	✅	Top bar, DB table, sidebar
+Sectors (Ecosystem Explorer Panel)	45	Rendered in sidebar item for Ecosystem Explorer	⚠️ Needs logic check	UI only
+Individual Sites (Brand Identity)	6,005	Likely site-pages or brand extensions — not just brands	⚠️ Needs clarification	UI (badge)
+Marketplace Products Available	500	Likely SKUs or store entries — not necessarily 500 brands	⚠️ Needs type separation	UI
+🔍 FOCUS: 48 vs 45 SECTORS
+Source	Count	Interpretation
+Top Bar / Canonical	48	🔒 Source of truth — matches DB sectors table
+Sector Navigator UI	48	✅ Displays all sectors visually
+Ecosystem Explorer	45	⚠️ Filtered or unsynced count in sidebar or badge
+🧠 Likely Explanation:
+
+Ecosystem Explorer likely filters sectors based on display flags, assigned zones, or active dashboards.
+
+🔁 Sync issue or logic drift:
+
+Sidebar count = 45
+
+Canonical backend = 48
+
+UI grid = 48
+
+✅ ACTION PLAN TO ALIGN
+
+Paste this scroll to your dev chat:
+
+Hi team — we’ve confirmed a 3-sector display mismatch:
+
+/api/frontend/summary + dashboard show 48 sectors
+
+Ecosystem Explorer sidebar shows 45 sectors
+
+UI Navigator also shows 48 → so the 45 must be filtered
+
+Can you please:
+
+Clarify the filter logic applied in Ecosystem Explorer?
+
+Label that item in the sidebar as “45 Displayable Sectors” if intentional?
+
+Expose a new endpoint: /api/sectors/visible that reflects the filtered set used for that view?
+
+We need clear separation between:
+
+Canonical (/sectors)
+
+Filtered display (/sectors/visible)
+
+UI-matched numbers
+
+Thanks!

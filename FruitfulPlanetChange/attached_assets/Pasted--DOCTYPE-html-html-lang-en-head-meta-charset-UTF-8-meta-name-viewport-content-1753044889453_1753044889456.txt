@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="pageTitle">🌐 VaultMesh™ by Fruitful - Integrated Enterprise Platform</title>
+    <link rel="icon" href="/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Maps API with brand location mapping -->
+    <!-- Note: Replace AIzaSyBPG8dG29cl0TvYRGyLozejGed5Wj5Ab80 with your actual Google Maps API key if deploying -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPG8dG29cl0TvYRGyLozejGed5Wj5Ab80&callback=initMap&libraries=places"></script>
+
+    <style>
+        /* Enhanced CSS Variables for Omnilevel Integration */
+        :root {
+            /* Your existing theme variables */
+            --bg-color-primary: #f5f5f7;
+            --text-color-primary: #1d1d1f;
+            --text-color-secondary: #424245;
+            --primary-blue: #0071e3;
+            --header-bg: rgba(255, 255, 255, 0.9);
+            --header-border: #e8e8ed;
+            --card-bg: white;
+            --card-border: #e8e8ed;
+            --muted-text: #6e6e73;
+            --vault-cyan: #00bcd4;
+            --vault-orange: #ff9800;
+            --hyper-background-blend: rgba(0, 188, 212, 0.05);
+            --hyper-primary-color: #00bcd4;
+            --hyper-text-color: #00bcd4;
+            
+            /* New integration variables */
+            --hotstack-yellow: #ffcc00;
+            --seedwave-green: #30d158;
+            --brand-element-bg: rgba(0, 188, 212, 0.02);
+            --integration-pulse: rgba(0, 188, 212, 0.1);
+        }
+
+        /* Enhanced Dark/Hyper modes with brand integration */
+        body.dark-mode {
+            --bg-color-primary: #1a202c;
+            --text-color-primary: #e2e8f0;
+            --text-color-secondary: #cbd5e0;
+            --primary-blue: #63b3ed;
+            --header-bg: rgba(26, 32, 44, 0.9);
+            --header-border: #2d3748;
+            --card-bg: #2d3748;
+            --card-border: #4a5568;
+            --vault-cyan: #00e5ff;
+            --vault-orange: #ffb300;
+            --hyper-background-blend: rgba(0, 229, 255, 0.1);
+            --hyper-primary-color: #00e5ff;
+            --hyper-text-color: #00e5ff;
+            --brand-element-bg: rgba(0, 229, 255, 0.05);
+        }
+
+        body.hyper-mode {
+            --bg-color-primary: #0a0a0a;
+            --text-color-primary: var(--hyper-text-color);
+            --text-color-secondary: #6e6e73;
+            --primary-blue: #00bcd4;
+            --header-bg: rgba(0, 0, 0, 0.8);
+            --header-border: #00bcd4;
+            --card-bg: rgba(0, 0, 0, 0.6);
+            --card-border: var(--hyper-primary-color);
+            --muted-text: #30d158;
+            --vault-cyan: var(--hyper-primary-color);
+            --vault-orange: #ffcc00;
+            --brand-element-bg: rgba(0, 188, 212, 0.1);
+            --integration-pulse: rgba(0, 188, 212, 0.2);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color-primary);
+            color: var(--text-color-primary);
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: var(--header-bg);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--header-border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        header h1 {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--primary-blue);
+        }
+
+        header nav {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        header nav a {
+            color: var(--text-color-secondary);
+            font-weight: 500;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        header nav a:hover {
+            color: var(--primary-blue);
+        }
+
+        .button-style-original {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+        }
+
+        .button-style-original:hover {
+            background-color: #005bb5;
+        }
+
+        .button-style-main {
+            background-color: var(--vault-cyan);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+        }
+
+        .button-style-main:hover {
+            background-color: #0097a7;
+        }
+
+        .hero-section {
+            position: relative;
+            height: 80vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            overflow: hidden;
+            padding-top: 80px; /* Offset for fixed header */
+            background-color: var(--bg-color-primary);
+            transition: background-color 0.3s ease;
+        }
+
+        .hero-section canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            z-index: 0;
+            background-color: transparent;
+            cursor: pointer;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05); /* Subtle overlay for text readability */
+            border-radius: 12px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .hero-content h2 {
+            font-size: 2.8rem;
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            color: var(--text-color-primary);
+            transition: color 0.3s ease;
+        }
+
+        .hero-content h2 span {
+            color: var(--vault-cyan);
+        }
+
+        .brand-search-container {
+            position: relative;
+            max-width: 600px;
+            margin: 2rem auto;
+            z-index: 10;
+        }
+
+        .brand-search-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border: 2px solid var(--card-border);
+            border-radius: 25px;
+            background: var(--card-bg);
+            color: var(--text-color-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .brand-search-input:focus {
+            outline: none;
+            border-color: var(--vault-cyan);
+            box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.1);
+        }
+
+        .search-results {
+            position: absolute;
+            width: 100%;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            margin-top: 0.5rem;
+            max-height: 300px;
+            overflow-y: auto;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .search-result-item {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--header-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .search-result-item:hover {
+            background-color: var(--bg-color-primary);
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .brand-name {
+            font-weight: 600;
+            color: var(--text-color-primary);
+        }
+
+        .brand-sector {
+            font-size: 0.85rem;
+            color: var(--muted-text);
+        }
+
+        .subnode-count {
+            font-size: 0.85rem;
+            color: var(--primary-blue);
+        }
+
+        .integration-metrics {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .metric-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: var(--card-bg);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border: 1px solid var(--card-border);
+            transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .metric-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--vault-cyan);
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: var(--muted-text);
+            margin-top: 0.5rem;
+        }
+
+        #brands-integration {
+            padding: 4rem 2rem;
+            background-color: var(--bg-color-primary);
+            transition: background-color 0.3s ease;
+        }
+
+        #brands-integration .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        #brands-integration h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-color-primary);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        #brands-integration p {
+            font-size: 1.1rem;
+            color: var(--text-color-secondary);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .sector-navigation {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .sector-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            font-weight: 500;
+            color: var(--text-color-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .sector-btn:hover {
+            background-color: var(--bg-color-primary);
+            color: var(--primary-blue);
+            border-color: var(--primary-blue);
+        }
+
+        .sector-btn.active {
+            background-color: var(--vault-cyan);
+            color: white;
+            border-color: var(--vault-cyan);
+            box-shadow: 0 4px 10px rgba(0, 188, 212, 0.2);
+        }
+
+        .brand-element-card {
+            background: var(--brand-element-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 0.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .brand-element-card:hover {
+            background: var(--integration-pulse);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 188, 212, 0.15);
+        }
+
+        .brand-element-card .element-name {
+            font-weight: 600;
+            color: var(--text-color-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .brand-element-card .element-type {
+            font-size: 0.8rem;
+            color: var(--muted-text);
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
+        }
+
+        .brand-element-card .element-sector {
+            font-size: 0.9rem;
+            color: var(--primary-blue);
+        }
+
+        .brand-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+            padding: 2rem 0;
+        }
+
+        .system-integration-status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 1rem;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .system-integration-status h4 {
+            font-weight: 600;
+            color: var(--text-color-primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .integration-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-color-secondary);
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .integration-pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .theme-language-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .theme-toggle, .hyper-toggle {
+            width: 40px;
+            height: 20px;
+            background-color: var(--muted-text);
+            border-radius: 10px;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .theme-toggle::before, .hyper-toggle::before {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background-color: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s ease;
+        }
+
+        body.dark-mode .theme-toggle::before {
+            transform: translateX(20px);
+            background-color: var(--primary-blue);
+        }
+
+        body.hyper-mode .hyper-toggle::before {
+            transform: translateX(20px);
+            background-color: var(--hyper-primary-color);
+        }
+
+        .language-select {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            color: var(--text-color-primary);
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 1rem;
+                gap: 1rem;
+            }
+            header nav {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.75rem;
+            }
+            .hero-content h2 {
+                font-size: 2rem;
+            }
+            .integration-metrics {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .metric-item {
+                width: 100%;
+            }
+            #brands-integration {
+                padding: 2rem 1rem;
+            }
+            #brands-integration h2 {
+                font-size: 2rem;
+            }
+            #brands-integration p {
+                font-size: 1rem;
+            }
+            .sector-navigation {
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Enhanced header with omnilevel integration -->
+    <header>
+        <h1>🌐 VaultMesh™ by Fruitful - Enterprise Integration Hub</h1>
+        <nav>
+            <a href="#brands-integration">Brand Elements</a>
+            <a href="#sectors">Sectors</a>
+            <a href="#hotstack">🦍 HotStack</a>
+            <a href="#seedwave">🌱 Seedwave™</a>
+            <a href="#ecosystem">🔍 Explorer</a>
+            <a href="#faa-zone">🌍 FAA.ZONE™</a>
+            
+            <!-- Theme controls -->
+            <div class="theme-language-controls">
+                <div class="toggle-container">
+                    <span style="font-size: 0.8rem; color: var(--muted-text);">Dark</span>
+                    <div class="theme-toggle" onclick="toggleTheme()"></div>
+                </div>
+                <div class="toggle-container">
+                    <span style="font-size: 0.8rem; color: var(--muted-text);">Hyper</span>
+                    <div class="hyper-toggle" onclick="toggleHyperMode()"></div>
+                </div>
+                <select class="language-select" onchange="changeLanguage(this.value)">
+                    <option value="en">EN</option>
+                    <option value="es">ES</option>
+                    <option value="fr">FR</option>
+                </select>
+            </div>
+            
+            <a href="#vault-access" class="button-style-original">Vault Access</a>
+            <a href="#secure-login" class="button-style-main">SecureSign™</a>
+        </nav>
+    </header>
+
+    <!-- Enhanced Hero Section with Brand Integration -->
+    <section class="hero-section">
+        <canvas id="vaultMeshCanvas"></canvas>
+        <div class="hero-content">
+            <h2>
+                <span>VaultMesh™</span><br>
+                Securing <span id="hero-total-elements"></span> Brand Elements<br>
+                Across <span id="hero-total-sectors"></span> Global Sectors
+            </h2>
+            
+            <!-- Brand Search Integration -->
+            <div class="brand-search-container">
+                <input type="text" 
+                       class="brand-search-input" 
+                       id="brandSearch"
+                       placeholder="Search across brands and subnodes..."
+                       oninput="searchBrands(this.value)">
+                <div id="searchResults" class="search-results hidden"></div>
+            </div>
+            
+            <!-- Real-time Integration Status -->
+            <div class="integration-metrics">
+                <div class="metric-item">
+                    <span class="metric-value" id="activeBrands"></span>
+                    <span class="metric-label">Core Brands</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-value" id="activeSubnodes"></span>
+                    <span class="metric-label">Subnodes</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-value integration-pulse" id="systemStatus">LIVE</span>
+                    <span class="metric-label">Omnilevel Status</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Brand Elements Integration Section -->
+    <section id="brands-integration">
+        <div class="container">
+            <h2>Live Brand Element Integration</h2>
+            <p>Real-time access to all <span id="integration-total-elements"></span> brand elements with VaultMesh™ security</p>
+            
+            <!-- Sector Navigation -->
+            <div class="sector-navigation">
+                <button class="sector-btn active" data-sector-key="all" onclick="filterBySector(this, 'all')">All Sectors (<span id="all-sectors-count"></span>)</button>
+                <!-- Sector buttons will be generated dynamically here -->
+            </div>
+            
+            <!-- Dynamic Brand Grid -->
+            <div id="brandGrid" class="brand-grid">
+                <!-- Brands will be loaded dynamically via JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- System Integration Status -->
+    <div class="system-integration-status">
+        <h4>🌐 Omnilevel Integration</h4>
+        <div class="integration-indicator">
+            <span class="status-dot integration-pulse" style="background: var(--vault-cyan);"></span>
+            <span>VaultMesh™ Active</span>
+        </div>
+        <div class="integration-indicator">
+            <span class="status-dot" id="hotstackStatus" style="background: var(--hotstack-yellow);"></span>
+            <span>🦍 HotStack Ready</span>
+        </div>
+        <div class="integration-indicator">
+            <span class="status-dot" style="background: var(--seedwave-green);"></span>
+            <span>🌱 Seedwave™ Connected</span>
+        </div>
+        <div class="integration-indicator">
+            <span class="status-dot" style="background: var(--primary-blue);"></span>
+            <span>🌍 FAA.ZONE™ Linked</span>
+        </div>
+    </div>
+
+    <script>
+        // --- Global Data Definitions ---
+        const sectorList = {
+            "agriculture": "🌱 Agriculture & Biotech",
+            "fsf": "🥦 Food, Soil & Farming",
+            "banking": "🏦 Banking & Finance",
+            "creative": "🖋️ Creative Tech",
+            "logistics": "📦 Logistics & Packaging",
+            "education-ip": "📚 Education & IP",
+            "fashion": "✂ Fashion & Identity",
+            "gaming": "🎮 Gaming & Simulation",
+            "health": "🧠 Health & Hygiene",
+            "housing": "🏗️ Housing & Infrastructure",
+            "justice": "⚖ Justice & Ethics",
+            "knowledge": "📖 Knowledge & Archives",
+            "micromesh": "☰ Micro-Mesh Logistics",
+            "media": "🎬 Motion, Media & Sonic",
+            "nutrition": "✿ Nutrition & Food Chain",
+            "ai-logic": "🧠 AI, Logic & Grid",
+            "packaging": "📦 Packaging & Materials",
+            "quantum": "✴️ Quantum Protocols",
+            "ritual": "☯ Ritual & Culture",
+            "saas": "🔑 SaaS & Licensing",
+            "trade": "🧺 Trade Systems",
+            "utilities": "🔋 Utilities & Energy",
+            "voice": "🎙️ Voice & Audio",
+            "webless": "📡 Webless Tech & Nodes",
+            "nft": "🔁 NFT & Ownership",
+            "education-youth": "🎓 Education & Youth",
+            "zerowaste": "♻️ Zero Waste",
+            "professional": "🧾 Professional Services",
+            "payroll-mining": "🪙 Payroll Mining & Accounting",
+            "mining": "⛏️ Mining & Resources",
+            "wildlife": "🦁 Wildlife & Habitat",
+            "admin-panel": "⚙️ Admin Panel",
+            "global-index": "🌐 Global Brand Index"
+        };
+
+        // Data arrays - ensure all are defined before ALL_SECTOR_DATA_STATIC
+        const bankingBrands = ['FinGrid','TradeAmp','LoopPay','TaxNova','VaultMaster','Gridwise','CrateDance','CashGlyph','Foresync','OmniRank','ZenoBank','CruxSpend','PulseHive','WireVault','BitTrust','MeshCredit','NovaScore','ZentryPay','FlowDrift','AlphaClearing','LumenBank','DeltaCustody','FractalFund','TorusFinance','VectorMint','RapidTally','FathomBank','KiteYield','BondRhythm','EchoTrust','QuantArk','NodeCapital','VeritasPay','TrustCage','CoreLedge','SkyFin','MintFuse','OrbitBank','HashVault','MicroDelta','AnchorPrime','FleetGrid','ZoomLedge','BeaconBank','CrateTeller','NumenYield','SparkScore','MetaBank','AetherTrust','TrueCustody','NeutronMint','SiloCash','JetReconcile','PulseClearing','SyncTeller','TangentBank','NovaLedger','GlideBank','TraceFin','RootBank','BankSingularity','PillarTrust','AxonFin','MonetGrid','LayerBank','VergePay','StackCash','CrownBank','PrismScore','HaloMint','CentraClear','TrustForge','OmniBank','NanoPay','LatticeScore','NobleCredit','ChainBank','PulseMint','BridgeLedger','ChronoBank','UnityFin','GridTrust','SparkVault','LucidBank','RiverMint','FlightClearing','NetTeller','PeakCustody','FlarePay','DarkBank','OriginTrust','ShardLedger','IndexPay','AltimeterFin','EchoClearing','FrameCustody','ZenithGrid','AtomScore','CoreMeta','CruxFin','PulseMatrix','BalanceGrid','GoldMint','ClearStack','QuantumBank','ScriptScore','SyncVault','FolioTrust','HyperFin','ToneLedger','IndexGrid','LineBank','CoreAlpha','LogicPay','NodeYield','RatioMint','LockLedger','PrimeGrid','TrustAmp','FundLattice','CreditHelix','AuraVault','DataBank','RingMint','GlyphTrust','NebulaBank','ZenScore','LoopTrust','AxialFin','OmniLoop','AlphaPulse','NexusBank','VaultHelix','ScriptTeller','TallyCore','FuseMint'];
+        const bankingSubNodes = [['Ledger Mesh','Arbitrage Core','Token Router','Tax Engine','Vault Lock','Compliance Matrix','Logistics Fin','Currency Glyph','Forecast Engine','Signal Tracker'],['Zeno Mesh','Crux Bridge','Hive Monitor','Wire Reconciler','Bit Locker','Credit Splice','Score Vector','Zentry Core','Drift Trace','Alpha Ledger'],['Lumen Pulse','Delta Secure','Fractal Trace','Torus Signal','Mint Bridge','Tally Stream','Bank Depth','Kite Path','Bond Engine','Echo Stack'],['Ark Model','Node Gate','Veritas Sync','Cage Mapper','Core Trace','Sky Sweep','Mint Grid','Orbit Channel','Hash Clear','Micro Chain'],['Anchor Lock','Fleet Sync','Zoom Channel','Beacon Path','Crate Vault','Numen Index','Spark Flow','Meta Signal','Aether Drift','Custody Map'],['Neutron Signal','Cash Stream','Jet Grid','Pulse Map','Sync Grid','Tangent Vector','Nova Route','Glide Core','Trace Engine','Root Node'],['Bank Shift','Pillar Core','Axon Thread','Monet Route','Layer Core','Verge Node','Stack Tally','Crown Core','Prism Gate','Halo Grid'],['Clearance Vector','Forge Sync','Bank Mesh','Nano Token','Lattice Path','Noble Curve','Chain Vector','Mint Grid','Bridge Path','Chrono Index'],['Unity Sync','Trust Matrix','Vault Score','Lucid Gate','Mint Route','Flight Signal','Teller Index','Custody Trace','Flare Lock','Dark Stream'],['Origin Pulse','Shard Bank','Pay Score','Altimeter Path','Clearing Core','Frame Lock','Zenith Route','Score Helix','Meta Stack','Crux Trace'],['Pulse Engine','Balance Tally','Gold Trace','Stack Mesh','Quantum Sync','Script Pulse','Vault Stack','Trust Model','Hyper Lock','Tone Gate'],['Grid Index','Line Mesh','Alpha Signal','Logic Gate','Yield Route','Ratio Core','Ledger Path','Prime Helix','Amp Signal','Lattice Node'],['Credit Curve','Vault Pulse','Data Mesh','Ring Gate','Glyph Stack','Bank Channel','Zen Gate','Loop Vault','Axial Index','Loop Stack'],['Pulse Vector','Bank Curve','Helix Gate','Teller Pulse','Tally Signal','Mint Vault']];
+        const agriBrands = ['CropLink','SoilPulse','RootYield','AquaFarm','AgriMesh','GrowNode','GrainCast','SoilBank','CropID','AgriVault','PulseHarvest','MarketSoil','DroneFarm','RuralOps','SeedGrid','FarmChain','AgriScore','SoilNet','CropDoc','TerraVault','AgriID','SproutFlow','GrainSafe','FieldSync','AgriDepot','DroneCrop','CropTrace','PulseSoil','SeedRoot','RuralFlow','MarketGrow','AgriRank','SoilLogic','AgriSync','NutrientGrid','FieldCast','CropSource','YieldStack','FarmPulse','SoilTech','GreenTrace','CropVault','AgriCast','TerraPulse','SoilTrace','PulseAg','GrowVault','FieldNet','DroneSoil','SoilGrid','HarvestLoop','RuralMesh','FarmFlag','AgriFlow','SoilVault','FieldProof','DroneTrace','MarketRoots','NutrientPath','CropPulse','AgriPulse','EcoSeed','AgriMetrics','DroneGrid','GreenNode','RootVault','FieldToken','AgriPlan','SoilYield','SeedVault','MarketLink','CropFlow','RuralCast','AgriSyncPro','SoilLine','EcoAgri','HarvestNode','TerraSoil','CropMesh','AgriSignal','RuralVault','PulseGrow','MarketSoilX','AgriOmni'];
+        const agriSubNodes = [['CropLink ID', 'CropLink Vault', 'CropLink Field', 'CropLink Yield'],['SoilPulse Trace', 'SoilPulse Data', 'SoilPulse Alert'],['RootYield Base', 'RootYield Chain', 'RootYield X'],['AquaFarm Sync', 'AquaFarm Logi', 'AquaFarm Vault'],['AgriMesh Route', 'AgriMesh Pulse', 'AgriMesh View'],['GrowNode Basic', 'GrowNode Trade', 'GrowNode Vault'],['GrainCast Forecast', 'GrainCast Scroll'],['SoilBank Ledger', 'SoilBank Pay'],['CropID Scanner', 'CropID Trust'],['AgriVault Lock', 'AgriVault Chain', 'AgriVault Seed'],['PulseHarvest Sync', 'PulseHarvest Drop', 'PulseHarvest Vault'],['MarketSoil Rate', 'MarketSoil Feed', 'MarketSoil UI'],['DroneFarm View', 'DroneFarm Grid', 'DroneFarm Trace'],['RuralOps Node', 'RuralOps Pulse', 'RuralOps Chain'],['SeedGrid Vault', 'SeedGrid Scan', 'SeedGrid Growth'],['FarmChain Link', 'FarmChain Claim', 'FarmChain Credit'],['AgriScore Index', 'AgriScore Node'],['SoilNet Base', 'SoilNet UI'],['CropDoc Scan', 'CropDoc Aid'],['TerraVault Ledger', 'TerraVault View', 'TerraVault Chain'],['AgriID Chain', 'AgriID Badge', 'AgriID Verify'],['SproutFlow Loop', 'SproutFlow Track'],['GrainSafe Lock', 'GrainSafe Audit'],['FieldSync Signal', 'FieldSync Grid'],['AgriDepot Map', 'AgriDepot Sync', 'AgriDepot Drop'],['DroneCrop Watch', 'DroneCrop Sync'],['CropTrace Root', 'CropTrace Link'],['PulseSoil Core', 'PulseSoil Signal'],['SeedRoot Tag', 'SeedRoot Layer'],['RuralFlow Map', 'RuralFlow Loop', 'RuralFlow Chain'],['MarketGrow Pulse', 'MarketGrow Cast', 'MarketGrow Deals'],['AgriRank Score', 'AgriRank Matrix'],['SoilLogic Grid', 'SoilLogic Forecast'],['AgriSync UI', 'AgriSync Chain'],['NutrientGrid Base', 'NutrientGrid Flux'],['FieldCast Audio', 'FieldCast Relay'],['CropSource Ledger', 'CropSource ID'],['YieldStack UI', 'YieldStack Payout', 'YieldStack Index'],['FarmPulse Loop', 'FarmPulse Mesh'],['SoilTech DNA', 'SoilTech Live'],['GreenTrace Chain', 'GreenTrace Pulse'],['CropVault Lock', 'CropVault Ledger', 'CropVault Cert'],['AgriCast Signal', 'AgriCast Feed'],['TerraPulse Soil', 'TerraPulse Vault'],['SoilTrace ID', 'SoilTrace Certify'],['PulseAg Loop', 'PulseAg Node'],['GrowVault Root', 'GrowVault Share'],['FieldNet Mesh', 'FieldNet Ping'],['DroneSoil View', 'DroneSoil Trace'],['SoilGrid X', 'SoilGrid Key', 'SoilGrid Base'],['HarvestLoop Yield', 'HarvestLoop Stack'],['RuralMesh Net', 'RuralMesh Pulse'],['FarmFlag Cert', 'FarmFlag Signal'],['AgriFlow Path', 'AgriFlow Ledger'],['SoilVault Lock', 'SoilVault View'],['FieldProof Claim', 'FieldProof Relay'],['DroneTrace Tag', 'DroneTrace Vault'],['MarketRoots X', 'MarketRoots Grid'],['NutrientPath Map', 'NutrientPath Scan'],['CropPulse Signal', 'CropPulse Ledger'],['AgriPulse Loop', 'AgriPulse Ledger'],['EcoSeed Vault', 'EcoSeed Sync'],['AgriMetrics Signal', 'AgriMetrics Vault'],['DroneGrid Node', 'DroneGrid View'],['GreenNode Base', 'GreenNode Relay'],['RootVault Claim', 'RootVault Transfer'],['FieldToken ID', 'FieldToken Pay'],['AgriPlan Builder', 'AgriPlan Node'],['SoilYield Track', 'SoilYield Pulse'],['SeedVault ID', 'SeedVault Ledger'],['MarketLink Chain', 'MarketLink Signal'],['CropFlow Sync', 'CropFlow Vault'],['RuralCast Net', 'RuralCast Pulse'],['AgriSyncPro UI', 'AgriSyncPro Lock'],['SoilLine Scan', 'SoilLine Pulse'],['EcoAgri Cert', 'EcoAgri Grid'],['HarvestNode Chain', 'HarvestNode Log'],['TerraSoil View', 'TerraSoil DNA'],['CropMesh Grid', 'CropMesh Flow'],['AgriSignal Node', 'AgriSignal Loop'],['RuralVault Lock', 'RuralVault Cert'],['PulseGrow Timer', 'PulseGrow Sync'],['MarketSoilX Index', 'MarketSoilX Ledger'],['AgriOmni Node', 'AgriOmni Relay']];
+        const creativeBrands = ['MediaGrid', 'StudioPath', 'SoundReel', 'EditFrame', 'MotionKit','GhostTrace', 'TalentMap', 'SignalVerse', 'ScrollPlay', 'FXStream'];
+        const creativeSubNodes = [['SceneLink', 'FXLayer', 'ClipVault'],['StudioSync', 'StagePulse', 'RenderMesh'],['AudioTrace', 'VoiceVault', 'WaveLoop'],['CutChain', 'TimelineScroll', 'FXSnap'],['VectorNode', 'AnimCast', 'ScrollFX'],['TraceBlock', 'ScreenShield', 'CloneLock'],['LedgerID', 'Royaltix', 'PayoutTag'],['FreqCast', 'GridWave', 'AudioMesh'],['PlayNode', 'FrameTrigger', 'RenderSync'],['FXRender', 'ScrollVision', 'LoopFrame']];
+        const logisticsBrands = ['CrateLogic', 'PackChain', 'SortFleet', 'RouteMesh', 'LogiStack', 'DeliveryX', 'CargoVault', 'PalletPath', 'LabelFlow', 'DropLoop','ScrollRoute', 'ShipLedger', 'FreightCore', 'PackSphere', 'GridDrop', 'AutoTrack', 'ChainWrap', 'BinLogicX', 'PouchNode', 'ColdFleet','TrackStack', 'NodeRoute', 'PackOS', 'ZipCrate', 'TagLogic', 'ScrollTruck', 'FlowVault', 'SortStack', 'DockGrid', 'RollFleet','VendSort', 'GridCrate', 'LogiLift', 'CrateX', 'QuickLabel', 'DropLedger', 'FleetTrace', 'BoxSync', 'ChainGate', 'ColdRoute','PalletCore', 'FreightLine', 'PackSignal', 'ChainVault', 'CrateThread', 'ForkYield', 'DockLogic', 'LoadCast', 'TrayTrack', 'ScrollDrop','LoopXpress', 'PackSyncPro', 'VendorWrap', 'CrateLedger', 'BoxNodeX', 'AutoRoute', 'VaultBin', 'LabelTrack', 'PathLock', 'DispatchLoop','ChainPulse', 'FastTag', 'VendorFleet', 'ParcelSync', 'SmartCrate', 'AutoLabel', 'FreightGrid', 'DockFlow', 'CrateBox', 'ColdTrack','SecureMesh', 'LoopDispatch', 'AutoLift', 'ClaimBoard', 'ParcelChain', 'LabelMesh', 'BoxSignal', 'LoadFrame', 'VaultRoute', 'DockYield','CrateSecure', 'LabelFlowX', 'DockMaster', 'PackNet', 'RouteGuard', 'BinLogicPro', 'ColdChainX', 'AutoPack', 'ShipTrack', 'LoadManager','CrateManager', 'LabelSecure', 'DockFlowX', 'PackMaster', 'RouteManager', 'BinSecure', 'ColdManager', 'AutoLabelX', 'ShipManager', 'LoadSecure','CrateManager'];
+        const logisticsSubNodes = [['BoxNode', 'CrateMap', 'PackSync', 'CrateSync'],['VendorPack', 'LabelTrace', 'ShipGrid', 'ScrollWrap'],['SortPulse', 'BinLogic', 'FleetTrack', 'ScrollSort'],['NodeMap', 'GeoSignal', 'DropLink', 'RouteFlow'],['ScrollStack', 'YieldSync', 'PayoutRoute', 'StackNode'],['LastMile', 'ScanDrop', 'AgentTrack', 'QuickChain'],['VaultLink', 'WeightTag', 'CargoScan', 'CargoClaim'],['PathFinder', 'RackTrace', 'GridStore', 'LoadMark'],['PrintNode', 'ScrollCode', 'InkRoute', 'LabelSync'],['LoopID', 'VendorDrop', 'TimeGate', 'LoopConfirm'],['ChainStep', 'ScanRoute', 'RouteTrace', 'FinalMile'],['ManifestScroll', 'LogiProof', 'ShipCert', 'DockNode'],['FreightID', 'CrateStamp', 'CargoPulse', 'StackSync'],['SphereNode', 'PackLoop', 'SupplyCircle', 'HubRelay'],['DropTrace', 'DropID', 'GridYield', 'NodeFlow'],['GPSClaim', 'RouteLog', 'TrackPulse', 'AutoLink'],['WrapNode', 'TieGlyph', 'SealMark', 'ScanProof'],['LogicChip', 'BinSync', 'ScrollSnap', 'BinWave'],['PouchTag', 'ScrollStick', 'PackPush', 'MicroWrap'],['ChillRoute', 'IceLedger', 'ColdDrop', 'VaultIce'],['SignalTag', 'ScrollFleet', 'DockSync', 'TrackMap'],['HopLink', 'NodeShift', 'MeshGrid', 'RouteCert'],['ScrollOS', 'RouteWrap', 'ForkNode', 'PalletLogic'],['AutoFold', 'SpeedTag', 'CrateDrop', 'ZipSeal'],['ScrollTag', 'GeoTrack', 'TagFrame', 'AutoCert'],['ScrollDriver', 'YieldScan', 'CargoBoard', 'DockLink'],['VaultID', 'ScrollStream', 'BoxYield', 'FlowMap'],['BinRank', 'BinPulse', 'FastCrate', 'LogicDrop'],['DockFrame', 'PermitTrack', 'ScrollAccess', 'GateID'],['WheelNode', 'PalletSync', 'LoadProof', 'ScrollAxle'],['VendorSort', 'BoxPush', 'AutoTray', 'YieldLoop'],['CrateNode', 'GridWrap', 'VaultStack', 'ScrollRoute'],['LiftID', 'FreightPulse', 'ForkSync', 'LogiTag'],['CrateTrack', 'SmartLock', 'LabelLink', 'ScrollMap'],['ScanCode', 'SmartPrint', 'RouteLabel', 'LabelCast'],['LedgerPath', 'DropFlow', 'VaultDrop', 'QuickClaim'],['TruckPulse', 'ScrollRide', 'AutoPath', 'CrateEcho'],['ScrollSync', 'BoxFrame', 'ClaimID', 'TagSnap'],['GateLog', 'DockPush', 'YieldGate', 'EntryPulse'],['FreezePoint', 'ScanChill', 'ColdMesh', 'ChillPath'],['CoreLift', 'PalletID', 'PackForce', 'VaultRack'],['LineTrack', 'StackChain', 'DockGrid', 'RouteNode'],['SignalDrop', 'YieldBeacon', 'PackNode', 'PathSync'],['ClaimLink', 'ScrollCert', 'LockDrop', 'AssetTag'],['CrateLink', 'ThreadMark', 'GridLoop', 'FastTag'],['ForkView', 'YieldNode', 'RouteTrek', 'PalletWave'],['DockTag', 'GridScan', 'ZonePath', 'DockAccess'],['LoadSync', 'CrateWatch', 'NodePing', 'AutoConfirm'],['TrayID', 'PulseLift', 'VendorCrate', 'SyncScan'],['AutoYield', 'ScrollLift', 'DropFlag', 'TagNode'],['LoopSync', 'VendorPush', 'ScrollLoop', 'DropNext'],['ProTrack', 'QuickCrate', 'YieldStamp', 'CoreLoop'],['WrapID', 'VendorPath', 'SecureDrop', 'LabelGate'],['CrateLock', 'LedgerPath', 'PackTrace', 'AutoCert'],['NodeFlow', 'ClaimLock', 'ScanYield', 'FrameTag'],['AutoJump', 'PathCalc', 'GridRelay', 'VendorMap'],['BinTag', 'SecureBin', 'VaultSignal', 'TraceStore'],['TrackMark', 'LabelPath', 'QRDrop', 'LabelFlow'],['SecurePath', 'ScrollFence', 'LockGate', 'PathProof'],['LoopID', 'DispatchSync', 'TagRelease', 'VendorTrack'],['PulseLink', 'FlowTrack', 'CrateAlert', 'LockSync'],['TagFire', 'IDScan', 'QRClaim', 'RouteAlert'],['FleetMap', 'ScanRoute', 'YieldClaim', 'ChainAccess'],['SyncBox', 'DropScan', 'AutoLabel', 'ParcelID'],['SmartClaim', 'CrateGrid', 'LockTrack', 'RFIDNode'],['LabelSnap', 'PrintFlow', 'AutoScan', 'ConfirmPrint'],['GridPath', 'LoadBoard', 'VaultTag', 'ShipClaim'],['DockSignal', 'AccessNode', 'LabelCheck', 'LoadLink'],['BoxSync', 'SmartTag', 'FrameDrop', 'PalletLink'],['ChillLoop', 'IceNode', 'VaultChill', 'ScrollCold'],['MeshID', 'PathSecure', 'GateTrace', 'NodeFence'],['VendorLoop', 'DropTick', 'AutoYield', 'QRConfirm'],['LiftSync', 'TrayPush', 'ForkLoop', 'WeightGate'],['BoardCert', 'VendorPush', 'ScrollAttach', 'ProofLine'],['ChainTrack', 'QuickDrop', 'VendorClaim', 'FastLock'],['MeshLink', 'TagGrid', 'LabelView', 'ClaimLink'],['BoxAlert', 'SignalPulse', 'FrameCheck', 'DropYield'],['LoadDetect', 'CrateSignal', 'DropCheck', 'ScanLine'],['RouteClaim', 'SignalSync', 'LockMap', 'PathMark'],['DockCrate', 'YieldNode', 'SignalTrack', 'ClaimPulse'],['SecureTag', 'LockCrate', 'VaultProof', 'ChainLock'],['FlowTag', 'LabelSync', 'ScanRoute', 'PrintID'],['MasterDock', 'DockTrack', 'LoadSync', 'AccessNode'],['NetCrate', 'PackSync', 'NodeLink', 'ChainFlow'],['GuardRoute', 'PathSecure', 'SignalLock', 'TrackID'],['ProBin', 'LogicSync', 'BinTrack', 'NodeProof'],['ChillTrack', 'ColdSync', 'FreezeNode', 'IceFlow'],['PackAuto', 'SyncLabel', 'AutoCrate', 'FlowNode'],['TrackShip', 'ShipSync', 'RouteNode', 'DockFlow'],['ManageLoad', 'LoadTrack', 'SyncCrate', 'NodeLink'],['ManageCrate', 'CrateSync', 'VaultTrack', 'LockNode']];
+        const fsfBrands = ['AgriCore', 'SoilHealth', 'FarmFresh', 'CropCircle', 'HarvestHub', 'TerraNova', 'GreenSprout', 'AgroLife','BioFarm', 'EcoHarvest', 'SeedLink', 'SoilSmart', 'FarmWise', 'CropGuard', 'HarvestEase', 'TerraGrow','GreenField', 'AgroTech', 'BioYield', 'EcoFarm', 'AgriPulse', 'BioCrop', 'FarmLink', 'SoilGuard', 'GreenHarvest','TerraFarm', 'SeedSmart', 'CropCare', 'HarvestPro', 'SoilSense', 'FarmVision', 'AgroTech', 'BioSoil','CropTrack', 'HarvestLink', 'SoilLab', 'FarmManage', 'AgriData', 'BioGrow', 'EcoFarm', 'CropMesh', 'SeedRoot','SoilVault', 'PlantCast', 'YieldNode', 'FarmBeacon', 'BioSprout', 'SoilTrace', 'HarvestCore', 'PlantLink','TerraLoop', 'SoilPulse', 'GreenPatch', 'FarmSync', 'RootMesh', 'BioCluster', 'SproutIndex', 'MoistureMap','EcoZone', 'CropRelay', 'FarmCloud', 'SoilFrame', 'HarvestPing', 'CropCode', 'AgroNode', 'SeedNest', 'TraceFarm','SproutChain', 'SoilStack', 'AgriPanel', 'RootClaim', 'MoistureNode', 'CrateFarm', 'PlantPing', 'AgroLoop','CropGrid', 'VendorSprout', 'BioPing', 'EcoFarmGrid', 'TerraCode', 'HarvestVault', 'CropBinder', 'SoilCertify'];
+        const fsfSubNodes = [['SoilSync','CropTrack','FarmLink','HarvestNet'],['BioBoost','NutrientFlow','EarthGuard','RootMax'],['OrganicGrow','PureHarvest','GreenCycle','EcoFarm'],['YieldMap','PlantPulse','GrowthScan','FieldSense'],['GrainGate','ProducePath','MarketLink','FarmFlow'],['LandRevive','SoilBalance','EcoTill','AgroRenew'],['SeedStart','PlantBoost','GrowTrack','EcoRoot'],['FarmVital','CropCare','SoilSense','HarvestEase'],['EcoGrow','NaturalYield','SoilPure','PlantHealth'],['GreenField','CropCycle','SoilNurture','FarmSustain'],['GerminatePro','PlantConnect','GrowNet','RootLink'],['NutrientTrack','EarthMonitor','SoilScan','FertilEase'],['AgriPlan','CropManage','FieldGuide','HarvestLogic'],['PestShield','DiseaseControl','PlantProtect','YieldSecure'],['GrainFlow','ProduceEase','MarketAccess','FarmSimplify'],['LandEnrich','SoilEnhance','EcoFert','AgroBoost'],['SeedSelect','PlantOptimize','GrowManage','EcoCultivate'],['FarmInnovate','CropTech','SoilAdvance','HarvestTech'],['EcoProduce','NaturalHarvest','SoilRich','PlantGain'],['GreenCultivate','CropSustain','SoilCare','FarmEco'],['SoilMonitor','CropSensor','FieldData','HarvestAlert'],['OrganicSeed','PlantHealth','GrowthTrack','EcoYield'],['AgriConnect','FieldNet','CropShare','HarvestSync'],['NutrientShield','ErosionControl','pHBalance','RootProtect'],['EcoCrop','SustainableYield','BioFertilizer','FarmSustain'],['LandOptimize','SoilEnhance','CropBoost','AgroManage'],['GerminationTrack','PlantMap','GrowthPredict','YieldForecast'],['PestMonitor','DiseaseAlert','PlantHealthCheck','YieldSecure'],['GrainQuality','ProduceSorting','MarketAccess','FarmLogistics'],['MoistureDetect','NutrientMap','SoilProfile','FertilityIndex'],['SatelliteImagery','CropAnalysis','FieldMapping','YieldEstimation'],['PrecisionFarming','SmartIrrigation','DroneSurvey','DataAnalytics'],['MicrobeEnhance','OrganicMatter','SoilRegen','EcoBalance'],['PlantGrowthMonitor','FieldProgress','HarvestTimeline','YieldReport'],['SupplyChainConnect','ProduceTrace','MarketIntegration','FarmNetwork'],['pHTesting','NutrientAnalysis','SoilSampling','FertilityReport'],['TaskScheduler','ResourceAllocation','LaborTracking','EquipmentMonitor'],['CropRecords','FieldHistory','YieldAnalytics','FarmReports'],['OrganicInputs','PlantNutrition','GrowthEnhancer','EcoSolutions'],['SustainablePractices','RenewableEnergy','WasteManagement','Biodiversity'],['FieldNet','SoilGrid','YieldLink','NodeTrace'],['GermCode','SeedID','RootLink','GrowthStart'],['VaultSoil','SampleSecure','LabLink','ResultSync'],['GrowthSignal','WeatherFeed','PlantAlert','FieldNotify'],['NodePath','HarvestTrace','ScrollYield','CropGrid'],['ZonePing','CropAlert','SignalYield','TraceLight'],['EcoSeed','VitalTrace','GreenMap','GrowStream'],['SampleLink','DataStream','FertilMap','FieldTest'],['HarvestPing','VendorClaim','YieldPoint','CrateDrop'],['PlantID','CrossNode','ZoneSync','QRRoot'],['AgriCycle','SoilWave','CropSync','EcoChain'],['PulseCheck','GrowthWave','DepthTrace','FieldFlow'],['ZoneGrid','OrganicNode','FarmSquare','PlantDrop'],['SyncPoint','CropMerge','LandSplit','VendorMesh'],['NodeSeed','GridSprout','PathFert','MicroPulse'],['CropGroup','FieldChain','VendorLoop','YieldRing'],['ZoneScan','PlantGrid','GrowthMeter','SeedSync'],['AquaNode','RootHumidity','DepthScan','FieldAqua'],['GreenClaim','NaturalPath','FarmMesh','ZoneCert'],['YieldSync','VendorCast','CrateSend','RouteField'],['ScrollFarm','VendorPanel','YieldDash','FieldUpload'],['FrameID','EarthLine','GridSoil','TestPath'],['PingGrid','DropYield','ClaimNode','AlertField'],['BarcodeRoot','GrowthTag','ScrollField','LabelGrow'],['LandID','CropNode','FieldLink','SoilRoute'],['NestCode','SproutDrop','GrowthLog','FarmBase'],['FarmScan','VendorLink','HarvestLedger','ScrollProof'],['ChainGrow','YieldLink','NodeDrop','EcoSprout'],['StackClaim','DepthScan','FertilRow','SoilVault'],['PanelSync','ScrollDash','CropView','VendorControl'],['ClaimTrace','RootID','VendorStamp','FieldLock'],['HydrateLink','DepthSync','MoistPulse','NodeRain'],['CrateLedger','DropPanel','MarketNode','VendorCrate'],['AlertRoot','ScanGrow','PlantTrace','PingField'],['LoopClaim','SoilCycle','FarmMesh','GrowthPath'],['GridYield','MapTrack','HarvestView','CropLink'],['VendorID','FarmStart','ClaimMap','SproutVault'],['MicroScan','HealthAlert','GrowthWatch','RootPath'],['EcoPlot','FarmJoin','GreenPanel','ZoneMesh'],['SoilDNA','SeedLog','CropCodeX','ScanTag'],['VaultDrop','CrateClaim','PayoutLock','FieldSecure'],['BinderLoop','VendorTrace','ScrollTag','FarmCode']];
+        const educationIpBrands = ['EduNest', 'FormFlex', 'ScrollBooks', 'MindLift', 'GridClass', 'YouthSignal', 'TalentNest', 'PeerPath', 'ScrollGrade', 'LearnMesh','EduChain', 'SkillCast', 'YouthForge', 'QuizNet', 'ScrollLabs', 'LearnFlag', 'ScholarMesh', 'VaultEdu', 'YouthSphere', 'EduGlow','LearnBloom', 'MentorLoop', 'YouthID', 'ScrollQuiz', 'PupilChain', 'IdeaGrid', 'VaultLearn', 'SkillNest', 'ClassFlow', 'CertifyCast','PathMentor', 'IdeaNest', 'SchoolVault', 'LearnSignal', 'GridBadge', 'ScrollCraft', 'MindBoard', 'ClassEcho', 'VaultPupil', 'YouthSignal','TeachStack', 'StudyCast', 'RoleGrid', 'LearnFrame', 'PulseAcademy', 'GradeSync', 'TeachCircle', 'CampusNet', 'StudyBoard', 'ScrollPath','LearnQuest', 'EduNestPro', 'LoopStudy', 'GradeForge', 'IdeaLink', 'TeachTrack', 'VaultClass', 'BadgeMesh', 'EduCast', 'YouthGrid','LearnProof', 'PathCoach', 'TalentID', 'OmniPupil', 'SchoolChain', 'GradeVault'];
+        const educationIpSubNodes = [['LearnNode', 'ScrollSeed', 'CampusID', 'MentorLink', 'PathClaim'],['SkillWrap', 'GradeSync', 'CourseMap', 'IDTrack', 'PupilMesh'],['ChapterFlow', 'StoryTag', 'QuizLink', 'YieldRead', 'TextClaim'],['BoostTrack', 'LearnSignal', 'LevelUp', 'FocusPath', 'VaultPace'],['ClassNode', 'TeachSync', 'VaultBoard', 'EduAlert', 'NodeAttend'],['SignalDrop', 'SkillPing', 'PeerMesh', 'RoleAssign', 'TrackEcho'],['TalentVault', 'ClaimCoach', 'RoleTree', 'PayoutPath', 'CertifyNode'],['PeerMap', 'ConnectNode', 'SkillVote', 'PathSync', 'LearnOrbit'],['GradeID', 'TestVault', 'YieldCredit', 'ExamSync', 'ResultNode'],['MeshID', 'ModuleLink', 'ClassSync', 'ProgressTag', 'LoopNode'],['CourseLink', 'CreditVault', 'CertDrop', 'LearnKey', 'ScrollLedger'],['CastNode', 'MentorPing', 'PeerEcho', 'PayoutRank', 'TalentDrop'],['ForgePath', 'BuildMesh', 'IdeaClaim', 'LearnFoundry', 'PeerLoop'],['QuizTrigger', 'TestField', 'GradeWave', 'RecallGrid', 'PassSync'],['LabNode', 'ProjectClaim', 'IdeaTrace', 'SkillXP', 'ModuleYield'],['FlagRaise', 'SchoolLink', 'RegionTrack', 'PupilEcho', 'ClaimNode'],['MeshTrack', 'GradeRelay', 'ScrollDegree', 'LearnVault', 'StudyPulse'],['IDVault', 'CertChain', 'TranscriptGrid', 'SecureLearn', 'DegreeDrop'],['CircleCast', 'ClassLink', 'ScrollTribe', 'GroupEcho', 'PeerRing'],['SignalLight', 'LearnPulse', 'BrainSync', 'FlashGrade', 'EnlightNode'],['BloomNode', 'GrowthTrack', 'SkillSeed', 'EduSprout', 'PeerSoil'],['LoopConnect', 'WisdomPath', 'MentorVault', 'ScrollPing', 'TeachBond'],['IDSync', 'LearnerNode', 'ProofTag', 'IdentityScroll', 'JoinClass'],['QuizNode', 'AnswerTag', 'TimerMesh', 'ScoreClaim', 'ReviewPulse'],['PupilBlock', 'TaskNode', 'LedgerPath', 'EduEcho', 'LearnLock'],['IdeaDrop', 'GridThink', 'SparkVault', 'PeerPush', 'ThoughtClaim'],['SecureScroll', 'GradeLock', 'ChainTest', 'RecordMesh', 'PayoutGrade'],['NestGrow', 'RoleTree', 'PeerRoot', 'MentorNode', 'CertPulse'],['FlowSync', 'ClassRoute', 'PeerGroup', 'ScrollRing', 'LessonCast'],['CastAward', 'NodeBadge', 'VaultProof', 'ScrollCredit', 'ChainEarn'],['MentorMap', 'GrowthLink', 'TrailNode', 'ScrollCoach', 'PeerTrace'],['NestPath', 'SparkClaim', 'ScrollTree', 'PupilEcho', 'ThoughtPulse'],['VaultGate', 'IDBoard', 'RosterDrop', 'GridEnroll', 'SecureClass'],['SignalNode', 'BrainPing', 'LessonTrack', 'EduCast', 'PathAlert'],['BadgeSync', 'PathAward', 'TagNode', 'CreditDrop', 'CertLock'],['CraftScroll', 'YieldPath', 'PeerSkill', 'VaultMaker', 'ProjectPulse'],['BoardTag', 'ClassSignal', 'IdeaPost', 'TaskDrop', 'VoteMark'],['EchoNode', 'SyncMesh', 'StudentCast', 'AlertPing', 'ScrollPlay'],['PupilID', 'SecureClaim', 'GradeVault', 'TrackNode', 'CertTrigger'],['PeerAlert', 'LoopClaim', 'ScrollWave', 'VoiceDrop', 'IDMesh'],['StackLink', 'LessonPulse', 'GradeBeam', 'TrackNode', 'PeerPath'],['StudyStream', 'PeerJoin', 'QuizSignal', 'ReviewGrid', 'ClassLink'],['RoleMap', 'ClaimSync', 'PeerTree', 'IdentityPath', 'TagTrack'],['FrameNode', 'LessonTrace', 'PupilMesh', 'CastDrop', 'ScoreProof'],['AcademyPing', 'PeerLight', 'FocusPath', 'VaultLearn', 'BadgeSync'],['GradeLink', 'ResultEcho', 'TestMesh', 'PassTrack', 'VaultSheet'],['CircleCast', 'MentorPulse', 'ScrollBeam', 'IdeaClaim', 'PeerRing'],['CampusID', 'GroupPath', 'ScrollZone', 'PeerAlert', 'ConnectMesh'],['StudyNode', 'NoteTrace', 'ProjectGrid', 'SyncClaim', 'ViewRank'],['PathLink', 'VaultCredit', 'PeerYield', 'LessonGrid', 'ClassSync'],['QuestNode', 'MapTrack', 'StudyGoal', 'ProgressPath', 'PeerSignal'],['NestID', 'PathPulse', 'MentorNode', 'VaultGrade', 'PupilClaim'],['StudyLoop', 'GridSync', 'QuizWave', 'PeerCast', 'ReviewTrack'],['ForgeNode', 'GradeRing', 'ResultPush', 'CertPath', 'LearnLine'],['SparkLine', 'LoopLink', 'IdeaDrop', 'MentorPing', 'ClassTrace'],['ClassFlow', 'InstructorNode', 'FeedbackGrid', 'PeerScore', 'PathEcho'],['SecureNode', 'RosterClaim', 'EnrollTrack', 'PeerMap', 'ClassKey'],['BadgeID', 'VaultLink', 'ScrollProof', 'AwardBeam', 'PayoutPing'],['CoursePing', 'ClassSignal', 'LectureDrop', 'QuizRelay', 'PeerPush'],['MeshLearn', 'PeerTrace', 'StudyJoin', 'PupilMark', 'LessonSync'],['ProofID', 'CourseClaim', 'ScrollCert', 'VaultDrop', 'GradeLoop'],['CoachNode', 'RolePath', 'ScrollEcho', 'StudyChain', 'CertPush'],['TalentClaim', 'VaultPass', 'SkillMap', 'IDScroll', 'LearnLock'],['OmniLearn', 'ScrollLoop', 'ViewNode', 'ClassCast', 'IDTrack'],['LedgerLearn', 'BlockEnroll', 'VaultBoard', 'PeerPath', 'ClassFlow'],['VaultClaim', 'CreditPing', 'ScoreSheet', 'SecureDrop', 'LedgerTrack']];
+        const educationYouthBrands = ['YouthSpark', 'EduFlow', 'LearnGen', 'FutureNode', 'SkillSeedling', 'BrightPath', 'MentorLinkYouth', 'CodeSprout', 'GameLearn', 'CreativeYouth'];
+        const educationYouthSubNodes = [['SparkNode', 'EduMesh', 'LearnLoop'], ['FlowTrack', 'SkillGrid', 'YouthSync'], ['GenCode', 'FutureVault', 'LearnMap'], ['NodePlay', 'SkillBoost', 'YouthConnect'], ['SeedlingID', 'GrowTrack', 'LearnPulse'], ['PathMentor', 'BrightSync', 'YouthFlow'], ['LinkMentor', 'SkillNode', 'YouthPath'], ['SproutCode', 'LearnBuild', 'GameDevNode'], ['LearnSim', 'GameDesign', 'YouthPlay'], ['CreativeMesh', 'ArtNode', 'YouthCreate']];
+
+        const weblessBrands = ['OmniQR', 'MeshSync', 'VaultBeacon', 'TapClaim', 'ScrollKey', 'AirLoop', 'DotGrid', 'VaultTouch', 'PouchCast', 'YieldTrace','TapSync', 'TouchProof', 'MeshKey', 'QRPad', 'DotPulse', 'FlashNode', 'ScrollFuse', 'PassiveYield', 'QRClaimMesh', 'VaultTouchPro','AirDropVault', 'MeshTrigger', 'ZeroLink', 'PaperID', 'SignalFrame','TapMesh', 'TagBeacon', 'ScrollTouch', 'ClaimPatch', 'LightGrid','VaultPrint', 'OmniTag', 'ScanToken', 'PassiveKey', 'VaultCast','ScrollNodeX', 'FrameSync', 'QRPath', 'DotLogic', 'BeaconMesh','NFCVault', 'LightPulse', 'ScrollRelay', 'OfflineYield', 'DotClaim','ZeroMesh', 'CastLink', 'FrameYield', 'MeshProof', 'PaperVault','SyncPulse', 'PassiveCast', 'TriggerDrop', 'SignalTag', 'GridID','ScrollPing', 'NFCDrop', 'VaultEcho', 'PassiveSync', 'QRBeam','NFCTrace', 'ScrollMark', 'LightDrop', 'MeshStamp', 'OmniTouch', 'AirPrint', 'FlashID', 'CastMesh', 'QRNode', 'PulseRoute','DropCast', 'ClaimPrint', 'VaultTag', 'QRFuse', 'TapVault','PrintSync', 'TraceCast', 'PassiveRoute', 'CastProof', 'AirPath','QRMesh', 'ScrollZero', 'TagSync', 'GridTouch', 'LightTrace','PassiveVault', 'EchoGrid', 'CastToken', 'TraceNode', 'NFCGrid','ProofCast', 'SignalDrop', 'TouchFlow', 'TagNode', 'YieldPath', 'ScanMark', 'BeamNode', 'DotClaimPro', 'QRTrigger', 'TouchNodeX','TraceQR', 'PaperMesh', 'ZeroID'];
+        const weblessSubNodes = [['QRNode', 'YieldPing', 'ClaimGrid', 'ScanFlow', 'RouteToken'],['NodeJoin', 'MeshPulse', 'ConnectGrid', 'DropRoute', 'SignalFlow'],['FlashNode', 'SecurePing', 'LightPath', 'VaultCast', 'NodePing'],['NFCTrigger', 'ScrollTap', 'NodePush', 'PayoutTouch', 'QRClaim'],['KeyNode', 'UnlockTrack', 'AccessVault', 'PeerPass', 'SecureDrop'],['LoopCast', 'AirPing', 'PassiveTrack', 'QRWave', 'SignalBoard'],['DotNode', 'MeshPrint', 'InkLink', 'FormSync', 'TagPulse'],['TouchID', 'QRAccess', 'ScrollPulse', 'FieldTrigger', 'NodeProof'],['DeviceDrop', 'LoopTouch', 'PulseSend', 'AirLabel', 'AssetBeam'],['QRDrop', 'PathYield', 'SignalToken', 'ScanLock', 'LoopClaim'],['ScrollNode', 'QRConnect', 'TouchBeam', 'PeerSync', 'PathTrigger'],['ProofLink', 'TagScan', 'YieldPath', 'ScrollTouch', 'DataNode'],['MeshCode', 'AccessRoute', 'NodeTrace', 'LockDrop', 'AirJoin'],['GridTouch', 'SignalDrop', 'TagFrame', 'VaultClick', 'QRPush'],['PulseWave', 'FrameDrop', 'DotYield', 'ScrollEcho', 'ProofPad'],['NodePing', 'LightPath', 'QRSync', 'PassiveDrop', 'AirGrid'],['FuseNode', 'TouchLoop', 'NFCTrace', 'QRJoin', 'DeviceCast'],['PassiveNode', 'QRTrace', 'ScrollMark', 'AirSync', 'RouteKey'],['ClaimGrid', 'MeshLock', 'TouchYield', 'TagTrace', 'NodeTap'],['SecureTap', 'NodeCast', 'ProofScroll', 'QRBeam', 'LinkMesh'],['AirTag', 'YieldNode', 'VaultSend', 'QRTrigger', 'TapClaim'],['TriggerNode', 'PassiveSync', 'TouchCast', 'LinkClaim', 'ScrollDrop'],['QRNodeZero', 'OfflineConnect', 'ScrollTrack', 'VaultLoop', 'MeshYield'],['QRPrint', 'ScrollForm', 'NodeMark', 'ScanVault', 'OfflineYield'],['LightID', 'SignalTrace', 'NodeGrid', 'ScrollFlash', 'MeshPath'],['TouchGrid', 'PassiveYield', 'ScrollTouch', 'NFCMap', 'VaultDrop'],['TagNode', 'FlashPath', 'YieldLink', 'TouchMark', 'NodePush'],['SecureTouch', 'PeerDrop', 'NFCVault', 'QRSignal', 'CastTrace'],['ScrollPatch', 'TagClaim', 'QRLink', 'ProofMark', 'PassiveTrace'],['FlashNode', 'TouchEcho', 'SignalCast', 'LightDrop', 'MeshJoin'],['QRLayout', 'SecureForm', 'TouchScan', 'VaultCopy', 'MeshIndex'],['TagPath', 'TouchNode', 'ClaimGrid', 'DotJoin', 'VaultID'],['TokenNode', 'ScanPath', 'YieldDot', 'QRMesh', 'ProofCast'],['KeyNode', 'NFCYield', 'QRSync', 'DropToken', 'TraceLoop'],['CastSignal', 'LinkNode', 'ScrollSync', 'ProofDrop', 'BeamClaim'],['NodePulse', 'TrackEcho', 'TouchID', 'QRLog', 'PassiveMap'],['FrameID', 'SyncNode', 'VaultPath', 'QRTrigger', 'CastMark'],['GridTrace', 'DropClaim', 'QRIndex', 'ProofNode', 'VaultSync'],['DotMap', 'ScrollPulse', 'YieldClaim', 'MeshCode', 'NFCGrid'],['BeaconTrack', 'NodeLight', 'FlashYield', 'SecureDrop', 'TagCast'],['TagSync', 'VaultNode', 'QRPath', 'TouchTrace'],['GridClaim', 'PathDrop', 'ScrollSignal', 'NFCVault'],['FrameYield', 'MeshCast', 'NodeJoin', 'VaultDrop'],['NodeID', 'QRPanel', 'VaultView', 'SceneSync'],['MapNode', 'QRDrop', 'VaultPing', 'TrackLine'],['CertifyScene', 'VaultWave', 'QRNode', 'ClipTrack'],['ViewGrid', 'VaultEcho', 'QRAudio', 'TagPath'],['BoardClip', 'QRMap', 'VaultTag', 'MediaFlow'],['ClipProof', 'VaultScene', 'QRDrop', 'FrameTrace'],['SceneID', 'QRLink', 'VaultClaim', 'ClipEcho'],['NodeBeat', 'VaultTrack', 'QRSound', 'EchoDrop'],['DropTrack', 'QRMix', 'VaultOutput', 'NodeSync']];
+        const healthBrands = ['MedVault', 'CleanCast', 'ScrollHealth', 'Hygienix', 'CareNode','VaultSan', 'TrackMeds', 'SteriMesh', 'MedLoop', 'PulseClean','HealthDrop', 'SanitiPath', 'VaultMeds', 'BioPulse', 'NurseFlow','AirHealth', 'ScanCare', 'PathogenTrace', 'CareYield', 'SoapGrid','MedTrace', 'SteriLoop', 'BioScan', 'CareLink', 'VaultWell','DoseSync', 'SanityTrack', 'CleanPulse', 'NurseGrid', 'ScanHealth','PureFlow', 'MedCert', 'SteriPack', 'AlertCare', 'VaultNurse','TrackVitals', 'HygieneCast', 'PatientSync', 'MedFuse', 'CleanChain','SoapNode', 'ScanDose', 'CareCast', 'HealthPing', 'PatientPath','PureVault', 'MedDrop', 'SanitiLoop', 'AlertDose', 'CleanLine','VaultVitals', 'MaskTrack', 'CarePrint', 'SteriBoard', 'NurseYield','BioTrack', 'VaultWellness', 'TouchClean', 'MedEcho', 'PatientCert','MedLogix', 'ScanSan', 'NurseCast', 'TouchScan', 'DoseVault','PathClean', 'SanitiID', 'RecordGrid', 'PureCare', 'MedClaim','QRVitals', 'HygieneNode', 'SoapDrop', 'NurseVault', 'BioClaim','ScanWell', 'SprayTrack', 'CarePath', 'VaultScript', 'PatientLink','SteriCheck', 'HealthCast', 'DoseLink', 'TouchProof', 'RecordVault','MedPortal', 'AlertVault', 'ClaimDose', 'CleanForm', 'ScanProof','NurseSignal', 'MedPathway', 'WellnessTrack'];
+        const healthSubNodes = [['ScanID', 'PatientDrop', 'RecordLink', 'VaultCare'],['SanitizeGrid', 'QRLabel', 'TouchLock', 'DropZone'],['ScrollID', 'TreatmentTrack', 'CareClaim', 'HealthEcho'],['WashCycle', 'QRNode', 'DisinfectLink', 'VaultTag'],['PatientSync', 'PayoutCare', 'NodeClaim', 'AlertScan'],['CleanTrace', 'HygieneCert', 'QRGrid', 'SecureDrop'],['DoseTrack', 'QRScript', 'VaultDrug', 'AlertLink'],['MeshDrop', 'CleanEcho', 'QRTrack', 'SteriNode'],['HealthPath', 'PatientCast', 'QRClaim', 'VaultID'],['PulseSync', 'ScanLink', 'SanitaryTag', 'VaultLock'],['DropPoint', 'TrackDose', 'QRTrace', 'MedNode'],['PathNode', 'CleanSync', 'HygieneRoute', 'QRClaim'],['MedID', 'TrackPill', 'DropChart', 'AlertLoop'],['QRNode', 'ScanVitals', 'VaultRecord', 'HealthPing'],['ShiftTrack', 'AlertGrid', 'VaultChart', 'PeerLink'],['VentFlow', 'PurifyNode', 'AirTrack', 'CleanEcho'],['CareID', 'QRChart', 'PatientGrid', 'RecordVault'],['PathNode', 'TraceMap', 'AlertDrop', 'VaultScan'],['PayoutClaim', 'CareNode', 'VaultPay', 'ScrollCert'],['WashSync', 'DispenserLink', 'QRNode', 'VaultDrop'],['TraceNode', 'QRMap', 'PatientPing', 'RecordFlow'],['LoopClean', 'VaultNode', 'DisinfectClaim', 'ScanPulse'],['BioNode', 'TestTrace', 'VaultLink', 'QRResult'],['PatientNode', 'ClaimGrid', 'ScrollAlert', 'VaultCare'],['WellnessID', 'QRPath', 'DropNode', 'HealthYield'],['QRTrack', 'PillGrid', 'TimerClaim', 'VaultDose'],['HygieneNode', 'ScanTouch', 'VaultDrop', 'QRLoop'],['CleanLink', 'QRSignal', 'VaultMesh', 'PathDrop'],['NurseID', 'RosterFlow', 'AlertRoute', 'CareTag'],['ScanLoop', 'QRVitals', 'VaultDrop', 'RecordTag'],['WaterPath', 'CleanYield', 'VaultPipe', 'QRDrop'],['CertID', 'RecordNode', 'QRVerify', 'ScrollCare'],['QRWrap', 'VaultClean', 'ScanShield', 'DropKit'],['SignalAlert', 'PatientLoop', 'QRNotify', 'VaultTrack'],['NurseClaim', 'QRPanel', 'NodeTag', 'ShiftProof'],['VitalID', 'ScanPulse', 'VaultTrack', 'QRClaim'],['QRPush', 'CleanNode', 'VaultDrop', 'SprayTrace'],['ScrollTrack', 'VaultChart', 'QRPath', 'IDNode'],['VaultJoin', 'QRClaim', 'ScrollDose', 'PatientLink'],['QRLoop', 'VaultMark', 'HygieneFlow', 'ScanProof'],['FoamClaim', 'VaultDispenser', 'QRWash', 'CleanTag'],['DoseTrace', 'QRScript', 'VaultTrigger', 'LabelNode'],['SignalDrop', 'QRAlert', 'NurseRoute', 'VaultLink'],['PingNode', 'QRVital', 'VaultTrack', 'AlertBeam'],['QRRoute', 'MedID', 'VaultDrop', 'CareSync'],['VaultFlow', 'QRDispenser', 'HygieneLog', 'ScanEcho'],['DropForm', 'ClaimScript', 'QRLoop', 'VaultNode'],['LoopClean', 'SprayNode', 'VaultClaim', 'HygieneGrid'],['QRSignal', 'VaultNotify', 'ScheduleClaim', 'DosePing'],['LinePath', 'QRCheck', 'VaultFlow', 'ScanProof'],['PulseID', 'ScanNode', 'QRTrack', 'VitalsClaim'],['QRWear', 'CleanFit', 'VaultSync', 'HygienePing'],['PrintLabel', 'QRScan', 'DropVault', 'CleanNode'],['BoardRoute', 'HygieneLink', 'VaultMap', 'QRPath'],['PayoutNode', 'VaultCert', 'NurseFlow', 'QRSignal'],['BioScan', 'QRProof', 'VaultClaim', 'PatientEcho'],['ScrollCare', 'QRDrop', 'MedMesh', 'RecordSync'],['QRScan', 'VaultTouch', 'HygieneLock', 'SignalNode'],['EchoID', 'VaultPanel', 'QRPing', 'RecordPath'],['ScrollCert', 'QRAccess', 'VaultLedger', 'ClaimLink'],['TrackVault', 'QRPanel', 'PatientTag', 'SyncChart'],['HygieneScan', 'QRRead', 'VaultIndex', 'CleanFlow'],['CastPath', 'QRBoard', 'CarePulse', 'VaultShift'],['ScanNode', 'TouchRead', 'VaultMark', 'QRTag'],['VaultClaim', 'QRDose', 'TimerPath', 'MedLabel'],['ScrollRoute', 'QRScan', 'VaultTrack', 'PathEcho'],['QRBadge', 'VaultName', 'ClaimID', 'CleanCheck'],['RecordLoop', 'VaultEntry', 'QRNode', 'ScanBook'],['QRFlow', 'SanitizePath', 'CareTouch', 'VaultSync'],['VaultSheet', 'QRProof', 'ScrollClaim', 'SignalTrack'],['VitalsTag', 'QRTrack', 'VaultPulse', 'HealthNode'],['CleanLabel', 'ScanEcho', 'VaultDrop', 'TagID'],['SoapPing', 'QRTrigger', 'DispenserLog', 'VaultTrack'],['VaultRoster', 'NurseTrack', 'ShiftID', 'QRLog'],['BioTrack', 'VaultCert', 'QRForm', 'DNAPath'],['QRClaim', 'ScrollDrop', 'VaultCare', 'CheckPulse'],['SprayNode', 'VaultStream', 'QRPath', 'HygieneFlow'],['QRTag', 'NurseRoute', 'VaultChart', 'ShiftEcho'],['ScriptID', 'QRConfirm', 'MedDrop', 'ClaimProof'],['QRBoard', 'VaultJoin', 'CarePass', 'RecordTrack'],['CheckPulse', 'VaultClean', 'QRNode', 'HygieneCert'],['CastAlert', 'QRSignal', 'NodeDrop', 'VaultClaim'],['QRLabel', 'VaultID', 'TrackMed', 'ScrollProof'],['VaultLink', 'CleanTrace', 'ScanNode', 'QRDrop'],['FilePath', 'QRPatient', 'VaultScan', 'ArchiveNode'],['QRGate', 'VaultOpen', 'PatientCert', 'NodePass'],['SignalPing', 'VaultEcho', 'ScanNotify', 'QRPath'],['DoseNode', 'VaultRoute', 'LabelScan', 'QRClaim'],['QRPanel', 'VaultPath', 'PrintTag', 'DisinfectProof'],['VaultDrop', 'QRNode', 'CertID', 'PulseRecord'],['SignalNode', 'QRChart', 'VaultEcho', 'RosterClaim'],['QRLog', 'PatientPath', 'ScrollLink', 'VaultMark'],['TrackChart', 'VaultPulse', 'QRNode', 'LoopScan']];
+        const housingBrands = ['BuildNest', 'InfraGrid', 'CivicPath', 'VaultFrame', 'ArchiLoop', 'ScrollPlot', 'UrbanTrace', 'BuildChain', 'PlotMesh', 'LandClaim','CementDrop', 'CivicVault', 'StructFlow', 'QRBuild', 'RoadMapX', 'SiteTrace', 'CivicPlan', 'VaultRoof', 'PlotCast', 'TileYield','ScanPermit', 'BuildTrack', 'CementVault', 'GridScan', 'SiteVault', 'PermitGrid', 'CivicPrint', 'RoofMesh', 'ScrollYard', 'PlotLink','GeoClaim', 'PermitCast', 'BuildYield', 'CivicEcho', 'ArchiVault', 'ScrollPlan', 'ZoningBoard', 'SiteSnap', 'BuildBeam', 'InfraLoop','CivicSync', 'HousingVault', 'LandNodeX', 'ClaimBoard', 'UrbanMap', 'BuildNet', 'CivicGrid', 'FormPanel', 'YieldPermit', 'StructMark','PlanCast', 'HousingID', 'CementCast', 'TileProof', 'GridYield', 'ArchPlan', 'PlotSync', 'CivicDrop', 'ZonePath', 'ClaimGrid','TileVault', 'StructID', 'CivicYield', 'BuildCert', 'PlanNode', 'ScrollBuild', 'ZoneVault', 'GridPermit', 'TileCast', 'YieldCivic','HousingLoop', 'BuildMark', 'FrameGrid', 'CivicTag', 'UrbanYield', 'ArchiID', 'PermitPath', 'StructCast', 'TileFlow', 'ClaimNode','BuildEcho', 'CivicMesh', 'ZoningNode', 'ScrollRoof', 'LandCast', 'GeoPermit', 'YieldBuild', 'UrbanPanel', 'PlanTrace', 'CivicProof','FrameYield'];
+        const housingSubNodes = [['PlotVault', 'GridPermit', 'ScrollClaim', 'LandNode'],['QRPipe', 'SignalTrace', 'VaultZone', 'NodeLayout'],['PermitID', 'RoutePlan', 'VaultForm', 'ZoningMesh'],['FrameDrop', 'BuildQR', 'ClaimSync', 'SiteNode'],['DesignTrace', 'VaultDraw', 'BlueprintNode', 'CivicCast'],['QRClaim', 'VaultMap', 'LandTrack', 'NodePing'],['StreetPlan', 'VaultRoad', 'SignalGrid', 'SurveyNode'],['QRBuild', 'SiteVault', 'ContractorLink', 'NodePermit'],['MeshTag', 'VaultCoord', 'ZoningNode', 'ClaimForm'],['ParcelGrid', 'PlotPath', 'VaultTag', 'ClaimNode'],['QRPour', 'NodeTrack', 'VaultMix', 'BatchSignal'],['RegisterPath', 'ZoningClaim', 'QRDrop', 'CivicNode'],['FrameSignal', 'VaultBeam', 'NodeGrid', 'BuildSync'],['BuildNode', 'ScrollTrace', 'VaultCheck', 'PermitQR'],['QRRoute', 'VaultPath', 'PavingNode', 'InfraClaim'],['QRZone', 'ClaimNode', 'VaultFlag', 'SurveyGrid'],['GridNode', 'CouncilDrop', 'QRZoning', 'VaultSheet'],['RooftopPing', 'BuildEcho', 'QRPanel', 'TileDrop'],['PlotSignal', 'VaultDrop', 'LandNode', 'QRClaim'],['TileGrid', 'VaultTrack', 'QRPlace', 'PatternNode'],['QRPermit', 'VaultForm', 'ZoneProof', 'ClaimSync'],['ProgressScan', 'QRPlan', 'VaultStage', 'NodeEcho'],['MixNode', 'VaultDrop', 'PourClaim', 'TagBatch'],['QRSurvey', 'VaultMap', 'GeoTrack', 'NodeClaim'],['QRCode', 'SiteTrack', 'VaultBuild', 'PermitSync'],['PermitNode', 'QRClaim', 'ZoningPing', 'VaultLink'],['BlueprintDrop', 'VaultForm', 'DesignTrack', 'QRScan'],['TileClaim', 'VaultPitch', 'QRShingle', 'LayoutNode'],['YardMap', 'VaultPlace', 'GridNode', 'QRFence'],['QRMap', 'VaultConnect', 'GridPath', 'ClaimRoute'],['VaultPlot', 'QRCoords', 'LandMesh', 'ScanMark'],['ClaimEcho', 'VaultPermit', 'QRBoard', 'RouteNode'],['PayoutNode', 'StageClaim', 'VaultCycle', 'QRProgress'],['CivicNode', 'QRDrop', 'PlanLink', 'VaultLedger'],['VaultDraft', 'ScanFloor', 'QRRender', 'NodeTrace'],['GridLine', 'QRClaim', 'VaultSheet', 'PermitTrace'],['MapNode', 'QRCheck', 'VaultProof', 'ZoneRoute'],['NodePing', 'QRMap', 'VaultBuild', 'LandTag'],['QRSpan', 'VaultFrame', 'ReinforceTrack', 'NodeSet'],['InfraSignal', 'VaultRing', 'QRFlow', 'SiteNode'],['SyncNode', 'QRForm', 'CouncilClaim', 'VaultPath'],['TitleDrop', 'QRZone', 'VaultProof', 'ClaimKey'],['GeoRoute', 'VaultClaim', 'QRTrack', 'ScanField'],['QRDesk', 'PermitFlow', 'VaultConfirm', 'GridEcho'],['MapTrace', 'VaultPlan', 'SurveyQR', 'BuildPath'],['NetNode', 'QRPermit', 'VaultJoin', 'PathStage'],['GridPass', 'ZoningPing', 'VaultLink', 'CouncilTrace'],['QRForm', 'PermitMark', 'VaultEntry', 'ScanLine'],['ClaimPing', 'VaultProof', 'QRYield', 'GridSync'],['QRBeam', 'FrameLink', 'VaultPath', 'NodeGrid'],['CastNode', 'QRDrop', 'VaultSync', 'BlueLine'],['HouseTag', 'VaultLabel', 'QRTrack', 'ClaimFlow'],['MixForm', 'QRNode', 'VaultDrop', 'YieldClaim'],['TileMap', 'QRGrid', 'VaultShingle', 'NodePin'],['YieldNode', 'QRTrack', 'VaultSync', 'PermitPath'],['ArchiFlow', 'VaultClaim', 'QRNode', 'BlueprintTrack'],['LandMesh', 'QRPing', 'VaultMap', 'TagEcho'],['ClaimVault', 'QRBoard', 'SyncTag', 'NodeSubmit'],['ZoneNode', 'QRRoute', 'VaultLock', 'GridTag'],['GridLock', 'VaultCheck', 'QRNode', 'SiteClaim'],['QRSet', 'VaultGrid', 'PatternScan', 'ShingleClaim'],['IDTag', 'VaultNode', 'QRProof', 'BuildTrack'],['YieldCert', 'VaultPayout', 'GridTag', 'QRSplit'],['CertifyNode', 'QRPermit', 'VaultSync', 'ScanProof'],['NodeMap', 'VaultBoard', 'QRTrace', 'ZoneClaim'],['ScrollForm', 'QRDrop', 'VaultLine', 'PanelNode'],['VaultProof', 'QRZone', 'ClaimRoute', 'MapTrace'],['PermitTrack', 'QRClaim', 'VaultDesk', 'PlanID'],['TileEcho', 'QRLayer', 'VaultDrop', 'PatternID'],['CouncilID', 'QRClaim', 'VaultShare', 'SyncNode'],['LoopPath', 'VaultPing', 'ClaimSync', 'QRPermit'],['QRTag', 'MarkNode', 'VaultCert', 'ZoneDrop'],['FrameDrop', 'VaultNode', 'QRBeam', 'SetClaim'],['TagClaim', 'VaultEcho', 'QRCouncil', 'FormNode'],['CityPlan', 'QRBuild', 'VaultMetric', 'ScanNode'],['IDDrop', 'QRSketch', 'VaultLog', 'PlanTrace'],['PermitFlow', 'QRForm', 'VaultLine', 'ZoneCert'],['CastGrid', 'QRForm', 'VaultSteel', 'EchoNode'],['FlowPattern', 'QRDrop', 'VaultTile', 'MeshClaim'],['QRClaim', 'VaultZone', 'LockPath', 'MapTrack'],['EchoNode', 'QRPermit', 'VaultWave', 'SyncLine'],['MeshTrace', 'QRDrop', 'VaultMap', 'TagNode'],['QRZone', 'VaultTrace', 'RegionMap', 'ScanEcho'],['RoofTag', 'VaultPanel', 'QRClaim', 'TileLine'],['CastNode', 'QRDrop', 'VaultAnchor', 'ClaimPing'],['GeoScan', 'QRField', 'VaultPermit', 'TagNode'],['QRTrack', 'VaultFlow', 'BuildCredit', 'PayoutLink'],['PanelForm', 'QRDrop', 'VaultPing', 'GridNode'],['TraceClaim', 'VaultNode', 'QRCycle', 'ScrollMap'],['CertGrid', 'VaultZoning', 'QRBoard', 'CouncilLink'],['QRFrame', 'VaultEcho', 'PayoutNode', 'StructLoop']];
+        const mediaBrands = ['FrameCast', 'SonicGrid', 'EditMesh', 'PulseMedia', 'VaultVision', 'ScrollSound', 'RenderCast', 'VoiceLoop', 'AudioDrop', 'MediaMesh','VisualClaim', 'SoundCert', 'SyncLoop', 'MotionID', 'MediaRelay', 'BeatCast', 'RenderVault', 'VoiceProof', 'ScenePulse', 'SoundNest','MediaGrid', 'Audiomark', 'EditClaim', 'SonicVault', 'MotionMap', 'TrackLine', 'SceneLink', 'LoopMix', 'AudioFlag', 'EchoNode','VisualVault', 'AudioMesh', 'RenderDrop', 'SoundCast', 'ClipTrace', 'AudioClaim', 'PulseVault', 'MotionCert', 'SoundPath', 'StreamNode','MediaID', 'SonicProof', 'AudioTag', 'SceneGrid', 'EchoVault', 'ClipNode', 'BeatProof', 'SoundBoard', 'MediaPulse', 'RenderSync','SceneLock', 'SonicLine', 'AudioSpan', 'TrackProof', 'MotionDrop', 'VaultMix', 'AudioIndex', 'VisualCast', 'MediaTrace', 'PulseTrack','EchoClaim', 'FrameNode', 'AudioMap', 'StreamCert', 'SonicView', 'RenderBoard', 'ClipVault', 'TrackScene', 'PulseNode', 'AudioDropX','SceneIndex', 'BeatGrid', 'VaultRender', 'SoundLoop', 'MediaLine', 'VoiceCast', 'SonicIndex', 'MotionPanel'];
+        const mediaSubNodes = [['VaultScene', 'MediaNode', 'QRStream', 'ClipTag'],['AudioNode', 'WavePulse', 'QRMix', 'VaultTrack'],['ClipClaim', 'VaultCut', 'QREdit', 'LayerLink'],['StreamSignal', 'QRDrop', 'VaultFrame', 'EchoTag'],['VaultClip', 'QRLabel', 'MotionIndex', 'SceneMap'],['SoundNode', 'QRTrack', 'VaultEcho', 'MixProof'],['RenderGrid', 'VaultOutput', 'QREncode', 'ClipPush'],['VoicePing', 'TrackID', 'QRLine', 'VaultAudio'],['DropWave', 'VaultClaim', 'QRNode', 'SoundPrint'],['ClipMesh', 'VaultFrame', 'QRPlay', 'RenderTag'],['FrameNode', 'VaultTag', 'QRAngle', 'EditCast'],['CertifyMix', 'VaultTrack', 'QRWave', 'AudioLine'],['LoopNode', 'VaultPing', 'QRFlow', 'EchoTrack'],['MotionTag', 'QRPath', 'VaultScene', 'ClipSync'],['ClipRoute', 'VaultMesh', 'QRSignal', 'TrackDrop'],['BeatNode', 'VaultDrop', 'QRMix', 'SoundRoute'],['VaultProject', 'QREncode', 'MediaCert', 'TrackMap'],['AudioProof', 'VaultChain', 'QRWave', 'ClaimPing'],['PulseTrack', 'VaultEcho', 'QRScene', 'FramePush'],['NestID', 'VaultClaim', 'QRGrid', 'MixEcho'],['GridSync', 'VaultLabel', 'QRLine', 'TrackFrame'],['SoundCert', 'QRClip', 'VaultWave', 'EchoProof'],['CutNode', 'VaultEcho', 'QREdit', 'ClipFlow'],['VaultTone', 'QRPath', 'WaveNode', 'SoundChain'],['ClipPath', 'VaultPing', 'QRScene', 'AudioLink'],['LineTrack', 'VaultAudio', 'QRSync', 'SoundCast'],['QRConnect', 'VaultScript', 'ClipRoute', 'FrameID'],['MixVault', 'QRDrop', 'SoundLine', 'AudioJoin'],['VaultTag', 'QRBeat', 'TrackProof', 'ClaimNote'],['VaultEcho', 'QRWave', 'SoundLink', 'PingTrack'],['VaultProof', 'QRView', 'FrameTrace', 'ClipClaim'],['MeshNode', 'QRSignal', 'VaultSync', 'WaveEcho'],['DropStream', 'VaultFrame', 'QRPush', 'MediaLine'],['CastWave', 'QRMix', 'VaultBeam', 'TrackEcho'],['TraceClip', 'VaultScan', 'QRNode', 'ScenePath'],['ClaimDrop', 'QRProof', 'VaultRoute', 'SoundTrack'],['VaultPing', 'QRTrack', 'SoundGrid', 'EchoTag'],['CertNode', 'VaultLock', 'QRDrop', 'ClipTrack'],['PathTrack', 'VaultAudio', 'QRRoute', 'MixMap'],['NodeDrop', 'VaultStream', 'QRScene', 'AudioLine'],['IDTrack', 'VaultView', 'QRNode', 'ClipEcho'],['ProofPath', 'VaultPing', 'QRMix', 'EchoTrack'],['TagNode', 'VaultClaim', 'QRDrop', 'TrackEcho'],['GridNode', 'VaultScene', 'QRTrack', 'RenderProof'],['VaultEcho', 'SoundClaim', 'QRTrace', 'AudioBeam'],['ClipLink', 'VaultDrop', 'QRScene', 'TagLine'],['BeatID', 'VaultSound', 'QRTrack', 'MixFlow'],['BoardLine', 'VaultGrid', 'QRBeat', 'ClipTrack'],['PulseGrid', 'QRFlash', 'VaultSync', 'AudioNode'],['SyncLine', 'QRDrop', 'VaultEcho', 'SceneNode'],['LockNode', 'QRFrame', 'VaultScene', 'ProofTag'],['LineTag', 'QRDrop', 'VaultMix', 'TrackClaim'],['SpanLine', 'VaultEcho', 'QRTrack', 'LoopPath'],['VaultClaim', 'QRWave', 'SoundPing', 'EchoTrack'],['DropClip', 'VaultPush', 'QRScene', 'TrackGrid'],['MixDrop', 'QRLine', 'VaultBeam', 'TrackTag'],['IndexVault', 'QRPing', 'TrackScene', 'EchoLine'],['CastGrid', 'VaultNode', 'QRProof', 'ClipPush'],['TraceNode', 'QRDrop', 'VaultMap', 'RenderRoute'],['PulseID', 'QREcho', 'VaultClaim', 'TrackMap'],['VaultTrace', 'QRScene', 'EchoDrop', 'ClipNode'],['NodeID', 'QRPanel', 'VaultView', 'SceneSync'],['MapNode', 'QRDrop', 'VaultPing', 'TrackLine'],['CertifyScene', 'VaultWave', 'QRNode', 'ClipTrack'],['ViewGrid', 'VaultEcho', 'QRAudio', 'TagPath'],['BoardClip', 'QRMap', 'VaultTag', 'MediaFlow'],['ClipProof', 'VaultScene', 'QRDrop', 'FrameTrace'],['SceneID', 'QRLink', 'VaultClaim', 'ClipEcho'],['NodeBeat', 'VaultTrack', 'QRSound', 'EchoDrop'],['DropTrack', 'QRMix', 'VaultOutput', 'NodeSync'],['IndexTag', 'QRClaim', 'VaultFile', 'ClipGrid'],['GridWave', 'QRDrop', 'VaultEcho', 'SoundNode'],['RenderTag', 'VaultProject', 'QRPush', 'SyncLine'],['LoopEcho', 'VaultTrack', 'QRClaim', 'ClipNode'],['LineRoute', 'QRDrop', 'VaultIndex', 'TrackCast'],['VoiceID', 'VaultScene', 'QRClip', 'AudioEcho'],['IndexNode', 'QRSound', 'VaultDrop', 'PingTrack'],['PanelSync', 'QRTrack', 'VaultFrame', 'ClipClaim']];
+        const mediaScrollProfiles = {"SonicGrid": { title: "SonicGrid Product Scroll", intro: "SonicGrid is a modular media routing protocol for dynamic audio environments. Built for creators, audio engineers, podcasters, and signal integrators.", features: ["Low-latency audio mesh processing", "Vault-linked subnode chaining (e.g. AudioNode, QRMix)", "WebAudio-ready deployment", "FAA VaultTrace compatibility"], pricing: ["Starter – R99/mo (3 signal lanes)", "Pro Studio – R299/mo (unlimited mesh lanes + batch export)", "Enterprise SLA – Custom pricing (includes FAA compliance sync)"], metadata: { id: "SGRID-FAAZ-8492", vault: "HM-0425", layer: "ScrollMesh v2.4" } },"VoiceLoop": { title: "VoiceLoop Product Scroll", intro: "VoiceLoop enables looped audio workflows for speech actors, voice apps, and smart device interactions.", features: ["Loop authoring in-browser", "QRVoice triggers with FAA sync", "ScrollPath routing and caption sync"], pricing: ["Creator Tier – R49", "Pro VoiceKit – R149", "Enterprise TTS Mesh – R499"], metadata: { id: "VLOOP-FAAV-4910", vault: "HM-0425", layer: "VoiceMesh v1.6" } }};
+        const ailogicBrands = ['OmniKey', 'SignalPulse', 'MeshIndex', 'ClaimNodeX', 'LogicEcho','OmniRender', 'SyncLine', 'TokenBoard', 'SignalClaim', 'GridCast','MeshSync', 'VaultGrid', 'TraceLoop', 'LogicMap', 'PulseKey','CertDrop', 'OmniTrack', 'TokenProof', 'AIGrid', 'SyncProof','OmniScan', 'SignalLine', 'MeshCore', 'VaultDrop', 'OmniLink','TokenYield', 'ClaimSync', 'CertLogic', 'OmniPathX', 'PulseClaim','GridTrace', 'AIBeam', 'SignalYield', 'LogicBoard', 'OmniSync','VaultAI', 'TraceCast', 'LogicPing', 'SignalMesh', 'OmniGrid','OmniProof', 'GridLink', 'CertAI', 'TokenMark', 'OmniDropX','PulseForm', 'MeshMark', 'LogicPingX', 'OmniLogicX', 'CertSync','GridYield', 'VaultPing', 'ClaimDrop', 'OmniLine', 'LogicTrace','TokenNode', 'MeshGrid', 'AITrack', 'SignalID', 'OmniCertX','VaultSignal', 'LogicCastX', 'TokenTraceX', 'LogicNest', 'CertBeam','OmniGridX', 'MeshCast', 'TraceAI', 'PulseBoard', 'SyncMesh','VaultLink', 'OmniEcho', 'LogicLoop', 'SignalTrack', 'MeshID','LogicCert', 'OmniMesh', 'SyncLogic', 'VaultPath', 'TokenCast','GridBoard', 'AIForm', 'OmniTrackX', 'SignalCast', 'LogicMark','CertLoop', 'PulseLogic', 'MeshFlow', 'OmniCertGrid', 'VaultBoard','AIYieldGrid', 'ClaimNodeGrid', 'OmniLogicField', 'GridNode', 'OmniSyncCore','BeamLogic', 'LogicGridX', 'OmniMap', 'CertNode', 'SignalTrace','MeshCert', 'VaultIndex', 'QRLogic', 'CastMesh', 'OmniProofChain','SyncAI', 'LogicDrop', 'GridRoot', 'OmniNode', 'TokenRoot','LogicCertX', 'OmniPattern', 'BeamIndex', 'MeshProof', 'SignalCore','SyncClaim', 'AIFrame', 'CertTag', 'PulseEcho', 'GridProof','SignalPanel', 'SyncFrame', 'MeshRoute', 'OmniEchoX', 'LogicPanel','OmniBeacon', 'ClaimSyncX', 'OmniWave', 'CertPing', 'VaultField','LogicSeal', 'OmniPulse', 'NodeGrid', 'SignalCastX', 'MeshClaimX','OmniClaim', 'TokenSignal', 'SyncSignal', 'OmniBeam', 'CertSignal','VaultAITrack', 'PulseRoot', 'OmniClaimX', 'BeamClaim', 'GridBeam','AIMapX', 'OmniRoot', 'SignalMeshX', 'OmniProofX', 'TokenCert','VaultAIProof', 'OmniLoopX', 'CertSyncBeam', 'LogicTraceX', 'TokenScanX','MeshSignalX', 'PulseFrame', 'SyncPulseX', 'BeamIndexX', 'OmniLogicNet','TokenSeal', 'LogicField', 'VaultMapX', 'AITraceGrid', 'ClaimFormX','SignalProofX', 'MeshEcho', 'GridLogicField', 'LogicRootX', 'OmniTagX','SignalFlowX', 'VaultTraceX', 'GridEchoX', 'AIClaimX', 'OmniMapX','SyncFormX', 'BeamNodeX', 'LogicMeshCore', 'CertTrackX', 'TokenPingX','MeshNodeX', 'AIProofCast', 'OmniDropGrid', 'GridScanX', 'VaultMeshX','LogicZoneX', 'OmniLogicTrace', 'AIMapSync',];
+        const ailogicSubNodes = [['TraceBeam', 'VaultEcho', 'QRPath', 'MeshID'],['BeamNode', 'VaultTrack', 'QRLogic', 'SignalDrop'],['YieldTrack', 'VaultMap', 'QRClaim', 'OmniPath'],['BoardNode', 'VaultCert', 'QRFrame', 'MeshCast'],['SyncGrid', 'VaultEcho', 'QRNode', 'TokenLink'],['AIPath', 'VaultClaim', 'QRLogic', 'SyncTag'],['CastGrid', 'VaultTrack', 'QRPing', 'SignalEcho'],['PingNode', 'VaultBeam', 'QRProof', 'MeshDrop'],['MeshTrace', 'VaultDrop', 'QRNode', 'LogicPush'],['GridPath', 'VaultFrame', 'QRSignal', 'TokenPing'],['ProofTag', 'VaultEcho', 'QRNode', 'SyncTrack'],['LinkNode', 'VaultRoute', 'QRLogic', 'PulseBeam'],['CertSignal', 'VaultTag', 'QRDrop', 'LogicNode'],['MarkID', 'VaultSync', 'QRClaim', 'OmniGrid'],['DropCast', 'VaultMesh', 'QRRoute', 'SignalClaim'],['FormLogic', 'VaultEcho', 'QRSync', 'MeshMap'],['MarkNode', 'VaultGrid', 'QRPing', 'SignalFlow'],['PingRoute', 'VaultTrack', 'QRNode', 'TokenDrop'],['LogicSync', 'VaultPath', 'QRFrame', 'MeshClaim'],['SyncPath', 'VaultMark', 'QRSignal', 'TraceNode'],['YieldMesh', 'VaultDrop', 'QRNode', 'PulseLogic'],['PingCast', 'VaultProof', 'QRLine', 'OmniLogic'],['DropLogic', 'VaultFrame', 'QRTrack', 'SignalGrid'],['LineTrace', 'VaultClaim', 'QRMap', 'GridProof'],['TracePath', 'VaultEcho', 'QRSignal', 'AIGrid'],['NodeClaim', 'VaultRoute', 'QRBeam', 'PulseForm'],['GridID', 'VaultPath', 'QRLogic', 'SignalTag'],['TrackEcho', 'VaultCert', 'QRDrop', 'OmniCast'],['IDFrame', 'VaultPing', 'QRLogic', 'MeshDrop'],['CertProof', 'VaultTrace', 'QRLink', 'AIPath'],['SignalNode', 'VaultRoute', 'QRPing', 'GridLogic'],['CastMap', 'VaultDrop', 'QRFrame', 'MeshNode'],['TraceRoute', 'VaultPing', 'QRGrid', 'OmniTag'],['NestClaim', 'VaultEcho', 'QRTrack', 'MeshProof'],['BeamToken', 'VaultSync', 'QRPath', 'LogicFlow'],['GridCast', 'VaultDrop', 'QRSignal', 'SyncForm'],['CastFrame', 'VaultLogic', 'QRDrop', 'TokenGrid'],['AILogic', 'VaultClaim', 'QRTrack', 'SyncNode'],['BoardLine', 'VaultPath', 'QRClaim', 'LogicBeam'],['MeshRoute', 'VaultGrid', 'QRSignal', 'TokenDrop'],['LinkTag', 'VaultCast', 'QRFrame', 'SignalFlow'],['EchoPath', 'VaultProof', 'QRDrop', 'LogicNode'],['LoopNode', 'VaultEcho', 'QRSync', 'GridCast'],['TrackPing', 'VaultMap', 'QRNode', 'MeshLine'],['IDNode', 'VaultGrid', 'QRFlow', 'PulseClaim'],['CertForm', 'VaultSync', 'QRBeam', 'GridClaim'],['MeshVault', 'QRSignal', 'DropClaim', 'LogicPulse'],['LogicTrace', 'VaultPing', 'QRNode', 'GridCast'],['PathDrop', 'VaultTrack', 'QRRoute', 'OmniMap'],['CastNode', 'VaultDrop', 'QRTrack', 'MeshSignal'],['BoardPing', 'VaultDrop', 'QRTrack', 'SignalCast'],['FormLine', 'VaultSync', 'QRNode', 'LogicPath'],['TrackProof', 'VaultEcho', 'QRClaim', 'PulseSync'],['CastFlow', 'VaultMark', 'QRGrid', 'OmniLink'],['MarkTrace', 'VaultForm', 'QRLogic', 'MeshSync'],['LoopPath', 'VaultRoute', 'QRNode', 'SignalCert'],['LogicLine', 'VaultPing', 'QRTrack', 'GridForm'],['FlowPath', 'VaultClaim', 'QRNode', 'OmniRoute'],['GridClaim', 'VaultMark', 'QRLogic', 'SyncEcho'],['BoardLink', 'VaultEcho', 'QRDrop', 'TokenMesh'],['YieldSync', 'VaultLogic', 'QRTrack', 'MeshDrop'],['NodeMap', 'VaultPath', 'QRProof', 'SignalFrame'],['FieldNode', 'VaultGrid', 'QRTag', 'LogicFlow'],['NodeClaim', 'VaultMark', 'QRLink', 'PulseMap'],['SyncForm', 'VaultCast', 'QRTrack', 'MeshBeam'],['LogicRoute', 'VaultDrop', 'QRBeam', 'SignalID'],['GridMap', 'VaultProof', 'QRToken', 'MeshNode'],['MapEcho', 'VaultPing', 'QRDrop', 'CertLine'],['NodeTrack', 'VaultGrid', 'QRRoute', 'OmniYield'],['TraceNode', 'VaultEcho', 'QRLink', 'LogicDrop'],['CertMap', 'VaultTrack', 'QRPath', 'PulseProof'],['IndexGrid', 'VaultLink', 'QRClaim', 'MeshRoute'],['LogicID', 'VaultForm', 'QRBeam', 'OmniTrack'],['MeshPing', 'VaultFlow', 'QRDrop', 'SignalMark'],['ChainID', 'VaultProof', 'QRTag', 'LogicRoot'],['AIForm', 'VaultRoute', 'QRClaim', 'MeshLogic'],['DropPing', 'VaultMark', 'QRTrack', 'OmniForm'],['RootNode', 'VaultClaim', 'QRMesh', 'PulseTrack'],['NodeLink', 'VaultDrop', 'QRSignal', 'GridMark'],['RootGrid', 'VaultEcho', 'QRClaim', 'SignalMesh'],['CertDrop', 'VaultRoute', 'QRToken', 'PulseCast'],['PatternGrid', 'VaultPing', 'QRMap', 'AIClaim'],['IndexEcho', 'VaultForm', 'QRLogic', 'MeshPath'],['ProofNode', 'VaultCert', 'QRDrop', 'TokenPath'],['LoopClaim', 'VaultPing', 'QRLogic', 'GridBeam'],['SyncToken', 'VaultTrack', 'QRClaim', 'LogicForm'],['TraceCast', 'VaultNode', 'QRFlow', 'BeamEcho'],['ScanPath', 'VaultGrid', 'QRTrace', 'TokenMark'],['MeshDrop', 'VaultSignal', 'QRLogic', 'PulseClaim'],['FrameID', 'VaultEcho', 'QRTrack', 'SignalSync'],['PulseSync', 'VaultRoute', 'QRDrop', 'MeshLogic'],['IndexProof', 'VaultMap', 'QRBeam', 'TokenRoute'],['LogicGrid', 'VaultClaim', 'QRFlow', 'SyncMark'],['SealNode', 'VaultFrame', 'QRLogic', 'PulseBeam'],['FieldClaim', 'VaultDrop', 'QRNode', 'TokenTrace'],['MapLine', 'VaultEcho', 'QRSignal', 'SyncTrack'],['AIGridID', 'VaultTrace', 'QRClaim', 'MeshEcho'],['FormClaim', 'VaultNode', 'QRDrop', 'LogicMap'],['ProofDrop', 'VaultPing', 'QRPath', 'SignalNode'],['EchoLine', 'VaultGrid', 'QRTrack', 'MeshLogic'],['LogicRoute', 'VaultClaim', 'QRMesh', 'NodeIndex'],['RootBeam', 'VaultSignal', 'QRTag', 'PulseGrid'],['TagNode', 'VaultDrop', 'QRSignal', 'LogicTrace'],['FlowTrack', 'VaultMap', 'QRClaim', 'MeshNode'],['TraceLoop', 'VaultProof', 'QRDrop', 'SyncFrame'],['EchoClaim', 'VaultBeam', 'QRNode', 'LogicBoard'],['AIClaimPath', 'VaultDrop', 'QRFrame', 'SignalTrace'],['MapSync', 'VaultGrid', 'QRTrack', 'TokenLogic'],['FormDrop', 'VaultCast', 'QRRoute', 'MeshFrame'],['BeamLine', 'VaultLogic', 'QRTrack', 'AIFlow'],['MeshCore', 'VaultEcho', 'QRToken', 'LogicPing'],['TrackCert', 'VaultPath', 'QRLogic', 'MeshEcho'],['PingRoute', 'VaultDrop', 'QRNode', 'GridTrack'],['NodePath', 'VaultSync', 'QRTrace', 'TokenMark'],['ClaimProof', 'VaultEcho', 'QRDrop', 'LogicField'],['DropMesh', 'VaultMap', 'QRNode', 'PulseSync'],['ScanTrack', 'VaultPing', 'QRClaim', 'BeamNode'],['MeshVault', 'VaultEcho', 'QRMap', 'SignalGrid'],['ZoneClaim', 'VaultProof', 'QRTrace', 'GridEcho'],['TraceLogic', 'VaultPath', 'QRBeam', 'OmniID'],['MapClaim', 'VaultSync', 'QRSignal', 'LogicMesh']];
+        const professionalBrands = ['LedgerNest', 'OmniBooks', 'QCalcX', 'SiteProof', 'LawTrace','ContractCast', 'Enginuity', 'StructVault', 'RegiSync', 'ScrollAudit','ClaimDocX', 'PlanDrop', 'SurveyGrid', 'VaultJudge', 'LoopInspect','BuildNode', 'ComplyTrack', 'LegalSync', 'BudgetCast', 'VaultPlans','FormCert', 'ProofLayer', 'ZoneMap', 'TrackSeal', 'DocLoop','AuditCrate', 'VerifyLine', 'PlanMesh', 'FrameBook', 'LogicPermit','OmniBrief', 'ClauseCraft', 'FormLogic', 'CheckNode', 'AssetTrace','LawPathX', 'LedgerFlow', 'BudgetSync', 'CrateJudge', 'SpecAudit','LoopCheck', 'OmniTender', 'SignalCompliance', 'BuildCast', 'NodeClause','PermitDrop', 'AuditMatrix', 'StructPlan', 'ClaimBoard', 'FormDrop'];
+        const professionalSubNodes = [['LedgerCore', 'VaultTrack', 'QRInvoice', 'AuditSync', 'StatementFlow', 'TaxGrid'],['BooksPath', 'VaultEcho', 'QRPay', 'BudgetMesh', 'EntryLoop', 'PayrollCast'],['QuantZone', 'CostTrack', 'VaultEcho', 'GridEstimate', 'QRClaim', 'SiteYield'],['ProofMesh', 'ProjectVault', 'QRSync', 'SpecClaim', 'SurveyNode', 'BuildFlow'],['LawGrid', 'VaultLegal', 'QRCase', 'ClauseMap', 'SignalJudge', 'TrackClaim'],['CastPath', 'VaultContract', 'QRSign', 'FormDrop', 'LegalSync', 'NodeClause'],['EnginuityCore', 'VaultStruct', 'QREngine', 'ModelClaim', 'SpecLoop', 'PlanNode'],['VaultFrame', 'StructMap', 'QRDesign', 'BuildPath', 'EstimateLine', 'NodeSpec'],['RegCore', 'VaultRule', 'QRCompliance', 'GovTrack', 'DocNode', 'ProofSync'],['AuditTrail', 'VaultAudit', 'QRTrace', 'NodeForm', 'ControlClaim', 'VerifyRoute'],['DocClaim', 'VaultDocs', 'QRForm', 'FormCert', 'LegalDrop', 'TraceNode'],['DropSheet', 'VaultPlan', 'QRDesign', 'BudgetLine', 'MeshForm', 'CastApproval'],['GridScan', 'VaultSurvey', 'QRField', 'TrackDrop', 'PingZone', 'NodeMeasure'],['JudgeTag', 'VaultCourt', 'QRSign', 'RulingPath', 'CaseLoop', 'LegalCast'],['InspectMesh', 'VaultLoop', 'QRInspect', 'NodeClaim', 'SignalProof', 'FieldTag'],['NodeBuild', 'VaultPermit', 'QRStage', 'DropPanel', 'SiteCast', 'LabelForm'],['TrackComply', 'VaultReg', 'QRCertify', 'PathEcho', 'DocLock', 'ClausePanel'],['LegalForm', 'VaultBrief', 'QRFile', 'TrackJudge', 'LoopEcho', 'ScanClause'],['CastBudget', 'VaultBook', 'QRCost', 'PlanNode', 'DropMesh', 'ClaimNode'],['PlansFrame', 'VaultDraw', 'QRLoop', 'PathEcho', 'StageCast', 'LabelProof'],['CertForm', 'VaultPaper', 'QRStep', 'MeshAudit', 'DropClause', 'PingClaim'],['LayerProof', 'VaultTrace', 'QRGrid', 'ClauseEcho', 'FormYield', 'NodeTag'],['MapZone', 'VaultGPS', 'QRPlot', 'ScanClaim', 'FormTrace', 'AuditMark'],['SealLine', 'VaultPad', 'QRRoute', 'ClaimFlow', 'MeshLabel', 'LegalGrid'],['LoopForm', 'VaultDoc', 'QRClaim', 'DropBoard', 'ClauseFlow', 'TraceLink'],['CrateAudit', 'VaultSort', 'QRPanel', 'ScanCast', 'TraceBoard', 'FormNote'],['LineVerify', 'VaultMark', 'QRSignal', 'NodeDrop', 'ClauseCheck', 'FormSeal'],['PlanCast', 'VaultSheet', 'QRFrame', 'EchoGrid', 'SiteTag', 'NodeLoop'],['BookFrame', 'VaultPages', 'QRRef', 'BudgetDrop', 'FormNode', 'AssetGrid'],['PermitLine', 'VaultLogic', 'QRPermit', 'DropSignal', 'NodeProof', 'TagGrid'],['BriefCast', 'VaultJudge', 'QRPath', 'EchoPanel', 'DocGrid', 'PlanTrack'],['CraftClause', 'VaultSign', 'QRProof', 'EchoFile', 'LoopAudit', 'NodeYield'],['LogicFile', 'VaultEcho', 'QRForm', 'CheckPath', 'TraceLock', 'AuditStage'],['CheckFlow', 'VaultList', 'QRCheck', 'NodeMark', 'DropPermit', 'GridLine'],['TraceAsset', 'VaultHold', 'QRAsset', 'FileLine', 'PermitEcho', 'ClauseMap'],['LawWay', 'VaultJudge', 'QRLaw', 'TraceCast', 'PathCourt', 'CaseEcho'],['LedgerPath', 'VaultBooks', 'QRLedger', 'DropSync', 'ProofBoard', 'FormPulse'],['SyncBudget', 'VaultSpend', 'QRBalance', 'PathCheck', 'LoopForm', 'AuditMesh'],['JudgeCrate', 'VaultCase', 'QRReview', 'DropNode', 'ClauseRoute', 'SignalFile'],['AuditSpec', 'VaultGrid', 'QRSpec', 'NodeRoute', 'CaseMesh', 'LoopPanel'],['CheckLoop', 'VaultProof', 'QRTest', 'EchoCast', 'ClaimPanel', 'DocTrace'],['TenderPath', 'VaultBid', 'QRAward', 'MeshClause', 'PanelCheck', 'TrackPlan'],['CompliancePulse', 'VaultCheck', 'QRGov', 'RouteLaw', 'MeshJudge', 'NodeCast'],['BuildFlow', 'VaultDraft', 'QRBuild', 'PlanStage', 'EchoTrack', 'PermitNode'],['ClausePanel', 'VaultSection', 'QRDrop', 'SignalMesh', 'LawCast', 'PlanForm'],['DropPermit', 'VaultCourt', 'QRMark', 'CastEcho', 'ProofLine', 'GridCase'],['MatrixAudit', 'VaultData', 'QRMatrix', 'StageFlow', 'CheckLabel', 'FormGrid'],['PlanLine', 'VaultMap', 'QRStruct', 'EchoAudit', 'PermitFlow', 'ScanProof'],['BoardClaim', 'VaultRoll', 'QRClaim', 'LineNote', 'TagMesh', 'DropAudit'],['DropForm', 'VaultEntry', 'QRPath', 'ClauseNote', 'AuditMap', 'PingPlan']];
+           
+        // --- SaaS & Licensing Data ---
+        const saasLicensingBrands = ['SaaSChain', 'LicenseGrid', 'TokenSaaS', 'VaultKey', 'OmniLicense','ScrollSync', 'PulseSaaS', 'ClaimSuite', 'YieldKey', 'SaaSBoard','KeyLoop', 'VaultPanel', 'LicenseMap', 'TokenSync', 'OmniClaim','SuiteTrack', 'LicenseBeam', 'VaultSync', 'ClaimEcho', 'PanelGrid'];
+        const saasLicensingSubNodes = [['SuitePath', 'VaultLicense', 'TokenPanel', 'ClaimKey'],['GridDrop', 'LicenseEcho', 'VaultTrack', 'KeyTag'],['SaaSPanel', 'ClaimSync', 'VaultBeam', 'OmniGrid'],['KeyProof', 'TokenClaim', 'ScrollVault', 'LicenseSeal'],['LicenseDrop', 'VaultMap', 'TokenNest', 'ClaimEcho'],['SyncTrack', 'LicensePath', 'VaultKeyX', 'SuiteEcho'],['PulseSync', 'VaultPanelX', 'TokenGrid', 'ClaimBoard'],['SuiteLoop', 'LicenseNest', 'VaultClaim', 'KeyEcho'],['YieldSuite', 'LicensePanel', 'VaultDrop', 'ScrollTrack'],['BoardEcho', 'VaultBeamX', 'LicenseSync', 'ClaimPanel'],['LoopClaim', 'VaultPathX', 'TokenVault', 'KeyMint'],['PanelDrop', 'VaultGridX', 'LicenseCast', 'SaaSSync'],['MapTrack', 'TokenPath', 'VaultEchoX', 'ClaimGrid'],['SyncToken', 'VaultClaimX', 'ScrollBeam', 'LicenseTrace'],['OmniPath', 'VaultSuite', 'PanelGridX', 'TokenTrack'],['TrackVault', 'ClaimNest', 'KeyPanel', 'LicenseDropX'],['BeamSync', 'TokenDrop', 'VaultClaimNest', 'ScrollLicense'],['SyncEcho', 'VaultPanelNest', 'LicenseBoard', 'TokenEcho'],['ClaimPanelX', 'SuiteGrid', 'VaultBeamSync', 'LicenseMint'],['GridNest', 'TokenLoop', 'VaultLicenseX', 'ClaimSuiteX']];
+
+        // --- NFT & Ownership Data ---
+        const nftOwnershipBrands = ['ClaimGrid', 'TokenSync', 'VaultMint', 'NFTLoop', 'ScrollProof','IPTrace', 'MintEcho', 'VaultSeal', 'ChainLock', 'PulseDrop','AssetNest', 'MintTrack', 'TokenClaim', 'ProofMap', 'ScrollVault','ClaimPanel', 'YieldChain', 'LedgerDrop', 'NFTBoard', 'ScrollNest'];
+        const nftOwnershipSubNodes = [['TokenPath', 'VaultTrace', 'ClaimEcho', 'ScrollDrop'],['SyncToken', 'ProofPanel', 'NFTTag', 'VaultClaim'],['MintYield', 'ChainEcho', 'DropGrid', 'TokenSeal'],['LoopProof', 'VaultSync', 'AssetTag', 'NFTTrack'],['ScrollMint', 'ClaimLoop', 'VaultAsset', 'DropChain'],['TraceMint', 'VaultBoard', 'NFTDrop', 'IPClaim'],['EchoScroll', 'ClaimNest', 'TokenLock', 'SealDrop'],['VaultProof', 'NFTSync', 'ChainYield', 'DropEcho'],['LockTrace', 'VaultMap', 'ProofToken', 'ClaimTrack'],['PulseGrid', 'NFTVault', 'AssetSync', 'MintProof'],['NestChain', 'VaultLoop', 'DropMint', 'ScrollPath'],['TrackProof', 'ClaimToken', 'VaultBoardX', 'NFTSeal'],['TokenVault', 'IPBoard', 'YieldDrop', 'ClaimMint'],['MapMint', 'ProofChain', 'VaultNestX', 'ScrollEcho'],['VaultTag', 'NFTBoardX', 'MintPanel', 'AssetPath'],['PanelYield', 'TokenNest', 'VaultMintX', 'ClaimEchoX'],['ChainClaim', 'NFTYield', 'DropBoard', 'ScrollClaim'],['LedgerNest', 'VaultPanel', 'ProofMapX', 'TokenEcho'],['NFTPanel', 'VaultClaimX', 'ChainMint', 'DropTag'],['ScrollTrace', 'TokenMap', 'VaultDrop', 'AssetClaim']];
+
+        // --- Quantum Protocols Data ---
+        const quantumBrands = ['QuantumMesh', 'PulseQ', 'EntanglePath', 'QubitNest', 'LogicSpin','VaultQuantum', 'WaveSignal', 'PhaseClaim', 'GridState', 'QuantumDrop','SyncQ', 'PulseField', 'QLogic', 'EntangleProof', 'SuperposVault','ClaimLoopQ', 'QuantumTrace', 'QubitEcho', 'ZeroNode', 'PhaseGrid'];
+        const quantumSubNodes = [['QSync', 'VaultWave', 'QubitCast', 'ClaimGrid'],['PulseEntangle', 'FieldDrop', 'VaultPhase', 'QuantumTag'],['LogicEnt', 'VaultEchoQ', 'QubitClaim', 'TraceLoop'],['NestPhase', 'GridQubit', 'VaultSpin', 'ClaimZero'],['SpinDrop', 'PhasePath', 'VaultCast', 'QGrid'],['QTrace', 'VaultNestQ', 'LogicSignal', 'PulseClaimQ'],['SignalWave', 'EntangleLink', 'VaultGridQ', 'QubitBeam'],['PhaseClaimX', 'VaultLogicQ', 'TraceQPath', 'SyncZero'],['StateMesh', 'QubitEchoX', 'ClaimField', 'VaultSignalQ'],['QuantumDropX', 'FieldVault', 'NestWave', 'ClaimSpin'],['QSyncLoop', 'VaultTrace', 'ZeroGrid', 'BeamQ'],['PulseFieldX', 'ClaimPath', 'VaultEntQ', 'QubitScan'],['LogicWave', 'VaultZero', 'EntProof', 'QDrop'],['SuperposCast', 'QTraceX', 'VaultSyncQ', 'ClaimPhase'],['VaultGridX', 'PhaseSync', 'QNode', 'EntTag'],['QClaimLoop', 'VaultPathQ', 'QuantumBeam', 'SpinGrid'],['QuantumTrack', 'VaultClaimX', 'EntangleMap', 'SignalZero'],['EchoPhase', 'QField', 'VaultCastQ', 'LogicZero'],['ZeroCast', 'VaultEchoZ', 'TraceEnt', 'QBeam'],['PhasePanel', 'VaultQDrop', 'EntSync', 'LogicClaimQ']];
+
+        // --- Ritual & Culture Data ---
+        const ritualCultureBrands = ['RiteNest', 'PulseSpirit', 'ClanScroll', 'CultureGrid', 'MythLoop','AuraDrop', 'CeremPath', 'EchoGlyph', 'TradVault', 'LineageClaim','SymbolMap', 'AncestorSync', 'SoulPanel', 'ClanRoot', 'EchoRitual','TotemCast', 'RiteClaim', 'GlyphVault', 'CultureNest', 'SpiritBeam'];
+        const ritualCultureSubNodes = [['TotemTrack', 'VaultSpirit', 'GlyphTag', 'ScrollLoop'],['ClanPath', 'EchoTotem', 'PulseMyth', 'ScrollClaim'],['CultureCast', 'VaultClaim', 'RiteMark', 'TradEcho'],['LoopTotem', 'ClaimClan', 'VaultGlyph', 'SymbolTrack'],['MythDrop', 'EchoPath', 'ScrollProof', 'RitualGrid'],['AuraTrack', 'VaultCast', 'TotemPanel', 'GlyphEcho'],['CeremSync', 'ClaimRite', 'ScrollVault', 'TotemBeam'],['GlyphSync', 'SpiritClaim', 'VaultMyth', 'EchoClan'],['TradPanel', 'LoopClaim', 'MythTrack', 'VaultCulture'],['LineagePath', 'VaultTag', 'EchoGlyph', 'ScrollCast'],['SymbolClaim', 'VaultScroll', 'TotemMap', 'ClanNest'],['AncestorTag', 'VaultLoop', 'ClaimTotem', 'SpiritRoot'],['SoulClaim', 'EchoMyth', 'GlyphPanel', 'VaultRite'],['ClanVault', 'MythProof', 'TotemDrop', 'ScrollSpirit'],['EchoRitualX', 'ClaimPanel', 'VaultTotem', 'CultureSync'],['TotemEcho', 'LoopGlyph', 'VaultClaimX', 'SymbolProof'],['ClaimCulture', 'VaultTrad', 'SpiritSync', 'EchoCast'],['GlyphVaultX', 'ScrollTag', 'CultureDrop', 'TotemRoot'],['NestSpirit', 'PulseClaim', 'VaultEchoX', 'MythPath'],['BeamLoop', 'VaultSymbol', 'ScrollRite', 'ClanBeam']];
+
+        // --- Nutrition & Food Chain Data ---
+        const foodChainBrands = ['AgriNest', 'FreshSync', 'CropLoop', 'SoilGrid', 'FarmDrop','GrainVault', 'HarvestClaim', 'PulseCrop', 'YieldField', 'RootMap','FoodProof', 'AquaNest', 'SeedCycle', 'PlantTrack', 'CropVault','SoilEcho', 'NutritionClaim', 'LoopFarm', 'PulseGrain', 'FieldNest'];
+        const foodChainSubNodes = [['CropTag', 'SoilPath', 'YieldSync', 'VaultHarvest'],['NestGrain', 'PulseField', 'FarmTrack', 'ClaimRoot'],['CycleGrain', 'VaultCrop', 'YieldClaim', 'FieldDrop'],['SoilBeam', 'FarmYield', 'VaultNest', 'TagField'],['DropCrop', 'HarvestTrack', 'ClaimEcho', 'PulseSoil'],['GrainTrack', 'YieldNest', 'VaultMap', 'SoilNode'],['ClaimCrop', 'PulseHarvest', 'RootVault', 'NestLoop'],['PulseSoilX', 'VaultGrain', 'FieldClaim', 'TrackEcho'],['SoilDrop', 'PlantClaim', 'YieldProof', 'VaultRoot'],['FarmGrid', 'VaultPath', 'CropPanel', 'EchoHarvest'],['FoodYield', 'TrackSeed', 'SoilNodeX', 'PulseNest'],['AquaTrack', 'GrainClaim', 'VaultSync', 'HarvestEcho'],['SeedRoot', 'ClaimPanel', 'DropVault', 'CropSync'],['TrackCrop', 'VaultField', 'EchoGrain', 'YieldPath'],['VaultFarm', 'PulseNestX', 'ClaimGrain', 'SoilEchoX'],['FieldCycle', 'HarvestPanel', 'VaultProof', 'GrainLoop'],['NutritionDrop', 'ClaimVault', 'SeedTrack', 'EchoField'],['FarmSync', 'LoopNest', 'VaultRootX', 'SoilPanel'],['GrainYield', 'ClaimDropX', 'EchoNest', 'VaultFieldX'],['NestHarvest', 'PulseCropX', 'TrackSoil', 'VaultClaim']];
+           
+        // --- Zero Waste Data ---
+        const zeroWasteBrands = ['EcoNest', 'GreenLoop', 'CycleSync', 'ZeroCrate', 'WasteGrid','BioDrop', 'SustainClaim', 'LoopSort', 'PulseGreen', 'YieldTrash','RecycleMap', 'CleanTrack', 'EcoVault', 'ClaimClean', 'CompostGrid','GreenBeam', 'LoopNest', 'TrashEcho', 'SortClaim', 'VaultCycle'];
+        const zeroWasteSubNodes = [['GreenSync', 'VaultTrack', 'LoopPath', 'CompostTag'],['TrashGrid', 'CycleDrop', 'VaultEcho', 'ClaimPath'],['RecycleCast', 'GreenEcho', 'SortTrack', 'YieldBin'],['DropWaste', 'EcoNode', 'ClaimClean', 'LoopTrace'],['GridWaste', 'VaultNest', 'SortEcho', 'BinClaim'],['BioTrack', 'VaultBin', 'PulseSort', 'TrashTag'],['EcoProof', 'ClaimBin', 'CycleTag', 'LoopEcho'],['SortMap', 'VaultClaim', 'CleanDrop', 'GreenVault'],['GreenFlow', 'BinCast', 'EcoClaim', 'RecycleNest'],['PulseTrash', 'VaultClean', 'ClaimDrop', 'CycleTrack'],['TrashYield', 'LoopDrop', 'RecycleTrack', 'EcoGrid'],['VaultPath', 'BinEcho', 'CleanMap', 'SortClaim'],['NestTrash', 'ClaimTrack', 'LoopNode', 'RecycleEcho'],['GreenMark', 'VaultProof', 'TrashLoop', 'CompostSync'],['EchoClaim', 'PulseCycle', 'SortBin', 'YieldTrack'],['TrackClean', 'VaultEchoX', 'ClaimSync', 'BinDrop'],['CompostPath', 'RecyclePanel', 'VaultTrackX', 'LoopGrid'],['EchoBin', 'ClaimCrate', 'SortPulse', 'NestVault'],['GreenClaim', 'VaultMap', 'DropCompost', 'CycleEcho'],['WasteNode', 'SyncNest', 'TrashBeam', 'VaultCycleX']];
+
+        // --- Mining Data ---
+        const miningBrands = ['MineNest', 'DrillCoreX', 'OreSync', 'VaultRock', 'ClaimMine','TrackShaft', 'PulseMine', 'CoreBeam', 'DigEcho', 'RockPath','YieldDrill', 'MineProof', 'OreLine', 'DrillLink', 'VaultTunnel','GeoGrid', 'SeamSync', 'ClaimOre', 'PulseBlast', 'OreEcho','DeepCrate', 'RockLogic', 'CoreDrill', 'MineCast', 'DrillMark','SignalOre', 'YieldTrack', 'VaultSeam', 'ShaftDrop', 'GeoNode'];
+        const miningSubNodes = [['NestTrack', 'VaultShaft', 'QRMine', 'ClaimGrid'],['CoreDrop', 'PulsePath', 'OreTrace', 'DrillYield'],['SyncRock', 'VaultEcho', 'QRDrill', 'ClaimTag'],['RockBeam', 'MineLoop', 'SignalTrace', 'QRClaim'],['ClaimOre', 'VaultPath', 'OrePing', 'MineSignal'],['ShaftMesh', 'DropMine', 'TrackSeam', 'QRTrack'],['PulseCrate', 'MineEcho', 'YieldDrill', 'GridTag'],['BeamPath', 'ClaimRock', 'VaultLoop', 'SeamDrop'],['EchoMine', 'RockPing', 'VaultTrace', 'ClaimBeam'],['PathDrop', 'GridMine', 'QRNode', 'YieldOre'],['DrillGrid', 'ClaimYield', 'SyncTunnel', 'OreEcho'],['ProofMine', 'SeamCast', 'VaultGrid', 'DropCrate'],['OreLineX', 'VaultDrill', 'MineForm', 'TagTrace'],['LinkMine', 'PulseEcho', 'GridSeam', 'YieldCast'],['TunnelSync', 'ClaimLoop', 'QRDrillX', 'OreBeam'],['GridGeo', 'VaultMap', 'RockForm', 'ClaimTunnel'],['SeamSyncX', 'OreDrop', 'QRMineX', 'DrillMark'],['ClaimOreX', 'TrackGrid', 'VaultDrop', 'PingEcho'],['BlastMine', 'PulsePing', 'QRPath', 'SeamMark'],['EchoRock', 'YieldTrack', 'VaultBeam', 'ClaimSync'],['CrateDrop', 'SyncClaim', 'DrillForm', 'TunnelMap'],['RockLogicX', 'VaultOre', 'YieldLoop', 'PingDrill'],['CoreMine', 'OreTag', 'VaultPing', 'GridTrack'],['MineCastX', 'ClaimNest', 'QRTrace', 'YieldEcho'],['DrillMarkX', 'OreSignal', 'VaultCrate', 'PingTag'],['OreSignalX', 'GridEcho', 'ClaimDrop', 'TrackTunnel'],['TrackYield', 'MineFrame', 'SignalGrid', 'EchoDrill'],['VaultSeamX', 'QRClaimX', 'GridOre', 'TunnelEcho'],['DropShaft', 'ClaimTunnelX', 'YieldDrillX', 'VaultGrid'],['GeoNodeX', 'SignalPing', 'DropEcho', 'MineLink']];
+           
+        // --- Fashion & Identity Data ---
+        const fashionBrands = ['FashionNest', 'StyleForm', 'ChicClaim', 'RunwayPulse', 'TrendCast','BrandX', 'LuxLink', 'VogueSync', 'ModeFrame', 'GlamRoot','FitTrack', 'StyleMesh', 'VibeCast', 'DressSync', 'FitGrid','TrendPath', 'StyleNode', 'CatwalkCore', 'EchoWear', 'LuxuryClaim','SculptWear', 'FitClaim', 'RunwayLoop', 'VogueMesh', 'DressTrack','ClassSync', 'FitMark', 'ModeWave', 'VogueDrop', 'RunwayPoint','PulseWear', 'GlamSync', 'TrendCore', 'FitLink', 'VibeCastX','CatwalkMesh', 'LuxuryTag', 'RunwayTrace', 'FitCheck', 'VoguePath','StyleTrace', 'DressCore', 'VibeTag', 'ModeTrack', 'TrendPoint','StyleCast', 'VogueSeal', 'ClaimRun', 'WearSync', 'DropLook','EchoMark', 'FitNest', 'ChicTrack', 'TrendLoop', 'ModePulse','PulseSync', 'StyleTraceX', 'TagFit', 'NodeClaim', 'RunwayNode','EchoLoop', 'ClaimCast', 'VogueTrace', 'SyncLook', 'CastMesh','FitPanel', 'StyleMeshX', 'PulseEcho', 'FashionBeam', 'TagTrace','DropPath', 'GridClaimX', 'NodeStyle', 'VogueFrame', 'FitFlow','TrendBeam', 'CastPoint', 'LoopTag', 'EchoBeam', 'PulsePoint','GridPath', 'StyleCrate', 'ClaimRoot', 'ModeEchoX', 'FitNestX','DropSync', 'TrackGrid', 'FashionPanel', 'PathPulse', 'GridNode','TagGrid', 'ClaimTrackX', 'EchoMap', 'PulseRoot', 'StyleVault','BeamTrack', 'LookNode', 'StyleCore', 'VogueMeshX', 'FitCore','TrendCastX', 'PulseGrid', 'LoopCrate', 'EchoNest', 'StyleTraceY','NestEcho', 'RunwayFlow', 'FashionNode', 'GridWear', 'PulseMap','LoopSeal', 'EchoLook', 'ClaimDropX', 'StyleEchoX', 'TrackVibe','MeshPulse', 'SyncCrate', 'VogueDropX', 'PanelWear', 'GridTagX','FitPanelX', 'EchoTrackX', 'PulseStyle', 'SyncTrackX', 'FashionForm','WearClaim', 'BeamStyle', 'CratePulse', 'StyleTraceZ', 'PulseEchoX','GridLoopX', 'TagCast', 'EchoFit', 'NodeClaimX', 'LoopPanel','CrateLook', 'SyncBeam', 'TrackDrop'];
+        const fashionSubNodes = [['EchoNest', 'TrackSeal', 'GridPath', 'PulseTag', 'LoopForm', 'WearGrid'],['RunwayMesh', 'FashionPanel', 'TagSync', 'EchoForm', 'BeamLook', 'PulseTrack'],['ClaimStyle', 'PulseBeam', 'TrackPanel', 'EchoClaim', 'SyncTag', 'LookNode'],['GridForm', 'LoopMesh', 'DropEcho', 'TrackWear', 'ClaimPanel', 'PulsePath'],['PulseRoot', 'EchoTrack', 'WearCast', 'BeamTrace', 'CrateDrop', 'ClaimMark'],['LoopPanel', 'FashionDrop', 'TrackGrid', 'PulseCast', 'EchoWear', 'GridMark'],['LookSync', 'PanelTag', 'PulseLoop', 'TrackCrate', 'EchoSeal', 'GridNest'],['ClaimMesh', 'DropPath', 'PulseTag', 'EchoCast', 'TrackPoint', 'StyleFit'],['EchoStyle', 'PanelClaim', 'PulseGrid', 'TrackNest', 'ClaimNode', 'SyncEcho'],['TrackPulse', 'BeamCast', 'LookTag', 'EchoTrace', 'CratePanel', 'GridTrack'],['PulseBeam', 'StyleForm', 'LoopEcho', 'TrackClaim', 'SyncCast', 'CratePoint'],['CrateSync', 'PulsePath', 'BeamLoop', 'StyleCrate', 'ClaimPanel', 'TrackFit'],['DropTrace', 'WearPanel', 'EchoNode', 'StylePulse', 'ClaimBeam', 'GridCast'],['PanelCast', 'EchoPanel', 'ClaimDrop', 'TrackNest', 'PulseSync', 'StyleGrid'],['TagPath', 'WearEcho', 'PanelGrid', 'CrateStyle', 'SyncTrack', 'PulsePanel'],['FitDrop', 'EchoPoint', 'LoopStyle', 'CrateClaim', 'TrackRoot', 'PulseEcho'],['EchoTrack', 'SyncNode', 'PulseNest', 'WearTrace', 'GridEcho', 'BeamCrate'],['StylePanel', 'ClaimNest', 'LoopPath', 'DropPulse', 'SyncBeam', 'TrackPanel'],['PulseStyle', 'EchoGrid', 'BeamTrack', 'CrateSync', 'ClaimEcho', 'LookPath'],['FormCrate', 'TrackSync', 'EchoDrop', 'PulseClaim', 'StyleMark', 'GridTrace'],['ClaimLoop', 'WearPanel', 'EchoStyle', 'DropSync', 'PulseGrid', 'BeamRoot'],['StyleEcho', 'LoopBeam', 'CratePanel', 'TrackCrate', 'GridNode', 'PulseNest'],['PulseTrack', 'WearTag', 'PanelRoot', 'ClaimCast', 'StyleLoop', 'DropPath'],['TraceBeam', 'LookClaim', 'EchoGrid', 'PanelTrack', 'PulseDrop', 'TrackSync'],['EchoPulse', 'GridBeam', 'DropPanel', 'ClaimMark', 'CrateSync', 'PulseTrace'],['LoopEcho', 'TrackNest', 'ClaimPath', 'WearPanel', 'PulseLook', 'StyleDrop'],['TagTrace', 'EchoForm', 'DropLook', 'PanelClaim', 'BeamNest', 'GridLoop'],['FitTrace', 'SyncNode', 'PulsePanel', 'ClaimEcho', 'TrackMark', 'LoopForm'],['NodeClaim', 'StylePulse', 'PanelSync', 'DropTrack', 'CrateLoop', 'PulseEcho'],['PanelClaim', 'CrateBeam', 'TrackSync', 'EchoPanel', 'LoopGrid', 'PulseNest'],['LookBeam', 'PulseForm', 'DropTag', 'TrackEcho', 'ClaimNest', 'StyleSync'],['GridDrop', 'TagLoop', 'PanelTrack', 'EchoClaim', 'PulseMark', 'BeamNode'],['SyncLoop', 'PulseEcho', 'WearClaim', 'DropTrack', 'CratePanel', 'TrackRoot']]; 
+
+        // New Sector Data (Gaming, Justice, Knowledge, Micromesh, Packaging, Trade, Utilities, Voice, Payroll Mining, Wildlife)
+        const gamingBrands = ['GameGrid', 'PixelPulse', 'QuestVault', 'SimuLink', 'PlayNode', 'MetaGame', 'LevelUp', 'ArcadeFlow', 'VRMesh', 'EsportSync'];
+        const gamingSubNodes = [['GridRender', 'PulseEngine', 'VaultSave'], ['LinkSim', 'NodeControl', 'PlayStream'], ['GameID', 'LevelTrack', 'FlowState'], ['MeshConnect', 'SyncMatch', 'QuestLog'], ['PixelArt', 'SoundFX', 'InputHandler'], ['RenderFarm', 'PhysicsEngine', 'AIBehavior'], ['ScoreTracker', 'LeaderboardSync', 'AchievementNode'], ['MultiplayerMesh', 'ChatNode', 'SpectateView'], ['AssetStream', 'TextureAtlas', 'ShaderGraph'], ['GameAnalytics', 'PlayerMetrics', 'MonetizationHook']];
+
+        const justiceBrands = ['LawLedger', 'EthicGrid', 'VerdictVault', 'JusticeLink', 'EquityNode', 'TruthTrace', 'ClauseChain', 'RightSync', 'AuditLaw', 'FairFlow'];
+        const justiceSubNodes = [['LedgerProve', 'EthicScan', 'VerdictLog'], ['LinkJustice', 'NodeEquity', 'TraceTruth'], ['ChainClause', 'SyncRight', 'AuditFlow'], ['LawID', 'EthicMonitor', 'VerdictTrack'], ['JusticeMesh', 'EquityPulse', 'TruthVault'], ['ClauseNode', 'RightTrace', 'AuditLink'], ['FairGrid', 'LawSync', 'EthicFlow'], ['VerdictChain', 'JusticeClaim', 'EquityLog'], ['TruthNode', 'ClauseScan', 'RightVault'], ['AuditMesh', 'FairPulse', 'LawTrack']];
+
+        const knowledgeBrands = ['InfoVault', 'ArchiveGrid', 'LexiLink', 'DataNodeX', 'WisdomMesh', 'ScrollLore', 'FactFlow', 'CogniSync', 'LearnBase', 'IntellectHub'];
+        const knowledgeSubNodes = [['VaultIndex', 'GridSearch', 'LinkData'], ['NodeKnowledge', 'MeshWisdom', 'LoreScroll'], ['FlowFact', 'SyncCogni', 'BaseLearn'], ['HubIntellect', 'InfoTrace', 'ArchiveScan'], ['LexiNode', 'DataQuery', 'WisdomMap'], ['ScrollData', 'FactChain', 'CogniLink'], ['LearnVault', 'IntellectGrid', 'InfoSync'], ['ArchiveNode', 'LexiMesh', 'DataFlow'], ['WisdomTrace', 'ScrollFact', 'FactBase'], ['CogniNode', 'LearnSync', 'IntellectMap']];
+
+        const micromeshBrands = ['MicroGrid', 'NanoLink', 'PicoMesh', 'FemtoNode', 'AttoFlow', 'ZeptoSync', 'YoctoTrace', 'QuantumMicro', 'HyperMesh', 'FlexiGrid'];
+        const micromeshSubNodes = [['GridConnect', 'LinkNano', 'MeshPico'], ['NodeFemto', 'FlowAtto', 'SyncZepto'], ['TraceYocto', 'MicroQuantum', 'MeshHyper'], ['GridFlexi', 'MicroNode', 'NanoSync'], ['PicoFlow', 'FemtoTrace', 'AttoMesh'], ['ZeptoNode', 'YoctoSync', 'QuantumFlow'], ['HyperTrace', 'FlexiNode', 'MicroLink'], ['NanoMesh', 'PicoSync', 'FemtoFlow'], ['AttoTrace', 'ZeptoNode', 'YoctoMesh'], ['QuantumSync', 'HyperFlow', 'FlexiTrace']];
+
+        const packagingBrands = ['PackVault', 'WrapGrid', 'SealLink', 'BoxNode', 'ContainMesh', 'EcoPack', 'SmartWrap', 'FlexiBox', 'SecureSeal', 'TracePack'];
+        const packagingSubNodes = [['VaultSecure', 'GridOptimize', 'LinkSeal'], ['NodeBox', 'MeshContain', 'PackEco'], ['WrapSmart', 'BoxFlexi', 'SealSecure'], ['PackTrace', 'VaultWrap', 'GridSeal'], ['LinkBox', 'NodeContain', 'MeshEco'], ['WrapSmart', 'BoxFlexi', 'SealSecure'], ['PackTrace', 'VaultWrap', 'GridSeal'], ['LinkBox', 'NodeContain', 'MeshEco'], ['PackSmart', 'WrapFlexi', 'SealTrace'], ['BoxEco', 'ContainSecure', 'PackOptimize']];
+
+        const tradeBrands = ['TradeFlow', 'MarketGrid', 'ExchangeNode', 'ValueLink', 'CommodityMesh', 'SupplySync', 'DemandTrace', 'GlobalTrade', 'FairExchange', 'AssetFlow'];
+        const tradeSubNodes = [['FlowTrade', 'GridMarket', 'NodeExchange'], ['LinkValue', 'MeshCommodity', 'SyncSupply'], ['TraceDemand', 'TradeGlobal', 'ExchangeFair'], ['FlowAsset', 'TradeID', 'MarketScan'], ['ExchangeMesh', 'NodeValue', 'CommodityFlow'], ['SupplyTrace', 'DemandLink', 'GlobalNode'], ['FairGrid', 'AssetSync', 'TradePulse'], ['MarketFlow', 'ExchangeTrace', 'ValueNode'], ['CommodityLink', 'SupplyMesh', 'DemandFlow'], ['GlobalSync', 'FairTrace', 'AssetNode']];
+
+        const utilitiesBrands = ['PowerGrid', 'HydroFlow', 'SolarNode', 'WindLink', 'GeoMesh', 'EnergySync', 'WaterTrace', 'WasteUtility', 'SmartGridX', 'ResourceFlow'];
+        const utilitiesSubNodes = [['GridPower', 'FlowHydro', 'NodeSolar'], ['LinkWind', 'MeshGeo', 'SyncEnergy'], ['TraceWater', 'UtilityWaste', 'GridSmart'], ['FlowResource', 'PowerID', 'HydroScan'], ['SolarMesh', 'NodeWind', 'GeoFlow'], ['EnergyTrace', 'WaterLink', 'WasteNode'], ['SmartGrid', 'ResourceSync', 'PowerPulse'], ['HydroFlow', 'SolarTrace', 'WindNode'], ['GeoLink', 'EnergyMesh', 'WaterFlow'], ['WasteSync', 'SmartTrace', 'ResourceNode']];
+
+        const voiceBrands = ['AudioMesh', 'SonicNode', 'VoiceLink', 'EchoGrid', 'SoundVault', 'SpeechSync', 'ToneTrace', 'VocalFlow', 'AcousticMesh', 'ListenNode'];
+        const voiceSubNodes = [['MeshAudio', 'NodeSonic', 'LinkVoice'], ['GridEcho', 'VaultSound', 'SyncSpeech'], ['TraceTone', 'FlowVocal', 'MeshAcoustic'], ['NodeListen', 'AudioID', 'SonicScan'], ['VoiceMesh', 'EchoNode', 'SoundFlow'], ['SpeechTrace', 'ToneLink', 'VocalNode'], ['AcousticGrid', 'ListenSync', 'AudioPulse'], ['SonicFlow', 'VoiceTrace', 'EchoNode'], ['SoundLink', 'SpeechMesh', 'ToneFlow'], ['VocalSync', 'AcousticTrace', 'ListenNode']];
+
+        const payrollMiningBrands = ['PayMine', 'CoinLedger', 'AuditCoin', 'CryptoPayroll', 'TokenAccount', 'MineFlow', 'YieldPay', 'HashLedger', 'BlockPay', 'NodeCoin'];
+        const payrollMiningSubNodes = [['MineTrack', 'LedgerVerify', 'AuditSync'], ['PayrollCrypto', 'AccountToken', 'FlowMine'], ['PayYield', 'LedgerHash', 'PayBlock'], ['CoinNode', 'MineID', 'LedgerScan'], ['AuditBlock', 'CryptoFlow', 'TokenYield'], ['MineSync', 'PayTrace', 'HashFlow'], ['YieldNode', 'LedgerBlock', 'CoinFlow'], ['CryptoTrace', 'TokenNode', 'MinePay'], ['BlockSync', 'NodeHash', 'CoinYield'], ['PayFlow', 'LedgerMine', 'AuditTrace']];
+
+        const wildlifeBrands = ['EcoGuard', 'HabitatLink', 'WildTrace', 'BioNode', 'ConservMesh', 'SpeciesSync', 'ZoneProtect', 'NatureFlow', 'PreserveGrid', 'FaunaVault'];
+        const wildlifeSubNodes = [['GuardEco', 'LinkHabitat', 'TraceWild'], ['NodeBio', 'MeshConserv', 'SyncSpecies'], ['ProtectZone', 'FlowNature', 'GridPreserve'], ['VaultFauna', 'EcoID', 'HabitatScan'], ['WildMesh', 'NodeBio', 'ConservFlow'], ['SpeciesTrace', 'ZoneLink', 'NatureNode'], ['PreserveGrid', 'FaunaSync', 'EcoPulse'], ['HabitatFlow', 'WildTrace', 'BioNode'], ['ConservLink', 'SpeciesMesh', 'ZoneFlow'], ['NatureSync', 'PreserveTrace', 'FaunaNode']];
+
+        // ALL_SECTOR_DATA_STATIC must be defined after all brand/subnode arrays
+        const ALL_SECTOR_DATA_STATIC = {
+            "agriculture": { brands: agriBrands, subNodes: agriSubNodes },
+            "fsf": { brands: fsfBrands, subNodes: fsfSubNodes },
+            "banking": { brands: bankingBrands, subNodes: bankingSubNodes },
+            "creative": { brands: creativeBrands, subNodes: creativeSubNodes },
+            "logistics": { brands: logisticsBrands, subNodes: logisticsSubNodes },
+            "education-ip": { brands: educationIpBrands, subNodes: educationIpSubNodes },
+            "fashion": { brands: fashionBrands, subNodes: fashionSubNodes },
+            "gaming": { brands: gamingBrands, subNodes: gamingSubNodes },
+            "health": { brands: healthBrands, subNodes: healthSubNodes },
+            "housing": { brands: housingBrands, subNodes: housingSubNodes },
+            "justice": { brands: justiceBrands, subNodes: justiceSubNodes },
+            "knowledge": { brands: knowledgeBrands, subNodes: knowledgeSubNodes },
+            "micromesh": { brands: micromeshBrands, subNodes: micromeshSubNodes },
+            "media": { brands: mediaBrands, subNodes: mediaSubNodes, scrollProfiles: mediaScrollProfiles },
+            "nutrition": { brands: foodChainBrands, subNodes: foodChainSubNodes },
+            "ai-logic": { brands: ailogicBrands, subNodes: ailogicSubNodes },
+            "packaging": { brands: packagingBrands, subNodes: packagingSubNodes },
+            "quantum": { brands: quantumBrands, subNodes: quantumSubNodes },
+            "ritual": { brands: ritualCultureBrands, subNodes: ritualCultureSubNodes },
+            "saas": { brands: saasLicensingBrands, subNodes: saasLicensingSubNodes },
+            "trade": { brands: tradeBrands, subNodes: tradeSubNodes },
+            "utilities": { brands: utilitiesBrands, subNodes: utilitiesSubNodes },
+            "voice": { brands: voiceBrands, subNodes: voiceSubNodes },
+            "webless": { brands: weblessBrands, subNodes: weblessSubNodes },
+            "nft": { brands: nftOwnershipBrands, subNodes: nftOwnershipSubNodes },
+            "education-youth": { brands: educationYouthBrands, subNodes: educationYouthSubNodes },
+            "zerowaste": { brands: zeroWasteBrands, subNodes: zeroWasteSubNodes },
+            "professional": { brands: professionalBrands, subNodes: professionalSubNodes },
+            "payroll-mining": { brands: payrollMiningBrands, subNodes: payrollMiningSubNodes },
+            "mining": { brands: miningBrands, subNodes: miningSubNodes },
+            "wildlife": { brands: wildlifeBrands, subNodes: wildlifeSubNodes }
+        };
+
+        // Calculate global totals
+        let globalCoreBrandTotal = 0;
+        let globalSubnodeTotal = 0;
+        const allBrandElements = []; // Unified list for search and display
+
+        for (const sectorKey in ALL_SECTOR_DATA_STATIC) {
+            const brands = ALL_SECTOR_DATA_STATIC[sectorKey].brands || [];
+            const subNodes = ALL_SECTOR_DATA_STATIC[sectorKey].subNodes || [];
+            const sectorName = sectorList[sectorKey];
+
+            globalCoreBrandTotal += brands.length;
+            
+            brands.forEach(brandName => {
+                allBrandElements.push({
+                    name: brandName,
+                    type: 'core brand',
+                    sector: sectorKey,
+                    sectorName: sectorName
+                });
+            });
+
+            subNodes.forEach(subArray => {
+                subArray.forEach(subnodeName => {
+                    globalSubnodeTotal += 1; // Count each individual subnode
+                    allBrandElements.push({
+                        name: subnodeName,
+                        type: 'subnode',
+                        sector: sectorKey,
+                        sectorName: sectorName
+                    });
+                });
+            });
+        }
+
+        const globalTotalElements = globalCoreBrandTotal + globalSubnodeTotal;
+        const totalSectorsCount = Object.keys(sectorList).length;
+
+        // --- Canvas Animation Functions ---
+        let vaultMeshCanvas, vaultMeshCtx;
+        let nodes = []; // Store nodes for animation
+
+        function initVaultMeshCanvas() {
+            vaultMeshCanvas = document.getElementById('vaultMeshCanvas');
+            vaultMeshCtx = vaultMeshCanvas.getContext('2d');
+            
+            function resizeCanvas() {
+                vaultMeshCanvas.width = window.innerWidth;
+                vaultMeshCanvas.height = window.innerHeight;
+                nodes = generateBrandNodePositions(); // Recalculate node positions on resize
+            }
+            
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            animateVaultMesh();
+        }
+        
+        function animateVaultMesh() {
+            vaultMeshCtx.clearRect(0, 0, vaultMeshCanvas.width, vaultMeshCanvas.height);
+            
+            drawSecurityMesh(vaultMeshCtx);
+            drawBrandNodes(vaultMeshCtx);
+            drawIntegrationConnections(vaultMeshCtx);
+            
+            requestAnimationFrame(animateVaultMesh);
+        }
+        
+        function drawSecurityMesh(ctx) {
+            const time = Date.now() * 0.001;
+            const gridSize = 50;
+            
+            ctx.strokeStyle = getComputedStyle(document.documentElement)
+                .getPropertyValue('--vault-cyan') + '20';
+            ctx.lineWidth = 1;
+            
+            for (let x = 0; x < vaultMeshCanvas.width; x += gridSize) {
+                for (let y = 0; y < vaultMeshCanvas.height; y += gridSize) {
+                    const pulse = Math.sin(time + (x + y) * 0.01) * 0.5 + 0.5;
+                    ctx.globalAlpha = pulse * 0.3;
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x + gridSize, y);
+                    ctx.lineTo(x + gridSize, y + gridSize);
+                    ctx.stroke();
+                }
+            }
+            ctx.globalAlpha = 1;
+        }
+        
+        function drawBrandNodes(ctx) {
+            nodes.forEach(node => {
+                const pulse = Math.sin(Date.now() * 0.002 + node.id) * 0.3 + 0.7;
+                
+                ctx.fillStyle = node.sector === 'active' ? 
+                    getComputedStyle(document.documentElement).getPropertyValue('--vault-cyan') :
+                    getComputedStyle(document.documentElement).getPropertyValue('--muted-text') + '60';
+                
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, node.size * pulse, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Add sector emoji
+                ctx.font = `${node.size}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle'; // Center vertically
+                ctx.fillText(node.emoji, node.x, node.y);
+            });
+        }
+        
+        function generateBrandNodePositions() {
+            const newNodes = [];
+            const sectorEmojis = ['🌱', '🏦', '🖋️', '📦', '🧠', '🎬', '⚖', '🔋', '🎮', '✂'];
+            
+            for (let i = 0; i < 50; i++) {
+                newNodes.push({
+                    id: i,
+                    x: Math.random() * vaultMeshCanvas.width,
+                    y: Math.random() * vaultMeshCanvas.height,
+                    size: 8 + Math.random() * 12,
+                    emoji: sectorEmojis[Math.floor(Math.random() * sectorEmojis.length)],
+                    sector: Math.random() > 0.7 ? 'active' : 'inactive' // Simulate some active sectors
+                });
+            }
+            return newNodes;
+        }
+
+        function drawIntegrationConnections(ctx) {
+            // Simple example: connect random nodes to simulate integration
+            ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--vault-cyan') + '40';
+            ctx.lineWidth = 0.5;
+            for (let i = 0; i < nodes.length; i += 2) {
+                if (nodes[i+1]) {
+                    ctx.beginPath();
+                    ctx.moveTo(nodes[i].x, nodes[i].y);
+                    ctx.lineTo(nodes[i+1].x, nodes[i+1].y);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        // --- Brand Search Functionality ---
+        function searchBrands(query) {
+            const searchResultsContainer = document.getElementById('searchResults');
+            if (query.length < 2) {
+                searchResultsContainer.innerHTML = '';
+                searchResultsContainer.classList.add('hidden');
+                return;
+            }
+            
+            const filteredResults = allBrandElements.filter(element => 
+                element.name.toLowerCase().includes(query.toLowerCase()) ||
+                element.sectorName.toLowerCase().includes(query.toLowerCase())
+            ).slice(0, 10); // Limit to 10 results for performance
+
+            displaySearchResults(filteredResults);
+            searchResultsContainer.classList.remove('hidden');
+        }
+        
+        function displaySearchResults(results) {
+            const container = document.getElementById('searchResults');
+            if (results.length === 0) {
+                container.innerHTML = '<div class="p-3 text-center text-gray-500">No results found.</div>';
+                return;
+            }
+            container.innerHTML = results.map(result => `
+                <div class="search-result-item" onclick="selectBrand('${result.name}')">
+                    <span class="brand-name">${result.name}</span>
+                    <span class="brand-sector">${result.sectorName}</span>
+                    <span class="subnode-count">${result.type}</span>
+                </div>
+            `).join('');
+        }
+
+        function selectBrand(brandName) {
+            // This function can be expanded to show more details about the selected brand
+            // For now, it just clears the search and logs the selection.
+            document.getElementById('brandSearch').value = brandName;
+            document.getElementById('searchResults').classList.add('hidden');
+            console.log(`Selected brand: ${brandName}`);
+            // You could trigger a modal or navigate to a brand detail page here
+        }
+
+        // --- Theme Controls ---
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+        }
+        
+        function toggleHyperMode() {
+            document.body.classList.toggle('hyper-mode');
+            localStorage.setItem('hyperMode', document.body.classList.contains('hyper-mode') ? 'on' : 'off');
+        }
+
+        function changeLanguage(lang) {
+            // Placeholder for language change functionality
+            console.log(`Language changed to: ${lang}`);
+            // In a real app, you'd load translation files here
+        }
+
+        // --- Brand Element Display and Filtering ---
+        function loadBrandElements(filterSectorKey = 'all') {
+            const brandGrid = document.getElementById('brandGrid');
+            brandGrid.innerHTML = ''; // Clear existing elements
+
+            let filteredElements = allBrandElements;
+            if (filterSectorKey !== 'all') {
+                filteredElements = allBrandElements.filter(element => element.sector === filterSectorKey);
+            }
+
+            if (filteredElements.length === 0) {
+                brandGrid.innerHTML = '<p class="text-center text-gray-500 col-span-full">No brand elements found for this selection.</p>';
+                return;
+            }
+
+            filteredElements.forEach(element => {
+                const card = document.createElement('div');
+                card.classList.add('brand-element-card');
+                card.innerHTML = `
+                    <div class="element-name">${element.name}</div>
+                    <div class="element-type">${element.type}</div>
+                    <div class="element-sector">${element.sectorName}</div>
+                `;
+                brandGrid.appendChild(card);
+            });
+        }
+
+        function filterBySector(buttonElement, sectorKey) {
+            // Update active button state
+            document.querySelectorAll('.sector-btn').forEach(btn => btn.classList.remove('active'));
+            buttonElement.classList.add('active');
+
+            loadBrandElements(sectorKey);
+        }
+
+        // --- Google Maps Placeholder ---
+        function initMap() {
+            // This function is called by the Google Maps API script.
+            // In a full implementation, you would initialize your map here.
+            console.log("Google Maps API loaded. Map initialization placeholder.");
+            // Example: const map = new google.maps.Map(document.getElementById('map'), { zoom: 8, center: { lat: -34.397, lng: 150.644 } });
+        }
+        
+        // --- Initialize everything on DOMContentLoaded ---
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial counts in hero section
+            document.getElementById('hero-total-elements').textContent = globalTotalElements.toLocaleString();
+            document.getElementById('hero-total-sectors').textContent = totalSectorsCount.toLocaleString();
+            document.getElementById('activeBrands').textContent = globalCoreBrandTotal.toLocaleString();
+            document.getElementById('activeSubnodes').textContent = globalSubnodeTotal.toLocaleString();
+            document.getElementById('integration-total-elements').textContent = globalTotalElements.toLocaleString();
+            
+            // Update counts in the fixed integration status overlay
+            // document.getElementById('overlay-total-elements-count').textContent = globalTotalElements.toLocaleString(); // Removed as this element is not in the current HTML structure
+
+            // Generate dynamic sector filter buttons
+            const sectorNavContainer = document.querySelector('.sector-navigation');
+            for (const key in sectorList) {
+                if (ALL_SECTOR_DATA_STATIC[key]) { // Only add buttons for sectors with defined data
+                    const sectorName = sectorList[key];
+                    const brandsInSector = ALL_SECTOR_DATA_STATIC[key].brands ? ALL_SECTOR_DATA_STATIC[key].brands.length : 0;
+                    const subnodesInSector = ALL_SECTOR_DATA_STATIC[key].subNodes ? ALL_SECTOR_DATA_STATIC[key].subNodes.reduce((sum, subArray) => sum + subArray.length, 0) : 0;
+                    const totalElementsInSector = brandsInSector + subnodesInSector;
+
+                    const button = document.createElement('button');
+                    button.classList.add('sector-btn');
+                    button.setAttribute('data-sector-key', key);
+                    button.setAttribute('onclick', `filterBySector(this, '${key}')`);
+                    button.textContent = `${sectorName} (${totalElementsInSector})`;
+                    sectorNavContainer.appendChild(button);
+                }
+            }
+            // Update the "All Sectors" button count
+            document.getElementById('all-sectors-count').textContent = globalTotalElements.toLocaleString();
+
+
+            initVaultMeshCanvas(); // Initialize canvas animation
+            loadBrandElements(); // Load all brand elements initially
+
+            // Load saved theme preferences
+            if (localStorage.getItem('theme') === 'dark') {
+                document.body.classList.add('dark-mode');
+            }
+            if (localStorage.getItem('hyperMode') === 'on') {
+                document.body.classList.add('hyper-mode');
+            }
+
+            // Initialize integration status updates
+            initializeIntegrationStatus();
+        });
+        
+        // Integration status monitoring (simplified for demo)
+        function initializeIntegrationStatus() {
+            // This function is intended to simulate real-time updates.
+            // In a real application, this would fetch data from a backend.
+            setInterval(() => {
+                // For this demo, metrics are static, but you can imagine them changing
+                // document.getElementById('activeBrands').textContent = (globalCoreBrandTotal + Math.floor(Math.random() * 10 - 5)).toLocaleString();
+                // document.getElementById('activeSubnodes').textContent = (globalSubnodeTotal + Math.floor(Math.random() * 20 - 10)).toLocaleString();
+                // document.getElementById('systemStatus').textContent = Math.random() > 0.9 ? 'LAG' : 'LIVE';
+            }, 5000); // Update every 5 seconds
+        }
+    </script>
+</body>
+</html>

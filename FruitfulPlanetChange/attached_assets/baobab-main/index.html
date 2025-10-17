@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌳 Baobab Security Network™ - Global Solutions & Intelligence</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Fruitful Global Color Palette (from API Vault) */
+        :root {
+            --primary-color: #0071e3; /* Apple Blue */
+            --secondary-color: #30d158; /* Apple Green */
+            --text-color-light: #f5f5f7; /* Light text on dark backgrounds */
+            --text-color-dark: #1d1d1f; /* Dark text on light backgrounds */
+            --bg-color-dark: #1a1a1c; /* Deep black/dark grey */
+            --card-bg-dark: #2a2a2e; /* Darker grey for card backgrounds */
+            --border-color-dark: #3a3a3e; /* Subtle dark border */
+            --accent-gold: #B8860B; /* Corporate gold accent */
+            --status-error: #ef4444; /* Red for security notes */
+        }
+
+        /* Combined Body Styles: Adjusted for full-width sections */
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+            background-color: var(--bg-color-dark); /* Dark background from API Vault */
+            color: var(--text-color-light); /* Light text on dark background */
+            line-height: 1.6;
+            /* Removed flex properties and padding to allow sections to control their width */
+            margin: 0; /* Ensure no default body margin */
+            padding: 0; /* Ensure no default body padding */
+        }
+
+        /* Header specific styling (Baobab existing) */
+        .header-bg {
+            background-color: #1A1A1A; /* Deep Black */
+            border-bottom: 1px solid #4A4A4A; /* Darker gray for subtle separator */
+            width: 100%; /* Ensure header spans full width */
+            box-sizing: border-box; /* Include padding in width */
+            padding-left: 2rem; /* Consistent padding */
+            padding-right: 2rem; /* Consistent padding */
+        }
+        .header-nav a {
+            color: #FFFFFF !important; /* Force white text */
+            @apply hover:text-yellow-500 transition-colors duration-200 font-medium;
+        }
+        .header-nav a.active {
+            @apply text-yellow-500 font-semibold;
+        }
+        .header-logo-text {
+            color: #B8860B;
+        }
+
+        /* Hero section styling (Baobab existing) */
+        .hero-corporate {
+            background: #222222;
+            color: #EAEAEA;
+            width: 100%; /* Ensure hero spans full width */
+            box-sizing: border-box; /* Include padding in width */
+            padding-left: 2rem; /* Consistent padding */
+            padding-right: 2rem; /* Consistent padding */
+            position: relative; /* Needed for absolute positioning of canvas */
+            overflow: hidden; /* Hide overflow from canvas */
+        }
+        .hero-title {
+            color: #F8F8F8;
+        }
+        .hero-subtitle {
+            color: #FFFFFF; /* Changed to white for better contrast on dark background */
+        }
+
+        /* Canvas for the noodle pulse effect */
+        #heroCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0; /* Behind the content */
+            pointer-events: none; /* Allow clicks to pass through */
+        }
+
+        /* CTA buttons (Baobab existing) */
+        .cta-primary {
+            @apply bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105;
+        }
+        .cta-secondary {
+            @apply border border-gray-500 hover:bg-gray-700 hover:text-white text-gray-300 font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105;
+        }
+
+        /* Section headings and body text (Baobab existing, adjusted for new body background) */
+        .section-heading {
+            color: var(--text-color-dark); /* Dark text for headings on light sections */
+        }
+        .section-text {
+            color: #4A4A4A; /* Dark gray for section body on light sections */
+        }
+
+        /* Card styling for content blocks (Baobab existing) */
+        .content-card {
+            background-color: #FFFFFF;
+            border-radius: 0.75rem;
+            border: 1px solid #E5E7EB;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+        }
+        .content-card-title {
+            color: #1F2937;
+        }
+        .content-card-text {
+            color: #4B5563;
+        }
+
+        /* Background for strategic sections - now a solid dark grey (Baobab existing) */
+        .strategic-bg {
+            background-color: #2F2F2F;
+            color: #FFFFFF;
+            width: 100%; /* Ensure section spans full width */
+            box-sizing: border-box; /* Include padding in width */
+            padding-left: 2rem; /* Consistent padding */
+            padding-right: 2rem; /* Consistent padding */
+        }
+        .strategic-bg::before {
+            content: none;
+        }
+        .strategic-content-z-2 > * {
+            position: relative;
+            z-index: 2;
+        }
+        .strategic-card-bg {
+            background-color: #FFFFFF;
+            color: #333333;
+        }
+
+        /* Footer styling (Baobab existing) */
+        .footer-bg {
+            background-color: #1A1A1A;
+            color: #FFFFFF; /* Changed to white for better contrast */
+            border-top: 1px solid #4A4A4A;
+            width: 100%; /* Ensure footer spans full width */
+            box-sizing: border-box; /* Include padding in width */
+            padding-left: 2rem; /* Consistent padding */
+            padding-right: 2rem; /* Consistent padding */
+        }
+        .footer-text-secondary {
+            color: #FFFFFF; /* Changed to white for better contrast on dark background */
+        }
+
+        /* Custom Modal for Alerts (API Vault specific, but now only used by its functions) */
+        .custom-modal-overlay-api-vault {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.75);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .custom-modal-overlay-api-vault.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .custom-modal-content-api-vault {
+            background-color: var(--card-bg-dark);
+            color: var(--text-color-light);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            border: 1px solid var(--border-color-dark);
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .custom-modal-overlay-api-vault.active .custom-modal-content-api-vault {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .custom-modal-content-api-vault p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            color: var(--text-color-light);
+        }
+
+        /* Styling for Copy button within table cells (API Vault specific, but now only used by its functions) */
+        .copy-button-in-table {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            margin-left: 0.5rem;
+            flex-shrink: 0;
+        }
+        .copy-button-in-table:hover {
+            background-color: #005bb5;
+            transform: translateY(-1px);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding: 0; /* Remove body padding on mobile too */
+            }
+            .header-section-api-vault {
+                padding: 1rem 1.5rem;
+            }
+            .header-section-api-vault h1 {
+                font-size: 2rem;
+            }
+            .header-section-api-vault p {
+                font-size: 0.9rem;
+            }
+            .api-key-panel {
+                padding: 1.5rem;
+            }
+            .api-key-panel h2 {
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+            }
+            .api-key-table th, .api-key-table td {
+                padding: 0.6rem;
+                font-size: 0.8rem;
+            }
+            .api-key-value {
+                font-size: 0.7rem;
+            }
+            .api-key-location {
+                font-size: 0.7rem;
+            }
+            .security-note {
+                padding: 1rem;
+                font-size: 0.85rem;
+            }
+            .action-button {
+                padding: 0.7rem 1.5rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header section with consistent branding and navigation -->
+    <header class="py-4 px-8 header-bg shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
+            <a href="index.html" class="text-2xl font-black header-logo-text tracking-wider">
+                🌳 Baobab Security Network™
+            </a>
+            <!-- Main navigation links -->
+            <nav class="flex-grow flex justify-center md:justify-end space-x-4 md:space-x-6 text-sm header-nav">
+                <a href="index.html#vision" class="active">Vision</a>
+                <a href="index.html#solutions">Solutions</a>
+                <a href="index.html#commitment">Commitment</a>
+                <!-- Removed API Vault link as the section is removed -->
+                <a href="baobab_spa_dashboard.html">Global Dashboards 📊</a>
+                <a href="eskom_crisis_dashboard.html">Eskom Crisis 🔌</a>
+                <a href="pricing.html">Pricing 💲</a>
+                <a href="about_us.html">About Us ℹ️</a>
+                <a href="contact.html">Contact Us 📧</a>
+            </nav>
+            <!-- Button to explore dashboards -->
+            <button onclick="window.location.href='baobab_spa_dashboard.html'" class="cta-primary mt-2 md:mt-0">
+                Explore Platform 🌐
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero section: main title, description, and calls to action -->
+    <section class="hero-corporate text-center py-20 md:py-32 px-6 relative overflow-hidden">
+        <canvas id="heroCanvas"></canvas> <!-- Canvas for the noodle pulse -->
+        <div class="relative z-10 max-w-4xl mx-auto">
+            <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6 tracking-tight hero-title">
+                Empower. Protect. Sustain. <br>Global Intelligence for Strategic Impact.
+            </h1>
+            <p class="text-lg md:text-xl hero-subtitle mb-8 max-w-3xl mx-auto opacity-90">
+                A dynamic platform integrating advanced AI, comprehensive geospatial data, and strategic resource management to deliver actionable intelligence for corporate, governmental, and humanitarian initiatives.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                <a href="dashboard_deforestation.html" class="cta-primary">
+                    View Global Dashboards 📊
+                </a>
+                <a href="eskom_crisis_dashboard.html" class="cta-secondary">
+                    Access Regional Insights 🔌
+                </a>
+            </div>
+            <p class="mt-12 text-sm text-gray-500">
+                Data-driven foresight for a resilient future.
+            </p>
+        </div>
+    </section>
+
+    <!-- Vision section: explains the core inspiration and philosophy -->
+    <section id="vision" class="py-20 px-6 bg-gray-50">
+        <div class="container mx-auto max-w-5xl text-center">
+            <h2 class="text-4xl font-extrabold section-heading mb-8">Our Strategic Vision</h2>
+            <p class="text-lg section-text leading-relaxed mb-6">
+                Inspired by the robust and resourceful Baobab, our vision is to establish a global intelligence network that provides critical data and analytical frameworks. This enables organizations to achieve sustainability, drive economic growth, and enhance environmental resilience worldwide.
+            </p>
+            <p class="text-lg section-text leading-relaxed">
+                We are committed to empowering stakeholders with unparalleled insights, fostering a collaborative ecosystem that integrates technological innovation with ethical governance for planetary well-being.
+            </p>
+            <div class="mt-12 text-sm text-gray-700">
+                <span>Timestamped Document Reference: 27 Feb 2025, 16:14, Pretoria, South Africa</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solutions section: details the core offerings and technology -->
+    <section id="solutions" class="py-20 px-6 bg-white">
+        <div class="container mx-auto max-w-5xl text-center">
+            <h2 class="text-4xl font-extrabold section-heading mb-8">Core Solutions & Technological Edge</h2>
+            <div class="grid md:grid-cols-2 gap-12 items-center text-left">
+                <div>
+                    <p class="text-lg section-text leading-relaxed mb-6">
+                        Our platform's foundation is built on **advanced AI** and **geospatial data analytics**. We transform complex data into actionable intelligence, optimizing resource allocation, energy consumption, and operational efficiencies. This dynamic system continuously adapts to global shifts, ensuring precise and sustainable management across diverse sectors.
+                    </p>
+                    <p class="text-lg section-text leading-relaxed">
+                        We deliver comprehensive solutions that enable clients to proactively manage environmental impact, secure supply chains, and foster sustainable economic models at local and global scales.
+                    </p>
+                </div>
+                <div class="flex justify-center items-center">
+                    <div class="w-full h-auto content-card">
+                        <h3 class="text-2xl font-bold content-card-title mb-4">AI-Driven Strategic Planning</h3>
+                        <ul class="space-y-3 content-card-text text-base list-disc list-inside">
+                            <li>Real-time environmental mapping & resource optimization 💡</li>
+                            <li>Predictive analytics for operational resilience ⚙️</li>
+                            <li>Adaptive systems tailored to regional imperatives ✅</li>
+                        </ul>
+                        <div class="mt-6 text-sm text-gray-700">
+                            Timestamped Analysis: 27 Feb 2025, 16:14, Pretoria, South Africa
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Commitment section: corporate responsibility and future focus -->
+    <section id="commitment" class="py-20 px-6 bg-gray-50">
+        <div class="container mx-auto max-w-5xl text-center">
+            <h2 class="text-4xl font-extrabold section-heading mb-8">Our Commitment to a Resilient Future</h2>
+            <p class="text-lg section-text leading-relaxed mb-6">
+                The Baobab Security Network is founded on a steadfast commitment to global well-being and long-term sustainability. We aim to protect, optimize, and empower communities and ecosystems through continuous innovation and strategic partnerships.
+            </p>
+            <p class="text-lg section-text leading-relaxed mb-10">
+                Our legacy is built on a dedication to planetary health, intergenerational equity, and fostering a global framework for sustainable development.
+            </p>
+            <a href="about_us.html" class="cta-primary">
+                Learn More About Our Commitment
+            </a>
+            <p class="mt-8 text-xs text-gray-500">©2025 Heyns Schoeman ™ . All rights reserved.</p>
+        </div>
+    </section>
+
+    <!-- Business Package Download section -->
+    <section class="py-16 px-6 bg-gray-100 text-center">
+        <div class="container mx-auto max-w-2xl">
+            <h2 class="text-3xl font-extrabold section-heading mb-6">Download the Baobab Business Package™</h2>
+            <p class="text-lg section-text mb-8">
+                Access the conceptual framework and code for building out your own Baobab-inspired solutions.
+            </p>
+            <a href="generate_zip.py" download="baobab_business_package.py" class="cta-primary inline-flex items-center">
+                Download Business Package <span class="ml-2">⬇️</span>
+            </a>
+            <p class="mt-6 text-sm text-gray-600">
+                This download provides a Python script to bundle the web assets, along with a `README.md` explaining the conceptual business application.
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer section -->
+    <footer class="py-8 px-6 footer-bg text-center text-sm">
+        <p>&copy; 2025 Heyns Schoeman ™ . All Rights Reserved.</p>
+        <p class="mt-2 text-footer-secondary">Founder | Fruitful Global™ | FAA ™</p>
+        <p class="mt-1 text-footer-secondary">AI-Powered Global Solutions | "Empower. Protect. Sustain."</p>
+    </footer>
+
+    <!-- Custom Modal for Alerts (API Vault specific) - This modal is no longer used by the main links -->
+    <div id="customModalApiVault" class="custom-modal-overlay-api-vault hidden">
+        <div class="custom-modal-content-api-vault">
+            <p id="customModalMessageApiVault"></p>
+            <button onclick="hideCustomModalApiVault()" class="action-button mt-4">OK</button>
+        </div>
+    </div>
+
+    <script>
+        // API Key Data (present in script but not rendered in HTML)
+        const apiKeysData = [
+            { id: "paypal-sdk-key", service: "PayPal (SDK)", key: "BAAGdPecRsf6dw_nIrWqUen0GdW0UsBZapp1Gn62xkPdD-Vqc-4lqWAidKK8LOObXux8pHJGjXknZoar6Q", locations: ["Various checkout scrolls", "main-app", "fruitful-dashboard-v4", "global_checkout_form"] },
+            { id: "paypal-starter-btn", service: "PayPal (Hosted Button)", key: "EMWGPGHNN8Y8E", context: "(Starter Package)", locations: ["HotStack™", "Various landing pages", "main-app", "fruitful-dashboard-v4"] },
+            { id: "paypal-pro-btn", service: "PayPal (Hosted Button)", key: "QGU3ZUQCMD49Q", context: "(Pro Package)", locations: ["HotStack™", "Larger brand sites", "main-app", "fruitful-dashboard-v4"] },
+            { id: "paypal-enterprise-btn", service: "PayPal (Hosted Button)", key: "9C88S44F93M5J", context: "(Enterprise Package)", locations: ["HotStack™", "Enterprise solutions", "main-app", "fruitful-dashboard-v4"] },
+            { id: "paypal-banimal-btn", service: "PayPal (Hosted Button)", key: "YOUR_BANIMAL_PAYPAL_BUTTON_ID_HERE", context: "(Banimal Loop Plan - Placeholder)", locations: ["Banimal Loop Plan site", "main-app", "fruitful-dashboard-v4"] },
+            { id: "google-maps-key", service: "Google Maps", key: "AIzaSyBPG8dG29cl0TvYRGyLozejGed5Wj5Ab80", locations: ["Location-based microsites", "main-app", "fruitful-dashboard-v4"] },
+            { id: "spotify-access-token", service: "Spotify (Access Token)", key: "BQBDSZ232IQmSLVbROkxqdwNMoGhtitKOJBjDzE-Lu9YKsSK1RKVwXNfYfncP2wf6Fj6xcYlnGD75baEqOmd3XtxhU...", locations: ["Music/media scrolls", "main-app", "fruitful-dashboard-v4"] },
+            { id: "gemini-ai-key", service: "Gemini AI", key: "AIzaSyBGSDZATtITv5iIoB3rgKHBpWx9MrufxXE", locations: ["AI-powered insights scrolls", "Baobab Terminal", "main-app", "fruitful-dashboard-v4"] },
+            { id: "xero-client-id", service: "Xero (Client ID)", key: "81B3573D453040508996432C5DAD565B", locations: ["Accounting/payroll integration scrolls", "main-app"] },
+            { id: "xero-client-secret", service: "Xero (Client Secret)", key: "FIaJGmsaCcKR3Z8kWxPnQd04EhYy6_bImPmoitQDP1U6Smaq", locations: ["Accounting/payroll integration scrolls", "main-app"] },
+            { id: "xero-redirect-uri", service: "Xero (Redirect URI)", key: "https://seedwave.faa.zone/admin_panel_xero.html", locations: ["Xero OAuth setup", "main-app"] },
+            { id: "xero-webhook-key", service: "Xero (Webhook Key)", key: "2fd5LQV0TQDI3572Er/sg66zqEbl8mFWRyfX3XkoKFZGRLK2cZPGpWV/j4yMTU7aUpbgBCfeZkuHnQIwD/0igw==", locations: ["Xero webhook configurations", "main-app"] }
+        ];
+
+        // Function to copy text to clipboard (still available in script)
+        function copyToClipboard(elementId, buttonElement) {
+            const textElement = document.getElementById(elementId);
+            if (!textElement) {
+                console.error('Element to copy not found:', elementId);
+                return;
+            }
+
+            const textToCopy = textElement.textContent || textElement.innerText;
+
+            const textarea = document.createElement('textarea');
+            textarea.value = textToCopy;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    console.log('Text copied successfully!');
+                    const originalIconHtml = buttonElement.innerHTML;
+                    buttonElement.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                    setTimeout(() => {
+                        buttonElement.innerHTML = originalIconHtml;
+                    }, 1500);
+                } else {
+                    console.error('Failed to copy text.');
+                }
+            } catch (err) {
+                console.error('Error copying text:', err);
+            } finally {
+                document.body.removeChild(textarea);
+            }
+        }
+
+        // Render API Keys Table (this function will not be called as the table is removed from HTML)
+        function renderApiKeysTable() {
+            const tableBody = document.getElementById('apiKeysTableBody');
+            if (!tableBody) return; // This will now return immediately
+
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            apiKeysData.forEach(key => {
+                const row = document.createElement('tr');
+                const keyValueSpanId = `key-value-${key.id || Math.random().toString(36).substring(2, 9)}`;
+                const locationsHtml = Array.isArray(key.locations) ? key.locations.join(', ') : key.locations || '';
+
+                row.innerHTML = `
+                    <td>
+                        <strong class="text-gray-100">${key.service}</strong><br>
+                        ${key.context ? `<span class="text-xs text-gray-400">(${key.context})</span>` : ''}
+                    </td>
+                    <td>
+                        <span class="api-key-value" id="${keyValueSpanId}">${key.key}</span>
+                    </td>
+                    <td class="api-key-location">${locationsHtml}</td>
+                    <td>
+                        <button class="copy-button-in-table"
+                                onclick="copyToClipboard('${keyValueSpanId}', this)"
+                                aria-label="Copy ${key.service} Key">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Canvas animation for "Noodle Pulse"
+        const canvas = document.getElementById('heroCanvas');
+        const ctx = canvas.getContext('2d');
+        let nodes = [];
+        const numNodes = 180; // Increased for even denser network
+        const maxConnectionDistance = 120; // Max distance for any connection (reduced for tighter feel)
+        const coreThresholdDistance = 40; // Connections within this distance are "core" (reduced for tighter core)
+        const nodeSpeed = 0.1; // Reduced for very slow, deliberate movement
+        const gravityStrength = 0.005; // Strength of pull towards bottom center
+
+        // Node class for the animation particles
+        class Node {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.vx = (Math.random() - 0.5) * nodeSpeed;
+                this.vy = (Math.random() - 0.5) * nodeSpeed;
+                this.radius = Math.random() * 1.5 + 0.5; // Small random radius
+                // Faint white/gold with varied opacity for pulsing effect
+                this.color = `rgba(255, 255, 255, ${Math.random() * 0.4 + 0.1})`;
+            }
+
+            update() {
+                // Apply gravity towards bottom center
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height; // Anchor point at the very bottom center
+                const dx = centerX - this.x;
+                const dy = centerY - this.y;
+                const distanceToCenter = Math.sqrt(dx * dx + dy * dy);
+
+                // Apply gravity, stronger when further from center
+                if (distanceToCenter > 50) { // Only apply gravity if not too close to the center
+                    this.vx += dx * gravityStrength / distanceToCenter;
+                    this.vy += dy * gravityStrength / distanceToCenter;
+                }
+
+
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Bounce off edges
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+
+        // Function to resize canvas and re-initialize nodes
+        function resizeCanvas() {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            initNodes(); // Re-initialize nodes on resize
+        }
+
+        // Initialize nodes
+        function initNodes() {
+            nodes = []; // Clear existing nodes
+            for (let i = 0; i < numNodes; i++) {
+                nodes.push(new Node(Math.random() * canvas.width, Math.random() * canvas.height));
+            }
+        }
+
+        // Animation loop
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+
+            for (let i = 0; i < nodes.length; i++) {
+                nodes[i].update();
+                nodes[i].draw();
+
+                // Draw lines between nearby nodes
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const dx = nodes[i].x - nodes[j].x;
+                    const dy = nodes[i].y - nodes[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < maxConnectionDistance) {
+                        ctx.beginPath();
+                        ctx.moveTo(nodes[i].x, nodes[i].y);
+                        ctx.lineTo(nodes[j].x, nodes[j].y); // Lines remain straight for performance and clarity
+
+                        if (distance < coreThresholdDistance) {
+                            // Core lines: thicker, more opaque, slightly off-white for organic feel
+                            ctx.strokeStyle = 'rgba(255, 250, 240, 0.9)'; // Near white with hint of warmth
+                            ctx.lineWidth = 4.0; // Significantly thicker, "rope-like"
+                        } else {
+                            // Pulse lines: thinner, fading with distance, more pronounced juice effect
+                            const normalizedDistance = (distance - coreThresholdDistance) / (maxConnectionDistance - coreThresholdDistance);
+                            const opacity = 0.8 * (1 - normalizedDistance); // Starts at 0.8, fades to 0
+                            const lineWidth = 3.5 * (1 - normalizedDistance); // Starts at 3.5, fades to 0, "noodle juice"
+                            ctx.strokeStyle = `rgba(255, 250, 240, ${opacity})`;
+                            ctx.lineWidth = lineWidth;
+                        }
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animate); // Loop the animation
+        }
+
+        // Event listeners
+        window.addEventListener('load', () => {
+            resizeCanvas(); // Initial resize and node setup
+            animate(); // Start animation loop
+        });
+        window.addEventListener('resize', resizeCanvas);
+
+        // Initialize on DOMContentLoaded (renderApiKeysTable will not find its target)
+        document.addEventListener('DOMContentLoaded', () => {
+            renderApiKeysTable(); // This call will now effectively do nothing as #apiKeysTableBody is gone
+        });
+    </script>
+</body>
+</html>
+
