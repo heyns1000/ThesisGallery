@@ -10,6 +10,7 @@ import { storage } from "./storage";
 import { db } from "./db";
 import { samFoxStudioService } from "./samfox-studio-service";
 import { loopPayService } from "./loop-pay-service";
+import { ecosystemSyncService } from "./ecosystem-sync-service";
 import { EmailProcessor, type EmailParsingResult } from "./email-processor";
 import { 
   insertDocumentSchema,
@@ -61,7 +62,8 @@ import {
   updateEcosystemSyncLogSchema,
   ecosystemSystems,
   ecosystemApps,
-  ecosystemSyncLogs
+  ecosystemSyncLogs,
+  banimalConnections
 } from "@shared/schema";
 import { ContactProcessingAI, BanimalChatbot, CurrencyAI, HolidayAI, generateFaaReference } from "./ai-services";
 import { GeminiContactProcessor, GeminiBanimalChatbot, GeminiProductAI, GeminiMarketingAI } from "./gemini-ai";
@@ -81,6 +83,7 @@ import { cloudflowAutomation } from "./cloudflow-automation";
 import { contextTransferService } from "./context-transfer-service";
 import { dailySummaryExtractor } from "./daily-summary-extractor";
 import { setupAuth, isAuthenticated } from "./replitAuth";
+import { nanoid } from "nanoid";
 
 // Configure multer for file uploads
 const upload = multer({
@@ -4555,6 +4558,248 @@ May this wisdom serve your journey well! 🌳✨`
       console.error('Error creating ecosystem sync log:', error);
       res.status(400).json({ 
         error: 'Failed to create ecosystem sync log',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // ===============================
+  // ECOSYSTEM SYNC AUTOMATION ROUTES
+  // ===============================
+
+  // POST /api/ecosystem/sync/wordpress-products - Sync products to WordPress
+  app.post("/api/ecosystem/sync/wordpress-products", isAuthenticated, async (req, res) => {
+    try {
+      const bodySchema = z.object({
+        connectionId: z.string(),
+        productIds: z.array(z.string()).min(1, "At least one product ID is required")
+      });
+
+      const { connectionId, productIds } = bodySchema.parse(req.body);
+
+      // CRITICAL FIX #1: Validate empty/invalid ID arrays
+      if (!productIds || productIds.length === 0) {
+        return res.status(400).json({ 
+          error: 'Product IDs array cannot be empty' 
+        });
+      }
+
+      // CRITICAL FIX #1: Validate connectionId exists
+      const connection = await db.select().from(banimalConnections)
+        .where(eq(banimalConnections.id, connectionId))
+        .limit(1);
+      
+      if (connection.length === 0) {
+        return res.status(404).json({ 
+          error: 'Connection not found' 
+        });
+      }
+
+      // Generate sync log ID for immediate broadcast
+      const syncLogId = nanoid();
+
+      // Broadcast sync started event IMMEDIATELY
+      broadcast({ 
+        type: 'ecosystem_sync_started', 
+        data: { 
+          syncType: 'wordpress-products',
+          syncLogId,
+          connectionId,
+          productCount: productIds.length
+        } 
+      });
+
+      // Start sync with pre-generated ID
+      const syncLog = await ecosystemSyncService.pushProductsToWordPress(connectionId, productIds, syncLogId);
+
+      // Broadcast sync completion/error event
+      if (syncLog.status === 'completed') {
+        broadcast({ 
+          type: 'ecosystem_sync_completed', 
+          data: syncLog
+        });
+      } else if (syncLog.status === 'error') {
+        broadcast({ 
+          type: 'ecosystem_sync_error', 
+          data: syncLog
+        });
+      }
+
+      res.status(200).json({
+        success: syncLog.status === 'completed',
+        syncLogId: syncLog.id,
+        recordsSynced: syncLog.recordsSynced,
+        status: syncLog.status,
+        errorMessage: syncLog.errorMessage,
+        metadata: syncLog.metadata
+      });
+    } catch (error) {
+      console.error('Error syncing products to WordPress:', error);
+      res.status(400).json({ 
+        error: 'Failed to sync products to WordPress',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // POST /api/ecosystem/sync/wordpress-users - Sync users to WordPress
+  app.post("/api/ecosystem/sync/wordpress-users", isAuthenticated, async (req, res) => {
+    try {
+      const bodySchema = z.object({
+        connectionId: z.string(),
+        userIds: z.array(z.string()).min(1, "At least one user ID is required")
+      });
+
+      const { connectionId, userIds } = bodySchema.parse(req.body);
+
+      // CRITICAL FIX #1: Validate empty/invalid ID arrays
+      if (!userIds || userIds.length === 0) {
+        return res.status(400).json({ 
+          error: 'User IDs array cannot be empty' 
+        });
+      }
+
+      // CRITICAL FIX #1: Validate connectionId exists
+      const connection = await db.select().from(banimalConnections)
+        .where(eq(banimalConnections.id, connectionId))
+        .limit(1);
+      
+      if (connection.length === 0) {
+        return res.status(404).json({ 
+          error: 'Connection not found' 
+        });
+      }
+
+      // Generate sync log ID for immediate broadcast
+      const syncLogId = nanoid();
+
+      // Broadcast sync started event IMMEDIATELY
+      broadcast({ 
+        type: 'ecosystem_sync_started', 
+        data: { 
+          syncType: 'wordpress-users',
+          syncLogId,
+          connectionId,
+          userCount: userIds.length
+        } 
+      });
+
+      // Start sync with pre-generated ID
+      const syncLog = await ecosystemSyncService.pushUsersToWordPress(connectionId, userIds, syncLogId);
+
+      // Broadcast sync completion/error event
+      if (syncLog.status === 'completed') {
+        broadcast({ 
+          type: 'ecosystem_sync_completed', 
+          data: syncLog
+        });
+      } else if (syncLog.status === 'error') {
+        broadcast({ 
+          type: 'ecosystem_sync_error', 
+          data: syncLog
+        });
+      }
+
+      res.status(200).json({
+        success: syncLog.status === 'completed',
+        syncLogId: syncLog.id,
+        recordsSynced: syncLog.recordsSynced,
+        status: syncLog.status,
+        errorMessage: syncLog.errorMessage,
+        metadata: syncLog.metadata
+      });
+    } catch (error) {
+      console.error('Error syncing users to WordPress:', error);
+      res.status(400).json({ 
+        error: 'Failed to sync users to WordPress',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // POST /api/ecosystem/sync/system - General system sync
+  app.post("/api/ecosystem/sync/system", isAuthenticated, async (req, res) => {
+    try {
+      const bodySchema = z.object({
+        systemId: z.string(),
+        syncType: z.enum(['full', 'incremental'])
+      });
+
+      const { systemId, syncType } = bodySchema.parse(req.body);
+
+      // Generate sync log ID for immediate broadcast
+      const syncLogId = nanoid();
+
+      // Broadcast sync started event IMMEDIATELY
+      broadcast({ 
+        type: 'ecosystem_sync_started', 
+        data: { 
+          syncType: `system-${syncType}`,
+          syncLogId,
+          systemId
+        } 
+      });
+
+      // Start sync with pre-generated ID
+      const syncLog = await ecosystemSyncService.syncSystemData(systemId, syncType, syncLogId);
+
+      // Broadcast sync completion/error event
+      if (syncLog.status === 'completed') {
+        broadcast({ 
+          type: 'ecosystem_sync_completed', 
+          data: syncLog
+        });
+      } else if (syncLog.status === 'error') {
+        broadcast({ 
+          type: 'ecosystem_sync_error', 
+          data: syncLog
+        });
+      }
+
+      res.status(200).json({
+        success: syncLog.status === 'completed',
+        syncLogId: syncLog.id,
+        recordsSynced: syncLog.recordsSynced,
+        status: syncLog.status,
+        errorMessage: syncLog.errorMessage,
+        metadata: syncLog.metadata
+      });
+    } catch (error) {
+      console.error('Error syncing system data:', error);
+      res.status(400).json({ 
+        error: 'Failed to sync system data',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // GET /api/ecosystem/sync/connection-test/:connectionId - Test WordPress connection
+  app.get("/api/ecosystem/sync/connection-test/:connectionId", isAuthenticated, async (req, res) => {
+    try {
+      const { connectionId } = req.params;
+      
+      const result = await ecosystemSyncService.testConnection(connectionId);
+      
+      res.status(result.success ? 200 : 400).json(result);
+    } catch (error) {
+      console.error('Error testing connection:', error);
+      res.status(500).json({ 
+        success: false,
+        message: 'Failed to test connection',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // GET /api/ecosystem/sync/stats - Get sync dashboard stats
+  app.get("/api/ecosystem/sync/stats", isAuthenticated, async (req, res) => {
+    try {
+      const stats = await ecosystemSyncService.getDashboardStats();
+      res.json(stats);
+    } catch (error) {
+      console.error('Error fetching sync stats:', error);
+      res.status(500).json({ 
+        error: 'Failed to fetch sync stats',
         details: error instanceof Error ? error.message : 'Unknown error'
       });
     }
