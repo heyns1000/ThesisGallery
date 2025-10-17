@@ -7152,5 +7152,625 @@ May this wisdom serve your journey well! 🌳✨`
     }
   });
 
+  // ===============================
+  // FRUITFUL PLANET CHANGE INTEGRATED ROUTES
+  // ===============================
+
+  // Heritage Portal API Routes - Family Members
+  app.get("/api/heritage/family-members", async (req, res) => {
+    try {
+      const userId = req.user?.id || "default-user";
+      const familyMembers = await storage.getAllFamilyMembers(userId);
+      res.json(familyMembers);
+    } catch (error) {
+      console.error("Error fetching family members:", error);
+      res.status(500).json({ error: "Failed to fetch family members" });
+    }
+  });
+
+  app.post("/api/heritage/family-members", async (req, res) => {
+    try {
+      const userId = req.user?.id || "default-user";
+      const memberData = { ...req.body, userId };
+      const newMember = await storage.createFamilyMember(memberData);
+      res.json(newMember);
+    } catch (error) {
+      console.error("Error creating family member:", error);
+      res.status(500).json({ error: "Failed to create family member" });
+    }
+  });
+
+  app.put("/api/heritage/family-members/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updates = req.body;
+      const updatedMember = await storage.updateFamilyMember(id, updates);
+      res.json(updatedMember);
+    } catch (error) {
+      console.error("Error updating family member:", error);
+      res.status(500).json({ error: "Failed to update family member" });
+    }
+  });
+
+  app.delete("/api/heritage/family-members/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteFamilyMember(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting family member:", error);
+      res.status(500).json({ error: "Failed to delete family member" });
+    }
+  });
+
+  // Heritage Portal API Routes - Heritage Documents
+  app.get("/api/heritage/documents", async (req, res) => {
+    try {
+      const userId = req.user?.id || "default-user";
+      const query = req.query.search as string;
+      let documents;
+
+      if (query) {
+        documents = await storage.searchHeritageDocuments(userId, query);
+      } else {
+        documents = await storage.getAllHeritageDocuments(userId);
+      }
+
+      res.json(documents);
+    } catch (error) {
+      console.error("Error fetching heritage documents:", error);
+      res.status(500).json({ error: "Failed to fetch heritage documents" });
+    }
+  });
+
+  app.post("/api/heritage/documents", async (req, res) => {
+    try {
+      const userId = req.user?.id || "default-user";
+      const documentData = { ...req.body, userId };
+      const newDocument = await storage.createHeritageDocument(documentData);
+      res.json(newDocument);
+    } catch (error) {
+      console.error("Error creating heritage document:", error);
+      res.status(500).json({ error: "Failed to create heritage document" });
+    }
+  });
+
+  app.put("/api/heritage/documents/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updates = req.body;
+      const updatedDocument = await storage.updateHeritageDocument(id, updates);
+      res.json(updatedDocument);
+    } catch (error) {
+      console.error("Error updating heritage document:", error);
+      res.status(500).json({ error: "Failed to update heritage document" });
+    }
+  });
+
+  app.delete("/api/heritage/documents/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteHeritageDocument(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting heritage document:", error);
+      res.status(500).json({ error: "Failed to delete heritage document" });
+    }
+  });
+
+  // Heritage Portal API Routes - Family Events
+  app.get("/api/heritage/events", async (req, res) => {
+    try {
+      const userId = req.user?.id || "default-user";
+      const events = await storage.getAllFamilyEvents(userId);
+      res.json(events);
+    } catch (error) {
+      console.error("Error fetching family events:", error);
+      res.status(500).json({ error: "Failed to fetch family events" });
+    }
+  });
+
+  app.post("/api/heritage/events", async (req, res) => {
+    try {
+      const userId = req.user?.id || "default-user";
+      const eventData = { ...req.body, userId };
+      const newEvent = await storage.createFamilyEvent(eventData);
+      res.json(newEvent);
+    } catch (error) {
+      console.error("Error creating family event:", error);
+      res.status(500).json({ error: "Failed to create family event" });
+    }
+  });
+
+  app.put("/api/heritage/events/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updates = req.body;
+      const updatedEvent = await storage.updateFamilyEvent(id, updates);
+      res.json(updatedEvent);
+    } catch (error) {
+      console.error("Error updating family event:", error);
+      res.status(500).json({ error: "Failed to update family event" });
+    }
+  });
+
+  app.delete("/api/heritage/events/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteFamilyEvent(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting family event:", error);
+      res.status(500).json({ error: "Failed to delete family event" });
+    }
+  });
+
+  // Heritage Portal API Routes - Heritage Metrics
+  app.get("/api/heritage/metrics", async (req, res) => {
+    try {
+      const userId = req.user?.id || "default-user";
+      const metrics = await storage.getHeritageMetrics(userId);
+      res.json(metrics || {
+        totalTags: 0,
+        uniqueAncestors: 0,
+        documentsTagged: 0,
+        oralHistories: 0,
+        ritualsTagged: 0,
+        artifactsPreserved: 0
+      });
+    } catch (error) {
+      console.error("Error fetching heritage metrics:", error);
+      res.status(500).json({ error: "Failed to fetch heritage metrics" });
+    }
+  });
+
+  app.put("/api/heritage/metrics", async (req, res) => {
+    try {
+      const userId = req.user?.id || "default-user";
+      const updatedMetrics = await storage.updateHeritageMetrics(userId, req.body);
+      res.json(updatedMetrics);
+    } catch (error) {
+      console.error("Error updating heritage metrics:", error);
+      res.status(500).json({ error: "Failed to update heritage metrics" });
+    }
+  });
+
+  // SAMFOX STUDIO API ROUTES
+  
+  // Portfolio projects API
+  app.get("/api/samfox/portfolio", async (req, res) => {
+    try {
+      const projects = await storage.getAllPortfolioProjects();
+      res.json(projects);
+    } catch (error) {
+      console.error("Error fetching portfolio projects:", error);
+      res.status(500).json({ error: "Failed to fetch portfolio projects" });
+    }
+  });
+
+  app.get("/api/samfox/portfolio/featured", async (req, res) => {
+    try {
+      const projects = await storage.getFeaturedPortfolioProjects();
+      res.json(projects);
+    } catch (error) {
+      console.error("Error fetching featured portfolio:", error);
+      res.status(500).json({ error: "Failed to fetch featured portfolio" });
+    }
+  });
+
+  app.get("/api/samfox/portfolio/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const project = await storage.getPortfolioProject(id);
+      if (!project) {
+        return res.status(404).json({ error: "Portfolio project not found" });
+      }
+      res.json(project);
+    } catch (error) {
+      console.error("Error fetching portfolio project:", error);
+      res.status(500).json({ error: "Failed to fetch portfolio project" });
+    }
+  });
+
+  // Artwork gallery API
+  app.get("/api/samfox/artworks", async (req, res) => {
+    try {
+      const { category, featured, available } = req.query;
+
+      let artworks;
+      if (category) {
+        artworks = await storage.getArtworksByCategory(category as string);
+      } else if (featured === 'true') {
+        artworks = await storage.getFeaturedArtworks();
+      } else if (available === 'true') {
+        artworks = await storage.getAvailableArtworks();
+      } else {
+        artworks = await storage.getAllArtworks();
+      }
+
+      res.json(artworks);
+    } catch (error) {
+      console.error("Error fetching artworks:", error);
+      res.status(500).json({ error: "Failed to fetch artworks" });
+    }
+  });
+
+  app.get("/api/samfox/artworks/search", async (req, res) => {
+    try {
+      const { q } = req.query;
+      if (!q) {
+        return res.status(400).json({ error: "Search query required" });
+      }
+
+      const artworks = await storage.searchArtworks(q as string);
+      res.json(artworks);
+    } catch (error) {
+      console.error("Error searching artworks:", error);
+      res.status(500).json({ error: "Failed to search artworks" });
+    }
+  });
+
+  app.get("/api/samfox/artworks/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const artwork = await storage.getArtwork(id);
+      if (!artwork) {
+        return res.status(404).json({ error: "Artwork not found" });
+      }
+      res.json(artwork);
+    } catch (error) {
+      console.error("Error fetching artwork:", error);
+      res.status(500).json({ error: "Failed to fetch artwork" });
+    }
+  });
+
+  // Categories API
+  app.get("/api/samfox/categories", async (req, res) => {
+    try {
+      const categories = await storage.getActiveArtworkCategories();
+      res.json(categories);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      res.status(500).json({ error: "Failed to fetch categories" });
+    }
+  });
+
+  // Orders API
+  app.get("/api/samfox/orders", async (req, res) => {
+    try {
+      const orders = await storage.getAllArtworkOrders();
+      res.json(orders);
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      res.status(500).json({ error: "Failed to fetch orders" });
+    }
+  });
+
+  app.get("/api/samfox/orders/:orderId", async (req, res) => {
+    try {
+      const orderId = req.params.orderId;
+      const order = await storage.getArtworkOrderByOrderId(orderId);
+      if (!order) {
+        return res.status(404).json({ error: "Order not found" });
+      }
+      res.json(order);
+    } catch (error) {
+      console.error("Error fetching order:", error);
+      res.status(500).json({ error: "Failed to fetch order" });
+    }
+  });
+
+  // Studio settings API
+  app.get("/api/samfox/settings", async (req, res) => {
+    try {
+      const settings = await storage.getStudioSettings();
+      res.json(settings || {
+        studioName: "SamFox Creative Studio",
+        studioDescription: "Digital art portfolio and commercial gallery platform",
+        artistName: "SamFox",
+        artistBio: "Digital artist specializing in character design, cultural art, and brand development",
+        contactEmail: "hello@samfox.studio"
+      });
+    } catch (error) {
+      console.error("Error fetching studio settings:", error);
+      res.status(500).json({ error: "Failed to fetch studio settings" });
+    }
+  });
+
+  // Dashboard stats API
+  app.get("/api/samfox/dashboard/stats", async (req, res) => {
+    try {
+      const stats = await storage.getSamFoxDashboardStats();
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching SamFox dashboard stats:", error);
+      res.status(500).json({ error: "Failed to fetch dashboard stats" });
+    }
+  });
+
+  // Protected admin routes
+  app.post("/api/samfox/artworks", async (req, res) => {
+    try {
+      const artwork = await storage.createArtwork(req.body);
+      res.json(artwork);
+    } catch (error) {
+      console.error("Error creating artwork:", error);
+      res.status(500).json({ error: "Failed to create artwork" });
+    }
+  });
+
+  app.put("/api/samfox/artworks/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const artwork = await storage.updateArtwork(id, req.body);
+      res.json(artwork);
+    } catch (error) {
+      console.error("Error updating artwork:", error);
+      res.status(500).json({ error: "Failed to update artwork" });
+    }
+  });
+
+  app.delete("/api/samfox/artworks/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteArtwork(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting artwork:", error);
+      res.status(500).json({ error: "Failed to delete artwork" });
+    }
+  });
+
+  // Motion, Media & Sonic Studio API endpoints
+  app.get("/api/media/projects", async (req, res) => {
+    try {
+      const projects = await storage.getMediaProjects();
+      res.json(projects);
+    } catch (error) {
+      console.error("Error fetching media projects:", error);
+      res.status(500).json({ message: "Failed to fetch media projects" });
+    }
+  });
+
+  app.post("/api/media/projects", async (req, res) => {
+    try {
+      const project = await storage.createMediaProject(req.body);
+      res.json(project);
+    } catch (error) {
+      console.error("Error creating media project:", error);
+      res.status(500).json({ message: "Failed to create media project" });
+    }
+  });
+
+  app.post("/api/media/projects/:id/process", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const result = await storage.processMediaProject(id, req.body);
+      res.json(result);
+    } catch (error) {
+      console.error("Error processing media project:", error);
+      res.status(500).json({ message: "Failed to process media project" });
+    }
+  });
+
+  app.get("/api/media/engines", async (req, res) => {
+    try {
+      const engines = await storage.getProcessingEngines();
+      res.json(engines);
+    } catch (error) {
+      console.error("Error fetching processing engines:", error);
+      res.status(500).json({ message: "Failed to fetch processing engines" });
+    }
+  });
+
+  // Omnilevel Interstellar routes
+  app.get('/api/omnilevel/interstellar/nodes', async (req, res) => {
+    try {
+      const nodes = await storage.getInterstellarNodes();
+      res.json(nodes);
+    } catch (error) {
+      console.error('Error fetching interstellar nodes:', error);
+      res.status(500).json({ message: 'Failed to fetch interstellar nodes' });
+    }
+  });
+
+  app.post('/api/omnilevel/interstellar/nodes', async (req, res) => {
+    try {
+      const node = await storage.createInterstellarNode(req.body);
+      res.json(node);
+    } catch (error) {
+      console.error('Error creating interstellar node:', error);
+      res.status(500).json({ message: 'Failed to create interstellar node' });
+    }
+  });
+
+  app.post('/api/omnilevel/nodes/:nodeId/synchronize', async (req, res) => {
+    try {
+      const { nodeId } = req.params;
+      const result = await storage.synchronizeNode(nodeId);
+      res.json(result);
+    } catch (error) {
+      console.error('Error synchronizing node:', error);
+      res.status(500).json({ message: 'Failed to synchronize node' });
+    }
+  });
+
+  app.get('/api/omnilevel/cosmic/metrics', async (req, res) => {
+    try {
+      const metrics = await storage.getCosmicMetrics();
+      res.json(metrics);
+    } catch (error) {
+      console.error('Error fetching cosmic metrics:', error);
+      res.status(500).json({ message: 'Failed to fetch cosmic metrics' });
+    }
+  });
+
+  app.get('/api/omnilevel/config/global', async (req, res) => {
+    try {
+      const config = await storage.getGlobalLogicConfig();
+      res.json(config);
+    } catch (error) {
+      console.error('Error fetching global config:', error);
+      res.status(500).json({ message: 'Failed to fetch global config' });
+    }
+  });
+
+  app.post('/api/omnilevel/config/update', async (req, res) => {
+    try {
+      const config = await storage.updateGlobalLogicConfig(req.body);
+      res.json(config);
+    } catch (error) {
+      console.error('Error updating global config:', error);
+      res.status(500).json({ message: 'Failed to update global config' });
+    }
+  });
+
+  // Banimal Integration routes
+  app.get("/api/banimal/transactions", async (req, res) => {
+    try {
+      const transactions = await storage.getBanimalTransactions();
+      res.json(transactions);
+    } catch (error) {
+      console.error("Error fetching Banimal transactions:", error);
+      res.status(500).json({ message: "Failed to fetch transactions" });
+    }
+  });
+
+  app.post("/api/banimal/transactions", async (req, res) => {
+    try {
+      const transaction = await storage.createBanimalTransaction(req.body);
+      res.json(transaction);
+    } catch (error) {
+      console.error("Error creating Banimal transaction:", error);
+      res.status(500).json({ message: "Failed to create transaction" });
+    }
+  });
+
+  app.get("/api/banimal/distributions", async (req, res) => {
+    try {
+      const distributions = await storage.getCharitableDistributions();
+      res.json(distributions);
+    } catch (error) {
+      console.error("Error fetching distributions:", error);
+      res.status(500).json({ message: "Failed to fetch distributions" });
+    }
+  });
+
+  app.get("/api/banimal/sonicgrid", async (req, res) => {
+    try {
+      const connections = await storage.getSonicGridConnections();
+      res.json(connections);
+    } catch (error) {
+      console.error("Error fetching SonicGrid connections:", error);
+      res.status(500).json({ message: "Failed to fetch SonicGrid connections" });
+    }
+  });
+
+  app.get("/api/banimal/vault-actions", async (req, res) => {
+    try {
+      const actions = await storage.getVaultActions();
+      res.json(actions);
+    } catch (error) {
+      console.error("Error fetching vault actions:", error);
+      res.status(500).json({ message: "Failed to fetch vault actions" });
+    }
+  });
+
+  // Legal Documents endpoints
+  app.get("/api/legal-documents", async (req, res) => {
+    try {
+      const docs = await storage.getLegalDocuments();
+      res.json(docs);
+    } catch (error: any) {
+      console.error("Error fetching legal documents:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.post("/api/legal-documents", async (req, res) => {
+    try {
+      const doc = await storage.createLegalDocument(req.body);
+      res.status(201).json(doc);
+    } catch (error: any) {
+      console.error("Error creating legal document:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Repository endpoints
+  app.get("/api/repositories", async (req, res) => {
+    try {
+      const { search, category } = req.query;
+
+      let repositories;
+      if (search) {
+        repositories = await storage.getRepositoriesBySearch(search as string);
+      } else if (category && category !== 'all') {
+        repositories = await storage.getRepositoriesByCategory(category as string);
+      } else {
+        repositories = await storage.getAllRepositories();
+      }
+
+      res.json(repositories);
+    } catch (error) {
+      console.error("Error fetching repositories:", error);
+      res.status(500).json({ message: "Failed to fetch repositories" });
+    }
+  });
+
+  app.post("/api/repositories", async (req, res) => {
+    try {
+      const repo = await storage.createRepository(req.body);
+      res.status(201).json(repo);
+    } catch (error: any) {
+      console.error("Error creating repository:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Payment endpoints
+  app.get("/api/payments", async (req, res) => {
+    try {
+      const payments = await storage.getPayments();
+      res.json(payments);
+    } catch (error: any) {
+      console.error("Error fetching payments:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.post("/api/payments/create", async (req, res) => {
+    try {
+      const payment = await storage.createPayment(req.body);
+      res.status(201).json(payment);
+    } catch (error: any) {
+      console.error("Error creating payment:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // System Status API
+  app.get("/api/system-status", async (req, res) => {
+    try {
+      const statuses = await storage.getAllSystemStatus();
+      res.json(statuses);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch system status" });
+    }
+  });
+
+  app.get("/api/system-status/:service", async (req, res) => {
+    try {
+      const service = req.params.service;
+      const status = await storage.getSystemStatus(service);
+      if (!status) {
+        return res.status(404).json({ message: "Service not found" });
+      }
+      res.json(status);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch service status" });
+    }
+  });
+
   return httpServer;
 }
