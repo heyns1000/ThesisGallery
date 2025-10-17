@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌱 Fruitful Global | Complete Ecosystem Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .fruitful-gradient {
+            background: linear-gradient(135deg, #065f46 0%, #10b981 50%, #34d399 100%);
+        }
+        
+        .brand-gradient {
+            background: linear-gradient(45deg, #059669, #10b981, #34d399, #6ee7b7);
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .ecosystem-card {
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            box-shadow: 0 20px 40px rgba(16, 185, 129, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .ecosystem-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(16, 185, 129, 0.2);
+            border-color: rgba(16, 185, 129, 0.4);
+        }
+        
+        .brand-container {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .brand-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .brand-container:hover::before {
+            left: 100%;
+        }
+        
+        .status-indicator {
+            position: relative;
+        }
+        
+        .status-indicator::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -8px;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .nav-glass {
+            background: rgba(255, 255, 255, 0.9);
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(16, 185, 129, 0.1);
+        }
+        
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .floating-element {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 20s infinite linear;
+        }
+        /* Floating element positions and delays */
+        .floating-leaf { left: 10%; animation-delay: 0s; }
+        .floating-seedling { left: 80%; animation-delay: 5s; }
+        .floating-tree { left: 60%; animation-delay: 10s; }
+        .floating-globe { left: 30%; animation-delay: 15s; }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); }
+            100% { transform: translateY(-100px) rotate(360deg); }
+        }
+
+        /* Pulse delay classes for animated background */
+        .pulse-delay-2 { animation-delay: 2s !important; }
+        .pulse-delay-4 { animation-delay: 4s !important; }
+        
+        .system-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+        
+        .container-showcase {
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .container-showcase::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(16, 185, 129, 0.1) 50%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .container-showcase:hover::after {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Floating Background Elements -->
+    <div class="floating-elements">
+        <div class="floating-element floating-leaf text-green-200 text-6xl"><i class="fas fa-leaf"></i></div>
+        <div class="floating-element floating-seedling text-green-200 text-4xl"><i class="fas fa-seedling"></i></div>
+        <div class="floating-element floating-tree text-green-200 text-5xl"><i class="fas fa-tree"></i></div>
+        <div class="floating-element floating-globe text-green-200 text-3xl"><i class="fas fa-globe"></i></div>
+    </div>
+    <nav class="nav-glass fixed top-0 left-0 w-full z-50 px-6 py-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="brand-gradient w-12 h-12 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-seedling text-white text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">Fruitful Global</h1>
+                    <p class="text-xs text-gray-600">Complete Ecosystem Platform</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-6">
+                <a href="#ecosystem" class="text-gray-700 hover:text-green-600 font-medium">Ecosystem</a>
+                <a href="#brands" class="text-gray-700 hover:text-green-600 font-medium">Brands</a>
+                <a href="#systems" class="text-gray-700 hover:text-green-600 font-medium">Systems</a>
+                <a href="#containers" class="text-gray-700 hover:text-green-600 font-medium">Containers</a>
+                <button class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                    Deploy Now
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="fruitful-gradient min-h-screen flex items-center justify-center relative overflow-hidden pt-20">
+        <div class="container mx-auto px-6 text-center text-white relative z-10">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="text-6xl font-bold mb-6 leading-tight">
+                    🌱 Fruitful Global
+                    <span class="block text-4xl font-light mt-2">Complete Ecosystem Platform</span>
+                </h1>
+                
+                <p class="text-xl mb-8 text-green-100 leading-relaxed">
+                    The most comprehensive digital ecosystem unifying all brands, systems, and containers 
+                    in one beautifully designed platform. Restored and enhanced from the original vision.
+                </p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white/20 backdrop-blur-sm rounded-lg p-6">
+                        <div class="text-3xl font-bold metrics-display">67</div>
+                        <div class="text-sm text-green-100">Replit Apps</div>
+                    </div>
+
+                    <div class="bg-white/20 backdrop-blur-sm rounded-lg p-6">
+                        <div class="text-3xl font-bold metrics-display">8</div>
+                        <div class="text-sm text-green-100">Brand Systems</div>
+                    </div>
+                    <div class="bg-white/20 backdrop-blur-sm rounded-lg p-6">
+                        <div class="text-3xl font-bold metrics-display">12</div>
+                        <div class="text-sm text-green-100">Containers</div>
+                    </div>
+                    <div class="bg-white/20 backdrop-blur-sm rounded-lg p-6">
+                        <div class="text-3xl font-bold metrics-display">∞</div>
+                        <div class="text-sm text-green-100">Possibilities</div>
+                    </div>
+                </div>
+                
+                <div class="space-x-4">
+                    <button class="bg-white text-green-600 px-8 py-4 rounded-xl font-semibold hover:bg-green-50 transition-all transform hover:scale-105">
+                        <i class="fas fa-rocket mr-2"></i>Launch Ecosystem
+                    </button>
+                    <button class="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold hover:bg-white hover:text-green-600 transition-all" title="Learn More">
+                        Learn More
+                    </button>
+            <div class="absolute bottom-20 right-10 w-96 h-96 bg-white rounded-full animate-pulse pulse-delay-2"></div>
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-white rounded-full animate-pulse pulse-delay-4"></div>
+                </div>
+            </div>
+                    <button class="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold hover:bg-white hover:text-green-600 transition-all" title="Learn More">
+        
+        <!-- Animated Background -->
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-20 left-10 w-64 h-64 bg-white rounded-full animate-pulse"></div>
+            <div class="absolute bottom-20 right-10 w-96 h-96 bg-white rounded-full animate-pulse pulse-delay-2"></div>
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-white rounded-full animate-pulse pulse-delay-4"></div>
+        </div>
+    </section>
+
+            <div class="absolute bottom-20 right-10 w-96 h-96 bg-white rounded-full animate-pulse pulse-delay-2"></div>
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-white rounded-full animate-pulse pulse-delay-4"></div>
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">🌿 Complete Ecosystem</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Your restored Fruitful Global ecosystem with all original styling and functionality, 
+                    enhanced with modern capabilities and seamless integration.
+                </p>
+            </div>
+
+            <div class="system-grid">
+                <!-- Fruitful Core Apps -->
+                <div class="ecosystem-card rounded-2xl p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-r from-green-400 to-green-600 rounded-xl flex items-center justify-center mr-4">
+                            <i class="fas fa-seedling text-white text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-800">Fruitful Core</h3>
+                            <p class="text-gray-600">Main ecosystem applications</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <span class="font-medium">🌱 Global Agriculture Dashboard</span>
+                            <span class="status-indicator text-green-600 text-sm">Active</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <span class="font-medium">🔬 CodeNest Enterprise Platform</span>
+                            <span class="status-indicator text-green-600 text-sm">Active</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <span class="font-medium">📜 Welcome to Fruitful</span>
+                            <span class="status-indicator text-green-600 text-sm">Active</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <span class="font-medium">🍃 Fruitful Home</span>
+                            <span class="status-indicator text-green-600 text-sm">Active</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAA Systems -->
+                <div class="ecosystem-card rounded-2xl p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-r from-blue-400 to-blue-600 rounded-xl flex items-center justify-center mr-4">
+                            <i class="fas fa-building text-white text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-800">FAA Systems</h3>
+                            <p class="text-gray-600">Real estate & intelligence</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <span class="font-medium">🏠 Real Estate AI™</span>
+                            <span class="status-indicator text-blue-600 text-sm">High Priority</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <span class="font-medium">🌍 Mining Intelligence Grid</span>
+                            <span class="status-indicator text-blue-600 text-sm">Active</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <span class="font-medium">🏛️ Municipal Intelligence</span>
+                            <span class="status-indicator text-blue-600 text-sm">Active</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Business Applications -->
+                <div class="ecosystem-card rounded-2xl p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-r from-purple-400 to-purple-600 rounded-xl flex items-center justify-center mr-4">
+                            <i class="fas fa-briefcase text-white text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-800">Business Tools</h3>
+                            <p class="text-gray-600">Operational systems</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <span class="font-medium">📊 Payroll OS</span>
+                            <span class="status-indicator text-purple-600 text-sm">Active</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <span class="font-medium">🍽️ Fruitful Kitchens</span>
+                            <span class="status-indicator text-purple-600 text-sm">Active</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <span class="font-medium">☕ Fruitful Coffee</span>
+                            <span class="status-indicator text-purple-600 text-sm">Active</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI & Intelligence -->
+                <div class="ecosystem-card rounded-2xl p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-r from-orange-400 to-orange-600 rounded-xl flex items-center justify-center mr-4">
+                            <i class="fas fa-robot text-white text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-800">AI Intelligence</h3>
+                            <p class="text-gray-600">Smart automation</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <span class="font-medium">🤖 AICreator</span>
+                            <span class="status-indicator text-orange-600 text-sm">Active</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <span class="font-medium">🏥 HealthTrack</span>
+                            <span class="status-indicator text-orange-600 text-sm">Active</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <span class="font-medium">🎓 Agent University</span>
+                            <span class="status-indicator text-orange-600 text-sm">Active</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Brand Showcase -->
+    <section id="brands" class="py-20 bg-gradient-to-br from-gray-50 to-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">🎨 Brand Universe</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    All your brands unified with consistent styling and seamless integration
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Fruitful Global Brand -->
+                <div class="brand-container container-showcase bg-gradient-to-br from-green-400 to-green-600 text-white p-8">
+                    <div class="text-4xl mb-4">🌱</div>
+                    <h3 class="text-2xl font-bold mb-2">Fruitful Global</h3>
+                    <p class="text-green-100 mb-4">Core ecosystem platform</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm bg-white/20 px-3 py-1 rounded-full">Primary</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+
+                <!-- FAA Brand -->
+                <div class="brand-container container-showcase bg-gradient-to-br from-blue-400 to-blue-600 text-white p-8">
+                    <div class="text-4xl mb-4">🏢</div>
+                    <h3 class="text-2xl font-bold mb-2">FAA Systems</h3>
+                    <p class="text-blue-100 mb-4">Real estate & intelligence</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm bg-white/20 px-3 py-1 rounded-full">Enterprise</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+
+                <!-- CodeNest Brand -->
+                <div class="brand-container container-showcase bg-gradient-to-br from-purple-400 to-purple-600 text-white p-8">
+                    <div class="text-4xl mb-4">🔬</div>
+                    <h3 class="text-2xl font-bold mb-2">CodeNest™</h3>
+                    <p class="text-purple-100 mb-4">Development platform</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm bg-white/20 px-3 py-1 rounded-full">Developer</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+
+                <!-- HotStack Brand -->
+                <div class="brand-container container-showcase bg-gradient-to-br from-orange-400 to-red-500 text-white p-8">
+                    <div class="text-4xl mb-4">🔥</div>
+                    <h3 class="text-2xl font-bold mb-2">HotStack™</h3>
+                    <p class="text-orange-100 mb-4">Rapid deployment</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm bg-white/20 px-3 py-1 rounded-full">Intake</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+
+                <!-- VaultMesh Brand -->
+                <div class="brand-container container-showcase bg-gradient-to-br from-indigo-400 to-indigo-600 text-white p-8">
+                    <div class="text-4xl mb-4">🌐</div>
+                    <h3 class="text-2xl font-bold mb-2">VaultMesh™</h3>
+                    <p class="text-indigo-100 mb-4">Connectivity layer</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm bg-white/20 px-3 py-1 rounded-full">Network</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+
+                <!-- Banimal Brand -->
+                <div class="brand-container container-showcase bg-gradient-to-br from-yellow-400 to-yellow-600 text-white p-8">
+                    <div class="text-4xl mb-4">🦍</div>
+                    <h3 class="text-2xl font-bold mb-2">Banimal Eco</h3>
+                    <p class="text-yellow-100 mb-4">Ecosystem connector</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm bg-white/20 px-3 py-1 rounded-full">Connector</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Systems Integration -->
+    <section id="systems" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">⚙️ Integrated Systems</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    All systems working in perfect harmony
+                </p>
+            </div>
+
+            <div class="bg-gray-50 rounded-3xl p-12">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h3 class="text-3xl font-bold text-gray-800 mb-6">System Architecture</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center p-4 bg-white rounded-xl shadow-sm">
+                                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-database text-green-600"></i>
+                                </div>
+                                <div>
+                                    <div class="font-semibold text-gray-800">Vault Allocation System</div>
+                                    <div class="text-gray-600 text-sm">R2-style data management</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center p-4 bg-white rounded-xl shadow-sm">
+                                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-network-wired text-blue-600"></i>
+                                </div>
+                                <div>
+                                    <div class="font-semibold text-gray-800">Noodle Juice Flow</div>
+                                    <div class="text-gray-600 text-sm">App ecosystem management</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center p-4 bg-white rounded-xl shadow-sm">
+                                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-rocket text-purple-600"></i>
+                                </div>
+                                <div>
+                                    <div class="font-semibold text-gray-800">HotStack Deployment</div>
+                                    <div class="text-gray-600 text-sm">180-second rapid deployment</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-2xl p-8 shadow-lg">
+                        <div class="text-center mb-6">
+                            <h4 class="text-xl font-bold text-gray-800">Live System Status</h4>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="font-medium">Ecosystem Health</span>
+                                <span class="flex items-center text-green-600">
+                                    <div class="w-3 h-3 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                                    Excellent
+                                </span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <span class="font-medium">Apps Flowing</span>
+                                <span class="metrics-display text-2xl font-bold text-blue-600">65/67</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <span class="font-medium">Deployment Ready</span>
+                                <span class="flex items-center text-orange-600">
+                                    <div class="w-3 h-3 bg-orange-500 rounded-full mr-2 animate-pulse"></div>
+                                    180s
+                                </span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <span class="font-medium">Network Status</span>
+                                <span class="flex items-center text-green-600">
+                                    <div class="w-3 h-3 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                                    Online
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Container Showcase -->
+    <section id="containers" class="py-20 bg-gradient-to-br from-gray-900 to-black text-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">📦 Container Universe</h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    All your containerized applications and services in one view
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Container items would be dynamically generated -->
+                <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:border-green-500 transition-all">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="text-2xl">🌱</div>
+                        <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                    </div>
+                    <h3 class="font-bold text-lg mb-2">fruitful-core</h3>
+                    <p class="text-gray-400 text-sm mb-3">Main application container</p>
+                    <div class="text-xs text-gray-500">Status: Running</div>
+                </div>
+
+                <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:border-blue-500 transition-all">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="text-2xl">🏢</div>
+                        <div class="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
+                    </div>
+                    <h3 class="font-bold text-lg mb-2">faa-systems</h3>
+                    <p class="text-gray-400 text-sm mb-3">Real estate intelligence</p>
+                    <div class="text-xs text-gray-500">Status: Running</div>
+                </div>
+
+                <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:border-purple-500 transition-all">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="text-2xl">🔬</div>
+                        <div class="w-3 h-3 bg-purple-500 rounded-full animate-pulse"></div>
+                    </div>
+                    <h3 class="font-bold text-lg mb-2">codenest-platform</h3>
+                    <p class="text-gray-400 text-sm mb-3">Development environment</p>
+                    <div class="text-xs text-gray-500">Status: Running</div>
+                </div>
+
+                <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:border-orange-500 transition-all">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="text-2xl">🔥</div>
+                        <div class="w-3 h-3 bg-orange-500 rounded-full animate-pulse"></div>
+                    </div>
+                    <h3 class="font-bold text-lg mb-2">hotstack-intake</h3>
+                    <p class="text-gray-400 text-sm mb-3">Rapid deployment system</p>
+                    <div class="text-xs text-gray-500">Status: Running</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Data Recovery Section -->
+    <section class="py-20 bg-gradient-to-r from-green-600 to-blue-600 text-white">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-4xl font-bold mb-6">🔄 Restore Complete Ecosystem</h2>
+            <p class="text-xl mb-8 max-w-3xl mx-auto">
+                Reconnect your Google Drive and Mac database to restore the complete 
+                Fruitful Global ecosystem with all original styling and functionality.
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+                    <i class="fab fa-google-drive text-4xl mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Google Drive Sync</h3>
+                    <p class="text-sm opacity-90">Restore files and assets from your Drive</p>
+                </div>
+                
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+                    <i class="fas fa-database text-4xl mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Mac Database</h3>
+                    <p class="text-sm opacity-90">Pull local database and configurations</p>
+                </div>
+                
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+                    <i class="fas fa-code-branch text-4xl mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Repository Rebuild</h3>
+                    <p class="text-sm opacity-90">Recreate the complete repository structure</p>
+                </div>
+            </div>
+            
+            <div class="space-x-4">
+                <button class="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold hover:bg-gray-100 transition-all transform hover:scale-105">
+                    <i class="fas fa-cloud-download-alt mr-2"></i>Connect Google Drive
+                </button>
+                <button class="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold hover:bg-white hover:text-blue-600 transition-all">
+                    <i class="fas fa-desktop mr-2"></i>Sync Mac Database
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="col-span-2">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="brand-gradient w-12 h-12 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-seedling text-white text-xl"></i>
+                        </div>
+                        <div>
+                        <a href="#" title="GitHub" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-green-600 transition-colors">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" title="Google Drive" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-green-600 transition-colors">
+                        <a href="#" title="GitHub" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-green-600 transition-colors">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" title="Google Drive" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-green-600 transition-colors">
+                            <i class="fab fa-google-drive"></i>
+                        </a>
+                        <a href="#" title="Cloud" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-green-600 transition-colors">
+                            <i class="fas fa-cloud"></i>
+                        </a>
+                        <a href="#" title="GitHub" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-green-600 transition-colors">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" title="Google Drive" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-green-600 transition-colors">
+                            <i class="fab fa-google-drive"></i>
+                        </a>
+                        <a href="#" title="Cloud" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-green-600 transition-colors">
+                            <i class="fas fa-cloud"></i>
+                        </a>
+                    </div>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#ecosystem" class="hover:text-white transition-colors">Ecosystem</a></li>
+                        <li><a href="#brands" class="hover:text-white transition-colors">Brands</a></li>
+                        <li><a href="#systems" class="hover:text-white transition-colors">Systems</a></li>
+                        <li><a href="#containers" class="hover:text-white transition-colors">Containers</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Status</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-center">
+                            <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                            All Systems Operational
+                        </li>
+                        <li class="flex items-center">
+                            <div class="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+                            67 Apps Monitored
+                        </li>
+                        <li class="flex items-center">
+                            <div class="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
+                            Ready for Restoration
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 Fruitful Global. Complete ecosystem platform restored and enhanced.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize ecosystem
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🌱 Fruitful Global Ecosystem Initialized');
+            
+            // Animate metrics
+            const metrics = document.querySelectorAll('.metrics-display');
+            metrics.forEach(metric => {
+                const finalValue = parseInt(metric.textContent);
+                if (!isNaN(finalValue)) {
+                    let currentValue = 0;
+                    const increment = Math.ceil(finalValue / 50);
+                    const timer = setInterval(() => {
+                        currentValue += increment;
+                        if (currentValue >= finalValue) {
+                            currentValue = finalValue;
+                            clearInterval(timer);
+                        }
+                        metric.textContent = currentValue;
+                    }, 50);
+                }
+            });
+            
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

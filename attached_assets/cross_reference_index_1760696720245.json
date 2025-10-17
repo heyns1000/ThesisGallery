@@ -1,0 +1,26 @@
+{
+  "generated": "2025-10-16T12:00:00Z",
+  "version": "4.1.0",
+  "cross_references": {
+    "repository_dependencies": {
+      "banimal": ["noodle.juice", "vaultmesh", "faa.zone"],
+      "noodle.juice": ["vaultmesh"],
+      "seedwave_sectors": ["banimal", "api.vault.seedwave.faa.zone"]
+    },
+    "platform_integrations": {
+      "stackblitz": ["banimal", "seedwave-dashboard"],
+      "bolt_new": ["ecosystem-manager", "api-gateway"],
+      "lovable": ["banimal-mobile", "homemart-interface"]
+    },
+    "replit_connections": {
+      "profile_1": ["mega_project", "development_environments"],
+      "profile_2": ["backup_systems", "experimental_projects"]
+    }
+  },
+  "integration_map": {
+    "wordpress_plugins": ["banimal-connector.php"],
+    "deployment_targets": ["hotstack.faa.zone"],
+    "api_endpoints": ["x.ai", "google-drive", "replit"],
+    "database_connections": ["wp_banimal_vault_data"]
+  }
+}

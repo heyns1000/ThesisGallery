@@ -1,0 +1,1 @@
+test content, this is all content in the test wire file

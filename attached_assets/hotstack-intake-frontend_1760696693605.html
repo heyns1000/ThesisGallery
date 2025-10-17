@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔥 HotStack™ | Banimal Ecosystem Intake</title>
+    <!-- External CDN dependencies - consider local hosting for production -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #fff;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Animated background particles */
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #fbbf24;
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 1; }
+        }
+        
+        .hotstack-container {
+            background: rgba(0, 0, 0, 0.8);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .countdown-timer {
+            font-family: 'Courier New', monospace;
+            font-size: 3rem;
+            font-weight: bold;
+            color: #fbbf24;
+            text-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+        }
+        
+        .activation-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            padding: 8px;
+            border-radius: 6px;
+            background: rgba(251, 191, 36, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .activation-item:hover {
+            background: rgba(251, 191, 36, 0.2);
+            transform: translateX(5px);
+        }
+        
+        .btn-hotstack {
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            border: none;
+            color: #1a1a1a;
+            font-weight: 600;
+            padding: 12px 24px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3);
+        }
+        
+        .btn-hotstack:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(251, 191, 36, 0.4);
+        }
+        
+        .drop-zone {
+            border: 2px dashed #fbbf24;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: rgba(251, 191, 36, 0.05);
+        }
+        
+        .drop-zone:hover {
+            border-color: #f59e0b;
+            background: rgba(251, 191, 36, 0.1);
+        }
+        
+        .hotstack-station {
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .hotstack-station:hover {
+            background: rgba(251, 191, 36, 0.2);
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated background particles -->
+    <div id="particles-container"></div>
+
+    <main class="container mx-auto px-4 py-8 relative z-10">
+        <div class="max-w-4xl mx-auto">
+            <!-- Main HotStack Interface -->
+            <div class="hotstack-container p-8 text-center mb-8">
+                <div class="flex items-center justify-center mb-6">
+                    <h1 class="text-4xl font-bold mr-4">🔥 Fruitful | HotStack™</h1>
+                </div>
+                
+                <p class="text-lg mb-2 text-gray-300">Omnidrop Your Digital Presence. Live in Minutes.</p>
+                <p class="text-xl font-semibold mb-8 text-yellow-400">Branded Forever.</p>
+                
+                <!-- Live Countdown Timer -->
+                <div class="countdown-timer mb-8" id="countdown-display">02:52</div>
+                
+                <!-- What Your Omnidrop Activates -->
+                <div class="text-left max-w-2xl mx-auto mb-8">
+                    <h3 class="text-xl font-semibold mb-4 text-center">What Your Omnidrop Activates:</h3>
+                    
+                    <div class="activation-item">
+                        <span class="text-yellow-400 mr-3">⚡</span>
+                        <strong>**Rapid Deployment:**</strong> Your Scroll goes Live in under 180 seconds via Omnidrop Signal.
+                    </div>
+                    
+                    <div class="activation-item">
+                        <span class="text-yellow-400 mr-3">⚡</span>
+                        <strong>**Integrated Ecosystem:**</strong> Auto DNS Hook + Curated Template Packs for seamless launch.
+                    </div>
+                    
+                    <div class="activation-item">
+                        <span class="text-yellow-400 mr-3">⚡</span>
+                        <strong>**Intelligent Foundation:**</strong> Powered by ScrollStack™, VaultDNS™, and MeshNest™ protocols.
+                    </div>
+                    
+                    <div class="activation-item">
+                        <span class="text-yellow-400 mr-3">⚡</span>
+                        <strong>**Treaty-Linked Economy:**</strong> Includes a Royalty-Linked License from Fruitful Global's Treaty Grid.
+                    </div>
+                    
+                    <div class="activation-item">
+                        <span class="text-yellow-400 mr-3">⚡</span>
+                        <strong>**ClaimRoot™ Verified:**</strong> Secure, traceable site ownership for every deployed scroll.
+                    </div>
+                </div>
+                
+                <!-- Main Action Button -->
+                <button aria-label="Enter CodeNest system" class="btn-hotstack text-lg px-8 py-4 mb-8" id="enter-hotstack-btn">
+                    → Enter Fruitful | CodeNest™
+                </button>
+                
+                <!-- Drag & Drop Zone -->
+                <div class="drop-zone" id="omnidrop-zone">
+                    <div class="text-2xl mb-2">📂</div>
+                    <p class="text-gray-300 mb-2">Drag & Drop HTML/PDF here to Omnidrop into CodeNest™</p>
+                    <p class="text-sm text-gray-500">(Adheres to the 3-minute rule for rapid registration)</p>
+                </div>
+            </div>
+            
+            <!-- Nationwide HotStack Stations -->
+            <div class="hotstack-container p-8 mb-8">
+                <h2 class="text-2xl font-bold text-center mb-6">🗺️ Nationwide HotStack Stations</h2>
+                <p class="text-center text-gray-300 mb-6">Your digital filling stations across the country</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="hotstack-station">
+                        <h3 class="font-bold text-yellow-400">🏢 Cape Town HotStack</h3>
+                        <p class="text-sm text-gray-300">Western Cape Digital Gateway</p>
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="text-xs bg-green-600 px-2 py-1 rounded">ACTIVE</span>
+                            <button class="btn-hotstack text-xs px-3 py-1">Connect</button>
+                        </div>
+                    </div>
+                    
+                    <div class="hotstack-station">
+                        <h3 class="font-bold text-yellow-400">🏙️ Johannesburg HotStack</h3>
+                        <p class="text-sm text-gray-300">Gauteng Business Hub</p>
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="text-xs bg-green-600 px-2 py-1 rounded">ACTIVE</span>
+                            <button class="btn-hotstack text-xs px-3 py-1">Connect</button>
+                        </div>
+                    </div>
+                    
+                    <div class="hotstack-station">
+                        <h3 class="font-bold text-yellow-400">🌊 Durban HotStack</h3>
+                        <p class="text-sm text-gray-300">KwaZulu-Natal Port</p>
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="text-xs bg-yellow-600 px-2 py-1 rounded">SETUP</span>
+                            <button class="btn-hotstack text-xs px-3 py-1">Connect</button>
+                        </div>
+                    </div>
+                    
+                    <div class="hotstack-station">
+                        <h3 class="font-bold text-yellow-400">🏔️ Bloemfontein HotStack</h3>
+                        <p class="text-sm text-gray-300">Free State Central</p>
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="text-xs bg-yellow-600 px-2 py-1 rounded">SETUP</span>
+                            <button class="btn-hotstack text-xs px-3 py-1">Connect</button>
+                        </div>
+                    </div>
+                    
+                    <div class="hotstack-station">
+                        <h3 class="font-bold text-yellow-400">🌄 Polokwane HotStack</h3>
+                        <p class="text-sm text-gray-300">Limpopo Gateway</p>
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="text-xs bg-gray-600 px-2 py-1 rounded">PLANNED</span>
+                            <button class="btn-hotstack text-xs px-3 py-1" disabled>Soon</button>
+                        </div>
+                    </div>
+                    
+                    <div class="hotstack-station">
+                        <h3 class="font-bold text-yellow-400">⛰️ Lesotho HotStack</h3>
+                        <p class="text-sm text-gray-300">Mountain Kingdom</p>
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="text-xs bg-blue-600 px-2 py-1 rounded">SPECIAL</span>
+                            <button class="btn-hotstack text-xs px-3 py-1">Connect</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Integration with Noodle Juice Flow -->
+            <div class="hotstack-container p-8 mb-8">
+                <h2 class="text-2xl font-bold text-center mb-6">🍝 Noodle Juice Integration</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="text-center">
+                        <h3 class="font-bold text-yellow-400 mb-4">📱 Your 67 Replit Apps</h3>
+                        <div class="bg-gray-800 p-4 rounded-lg">
+                            <div class="text-2xl font-bold text-green-400" id="apps-counter">67</div>
+                            <p class="text-sm text-gray-300">Private Apps Flowing</p>
+                            <button class="btn-hotstack mt-3 text-sm">View All Apps</button>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <h3 class="font-bold text-yellow-400 mb-4">🔗 Referral System</h3>
+                        <div class="bg-gray-800 p-4 rounded-lg">
+                            <p class="text-xs text-gray-400 mb-2">Your Replit Referral:</p>
+                            <div class="bg-gray-900 p-2 rounded text-xs font-mono break-all">
+                                replit.com/refer/heynsschoeman
+                            </div>
+                            <button class="btn-hotstack mt-3 text-sm" id="copy-referral">Copy Link</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Live Status Console -->
+            <div class="hotstack-container p-6">
+                <h3 class="text-lg font-bold mb-4">📊 HotStack Live Status</h3>
+                <div class="bg-black rounded-lg p-4 font-mono text-sm">
+                    <div class="text-green-400" id="status-log">
+                        <div>[12:52:30] HotStack™ System Online</div>
+                        <div>[12:52:31] Monitoring 67 Replit apps via Noodle Juice</div>
+                        <div>[12:52:32] Vault allocation system ready</div>
+                        <div>[12:52:33] Nationwide stations: 6 locations</div>
+                        <div>[12:52:34] Referral system active</div>
+                        <div>[12:52:35] Omnidrop zone initialized</div>
+                        <div class="text-yellow-400">[12:52:36] Ready for digital presence deployment</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Footer -->
+            <footer class="text-center mt-8 text-gray-400 text-sm">
+                <p>Powered by Fruitful Global | ScrollSynced | Vault-Verified</p>
+                <p class="mt-2">🦍 Banimal Ecosystem | 🍝 Noodle Juice Flow | 🗄️ Vault Allocation</p>
+            </footer>
+        </div>
+    </main>
+
+    <script>
+        // Initialize particles background
+        function createParticles() {
+            const container = document.getElementById('particles-container');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                container.appendChild(particle);
+            }
+        }
+        
+        // Countdown timer
+        let minutes = 2;
+        let seconds = 52;
+        
+        function updateCountdown() {
+            const display = document.getElementById('countdown-display');
+            const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            display.textContent = formattedTime;
+            
+            if (seconds > 0) {
+                seconds--;
+            } else if (minutes > 0) {
+                minutes--;
+                seconds = 59;
+            } else {
+                // Reset countdown
+                minutes = 2;
+                seconds = 52;
+            }
+        }
+        
+        // Live status logger
+        function addStatusLog(message) {
+            const log = document.getElementById('status-log');
+            const time = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.innerHTML = `<span class="text-blue-400">[${time}]</span> ${message}`;
+            log.appendChild(logEntry);
+            log.scrollTop = log.scrollHeight;
+            
+            // Keep only last 10 entries
+            if (log.children.length > 10) {
+                log.removeChild(log.firstChild);
+            }
+        }
+        
+        // Event listeners
+        document.getElementById('enter-hotstack-btn').addEventListener('click', function() {
+            addStatusLog('🚀 Initiating CodeNest™ entry protocol...');
+            setTimeout(() => {
+                addStatusLog('✅ CodeNest™ connection established');
+                // In production, redirect to fruitful.faa.zone
+                window.open('https://fruitful.faa.zone', '_blank');
+            }, 1000);
+        });
+        
+        document.getElementById('copy-referral').addEventListener('click', function() {
+            navigator.clipboard.writeText('https://replit.com/refer/heynsschoeman').catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = 'https://replit.com/refer/heynsschoeman';
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+            });
+            this.textContent = 'Copied!';
+            addStatusLog('📋 Referral link copied to clipboard');
+            setTimeout(() => {
+                this.textContent = 'Copy Link';
+            }, 2000);
+        });
+        
+        // Drag and drop functionality
+        const dropZone = document.getElementById('omnidrop-zone');
+        
+        dropZone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#f59e0b';
+            this.style.background = 'rgba(251, 191, 36, 0.2)';
+        });
+        
+        dropZone.addEventListener('dragleave', function(e) {
+            this.style.borderColor = '#fbbf24';
+            this.style.background = 'rgba(251, 191, 36, 0.05)';
+        });
+        
+        dropZone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#fbbf24';
+            this.style.background = 'rgba(251, 191, 36, 0.05)';
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                addStatusLog(`📂 Processing ${files.length} file(s) for Omnidrop...`);
+                setTimeout(() => {
+                    addStatusLog('⚡ Rapid deployment initiated');
+                    addStatusLog('🔗 DNS hooks activated');
+                    addStatusLog('✅ Omnidrop complete - Site live in 180 seconds');
+                }, 1000);
+            }
+        });
+        
+        // HotStack station connections
+        document.querySelectorAll('.hotstack-station button:not([disabled])').forEach(button => {
+            button.addEventListener('click', function() {
+                const stationName = this.closest('.hotstack-station').querySelector('h3').textContent;
+                addStatusLog(`🔌 Connecting to ${stationName}...`);
+                setTimeout(() => {
+                    addStatusLog(`✅ Connected to ${stationName}`);
+                }, 1500);
+            });
+        });
+        
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            setInterval(updateCountdown, 1000);
+            
+            // Simulate live activity
+            setTimeout(() => {
+                addStatusLog('📊 Noodle Juice flow monitoring active');
+            }, 3000);
+            
+            setTimeout(() => {
+                addStatusLog('🗄️ Vault allocation system synchronized');
+            }, 6000);
+            
+            setTimeout(() => {
+                addStatusLog('🌍 Nationwide HotStack network operational');
+            }, 9000);
+        });
+    </script>
+</body>
+</html>
