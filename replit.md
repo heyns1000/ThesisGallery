@@ -11,6 +11,25 @@ Preferred communication style: Simple, everyday language.
 ## UI/UX Decisions
 The frontend uses **React 18 with TypeScript** and **Vite**, leveraging **Shadcn/ui** components built on **Radix UI** and styled with **Tailwind CSS**. It features a dark theme, custom CSS variables, responsive design, **Wouter** for routing, and **TanStack Query** for server state management. Real-time updates are facilitated via WebSockets.
 
+### VaultKey/Banimal Design System
+The application follows the modern **VaultKey/Banimal design aesthetic** featuring:
+
+-   **Color Palette**:
+    -   Dark backgrounds: `hsl(220, 26%, 14%)` (#1a202c), `hsl(224, 21%, 16%)` (#2d3748)
+    -   Energetic accents: Blue `hsl(203, 93%, 68%)` (#60A5FA), Green `hsl(142, 76%, 36%)` (#34D399), Amber `hsl(43, 96%, 56%)` (#FBBF24)
+    -   Light foreground: `hsl(210, 40%, 98%)`
+    -   Muted text: `hsl(218, 11%, 65%)`
+
+-   **Typography**: **Inter** font family throughout for modern, professional appearance
+
+-   **Component Styling**:
+    -   **Energetic Cards** (`.energetic-card`): Dark gradient backgrounds with subtle borders and shadows
+    -   **Gradient Status Badges**: Green for success, Blue for in-progress, Amber for warnings
+    -   **Custom Scrollbars**: Dark themed with blue hover effects
+    -   **Tri-color Gradients**: Header titles use blue → green → amber gradient
+
+-   **Visual Design**: Modern card-based layouts, smooth transitions, hover effects, and Chart.js/Recharts visualizations
+
 ## Technical Implementations
 -   **Backend**: **Node.js with Express.js** and **TypeScript**, providing RESTful APIs and WebSocket support.
 -   **Data Storage**: **PostgreSQL** via **Neon Database** (serverless) with **Drizzle ORM** for type-safe schema management and migrations using Drizzle Kit.
