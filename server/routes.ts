@@ -537,6 +537,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Sector routes - FAA.ZONE INDEX Official Sectors
+  app.get("/api/sectors", async (req, res) => {
+    try {
+      const sectors = await storage.getSectors();
+      res.json(sectors);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch sectors" });
+    }
+  });
+
+  app.get("/api/sectors/stats", async (req, res) => {
+    try {
+      const sectors = await storage.getSectors();
+      const activeSectors = sectors.filter(s => s.isActive);
+      const totalCoreBrands = activeSectors.reduce((sum, s) => sum + s.coreBrands, 0);
+      const totalNodes = activeSectors.reduce((sum, s) => sum + s.totalNodes, 0);
+      
+      res.json({
+        totalSectors: sectors.length,
+        activeSectors: activeSectors.length,
+        totalCoreBrands,
+        totalNodes,
+        sectors: activeSectors
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch sector stats" });
+    }
+  });
+
   // Compliance routes
   app.get("/api/compliance/logs", async (req, res) => {
     try {

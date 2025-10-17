@@ -4,6 +4,21 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Link } from "wouter";
 import { getContent } from "@/lib/appData";
+import { useQuery } from "@tanstack/react-query";
+import type { Sector } from "@shared/schema";
+
+// Fetch sector stats from API
+function useSectorStats() {
+  return useQuery<{
+    totalSectors: number;
+    activeSectors: number;
+    totalCoreBrands: number;
+    totalNodes: number;
+    sectors: Sector[];
+  }>({
+    queryKey: ["/api/sectors/stats"],
+  });
+}
 
 const sectorIndex = [
   {
@@ -205,6 +220,9 @@ export default function AdminPortal() {
   const [subnodes, setSubnodes] = useState("");
   const [adminStatus, setAdminStatus] = useState("Ready to receive input.");
 
+  // Fetch sector data from API
+  const { data: sectorStats, isLoading: isSectorsLoading } = useSectorStats();
+
   const handleAddBrand = () => {
     if (!brandName || !subnodes) {
       setAdminStatus("⚠️ Please fill in both fields.");
@@ -291,26 +309,30 @@ export default function AdminPortal() {
                 <p className="text-sm text-gray-500">VaultMesh Actuarial Grid · Real-Time Scroll Activity</p>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-indigo-600">
-                      {sectorIndex.reduce((sum, sector) => sum + sector.brands, 0)}
+                {isSectorsLoading ? (
+                  <div className="text-center py-8 text-gray-500">Loading sector data...</div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-indigo-600" data-testid="text-total-brands">
+                        {sectorStats?.totalCoreBrands || 0}
+                      </div>
+                      <div className="text-sm text-gray-500">Total Core Brands</div>
                     </div>
-                    <div className="text-sm text-gray-500">Total Core Brands</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-green-600">
-                      {sectorIndex.reduce((sum, sector) => sum + sector.nodes, 0)}
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-green-600" data-testid="text-total-nodes">
+                        {sectorStats?.totalNodes || 0}
+                      </div>
+                      <div className="text-sm text-gray-500">Total Nodes</div>
                     </div>
-                    <div className="text-sm text-gray-500">Total Nodes</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-purple-600">
-                      {sectorIndex.length}
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-purple-600" data-testid="text-active-sectors">
+                        {sectorStats?.activeSectors || 0}
+                      </div>
+                      <div className="text-sm text-gray-500">Active Sectors</div>
                     </div>
-                    <div className="text-sm text-gray-500">Active Sectors</div>
                   </div>
-                </div>
+                )}
               </CardContent>
             </Card>
 
@@ -469,32 +491,46 @@ export default function AdminPortal() {
                       </tr>
                     </thead>
                     <tbody className="text-gray-700">
-                      {sectorIndex.map((sector, index) => (
-                        <tr key={index} className="border-t hover:bg-gray-50">
-                          <td className="px-4 py-2 text-xl">{sector.glyph}</td>
-                          <td className="px-4 py-2 font-medium">{sector.sector}</td>
-                          <td className="px-4 py-2">{sector.brands}</td>
-                          <td className="px-4 py-2">{sector.nodes.toLocaleString()}</td>
-                          <td className="px-4 py-2">{sector.monthlyFee}</td>
-                          <td className="px-4 py-2">{sector.annualFee}</td>
-                          <td className="px-4 py-2">
-                            <Badge className={getTierColor(sector.tier)}>
-                              {sector.tier}
-                            </Badge>
-                          </td>
-                          <td className="px-4 py-2">{sector.region}</td>
-                          <td className="px-4 py-2">
-                            <div className="flex gap-2">
-                              <Button variant="outline" size="sm" className="text-blue-600 hover:text-blue-800">
-                                View
-                              </Button>
-                              <Button variant="outline" size="sm" className="text-green-600 hover:text-green-800">
-                                Deploy
-                              </Button>
-                            </div>
+                      {isSectorsLoading ? (
+                        <tr>
+                          <td colSpan={9} className="px-4 py-8 text-center text-gray-500">
+                            Loading sectors...
                           </td>
                         </tr>
-                      ))}
+                      ) : sectorStats?.sectors && sectorStats.sectors.length > 0 ? (
+                        sectorStats.sectors.map((sector) => (
+                          <tr key={sector.id} className="border-t hover:bg-gray-50" data-testid={`sector-row-${sector.id}`}>
+                            <td className="px-4 py-2 text-xl">{sector.glyph}</td>
+                            <td className="px-4 py-2 font-medium">{sector.sectorName}</td>
+                            <td className="px-4 py-2">{sector.coreBrands}</td>
+                            <td className="px-4 py-2">{sector.totalNodes.toLocaleString()}</td>
+                            <td className="px-4 py-2">{sector.monthlyFee || 'N/A'}</td>
+                            <td className="px-4 py-2">{sector.annualFee || 'N/A'}</td>
+                            <td className="px-4 py-2">
+                              <Badge className={getTierColor(sector.tier || 'B')}>
+                                {sector.tier || 'N/A'}
+                              </Badge>
+                            </td>
+                            <td className="px-4 py-2">{sector.region || 'N/A'}</td>
+                            <td className="px-4 py-2">
+                              <div className="flex gap-2">
+                                <Button variant="outline" size="sm" className="text-blue-600 hover:text-blue-800">
+                                  View
+                                </Button>
+                                <Button variant="outline" size="sm" className="text-green-600 hover:text-green-800">
+                                  Deploy
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={9} className="px-4 py-8 text-center text-gray-500">
+                            No sectors available
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>

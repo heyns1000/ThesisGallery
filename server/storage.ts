@@ -83,7 +83,10 @@ import {
   type EcosystemApp,
   type InsertEcosystemApp,
   type EcosystemSyncLog,
-  type InsertEcosystemSyncLog
+  type InsertEcosystemSyncLog,
+  // Sector Types
+  type Sector,
+  type InsertSector
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -116,6 +119,12 @@ export interface IStorage {
   getBrand(id: string): Promise<Brand | undefined>;
   createBrand(brand: InsertBrand): Promise<Brand>;
   updateBrand(id: string, updates: Partial<Brand>): Promise<Brand | undefined>;
+  
+  // Sector methods
+  getSectors(): Promise<Sector[]>;
+  getSector(id: string): Promise<Sector | undefined>;
+  createSector(sector: InsertSector): Promise<Sector>;
+  updateSector(id: string, updates: Partial<Sector>): Promise<Sector | undefined>;
   
   // Compliance methods
   getComplianceLogs(): Promise<ComplianceLog[]>;
@@ -339,6 +348,7 @@ export class MemStorage implements IStorage {
   private galleries: Map<string, Gallery> = new Map();
   private conversations: Map<string, Conversation> = new Map();
   private brands: Map<string, Brand> = new Map();
+  private sectors: Map<string, Sector> = new Map();
   private complianceLogs: Map<string, ComplianceLog> = new Map();
   private processingQueue: Map<string, ProcessingQueue> = new Map();
   private teamMembers: Map<string, TeamMember> = new Map();
@@ -585,6 +595,46 @@ export class MemStorage implements IStorage {
     
     const updated = { ...existing, ...updates, updatedAt: new Date() };
     this.brands.set(id, updated);
+    return updated;
+  }
+
+  // Sector methods
+  async getSectors(): Promise<Sector[]> {
+    return Array.from(this.sectors.values()).sort(
+      (a, b) => (a.sortOrder || 0) - (b.sortOrder || 0)
+    );
+  }
+
+  async getSector(id: string): Promise<Sector | undefined> {
+    return this.sectors.get(id);
+  }
+
+  async createSector(insertSector: InsertSector): Promise<Sector> {
+    const id = randomUUID();
+    const now = new Date();
+    const sector: Sector = {
+      ...insertSector,
+      id,
+      createdAt: now,
+      updatedAt: now,
+      isActive: insertSector.isActive ?? true,
+      sortOrder: insertSector.sortOrder || 0,
+      region: insertSector.region || null,
+      tier: insertSector.tier || null,
+      monthlyFee: insertSector.monthlyFee || null,
+      annualFee: insertSector.annualFee || null,
+      metadata: insertSector.metadata || null,
+    };
+    this.sectors.set(id, sector);
+    return sector;
+  }
+
+  async updateSector(id: string, updates: Partial<Sector>): Promise<Sector | undefined> {
+    const existing = this.sectors.get(id);
+    if (!existing) return undefined;
+    
+    const updated = { ...existing, ...updates, updatedAt: new Date() };
+    this.sectors.set(id, updated);
     return updated;
   }
 
@@ -2234,6 +2284,9 @@ export class MemStorage implements IStorage {
 
 export const storage = new MemStorage();
 
+// Import sector initialization
+import { initializeSectors } from "./seed-sectors";
+
 // Initialize sample data automatically on server startup if storage is empty
 (async () => {
   try {
@@ -2246,6 +2299,9 @@ export const storage = new MemStorage();
       } else {
         console.log("📊 Storage contains data, skipping automatic initialization");
       }
+      
+      // Always initialize sectors on startup if not present (ensures FAA.ZONE INDEX compliance)
+      await initializeSectors(storage);
     }, 1000);
   } catch (error) {
     console.error("❌ Error during automatic initialization:", error);

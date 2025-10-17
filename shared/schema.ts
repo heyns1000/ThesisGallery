@@ -2772,6 +2772,33 @@ export type InsertHotstackDeployment = z.infer<typeof insertHotstackDeploymentSc
 export type InsertHotstackR2Storage = z.infer<typeof insertHotstackR2StorageSchema>;
 export type InsertHotstackStation = z.infer<typeof insertHotstackStationSchema>;
 
+// FAA.ZONE Sector Index - Official Seedwave™ Admin Portal sectors
+export const sectors = pgTable("sectors", {
+  id: varchar("id").primaryKey().$defaultFn(() => nanoid()),
+  sectorName: text("sector_name").notNull(),
+  glyph: text("glyph").notNull(), // emoji icon
+  coreBrands: integer("core_brands").notNull(),
+  totalNodes: integer("total_nodes").notNull(),
+  region: text("region"), // Div A-F, Global, Rural, etc.
+  tier: text("tier"), // A+, A, B+, B
+  monthlyFee: text("monthly_fee"),
+  annualFee: text("annual_fee"),
+  isActive: boolean("is_active").default(true),
+  sortOrder: integer("sort_order").default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+export const insertSectorSchema = createInsertSchema(sectors).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type Sector = typeof sectors.$inferSelect;
+export type InsertSector = z.infer<typeof insertSectorSchema>;
+
 // System Settings table for storing API keys and configuration
 export const systemSettings = pgTable("system_settings", {
   id: varchar("id").primaryKey().$defaultFn(() => nanoid()),
