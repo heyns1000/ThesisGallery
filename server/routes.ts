@@ -159,33 +159,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // System stats endpoint
   app.get("/api/system/stats", async (req, res) => {
     try {
-      const stats = await storage.getSystemStats();
+      let stats: any = await storage.getSystemStats();
       
-      // Add SamFox Studio stats integration for FAA Vault sync
-      const samFoxStudio = await samFoxStudioService.getSamFoxStudio();
-      if (samFoxStudio) {
-        const samFoxStats = await samFoxStudioService.getDashboardStats(samFoxStudio.id);
-        stats.samFoxStudio = {
-          id: samFoxStudio.id,
-          brandName: samFoxStudio.brandName,
-          globalStatus: samFoxStudio.globalStatus,
-          vaultLink: samFoxStudio.vaultLink,
-          syncRate: samFoxStudio.syncRate,
-          treatyReady: samFoxStudio.treatyReady,
-          copyrightActive: samFoxStudio.copyrightActive,
-          signatory: samFoxStudio.signatory,
-          totalWorkspaces: samFoxStats.totalWorkspaces,
-          totalLicenses: samFoxStats.totalLicenses,
-          totalFiles: samFoxStats.totalFiles,
-          totalTreaties: samFoxStats.totalTreaties,
-          activeTreaties: samFoxStats.activeTreaties,
-          vaultSyncStatus: samFoxStats.vaultSyncStatus,
-          lastSync: new Date().toISOString()
-        };
+      if (!stats) {
+        stats = {};
       }
       
-      res.json(stats || {});
+      // Add SamFox Studio stats integration for FAA Vault sync
+      try {
+        const samFoxStudio = await samFoxStudioService.getSamFoxStudio();
+        if (samFoxStudio) {
+          const samFoxStats = await samFoxStudioService.getDashboardStats(samFoxStudio.id);
+          stats.samFoxStudio = {
+            id: samFoxStudio.id,
+            brandName: samFoxStudio.brandName,
+            globalStatus: samFoxStudio.globalStatus,
+            vaultLink: samFoxStudio.vaultLink,
+            syncRate: samFoxStudio.syncRate,
+            treatyReady: samFoxStudio.treatyReady,
+            copyrightActive: samFoxStudio.copyrightActive,
+            signatory: samFoxStudio.signatory,
+            totalWorkspaces: samFoxStats.totalWorkspaces,
+            totalLicenses: samFoxStats.totalLicenses,
+            totalFiles: samFoxStats.totalFiles,
+            totalTreaties: samFoxStats.totalTreaties,
+            activeTreaties: samFoxStats.activeTreaties,
+            vaultSyncStatus: samFoxStats.vaultSyncStatus,
+            lastSync: new Date().toISOString()
+          };
+        }
+      } catch (samFoxError) {
+        // SamFox Studio integration failed, but return stats anyway
+        console.log("SamFox Studio stats integration failed (non-critical):", samFoxError);
+      }
+      
+      res.json(stats);
     } catch (error) {
+      console.error("System stats error:", error);
       res.status(500).json({ error: "Failed to fetch system stats" });
     }
   });
