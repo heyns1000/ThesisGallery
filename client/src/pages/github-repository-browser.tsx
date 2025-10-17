@@ -12,7 +12,6 @@ import {
   RefreshCw, 
   Download, 
   Eye, 
-  Sync, 
   Star, 
   GitFork, 
   Clock, 
@@ -450,7 +449,7 @@ export default function GitHubRepositoryBrowser() {
                           {syncMutation.isPending ? (
                             <Loader2 className="h-4 w-4 animate-spin" />
                           ) : (
-                            <Sync className="h-4 w-4" />
+                            <RefreshCw className="h-4 w-4" />
                           )}
                           Sync
                         </Button>
