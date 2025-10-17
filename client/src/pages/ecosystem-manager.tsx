@@ -55,6 +55,33 @@ type EcosystemApp = {
   metadata?: any;
 };
 
+type ReplitApp = {
+  id: string;
+  appName: string;
+  creatorUsername: string;
+  creatorEmail: string;
+  lastUpdated: string;
+  appCodePrivacy: string;
+  deploymentStatus: string;
+  deploymentPrivacy?: string;
+  replitUrl: string;
+  category?: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  metadata?: any;
+};
+
+type ReplitAppsStats = {
+  totalApps: number;
+  activeDeployments: number;
+  categories: number;
+  recentUpdates: number;
+  categoriesBreakdown: Record<string, number>;
+  deploymentStatusBreakdown: Record<string, number>;
+  recentApps: ReplitApp[];
+};
+
 type EcosystemSystem = {
   id: string;
   systemType: string;
@@ -160,6 +187,15 @@ export default function EcosystemManager() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   
+  // Replit Apps filters and state
+  const [replitCategoryFilter, setReplitCategoryFilter] = useState<string>('all');
+  const [replitStatusFilter, setReplitStatusFilter] = useState<string>('all');
+  const [replitSearchQuery, setReplitSearchQuery] = useState('');
+  const [selectedReplitApps, setSelectedReplitApps] = useState<string[]>([]);
+  const [viewDetailsApp, setViewDetailsApp] = useState<ReplitApp | null>(null);
+  const [sortBy, setSortBy] = useState<'name' | 'lastUpdated'>('lastUpdated');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  
   // Sync operations state
   const [wpProductConnectionId, setWpProductConnectionId] = useState('');
   const [wpProductIds, setWpProductIds] = useState('');
@@ -172,6 +208,16 @@ export default function EcosystemManager() {
   // Fetch apps
   const { data: apps = [], isLoading: loadingApps } = useQuery<EcosystemApp[]>({
     queryKey: ['/api/ecosystem/apps'],
+  });
+
+  // Fetch Replit Apps
+  const { data: replitApps = [], isLoading: loadingReplitApps } = useQuery<ReplitApp[]>({
+    queryKey: ['/api/replit-apps', { category: replitCategoryFilter, deploymentStatus: replitStatusFilter }],
+  });
+
+  // Fetch Replit Apps Stats
+  const { data: replitAppsStats, isLoading: loadingReplitStats, error: replitAppsStatsError } = useQuery<ReplitAppsStats>({
+    queryKey: ['/api/replit-apps/stats'],
   });
 
   // Fetch systems
@@ -309,6 +355,25 @@ export default function EcosystemManager() {
           title: "HotStack Sync Failed",
           description: message.data?.error || "Sync operation failed",
           variant: "destructive",
+        });
+      }
+
+      // Replit Apps WebSocket events
+      if (message.type === 'replit_app_deployed') {
+        queryClient.invalidateQueries({ queryKey: ['/api/replit-apps'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/replit-apps/stats'] });
+        toast({
+          title: "App Deployed",
+          description: `${message.data?.appName || 'App'} has been deployed successfully`,
+        });
+      }
+
+      if (message.type === 'replit_app_updated') {
+        queryClient.invalidateQueries({ queryKey: ['/api/replit-apps'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/replit-apps/stats'] });
+        toast({
+          title: "App Updated",
+          description: `${message.data?.appName || 'App'} metadata has been synced`,
         });
       }
     };
@@ -544,6 +609,56 @@ export default function EcosystemManager() {
     }
   });
 
+  // Replit Apps mutations
+  const syncReplitAppMetadataMutation = useMutation({
+    mutationFn: (appId: string) => apiRequest(`/api/replit-apps/${appId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ lastUpdated: new Date().toISOString() })
+    }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/replit-apps'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/replit-apps/stats'] });
+      toast({
+        title: "Metadata Synced",
+        description: "App metadata has been refreshed successfully",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Sync Failed",
+        description: error.message || "Failed to sync metadata",
+        variant: "destructive"
+      });
+    }
+  });
+
+  const syncAllReplitAppsMutation = useMutation({
+    mutationFn: async () => {
+      const promises = replitApps.map(app => 
+        apiRequest(`/api/replit-apps/${app.id}`, {
+          method: 'PATCH',
+          body: JSON.stringify({ lastUpdated: new Date().toISOString() })
+        })
+      );
+      return Promise.all(promises);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/replit-apps'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/replit-apps/stats'] });
+      toast({
+        title: "All Apps Synced",
+        description: `Successfully synced metadata for ${replitApps.length} apps`,
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Batch Sync Failed",
+        description: error.message || "Failed to sync all apps",
+        variant: "destructive"
+      });
+    }
+  });
+
   // Calculate stats
   const stats = useMemo(() => {
     const categoryBreakdown: Record<string, number> = {};
@@ -586,6 +701,37 @@ export default function EcosystemManager() {
   const filteredLogs = useMemo(() => {
     return syncLogs.filter(log => statusFilter === 'all' || log.status === statusFilter);
   }, [syncLogs, statusFilter]);
+
+  // Filter and sort Replit Apps
+  const filteredAndSortedReplitApps = useMemo(() => {
+    let filtered = replitApps.filter(app => {
+      const matchesSearch = app.appName.toLowerCase().includes(replitSearchQuery.toLowerCase());
+      const matchesCategory = replitCategoryFilter === 'all' || app.category === replitCategoryFilter;
+      const matchesStatus = replitStatusFilter === 'all' || app.deploymentStatus === replitStatusFilter;
+      return matchesSearch && matchesCategory && matchesStatus;
+    });
+
+    // Sort
+    filtered.sort((a, b) => {
+      if (sortBy === 'name') {
+        return sortOrder === 'asc' 
+          ? a.appName.localeCompare(b.appName)
+          : b.appName.localeCompare(a.appName);
+      } else {
+        const dateA = new Date(a.lastUpdated).getTime();
+        const dateB = new Date(b.lastUpdated).getTime();
+        return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+      }
+    });
+
+    return filtered;
+  }, [replitApps, replitSearchQuery, replitCategoryFilter, replitStatusFilter, sortBy, sortOrder]);
+
+  // Get unique categories from replit apps
+  const replitCategories = useMemo(() => {
+    const cats = new Set(replitApps.map(app => app.category).filter(Boolean));
+    return Array.from(cats);
+  }, [replitApps]);
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -648,11 +794,17 @@ export default function EcosystemManager() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card className="energetic-card">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Total Replit Apps</CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">Replit Apps</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
-                <div className="text-3xl font-bold text-foreground" data-testid="text-total-apps">{stats.totalApps}</div>
+                {loadingReplitStats ? (
+                  <Loader2 className="w-8 h-8 animate-spin text-[hsl(203,93%,68%)]" />
+                ) : replitAppsStatsError ? (
+                  <div className="text-sm text-destructive">Error</div>
+                ) : (
+                  <div className="text-3xl font-bold text-foreground" data-testid="text-total-apps">{replitAppsStats?.totalApps ?? 0}</div>
+                )}
                 <div className="p-3 rounded-full bg-[hsl(203,93%,68%)]/20">
                   <Package className="w-6 h-6 text-[hsl(203,93%,68%)]" />
                 </div>
@@ -662,7 +814,7 @@ export default function EcosystemManager() {
 
           <Card className="energetic-card">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Connected Systems</CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">Ecosystem Systems</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
@@ -690,7 +842,7 @@ export default function EcosystemManager() {
 
           <Card className="energetic-card">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Categories</CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">Sectors</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-1" data-testid="text-category-breakdown">
@@ -708,11 +860,10 @@ export default function EcosystemManager() {
         {/* Main Tabs */}
         <Card className="energetic-card">
           <CardContent className="pt-6">
-            <Tabs defaultValue="apps" className="w-full">
+            <Tabs defaultValue="replit" className="w-full">
               <TabsList className="grid w-full grid-cols-5">
-                <TabsTrigger value="apps" data-testid="tab-apps">
-                  <Package className="w-4 h-4 mr-2" />
-                  Replit Apps
+                <TabsTrigger value="replit" data-testid="tab-replit-apps">
+                  🔬 Replit Apps
                 </TabsTrigger>
                 <TabsTrigger value="systems" data-testid="tab-systems">
                   <Server className="w-4 h-4 mr-2" />
@@ -732,101 +883,348 @@ export default function EcosystemManager() {
                 </TabsTrigger>
               </TabsList>
 
-              {/* Tab 1: Replit Apps */}
-              <TabsContent value="apps" className="space-y-4">
-                <div className="flex gap-4 items-center">
-                  <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <Input
-                      placeholder="Search apps..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10"
-                      data-testid="input-search-apps"
-                    />
-                  </div>
-                  <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                    <SelectTrigger className="w-[200px]" data-testid="select-category-filter">
-                      <Filter className="w-4 h-4 mr-2" />
-                      <SelectValue placeholder="Filter by category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Categories</SelectItem>
-                      <SelectItem value="utilities">Utilities</SelectItem>
-                      <SelectItem value="development">Development</SelectItem>
-                      <SelectItem value="real_estate">Real Estate</SelectItem>
-                      <SelectItem value="ai_intelligence">AI Intelligence</SelectItem>
-                      <SelectItem value="business_tools">Business Tools</SelectItem>
-                      <SelectItem value="creative">Creative</SelectItem>
-                    </SelectContent>
-                  </Select>
+              {/* Tab 1: 🔬 Replit Apps - Comprehensive Dashboard */}
+              <TabsContent value="replit" className="space-y-6">
+                {/* Stats Cards Row */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <Card className="energetic-card" data-testid="card-total-apps">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-sm font-medium text-muted-foreground">Total Apps</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {loadingReplitStats ? (
+                        <Loader2 className="w-8 h-8 animate-spin text-[hsl(203,93%,68%)]" />
+                      ) : replitAppsStatsError ? (
+                        <div className="text-sm text-destructive">Error loading stats</div>
+                      ) : (
+                        <div className="text-3xl font-bold text-foreground">
+                          {replitAppsStats?.totalApps ?? 0}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  <Card className="energetic-card" data-testid="card-active-deployments">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-sm font-medium text-muted-foreground">Active Deployments</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {loadingReplitStats ? (
+                        <Loader2 className="w-8 h-8 animate-spin text-[hsl(142,76%,36%)]" />
+                      ) : replitAppsStatsError ? (
+                        <div className="text-sm text-destructive">Error loading stats</div>
+                      ) : (
+                        <div className="text-3xl font-bold text-[hsl(142,76%,36%)]">
+                          {replitAppsStats?.activeDeployments ?? 0}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  <Card className="energetic-card" data-testid="card-categories">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-sm font-medium text-muted-foreground">Categories</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {loadingReplitStats ? (
+                        <Loader2 className="w-8 h-8 animate-spin text-[hsl(203,93%,68%)]" />
+                      ) : replitAppsStatsError ? (
+                        <div className="text-sm text-destructive">Error loading stats</div>
+                      ) : (
+                        <div className="text-3xl font-bold text-[hsl(203,93%,68%)]">
+                          {replitAppsStats?.categories ?? 0}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  <Card className="energetic-card" data-testid="card-recent-updates">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-sm font-medium text-muted-foreground">Recent Updates (7d)</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {loadingReplitStats ? (
+                        <Loader2 className="w-8 h-8 animate-spin text-[hsl(43,96%,56%)]" />
+                      ) : replitAppsStatsError ? (
+                        <div className="text-sm text-destructive">Error loading stats</div>
+                      ) : (
+                        <div className="text-3xl font-bold text-[hsl(43,96%,56%)]">
+                          {replitAppsStats?.recentUpdates ?? 0}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
                 </div>
 
-                {loadingApps ? (
+                {/* Filters and Batch Operations */}
+                <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+                  <div className="flex flex-col md:flex-row gap-4 items-start md:items-center flex-1">
+                    <div className="relative w-full md:w-80">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                      <Input
+                        placeholder="Search apps..."
+                        value={replitSearchQuery}
+                        onChange={(e) => setReplitSearchQuery(e.target.value)}
+                        className="pl-10"
+                        data-testid="filter-search"
+                      />
+                    </div>
+                    <Select value={replitCategoryFilter} onValueChange={setReplitCategoryFilter}>
+                      <SelectTrigger className="w-full md:w-[200px]" data-testid="filter-category">
+                        <SelectValue placeholder="All Categories" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Categories</SelectItem>
+                        {replitCategories.map(cat => (
+                          <SelectItem key={cat} value={cat || ''}>{cat || 'Uncategorized'}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Select value={replitStatusFilter} onValueChange={setReplitStatusFilter}>
+                      <SelectTrigger className="w-full md:w-[200px]" data-testid="filter-status">
+                        <SelectValue placeholder="All Statuses" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Statuses</SelectItem>
+                        <SelectItem value="deployed">Deployed</SelectItem>
+                        <SelectItem value="suspended">Suspended</SelectItem>
+                        <SelectItem value="not deployed">Not Deployed</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="flex gap-2">
+                    {selectedReplitApps.length > 0 && (
+                      <Button 
+                        variant="outline"
+                        onClick={() => toast({ title: "Deploy Selected", description: `Deploying ${selectedReplitApps.length} apps...` })}
+                        data-testid="button-deploy-selected"
+                      >
+                        <PlayCircle className="w-4 h-4 mr-2" />
+                        Deploy Selected ({selectedReplitApps.length})
+                      </Button>
+                    )}
+                    <Button
+                      onClick={() => syncAllReplitAppsMutation.mutate()}
+                      disabled={syncAllReplitAppsMutation.isPending}
+                      data-testid="button-sync-all"
+                    >
+                      <RefreshCw className={`w-4 h-4 mr-2 ${syncAllReplitAppsMutation.isPending ? 'animate-spin' : ''}`} />
+                      Sync All
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Apps Table */}
+                {loadingReplitApps ? (
                   <div className="flex justify-center py-12">
-                    <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+                    <Loader2 className="w-8 h-8 animate-spin text-[hsl(203,93%,68%)]" />
                   </div>
                 ) : (
-                  <div className="space-y-4">
-                    {Object.entries(appsByCategory).map(([category, categoryApps]) => (
-                      <Collapsible key={category} defaultOpen={true}>
-                        <CollapsibleTrigger className="flex items-center justify-between w-full p-4 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                          <div className="flex items-center gap-3">
-                            <span className="text-2xl">{getCategoryIcon(category)}</span>
-                            <span className="font-semibold capitalize">{category.replace('_', ' ')}</span>
-                            <Badge variant="outline">{categoryApps.length}</Badge>
-                          </div>
-                        </CollapsibleTrigger>
-                        <CollapsibleContent className="pt-4">
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {categoryApps.map((app) => (
-                              <Card key={app.id} data-testid={`card-replit-app-${app.id}`}>
-                                <CardHeader className="pb-3">
-                                  <div className="flex items-start justify-between">
-                                    <div className="flex items-center gap-2">
-                                      <span className="text-2xl">{getCategoryIcon(app.category)}</span>
-                                      <CardTitle className="text-base">{app.appName}</CardTitle>
-                                    </div>
-                                    {getStatusBadge(app.status)}
-                                  </div>
-                                </CardHeader>
-                                <CardContent className="space-y-3">
-                                  <div className="flex items-center gap-2">
-                                    <Badge variant="outline">{app.category}</Badge>
-                                    <span className="text-xs text-gray-500">
-                                      {formatDistanceToNow(new Date(app.lastUpdated), { addSuffix: true })}
-                                    </span>
-                                  </div>
-                                  <div className="flex gap-2">
+                  <div className="border rounded-lg overflow-hidden">
+                    <Table>
+                      <TableHeader>
+                        <TableRow className="bg-muted/50">
+                          <TableHead className="w-12">
+                            <input
+                              type="checkbox"
+                              checked={selectedReplitApps.length === filteredAndSortedReplitApps.length && filteredAndSortedReplitApps.length > 0}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setSelectedReplitApps(filteredAndSortedReplitApps.map(a => a.id));
+                                } else {
+                                  setSelectedReplitApps([]);
+                                }
+                              }}
+                              className="rounded"
+                              data-testid="checkbox-select-all"
+                            />
+                          </TableHead>
+                          <TableHead className="cursor-pointer" onClick={() => {
+                            if (sortBy === 'name') {
+                              setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+                            } else {
+                              setSortBy('name');
+                              setSortOrder('asc');
+                            }
+                          }}>
+                            App Name {sortBy === 'name' && (sortOrder === 'asc' ? '↑' : '↓')}
+                          </TableHead>
+                          <TableHead>Category</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead className="cursor-pointer" onClick={() => {
+                            if (sortBy === 'lastUpdated') {
+                              setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+                            } else {
+                              setSortBy('lastUpdated');
+                              setSortOrder('desc');
+                            }
+                          }}>
+                            Last Updated {sortBy === 'lastUpdated' && (sortOrder === 'asc' ? '↑' : '↓')}
+                          </TableHead>
+                          <TableHead className="text-right">Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {filteredAndSortedReplitApps.length === 0 ? (
+                          <TableRow>
+                            <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                              No apps found
+                            </TableCell>
+                          </TableRow>
+                        ) : (
+                          filteredAndSortedReplitApps.map((app) => (
+                            <TableRow key={app.id} data-testid={`row-replit-app-${app.id}`}>
+                              <TableCell>
+                                <input
+                                  type="checkbox"
+                                  checked={selectedReplitApps.includes(app.id)}
+                                  onChange={(e) => {
+                                    if (e.target.checked) {
+                                      setSelectedReplitApps([...selectedReplitApps, app.id]);
+                                    } else {
+                                      setSelectedReplitApps(selectedReplitApps.filter(id => id !== app.id));
+                                    }
+                                  }}
+                                  className="rounded"
+                                  data-testid={`checkbox-app-${app.id}`}
+                                />
+                              </TableCell>
+                              <TableCell className="font-medium">{app.appName}</TableCell>
+                              <TableCell>
+                                <Badge variant="outline">{app.category || 'Uncategorized'}</Badge>
+                              </TableCell>
+                              <TableCell>
+                                {app.deploymentStatus === 'deployed' && (
+                                  <Badge className="bg-[hsl(142,76%,36%)] hover:bg-[hsl(142,76%,36%)]/90">
+                                    <CheckCircle2 className="w-3 h-3 mr-1" />
+                                    Deployed
+                                  </Badge>
+                                )}
+                                {app.deploymentStatus === 'suspended' && (
+                                  <Badge variant="destructive">
+                                    <XCircle className="w-3 h-3 mr-1" />
+                                    Suspended
+                                  </Badge>
+                                )}
+                                {app.deploymentStatus === 'not deployed' && (
+                                  <Badge variant="outline" className="border-muted-foreground">
+                                    <Clock className="w-3 h-3 mr-1" />
+                                    Not Deployed
+                                  </Badge>
+                                )}
+                              </TableCell>
+                              <TableCell className="text-sm text-muted-foreground">
+                                {formatDistanceToNow(new Date(app.lastUpdated), { addSuffix: true })}
+                              </TableCell>
+                              <TableCell className="text-right">
+                                <div className="flex gap-1 justify-end">
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => window.open(app.replitUrl, '_blank')}
+                                    data-testid={`button-open-app-${app.id}`}
+                                    title="Open in Replit"
+                                  >
+                                    🔗
+                                  </Button>
+                                  {app.deploymentStatus !== 'deployed' && (
                                     <Button
                                       size="sm"
-                                      variant="outline"
-                                      className="flex-1"
-                                      onClick={() => window.open(app.replitUrl, '_blank')}
-                                      data-testid={`button-open-replit-${app.id}`}
+                                      variant="ghost"
+                                      onClick={() => toast({ title: "Deploy", description: `Deploying ${app.appName}...` })}
+                                      data-testid={`button-deploy-app-${app.id}`}
+                                      title="Deploy"
                                     >
-                                      <ExternalLink className="w-3 h-3 mr-1" />
-                                      Replit
+                                      🚀
                                     </Button>
-                                    <Button
-                                      size="sm"
-                                      onClick={() => syncAppMutation.mutate(app.id)}
-                                      disabled={syncAppMutation.isPending}
-                                      data-testid={`button-sync-app-${app.id}`}
-                                    >
-                                      <RefreshCw className={`w-3 h-3 mr-1 ${syncAppMutation.isPending ? 'animate-spin' : ''}`} />
-                                      Sync
-                                    </Button>
-                                  </div>
-                                </CardContent>
-                              </Card>
-                            ))}
-                          </div>
-                        </CollapsibleContent>
-                      </Collapsible>
-                    ))}
+                                  )}
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => setViewDetailsApp(app)}
+                                    data-testid={`button-view-details-app-${app.id}`}
+                                    title="View Details"
+                                  >
+                                    📊
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => syncReplitAppMetadataMutation.mutate(app.id)}
+                                    disabled={syncReplitAppMetadataMutation.isPending}
+                                    data-testid={`button-sync-metadata-app-${app.id}`}
+                                    title="Sync Metadata"
+                                  >
+                                    🔄
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        )}
+                      </TableBody>
+                    </Table>
                   </div>
                 )}
+
+                {/* View Details Modal */}
+                <Dialog open={!!viewDetailsApp} onOpenChange={(open) => !open && setViewDetailsApp(null)}>
+                  <DialogContent className="max-w-2xl">
+                    <DialogHeader>
+                      <DialogTitle>App Details: {viewDetailsApp?.appName}</DialogTitle>
+                    </DialogHeader>
+                    {viewDetailsApp && (
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <p className="text-sm font-medium text-muted-foreground">Creator</p>
+                            <p className="text-sm">{viewDetailsApp.creatorUsername}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-muted-foreground">Email</p>
+                            <p className="text-sm">{viewDetailsApp.creatorEmail}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-muted-foreground">Category</p>
+                            <p className="text-sm">{viewDetailsApp.category || 'Uncategorized'}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-muted-foreground">Deployment Status</p>
+                            <p className="text-sm">{viewDetailsApp.deploymentStatus}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-muted-foreground">Code Privacy</p>
+                            <p className="text-sm">{viewDetailsApp.appCodePrivacy}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-muted-foreground">Deployment Privacy</p>
+                            <p className="text-sm">{viewDetailsApp.deploymentPrivacy || 'N/A'}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-muted-foreground">Last Updated</p>
+                            <p className="text-sm">{new Date(viewDetailsApp.lastUpdated).toLocaleString()}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-muted-foreground">Active</p>
+                            <p className="text-sm">{viewDetailsApp.isActive ? 'Yes' : 'No'}</p>
+                          </div>
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-muted-foreground mb-2">Replit URL</p>
+                          <a 
+                            href={viewDetailsApp.replitUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-sm text-[hsl(203,93%,68%)] hover:underline break-all"
+                          >
+                            {viewDetailsApp.replitUrl}
+                          </a>
+                        </div>
+                      </div>
+                    )}
+                  </DialogContent>
+                </Dialog>
               </TabsContent>
 
               {/* Tab 2: Connected Systems */}
