@@ -64,11 +64,41 @@ The platform now encompasses:
 - **4-Country Deployment**: Kenya, RSA, Namibia, Botswana scroll-licensed regions
 - **Advanced Node Types**: Geo Lens™, Energy Beacon™, Security Perimeter™, Drone Sentinel™
 
-### Banking and Financial Integration
-- **Banking Integration**: Secure account verification completed
-- **Multi-Platform Payment Processing**: PayPal SDK integration
-- **Crypto Wallet Support**: BTC, ETH, XRP wallet infrastructure
-- **FAA Vault Payment Gateway**: Complete checkout and licensing system
+### Banimal WordPress Connector (October 2025)
+- **Centralized Payment Hub**: banimal.co.za serves as the SINGLE payment processor for entire global ecosystem
+- **Product Sync System**: Push products from Master Hub to banimal.co.za WordPress platform
+- **User Profile Sync**: Synchronize user data across 1000+ product sites to centralized platform
+- **Connection Management**: REST API integration with WordPress custom endpoints
+- **Sync Logging**: Complete audit trail for all sync operations (user profiles, products, user-product relationships)
+- **Database Tables**: banimal_connections, banimal_sync_logs with real-time WebSocket updates
+
+### Centralized Payment Architecture (October 2025)
+**CRITICAL: This Master Hub does NOT process payments. All payment processing redirects to banimal.co.za**
+
+**Payment Flow:**
+1. User browses any of 1000+ product sites (80+ Replit systems, 70+ Git repositories, 4 WordPress sites)
+2. Products synced FROM this Master Hub TO banimal.co.za via Banimal Connector
+3. User adds products to cart on any site
+4. Checkout redirects to banimal.co.za centralized payment platform
+5. Payment processed via PayFast, PayPal (on banimal.co.za domain only)
+6. Order completion and fulfillment managed centrally
+
+**Ecosystem Scope:**
+- **80+ Replit Systems**: All redirect checkout to banimal.co.za
+- **70+ Git Repositories**: All redirect checkout to banimal.co.za
+- **4 WordPress Sites**: All redirect checkout to banimal.co.za
+- **1000+ Product Sites Globally**: All redirect checkout to banimal.co.za
+
+**Payment Gateways (banimal.co.za only):**
+- **PayFast**: Primary South African payment processor
+- **PayPal**: International payment processing
+- All gateways integrated on WordPress banimal.co.za domain only
+
+**Master Hub Responsibilities:**
+- Product catalog management and global sync
+- User/customer data synchronization
+- Content management and business intelligence
+- NO payment processing, NO checkout flows, NO payment gateway integration
 
 # User Preferences
 
@@ -157,5 +187,10 @@ The system now uses expanded entities to support the full ecosystem:
 ### Session & Security
 - **Connect-pg-simple**: PostgreSQL session store for Express sessions
 - **Express**: Web application framework with middleware support
+
+### Payment Integration Notes
+- **Stripe Packages (UNUSED/LEGACY)**: Stripe React and JS packages installed but NOT used - this Master Hub does NOT process payments
+- **Payment Processing**: All payments redirect to banimal.co.za which uses PayFast and PayPal
+- **No Payment Gateway Integration**: This hub only manages product/user data sync, NOT checkout or payment flows
 
 The architecture follows a modern full-stack pattern with TypeScript throughout, emphasizing type safety, real-time capabilities, and scalable document processing workflows.
