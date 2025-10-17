@@ -80,6 +80,18 @@ type EcosystemSyncLog = {
   metadata?: any;
 };
 
+type BanimalConnection = {
+  id: string;
+  connectionName: string;
+  apiBaseUrl: string;
+  status: string;
+  lastConnectionTest?: string;
+  lastSuccessfulSync?: string;
+  totalSyncs: number;
+  successfulSyncs: number;
+  failedSyncs: number;
+};
+
 // Add system schema
 const addSystemSchema = z.object({
   systemType: z.string().min(1, 'System type is required'),
@@ -96,6 +108,15 @@ export default function EcosystemManager() {
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  
+  // Sync operations state
+  const [wpProductConnectionId, setWpProductConnectionId] = useState('');
+  const [wpProductIds, setWpProductIds] = useState('');
+  const [wpUserConnectionId, setWpUserConnectionId] = useState('');
+  const [wpUserIds, setWpUserIds] = useState('');
+  const [systemSyncId, setSystemSyncId] = useState('');
+  const [systemSyncType, setSystemSyncType] = useState<'full' | 'incremental'>('full');
+  const [syncResults, setSyncResults] = useState<Record<string, any>>({});
 
   // Fetch apps
   const { data: apps = [], isLoading: loadingApps } = useQuery<EcosystemApp[]>({
@@ -113,6 +134,11 @@ export default function EcosystemManager() {
     refetchInterval: 10000,
   });
 
+  // Fetch banimal connections
+  const { data: banimalConnections = [], isLoading: loadingConnections } = useQuery<BanimalConnection[]>({
+    queryKey: ['/api/banimal/connections'],
+  });
+
   // WebSocket connection for real-time updates
   useEffect(() => {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -128,6 +154,42 @@ export default function EcosystemManager() {
         toast({
           title: "System Updated",
           description: "Ecosystem systems have been updated",
+        });
+      }
+      
+      if (message.type === 'ecosystem_sync_started') {
+        queryClient.invalidateQueries({ queryKey: ['/api/ecosystem/sync-logs'] });
+        toast({
+          title: "Sync Started",
+          description: message.data?.syncType || "Sync operation initiated",
+        });
+      }
+      
+      if (message.type === 'ecosystem_sync_completed') {
+        queryClient.invalidateQueries({ queryKey: ['/api/ecosystem/sync-logs'] });
+        const data = message.data;
+        if (data?.metadata?.partialSuccess) {
+          toast({
+            title: "Sync Completed with Warnings",
+            description: `${data.metadata.successCount}/${data.metadata.totalCount} succeeded - ${data.metadata.failureCount} failed`,
+          });
+        } else {
+          toast({
+            title: "Sync Completed",
+            description: `${data?.syncType || 'Sync'} completed successfully`,
+          });
+        }
+        if (data) {
+          setSyncResults(prev => ({ ...prev, [data.id]: data }));
+        }
+      }
+      
+      if (message.type === 'ecosystem_sync_error') {
+        queryClient.invalidateQueries({ queryKey: ['/api/ecosystem/sync-logs'] });
+        toast({
+          title: "Sync Failed",
+          description: message.data?.errorMessage || "Sync operation failed",
+          variant: "destructive",
         });
       }
       
@@ -229,6 +291,96 @@ export default function EcosystemManager() {
       toast({
         title: "Sync Started",
         description: "App sync has been initiated."
+      });
+    }
+  });
+
+  // WordPress Product Sync mutation
+  const syncWordPressProductsMutation = useMutation({
+    mutationFn: (data: { connectionId: string; productIds: string[] }) => 
+      apiRequest('/api/ecosystem/sync/wordpress-products', {
+        method: 'POST',
+        body: JSON.stringify(data)
+      }),
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/ecosystem/sync-logs'] });
+      const metadata = data.metadata || {};
+      if (metadata.partialSuccess) {
+        toast({
+          title: "Partial Success",
+          description: `Synced ${metadata.successCount}/${metadata.totalCount} products - ${metadata.failureCount} failed`,
+        });
+      } else {
+        toast({
+          title: "Sync Completed",
+          description: `Successfully synced ${data.recordsSynced} products`,
+        });
+      }
+      setSyncResults(prev => ({ ...prev, wpProducts: data }));
+      setWpProductIds('');
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Sync Failed",
+        description: error.message || "Failed to sync products",
+        variant: "destructive"
+      });
+    }
+  });
+
+  // WordPress User Sync mutation
+  const syncWordPressUsersMutation = useMutation({
+    mutationFn: (data: { connectionId: string; userIds: string[] }) => 
+      apiRequest('/api/ecosystem/sync/wordpress-users', {
+        method: 'POST',
+        body: JSON.stringify(data)
+      }),
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/ecosystem/sync-logs'] });
+      const metadata = data.metadata || {};
+      if (metadata.partialSuccess) {
+        toast({
+          title: "Partial Success",
+          description: `Synced ${metadata.successCount}/${metadata.totalCount} users - ${metadata.failureCount} failed`,
+        });
+      } else {
+        toast({
+          title: "Sync Completed",
+          description: `Successfully synced ${data.recordsSynced} users`,
+        });
+      }
+      setSyncResults(prev => ({ ...prev, wpUsers: data }));
+      setWpUserIds('');
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Sync Failed",
+        description: error.message || "Failed to sync users",
+        variant: "destructive"
+      });
+    }
+  });
+
+  // System Sync mutation
+  const syncSystemMutation = useMutation({
+    mutationFn: (data: { systemId: string; syncType: 'full' | 'incremental' }) => 
+      apiRequest('/api/ecosystem/sync/system', {
+        method: 'POST',
+        body: JSON.stringify(data)
+      }),
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/ecosystem/sync-logs'] });
+      toast({
+        title: "Sync Completed",
+        description: `System sync completed successfully`,
+      });
+      setSyncResults(prev => ({ ...prev, system: data }));
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Sync Failed",
+        description: error.message || "Failed to sync system",
+        variant: "destructive"
       });
     }
   });
@@ -392,7 +544,7 @@ export default function EcosystemManager() {
         <Card>
           <CardContent className="pt-6">
             <Tabs defaultValue="apps" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
+              <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="apps" data-testid="tab-apps">
                   <Package className="w-4 h-4 mr-2" />
                   Replit Apps
@@ -400,6 +552,10 @@ export default function EcosystemManager() {
                 <TabsTrigger value="systems" data-testid="tab-systems">
                   <Server className="w-4 h-4 mr-2" />
                   Connected Systems
+                </TabsTrigger>
+                <TabsTrigger value="sync" data-testid="tab-sync">
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  Sync Operations
                 </TabsTrigger>
                 <TabsTrigger value="logs" data-testid="tab-logs">
                   <Activity className="w-4 h-4 mr-2" />
@@ -683,7 +839,289 @@ export default function EcosystemManager() {
                 )}
               </TabsContent>
 
-              {/* Tab 3: Sync Logs */}
+              {/* Tab 3: Sync Operations */}
+              <TabsContent value="sync" className="space-y-6">
+                <div className="space-y-6">
+                  <h3 className="text-2xl font-semibold">Sync Operations Control Center</h3>
+                  
+                  {/* WordPress Product Sync Section */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Package className="w-5 h-5" />
+                        WordPress Product Sync
+                      </CardTitle>
+                      <CardDescription>Sync selected products to WordPress system</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">Connection</label>
+                        <Select value={wpProductConnectionId} onValueChange={setWpProductConnectionId}>
+                          <SelectTrigger data-testid="select-wp-product-connection">
+                            <SelectValue placeholder="Select WordPress connection" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {banimalConnections.map((conn) => (
+                              <SelectItem key={conn.id} value={conn.id}>
+                                {conn.connectionName} - {conn.status}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">Product IDs (comma-separated)</label>
+                        <Textarea
+                          placeholder="prod_123, prod_456, prod_789"
+                          value={wpProductIds}
+                          onChange={(e) => setWpProductIds(e.target.value)}
+                          data-testid="input-wp-product-ids"
+                          rows={3}
+                        />
+                      </div>
+                      
+                      <Button
+                        onClick={() => {
+                          const productIds = wpProductIds.split(',').map(id => id.trim()).filter(id => id);
+                          if (!wpProductConnectionId) {
+                            toast({ title: "Error", description: "Please select a connection", variant: "destructive" });
+                            return;
+                          }
+                          if (productIds.length === 0) {
+                            toast({ title: "Error", description: "Please enter at least one product ID", variant: "destructive" });
+                            return;
+                          }
+                          syncWordPressProductsMutation.mutate({ connectionId: wpProductConnectionId, productIds });
+                        }}
+                        disabled={syncWordPressProductsMutation.isPending || !wpProductConnectionId || !wpProductIds}
+                        data-testid="button-sync-wordpress-products"
+                        className="w-full"
+                      >
+                        {syncWordPressProductsMutation.isPending ? (
+                          <>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            Syncing Products...
+                          </>
+                        ) : (
+                          <>
+                            <RefreshCw className="w-4 h-4 mr-2" />
+                            Sync Products to WordPress
+                          </>
+                        )}
+                      </Button>
+                      
+                      {syncResults.wpProducts && (
+                        <div className="p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+                          <div className="flex items-start gap-2">
+                            <CheckCircle2 className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5" />
+                            <div className="space-y-1">
+                              <p className="font-medium text-blue-900 dark:text-blue-100">Sync Result</p>
+                              {syncResults.wpProducts.metadata?.partialSuccess ? (
+                                <p className="text-sm text-blue-700 dark:text-blue-300">
+                                  Synced {syncResults.wpProducts.metadata.successCount}/{syncResults.wpProducts.metadata.totalCount} products - {syncResults.wpProducts.metadata.failureCount} failed
+                                </p>
+                              ) : (
+                                <p className="text-sm text-blue-700 dark:text-blue-300">
+                                  Successfully synced {syncResults.wpProducts.recordsSynced} products
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  {/* WordPress User Sync Section */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Server className="w-5 h-5" />
+                        WordPress User Sync
+                      </CardTitle>
+                      <CardDescription>Sync selected users to WordPress system</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">Connection</label>
+                        <Select value={wpUserConnectionId} onValueChange={setWpUserConnectionId}>
+                          <SelectTrigger data-testid="select-wp-user-connection">
+                            <SelectValue placeholder="Select WordPress connection" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {banimalConnections.map((conn) => (
+                              <SelectItem key={conn.id} value={conn.id}>
+                                {conn.connectionName} - {conn.status}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">User IDs (comma-separated)</label>
+                        <Textarea
+                          placeholder="user_123, user_456, user_789"
+                          value={wpUserIds}
+                          onChange={(e) => setWpUserIds(e.target.value)}
+                          data-testid="input-wp-user-ids"
+                          rows={3}
+                        />
+                      </div>
+                      
+                      <Button
+                        onClick={() => {
+                          const userIds = wpUserIds.split(',').map(id => id.trim()).filter(id => id);
+                          if (!wpUserConnectionId) {
+                            toast({ title: "Error", description: "Please select a connection", variant: "destructive" });
+                            return;
+                          }
+                          if (userIds.length === 0) {
+                            toast({ title: "Error", description: "Please enter at least one user ID", variant: "destructive" });
+                            return;
+                          }
+                          syncWordPressUsersMutation.mutate({ connectionId: wpUserConnectionId, userIds });
+                        }}
+                        disabled={syncWordPressUsersMutation.isPending || !wpUserConnectionId || !wpUserIds}
+                        data-testid="button-sync-wordpress-users"
+                        className="w-full"
+                      >
+                        {syncWordPressUsersMutation.isPending ? (
+                          <>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            Syncing Users...
+                          </>
+                        ) : (
+                          <>
+                            <RefreshCw className="w-4 h-4 mr-2" />
+                            Sync Users to WordPress
+                          </>
+                        )}
+                      </Button>
+                      
+                      {syncResults.wpUsers && (
+                        <div className="p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+                          <div className="flex items-start gap-2">
+                            <CheckCircle2 className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5" />
+                            <div className="space-y-1">
+                              <p className="font-medium text-blue-900 dark:text-blue-100">Sync Result</p>
+                              {syncResults.wpUsers.metadata?.partialSuccess ? (
+                                <p className="text-sm text-blue-700 dark:text-blue-300">
+                                  Synced {syncResults.wpUsers.metadata.successCount}/{syncResults.wpUsers.metadata.totalCount} users - {syncResults.wpUsers.metadata.failureCount} failed
+                                </p>
+                              ) : (
+                                <p className="text-sm text-blue-700 dark:text-blue-300">
+                                  Successfully synced {syncResults.wpUsers.recordsSynced} users
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  {/* System Sync Section */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Database className="w-5 h-5" />
+                        System Sync
+                      </CardTitle>
+                      <CardDescription>Perform full or incremental system synchronization</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">System</label>
+                        <Select value={systemSyncId} onValueChange={setSystemSyncId}>
+                          <SelectTrigger data-testid="select-system-sync">
+                            <SelectValue placeholder="Select system to sync" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {systems.map((system) => (
+                              <SelectItem key={system.id} value={system.id}>
+                                {system.name} ({system.systemType})
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">Sync Type</label>
+                        <div className="flex gap-4">
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="radio"
+                              name="syncType"
+                              value="full"
+                              checked={systemSyncType === 'full'}
+                              onChange={(e) => setSystemSyncType(e.target.value as 'full')}
+                              data-testid="radio-sync-type-full"
+                              className="w-4 h-4"
+                            />
+                            <span>Full Sync</span>
+                          </label>
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="radio"
+                              name="syncType"
+                              value="incremental"
+                              checked={systemSyncType === 'incremental'}
+                              onChange={(e) => setSystemSyncType(e.target.value as 'incremental')}
+                              data-testid="radio-sync-type-incremental"
+                              className="w-4 h-4"
+                            />
+                            <span>Incremental Sync</span>
+                          </label>
+                        </div>
+                      </div>
+                      
+                      <Button
+                        onClick={() => {
+                          if (!systemSyncId) {
+                            toast({ title: "Error", description: "Please select a system", variant: "destructive" });
+                            return;
+                          }
+                          syncSystemMutation.mutate({ systemId: systemSyncId, syncType: systemSyncType });
+                        }}
+                        disabled={syncSystemMutation.isPending || !systemSyncId}
+                        data-testid="button-sync-system"
+                        className="w-full"
+                      >
+                        {syncSystemMutation.isPending ? (
+                          <>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            Syncing System...
+                          </>
+                        ) : (
+                          <>
+                            <PlayCircle className="w-4 h-4 mr-2" />
+                            Sync System
+                          </>
+                        )}
+                      </Button>
+                      
+                      {syncResults.system && (
+                        <div className="p-4 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+                          <div className="flex items-start gap-2">
+                            <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5" />
+                            <div className="space-y-1">
+                              <p className="font-medium text-green-900 dark:text-green-100">Sync Completed</p>
+                              <p className="text-sm text-green-700 dark:text-green-300">
+                                System {syncResults.system.syncType} sync completed successfully
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </div>
+              </TabsContent>
+
+              {/* Tab 4: Sync Logs */}
               <TabsContent value="logs" className="space-y-4">
                 <div className="flex justify-between items-center">
                   <h3 className="text-lg font-semibold">Sync Logs</h3>
@@ -714,39 +1152,77 @@ export default function EcosystemManager() {
                           <TableHead>Sync Type</TableHead>
                           <TableHead>Target</TableHead>
                           <TableHead>Status</TableHead>
-                          <TableHead>Records</TableHead>
+                          <TableHead>Records Synced</TableHead>
                           <TableHead>Started</TableHead>
                           <TableHead>Duration</TableHead>
-                          <TableHead>Error</TableHead>
+                          <TableHead>Message</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {filteredLogs.slice(0, 50).map((log) => (
-                          <TableRow key={log.id} data-testid={`row-sync-log-${log.id}`}>
-                            <TableCell>
-                              <Badge variant="outline">{log.syncType}</Badge>
-                            </TableCell>
-                            <TableCell className="text-sm">
-                              {log.appId && apps.find(a => a.id === log.appId)?.appName}
-                              {log.systemId && systems.find(s => s.id === log.systemId)?.name}
-                              {!log.appId && !log.systemId && '-'}
-                            </TableCell>
-                            <TableCell>{getStatusBadge(log.status)}</TableCell>
-                            <TableCell>{log.recordsSynced}</TableCell>
-                            <TableCell className="text-sm text-gray-500">
-                              {formatDistanceToNow(new Date(log.startedAt), { addSuffix: true })}
-                            </TableCell>
-                            <TableCell className="text-sm text-gray-500">
-                              {log.completedAt 
-                                ? `${Math.round((new Date(log.completedAt).getTime() - new Date(log.startedAt).getTime()) / 1000)}s`
-                                : '-'
-                              }
-                            </TableCell>
-                            <TableCell className="text-sm text-red-600">
-                              {log.errorMessage || '-'}
-                            </TableCell>
-                          </TableRow>
-                        ))}
+                        {filteredLogs.slice(0, 50).map((log) => {
+                          const metadata = log.metadata || {};
+                          const hasPartialSuccess = metadata.partialSuccess;
+                          
+                          return (
+                            <TableRow key={log.id} data-testid={`row-sync-log-${log.id}`}>
+                              <TableCell>
+                                <Badge variant="outline">{log.syncType}</Badge>
+                              </TableCell>
+                              <TableCell className="text-sm">
+                                {log.appId && apps.find(a => a.id === log.appId)?.appName}
+                                {log.systemId && systems.find(s => s.id === log.systemId)?.name}
+                                {!log.appId && !log.systemId && '-'}
+                              </TableCell>
+                              <TableCell>
+                                {hasPartialSuccess ? (
+                                  <Badge className="bg-yellow-500">
+                                    <AlertCircle className="w-3 h-3 mr-1" />
+                                    Partial Success
+                                  </Badge>
+                                ) : (
+                                  getStatusBadge(log.status)
+                                )}
+                              </TableCell>
+                              <TableCell>
+                                {hasPartialSuccess ? (
+                                  <div className="flex items-center gap-1">
+                                    <span className="text-green-600 dark:text-green-400 font-medium">
+                                      {metadata.successCount}
+                                    </span>
+                                    <span className="text-gray-400">/</span>
+                                    <span className="text-gray-600 dark:text-gray-400">
+                                      {metadata.totalCount}
+                                    </span>
+                                  </div>
+                                ) : (
+                                  <span>{log.recordsSynced}</span>
+                                )}
+                              </TableCell>
+                              <TableCell className="text-sm text-gray-500">
+                                {formatDistanceToNow(new Date(log.startedAt), { addSuffix: true })}
+                              </TableCell>
+                              <TableCell className="text-sm text-gray-500">
+                                {log.completedAt 
+                                  ? `${Math.round((new Date(log.completedAt).getTime() - new Date(log.startedAt).getTime()) / 1000)}s`
+                                  : '-'
+                                }
+                              </TableCell>
+                              <TableCell className="text-sm max-w-md">
+                                {hasPartialSuccess ? (
+                                  <span className="text-yellow-700 dark:text-yellow-400">
+                                    {metadata.failureCount} failed - {metadata.successCount} succeeded
+                                  </span>
+                                ) : log.errorMessage ? (
+                                  <span className="text-red-600 dark:text-red-400">{log.errorMessage}</span>
+                                ) : log.status === 'completed' ? (
+                                  <span className="text-green-600 dark:text-green-400">Success</span>
+                                ) : (
+                                  '-'
+                                )}
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
                       </TableBody>
                     </Table>
                   </div>
