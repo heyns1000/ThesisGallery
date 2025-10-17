@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concentric Borders (Black, Red, Yellow, Green, Super White) with More Sheep and Sunrise</title>
+    <!-- Tailwind CSS CDN for basic styling and utility classes -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom CSS variables for theme-related colors (though not heavily used on this blank canvas) */
+        :root {
+            --primary-color: #0A0A0A; /* Dark for light theme */
+            --secondary-color: #1A1A1A;
+            --text-color: #0A0A0A;
+            --text-color-light: #555555;
+            --background-color: #F8F8F8;
+            --border-color: #E0E0E0;
+            --accent-color: #6A0DAD; /* Purple */
+            --tertiary-color: #FF0000; /* Example for errors/accents */
+            --announcement-bar-height: 0px; /* Dynamic height */
+            --header-height: 0px; /* Dynamic height */
+        }
+
+        .dark-mode {
+            --primary-color: #F8F8F8;
+            --secondary-color: #E0E0E0;
+            --text-color: #F8F8F8;
+            --text-color-light: #AAAAAA;
+            --background-color: #0A0A0A;
+            --border-color: #333333;
+            --accent-color: #8A2BE2; /* BlueViolet */
+            --tertiary-color: #FF6347; /* Tomato */
+        }
+
+        .hyper-mode {
+            --primary-color: #00FFFF; /* Cyan */
+            --secondary-color: #FF00FF; /* Magenta */
+            --text-color: #FFFF00; /* Yellow */
+            --text-color-light: #00FF00; /* Lime */
+            --background-color: #000000;
+            --border-color: #FFD700; /* Gold */
+            --accent-color: #ADFF2F; /* GreenYellow */
+            --tertiary-color: #FF4500; /* OrangeRed */
+        }
+
+        /* Ensure HTML and body take full viewport height and width */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* Prevent scrolling */
+        }
+        body {
+            /* Outermost layer: Black background */
+            background-color: #000000; /* Pitch Black */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Inter', sans-serif;
+            color: #FFFFFF; /* White text for contrast */
+            transition: background-color 0.5s ease; /* Smooth transition for theme changes */
+            box-sizing: border-box;
+            position: relative; /* Needed for absolute positioning of SVG */
+        }
+
+        /* Each nested div creates a border around its child */
+        /* Each `calc(100% - 4mm)` for these classes creates a 2mm border on each of the 4 sides */
+        .border-layer-base {
+            width: calc(100% - 4mm);
+            height: calc(100% - 4mm);
+            border-radius: 8px; /* Consistent rounded corners */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .red-border-layer {
+            background-color: #FF0000; /* Shocking Red */
+        }
+
+        .yellow-border-layer {
+            background-color: #FFFF00; /* Shocking Yellow */
+        }
+
+        .green-border-layer {
+            background-color: #008000; /* Grass Green */
+        }
+
+        .super-white-content-layer {
+            background-color: #FFFFFF; /* Super Pearl White (innermost panel) */
+            /* This is the innermost layer, it can hold content */
+            color: #000000; /* Dark text for contrast on white */
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+        }
+
+        /* SVG will cover the entire body */
+        svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10; /* Ensure SVG content is above the borders */
+        }
+
+        /* Noodle path styling */
+        #noodle-path {
+            stroke: #000000; /* Black noodle */
+            stroke-width: 2mm; /* Same thickness as borders */
+            fill: none; /* No fill, it's a line */
+            stroke-linecap: round; /* Rounded ends for a softer look */
+            stroke-linejoin: round; /* Rounded joints for smooth bends */
+        }
+
+        /* Styling for the sheep emoji within SVG */
+        .sheep-emoji {
+            /* fill: currentColor; Inherits body's white color for contrast on black noodle */
+            /* text-anchor: middle; Centers the emoji horizontally */
+            /* dominant-baseline: text-after-edge; Aligns the bottom of the text to the y-coordinate */
+            /* font-size: 35; Adjusted for good visibility and proportionality */
+        }
+
+        /* Message box for alerts/notifications (replacing alert()) */
+        .message-box {
+            background-color: rgba(0, 0, 0, 0.3); /* Transparent dark background */
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            opacity: 0; /* Initially hidden */
+            transition: opacity 0.5s ease-in-out;
+            pointer-events: none; /* Allows clicks to pass through if not visible */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100; /* Ensure it's on top */
+            color: #FFFFFF; /* White text */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px); /* Optional: blur background for better focus */
+        }
+        .message-box.show {
+            opacity: 1;
+            pointer-events: auto; /* Enable interaction when visible */
+        }
+
+        /* Styling for the hidden/minimal UI elements to prevent them from taking up space */
+        .hidden-ui-element {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            margin: -1px;
+            padding: 0;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        /* Pulse animation for planet text (if rendered) */
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .pulse-animation {
+            animation: pulse 2s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Concentric border layers -->
+    <!-- Outermost: Body Background (Black) -->
+    <div class="border-layer-base red-border-layer">
+        <div class="border-layer-base yellow-border-layer">
+            <div class="border-layer-base green-border-layer">
+                <div class="border-layer-base super-white-content-layer">
+                    <!-- This is the innermost super white panel -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SVG Noodle overlay with the sheep, sun, and melting snow effect -->
+    <svg viewBox="0 0 1000 600" preserveAspectRatio="none">
+        <defs>
+            <!-- Radial gradient for the sun -->
+            <radialGradient id="sunGradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                <stop offset="0%" style="stop-color:rgb(255,255,0);stop-opacity:1" />
+                <stop offset="100%" style="stop-color:rgb(255,165,0);stop-opacity:0" />
+            </radialGradient>
+
+            <!-- Filter for blurring the sun -->
+            <filter id="sunBlur">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="20" />
+            </filter>
+
+            <!-- Linear gradient for the grass melting effect -->
+            <!-- This gradient goes from top-left to bottom-right, simulating sun hitting one side -->
+            <!-- It smoothly transitions from a snowy color to rich grass green -->
+            <linearGradient id="meltingSnowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:rgb(255,255,255);stop-opacity:0.8" /> <!-- White for snow -->
+                <stop offset="50%" style="stop-color:rgb(173,216,230);stop-opacity:0.5" /> <!-- Light blue for melting snow -->
+                <stop offset="100%" style="stop-color:rgb(0,128,0);stop-opacity:1" /> <!-- Rich grass green -->
+            </linearGradient>
+
+            <!-- Clipping path to control where the "melting" effect applies (optional, for more precision) -->
+            <!-- Not explicitly used for the initial "flow", but useful if a "pancake roll" animation is attempted -->
+            <clipPath id="circleClip">
+                <circle id="clippingCircle" cx="0" cy="0" r="0" />
+            </clipPath>
+
+        </defs>
+
+        <!-- Sun - positioned in the top right to simulate sunrise -->
+        <circle cx="900" cy="100" r="100" fill="url(#sunGradient)" filter="url(#sunBlur)" />
+
+        <!-- The 'melting snow' / emerging grass path -->
+        <!-- This path follows the noodle's shape but is thicker and uses a gradient to show the melt -->
+        <path id="melting-grass-path"
+              d="M 0 250
+                 C 100 50, 200 450, 300 100
+                 C 400 -50, 500 500, 600 150
+                 C 700 0, 800 550, 900 200
+                 C 950 100, 980 400, 1000 250"
+              stroke="url(#meltingSnowGradient)"
+              stroke-width="10mm" /* Significantly wider to form the "mountain" base */
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+        />
+
+        <!-- The black noodle path (drawn on top of the melting grass path) -->
+        <path id="noodle-path"
+              d="M 0 250
+                 C 100 50, 200 450, 300 100
+                 C 400 -50, 500 500, 600 150
+                 C 700 0, 800 550, 900 200
+                 C 950 100, 980 400, 1000 250"
+              stroke="#000000" /* Black noodle color */
+              stroke-width="2mm" /* Noodle thickness */
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+        />
+
+        <!-- The sheep emojis placed at various noodle peaks -->
+        <text x="150" y="50" text-anchor="middle" dominant-baseline="text-after-edge"
+              font-size="35" fill="white" class="sheep-emoji">
+            🐑
+        </text>
+        <text x="700" y="100" text-anchor="middle" dominant-baseline="text-after-edge"
+              font-size="35" fill="white" class="sheep-emoji">
+            🐑
+        </text>
+        <text x="450" y="300" text-anchor="middle" dominant-baseline="text-after-edge"
+              font-size="35" fill="white" class="sheep-emoji">
+            🐑
+        </text>
+         <text x="850" y="250" text-anchor="middle" dominant-baseline="text-after-edge"
+              font-size="35" fill="white" class="sheep-emoji">
+            🐑
+        </text>
+    </svg>
+
+    <!-- Main content container for JS elements, hidden -->
+    <div class="hidden-ui-element">
+        <!-- Announcement Bar (hidden, but structure for JS) -->
+        <div id="announcement-bar" class="hidden">
+            <p>Important Announcement!</p>
+            <button class="close-btn">X</button>
+        </div>
+
+        <!-- Main Header (hidden, but structure for JS) -->
+        <header id="main-header" class="hidden">
+            <a href="#" class="logo-link">Logo</a>
+            <nav>
+                <a href="#" data-view-id="innovate-connect-thrive">Innovate</a>
+            </nav>
+        </header>
+
+        <!-- Theme Switching Buttons (hidden, but structure for JS) -->
+        <div class="theme-switcher">
+            <button id="theme-day-btn">Day</button>
+            <button id="theme-night-btn">Night</button>
+            <button id="theme-hyper-btn">Hyper</button>
+        </div>
+
+        <!-- Language Switcher (hidden, but structure for JS) -->
+        <select id="languageSwitcher">
+            <option value="en">English</option>
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+            <option value="zh">Chinese</option>
+        </select>
+
+        <!-- Planet Pulse Text (hidden, but structure for JS) -->
+        <span id="planet-text"></span>
+
+        <!-- Gemini API Text Generation (hidden, but structure for JS) -->
+        <div>
+            <input type="text" id="promptInput" placeholder="Enter prompt...">
+            <button id="generateTextBtn">Generate Text</button>
+            <div id="loadingIndicator" class="hidden">Loading...</div>
+            <p id="generatedTextOutput"></p>
+        </div>
+
+        <!-- Terminal Iframe (hidden, but structure for JS) -->
+        <iframe id="vault-frame" class="hidden"></iframe>
+        <button class="terminal-btn" onclick="loadTerminal('about:blank')"></button>
+    </div>
+
+    <!-- This div will be displayed for a brief moment to indicate the canvas is loaded -->
+    <div id="loadingMessage" class="message-box">
+        <p class="text-lg">Canvas Loaded: Black Noodle on Concentric Borders with More Sheep</p>
+    </div>
+
+    <script>
+        // Function to show a message box instead of alert()
+        function showMessageBox(message, duration = 3000) {
+            const messageBox = document.getElementById('loadingMessage');
+            if (messageBox) {
+                messageBox.querySelector('p').textContent = message;
+                messageBox.classList.add('show');
+                setTimeout(() => {
+                    messageBox.classList.remove('show');
+                }, duration);
+            }
+        }
+
+        // --- Announcement Bar Close Button ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const closeBtn = document.querySelector('#announcement-bar .close-btn');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    const announcementBar = document.getElementById('announcement-bar');
+                    if (announcementBar) {
+                        announcementBar.classList.add('hidden');
+                        document.documentElement.style.setProperty('--announcement-bar-height', '0px');
+                        localStorage.setItem('hideAnnouncementBar', 'true');
+                    }
+                });
+            }
+        });
+
+        // --- Theme Switching Logic ---
+        const themeDayBtn = document.getElementById('theme-day-btn');
+        const themeNightBtn = document.getElementById('theme-night-btn');
+        const themeHyperBtn = document.getElementById('theme-hyper-btn');
+
+        function setTheme(theme) {
+            document.body.classList.remove('dark-mode', 'hyper-mode');
+            if (themeDayBtn) themeDayBtn.classList.remove('active');
+            if (themeNightBtn) themeNightBtn.classList.remove('active');
+            if (themeHyperBtn) themeHyperBtn.classList.remove('active');
+
+            if (theme === 'dark') {
+                document.body.classList.add('dark-mode');
+                if (themeNightBtn) themeNightBtn.classList.add('active');
+            } else if (theme === 'hyper') {
+                document.body.classList.add('hyper-mode');
+                if (themeHyperBtn) themeHyperBtn.classList.add('active');
+            } else {
+                if (themeDayBtn) themeDayBtn.classList.add('active');
+            }
+            localStorage.setItem('fruitfulTheme', theme);
+            const activeViewId = document.querySelector('.content-section.active')?.id ||
+                                 document.querySelector('#admin-portal-main-content-area .admin-view-panel.active')?.id;
+            if (activeViewId) {
+                console.log(`Simulating chart re-render for view: ${activeViewId} with theme: ${theme}`);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (themeDayBtn) themeDayBtn.addEventListener('click', () => setTheme('day'));
+            if (themeNightBtn) themeNightBtn.addEventListener('click', () => setTheme('dark'));
+            if (themeHyperBtn) themeHyperBtn.addEventListener('click', () => setTheme('hyper'));
+
+            const savedTheme = localStorage.getItem('fruitfulTheme') || 'day';
+            setTheme(savedTheme);
+        });
+
+        // --- Language Switcher Logic ---
+        const languageSwitcher = document.getElementById('languageSwitcher');
+        const languageMap = {
+            'en': 'English', 'es': 'Spanish', 'fr': 'French', 'de': 'German', 'zh': 'Chinese'
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (languageSwitcher) {
+                languageSwitcher.addEventListener('change', (e) => {
+                    const selectedLang = e.target.value;
+                    document.documentElement.lang = selectedLang;
+                    console.log(`Language changed to: ${languageMap[selectedLang] || selectedLang}`);
+                });
+                languageSwitcher.value = document.documentElement.lang || 'en';
+            }
+        });
+
+        // --- On Load Initializations ---
+        window.addEventListener('DOMContentLoaded', () => {
+            const announcementBar = document.getElementById('announcement-bar');
+            const mainHeader = document.getElementById('main-header');
+            if (announcementBar && mainHeader) {
+                const updateHeaderTop = () => {
+                    if (!announcementBar.classList.contains('hidden')) {
+                        const announcementHeight = announcementBar.offsetHeight;
+                        document.documentElement.style.setProperty('--announcement-bar-height', `${announcementHeight}px`);
+                    }
+                    document.documentElement.style.setProperty('--header-height', `${mainHeader.offsetHeight}px`);
+                };
+                if (localStorage.getItem('hideAnnouncementBar') === 'true') {
+                    announcementBar.classList.add('hidden');
+                    document.documentElement.style.setProperty('--announcement-bar-height', '0px');
+                } else {
+                    announcementBar.classList.remove('hidden');
+                    updateHeaderTop();
+                }
+                window.addEventListener('resize', updateHeaderTop);
+                window.addEventListener('load', updateHeaderTop);
+            }
+
+            const canvas = document.getElementById('rhythmic-canvas');
+            const ctx = canvas ? canvas.getContext('2d') : null;
+            if (canvas && ctx) {
+                const resizeCanvas = () => { console.log("Canvas resize simulated."); };
+                const drawGlyph = () => { console.log("Drawing glyph simulated."); };
+                resizeCanvas();
+                drawGlyph();
+                window.addEventListener('resize', resizeCanvas);
+            } else {
+                console.warn("Rhythmic canvas or its context not found. Skipping initialization.");
+            }
+
+            const showMainContentView = (viewId) => { console.log(`Simulating showing main content view: ${viewId}`); };
+            showMainContentView('innovate-connect-thrive');
+
+            const defaultNavLink = document.querySelector(`[data-view-id="innovate-connect-thrive"]`);
+            if (defaultNavLink) {
+                const logoLink = document.querySelector('.logo-link');
+                if (logoLink) {
+                    logoLink.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        showMainContentView('innovate-connect-thrive');
+                    });
+                }
+            }
+        });
+
+        window.loadTerminal = function(iframeSrc) {
+            const vaultFrame = document.getElementById('vault-frame');
+            if (vaultFrame) {
+                vaultFrame.src = iframeSrc;
+                document.querySelectorAll('.terminal-btn').forEach(btn => btn.classList.remove('ring'));
+            }
+        };
+
+        window.addEventListener('load', () => {
+            const vaultFrame = document.getElementById('vault-frame');
+            if (vaultFrame) {
+                loadTerminal('about:blank');
+            }
+        });
+
+        // --- Planet Pulse Text Logic ---
+        const planetTextElement = document.getElementById('planet-text');
+        const planetPhrases = [
+            { text: "fruitful.planet.change", lang: "en" },
+            { text: "cambio.planeta.fructífero", lang: "es" },
+            { text: "changement.planète.fertile", lang: "fr" },
+            { text: "fruchtbarer.planet.wandel", lang: "de" },
+            { text: "富有成效的星球.变化", lang: "zh" }
+        ];
+        let currentPhraseIndex = 0;
+
+        function updatePlanetText() {
+            if (planetTextElement) {
+                planetTextElement.classList.remove('pulse-animation');
+                void planetTextElement.offsetWidth;
+                currentPhraseIndex = (currentPhraseIndex + 1) % planetPhrases.length;
+                const nextPhrase = planetPhrases[currentPhraseIndex];
+                planetTextElement.textContent = nextPhrase.text;
+                planetTextElement.lang = nextPhrase.lang;
+                planetTextElement.classList.add('pulse-animation');
+            }
+        }
+        if (planetTextElement) {
+            setInterval(updatePlanetText, 3000);
+        }
+
+        // --- Gemini API Text Generation Logic ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const generateTextBtn = document.getElementById('generateTextBtn');
+            const promptInput = document.getElementById('promptInput');
+            const generatedTextOutput = document.getElementById('generatedTextOutput');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+
+            if (generateTextBtn && promptInput && generatedTextOutput && loadingIndicator) {
+                generateTextBtn.addEventListener('click', async () => {
+                    const prompt = promptInput.value.trim();
+                    if (!prompt) {
+                        generatedTextOutput.textContent = "Please enter a prompt to generate text.";
+                        generatedTextOutput.style.color = "var(--tertiary-color)";
+                        return;
+                    }
+                    generatedTextOutput.textContent = '';
+                    generatedTextOutput.style.color = "var(--text-color-light)";
+                    loadingIndicator.classList.remove('hidden');
+                    generateTextBtn.disabled = true;
+
+                    try {
+                        let chatHistory = [];
+                        chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                        const payload = { contents: chatHistory };
+                        const apiKey = ""; // Canvas will automatically provide this during runtime
+                        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                        console.log("Attempting to call Gemini API with prompt:", prompt);
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        console.log("Raw API Response Object:", response);
+                        const result = await response.json();
+                        console.log("Parsed API Result JSON:", result);
+
+                        if (result.candidates && result.candidates.length > 0 &&
+                            result.candidates[0].content && result.candidates[0].content.parts &&
+                            result.candidates[0].content.parts.length > 0) {
+                            const text = result.candidates[0].content.parts[0].text;
+                            console.log("Extracted Generated Text:", text);
+                            generatedTextOutput.textContent = text;
+                        } else {
+                            generatedTextOutput.textContent = "Error: Could not generate text. Unexpected API response structure or no candidates found.";
+                            generatedTextOutput.style.color = "var(--tertiary-color)";
+                            console.error("Gemini API response was unexpected or missing content:", result);
+                            if (result.error && result.error.message) {
+                                generatedTextOutput.textContent += ` Reason: ${result.error.message}`;
+                            }
+                        }
+                    } catch (error) {
+                        generatedTextOutput.textContent = `Error: Failed to connect to language model. Check console for network issues or API key.`;
+                        generatedTextOutput.style.color = "var(--tertiary-color)";
+                        console.error("Error calling Gemini API:", error);
+                    } finally {
+                        loadingIndicator.classList.add('hidden');
+                        generateTextBtn.disabled = false;
+                    }
+                });
+            } else {
+                console.warn("Text generation elements (button, input, output, or loading indicator) not found in the DOM. Ensure IDs are correct.");
+            }
+        });
+
+        // Initial load message for this specific canvas
+        window.onload = function() {
+            showMessageBox("Canvas Loaded: Black Noodle on Concentric Borders with More Sheep");
+            console.log("Black Noodle on Concentric Borders with More Sheep Canvas is ready.");
+        };
+    </script>
+</body>
+</html>

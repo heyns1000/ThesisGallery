@@ -1,0 +1,1 @@
+console.log('Manually seeding MineNest mining brands...'); import('./server/minenest-comprehensive-seeder.ts').then(m => m.seedMineNestComprehensive()).then(() => console.log('Mining brands seeded successfully')).catch(e => console.error('Seeding failed:', e))

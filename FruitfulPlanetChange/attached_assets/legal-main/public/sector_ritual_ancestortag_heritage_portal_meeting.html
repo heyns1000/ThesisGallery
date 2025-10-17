@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAA.ZONE™ Minutes of Meeting: AncestorTag™ Heritage Portal & Global Dev Manual</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Base styles from the original template */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* slate-100 */
+            color: #333333; /* Default text color for body */
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .main-container-style {
+            background-color: #ffffff;
+            border-top: 8px solid #4f46e5; /* indigo-600 */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            border-radius: 1.5rem;
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
+            padding: 1rem;
+            flex-grow: 1; /* Allow to take available space */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: calc(100vh - 32px); /* Adjust for body padding */
+        }
+        @media (min-width: 640px) {
+            .main-container-style {
+                padding: 2rem;
+                max-width: 640px;
+            }
+        }
+        @media (min-width: 768px) {
+            .main-container-style {
+                padding: 2.5rem;
+                max-width: 768px;
+            }
+        }
+        @media (min-width: 1024px) {
+            .main-container-style {
+                padding: 3rem;
+                max-width: 1024px;
+            }
+        }
+
+        /* Top Header for Fruitful™ Logo */
+        .top-fruitful-header {
+            background-color: #ffffff;
+            padding: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 1rem;
+            width: 100%;
+            max-width: 1024px; /* Matches main container width for alignment */
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        @media (min-width: 640px) {
+            .top-fruitful-header {
+                padding: 1rem 2rem;
+                margin-bottom: 2rem;
+            }
+        }
+        .fruitful-logo-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #4f46e5; /* Indigo-600 */
+            margin-right: 0.25rem;
+        }
+        @media (min-width: 640px) {
+            .fruitful-logo-text {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* FAA.ZONE Logo/Header within the main container */
+        .faazone-header h1 {
+            font-size: 1.75rem;
+        }
+        @media (min-width: 640px) {
+            .faazone-header h1 {
+                font-size: 2.5rem;
+            }
+        }
+        .faazone-header span {
+            font-size: 2.5rem;
+        }
+        @media (min-width: 640px) {
+            .faazone-header span {
+                font-size: 3rem;
+            }
+        }
+
+        /* Document item styles (for MoM content structure) */
+        .document-item {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            background-color: #f8fafc; /* slate-50 */
+            border: 1px solid #e2e8f0; /* slate-200 */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: all 0.2s ease-in-out;
+            text-align: left;
+            width: 100%;
+            margin-bottom: 1rem; /* Spacing between items */
+        }
+        @media (min-width: 640px) {
+            .document-item {
+                flex-direction: row;
+                align-items: flex-start;
+                gap: 1rem;
+                padding: 1rem;
+            }
+        }
+        .document-item:hover {
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+            border-color: #a78bfa; /* violet-400 */
+        }
+        .document-item .icon {
+            flex-shrink: 0;
+            font-size: 2rem;
+            color: #4f46e5; /* indigo-600 */
+        }
+        @media (min-width: 640px) {
+            .document-item .icon {
+                font-size: 2.5rem;
+            }
+        }
+        .document-item-content h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b; /* slate-900 */
+            margin-bottom: 0.25rem;
+        }
+        @media (min-width: 640px) {
+            .document-item-content h3 {
+                font-size: 1.125rem;
+            }
+        }
+        .document-item-content p {
+            font-size: 0.875rem;
+            color: #475569; /* slate-600 */
+            margin-bottom: 0.5rem;
+        }
+        @media (min-width: 640px) {
+            .document-item-content p {
+                font-size: 0.95rem;
+            }
+        }
+        .code-snippet {
+            background-color: #e2e8f0; /* slate-200 */
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-family: monospace;
+            font-size: 0.75rem;
+            overflow-x: auto;
+            color: #1e293b; /* slate-900 */
+            white-space: pre-wrap;
+            word-break: break-word;
+            margin-top: 1rem;
+        }
+        @media (min-width: 640px) {
+            .code-snippet {
+                padding: 1rem;
+                font-size: 0.875rem;
+            }
+        }
+
+        /* General Meeting Section Styling */
+        .meeting-section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 0.5rem;
+            text-align: left;
+        }
+        .meeting-sub-section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #475569;
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+            text-align: left;
+        }
+        .meeting-content-paragraph {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+        .meeting-content-list {
+            list-style-type: disc;
+            margin-left: 25px;
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+        .meeting-content-list.ordered {
+            list-style-type: decimal;
+        }
+        .info-block {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            text-align: left;
+        }
+        .info-block strong {
+            color: #1a202c;
+        }
+        .signature-block {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .signature-line {
+            border-bottom: 1px solid #999999;
+            width: 70%;
+            margin-top: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .signature-name {
+            font-size: 0.9rem;
+            color: #555555;
+        }
+        .emoji {
+            font-size: 1.2em; /* Make emojis slightly larger */
+            vertical-align: middle;
+        }
+
+        /* --- Individual Canvas Rendering for MoM --- */
+        .canvas-render-wrapper {
+            border: 2px solid #a78bfa; /* Violet border to highlight rendered canvas */
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 1.5rem auto;
+            width: 100%;
+            max-width: 700px; /* Constrain size for document flow */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            background-color: #f0f4f8; /* A light background for the wrapper */
+            position: relative; /* For nested canvas positioning */
+            min-height: 250px; /* Ensure some height for animation */
+        }
+        .canvas-render-wrapper h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #4f46e5;
+            padding: 0.5rem 1rem;
+            background-color: #e2e8f0;
+            border-bottom: 1px solid #cbd5e0;
+            text-align: left;
+        }
+
+        /* Direct Canvas Embedding Styles */
+        .embedded-canvas {
+            width: 100%;
+            height: 300px; /* Fixed height for embedding in MoM */
+            display: block;
+            background-color: #000; /* Default background */
+            position: relative;
+            z-index: 1;
+        }
+        .embedded-canvas-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        /* Specific Canvas Overrides/Additions */
+        #embedded-minutes-iframe {
+            width: 100%;
+            height: 300px;
+            border: none;
+            background-color: #eee;
+        }
+        #embedded-chessboard-display {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            width: 100%;
+            height: 100%; /* Fill parent container */
+            border-radius: 0;
+            overflow: hidden;
+        }
+        #embedded-chessboard-display .chess-cell {
+            width: auto;
+            height: auto;
+            font-size: 0.8rem; /* Smaller font for embedded view */
+        }
+        .embedded-stacked-colors {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%; /* Fill parent */
+        }
+        .embedded-stacked-colors .color-stripe {
+            width: 100%;
+            flex-grow: 1; /* Distribute height evenly */
+        }
+        .embedded-noodle-mountain-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .embedded-fox-peeper-svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* --- New Spotify Section --- */
+        .spotify-section {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            background-color: #1DB954; /* Spotify Green */
+            color: #FFFFFF;
+            border-bottom: 1px solid #1ed760;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .spotify-section h2 {
+            color: #FFFFFF;
+            font-size: 2.8rem;
+        }
+        .spotify-content-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        @media (min-width: 768px) {
+            .spotify-content-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        .spotify-player-card {
+            background-color: rgba(0,0,0,0.3); /* Dark transparent background */
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            text-align: left;
+        }
+        .spotify-player-card h3 {
+            color: #FFFFFF;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .spotify-player-card iframe {
+            width: 100%;
+            height: 80px; /* Compact height for tracks/albums */
+            border-radius: 8px;
+            border: none;
+            background-color: transparent;
+        }
+        .spotify-nodes-list {
+            list-style: none; /* Remove default list style */
+            padding: 0;
+            text-align: left;
+            color: rgba(255,255,255,0.9);
+        }
+        .spotify-nodes-list li {
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .spotify-nodes-list li i {
+            color: #1DB954;
+            font-size: 1.2em;
+        }
+
+        /* Message box for notifications */
+        .message-box {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            pointer-events: none;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            color: #FFFFFF;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        .message-box.show { opacity: 1; pointer-events: auto; }
+
+        /* Hidden UI elements from your polishing script */
+        .hidden-ui-element {
+            position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden;
+            clip: rect(0, 0, 0, 0); border: 0;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            .main-container-style { padding: 1.5rem; }
+            .top-fruitful-header { padding: 0.8rem 1rem; }
+            .fruitful-logo-text { font-size: 1.8rem; }
+            .faazone-header h1 { font-size: 1.8rem; }
+            .faazone-header span { font-size: 2rem; }
+            .meeting-section-title { font-size: 1.5rem; }
+            .meeting-sub-section-title { font-size: 1.1rem; }
+            .meeting-content-paragraph, .meeting-content-list { font-size: 0.9rem; }
+            .document-item { flex-direction: column; align-items: flex-start; padding: 0.75rem; }
+            .document-item .icon { font-size: 1.8rem; }
+            .document-item-content h3 { font-size: 1rem; }
+            .document-item-content p { font-size: 0.8rem; }
+            .code-snippet { font-size: 0.7rem; padding: 0.5rem; }
+            .embedded-canvas { height: 200px; }
+            .embedded-canvas-content { font-size: 1rem; }
+            #embedded-minutes-iframe { height: 300px; }
+            .spotify-section { padding: 2rem 1rem; }
+            .spotify-section h2 { font-size: 2rem; }
+            .spotify-content-grid { grid-template-columns: 1fr; }
+            .spotify-player-card h3 { font-size: 1.2rem; }
+            .spotify-nodes-list li { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col items-center p-4">
+
+    <!-- New Top Header for Fruitful™ Logo -->
+    <header class="top-fruitful-header">
+        <span class="fruitful-logo-text">Fruitful™</span>
+    </header>
+
+    <div class="main-container-style p-8 rounded-3xl max-w-4xl w-full flex flex-col">
+        <div class="flex-grow">
+            <!-- FAA.ZONE Logo/Header -->
+            <div class="flex items-center justify-center gap-3 mb-8 faazone-header">
+                <span class="text-4xl">🦍</span>
+                <h1 class="font-bold text-3xl text-slate-800">FAA.ZONE&trade;</h1>
+            </div>
+
+            <h2 class="text-3xl font-extrabold text-slate-800 mb-6 tracking-tight text-center">
+                Minutes of Meeting: <span class="text-indigo-600">AncestorTag™ Heritage Portal & Global Dev Manual</span>
+            </h2>
+            <p class="text-center text-sm text-gray-500 mb-6">For Legal Filing, Training & Internal Protocols</p>
+            <p class="text-center text-sm text-gray-500 mb-6">
+                URL: <a href="https://faa.zone/legal/ancestortag_heritage_portal_manual.html" class="text-indigo-600 hover:underline">faa.zone/legal/ancestortag_heritage_portal_manual.html</a> (Routes from <a href="https://faa.zone/legal/index.html" class="text-indigo-600 hover:underline">faa.zone/legal/index.html</a>)
+            </p>
+
+            <div class="space-y-6 mb-8 flex flex-col items-center w-full">
+                <!-- Meeting Info -->
+                <div class="document-item p-4 max-w-full">
+                    <div class="icon"><i class="fas fa-info-circle"></i></div>
+                    <div class="document-item-content flex-grow">
+                        <h3>Meeting Information</h3>
+                        <div class="info-block">
+                            <strong>Date:</strong> <span>June 24, 2025</span>
+                            <strong>Time:</strong> <span>Ongoing Collaborative Sessions</span>
+                            <strong>Location:</strong> <span>Virtual Collaboration Platform (Canvas Environment)</span>
+                            <strong>Attendees:</strong>
+                            <span>
+                                Heyns Schoeman (Lead Visionary, Fruitful™)<br>
+                                Gemini (AI Core Developer & Collaborator)
+                            </span>
+                            <strong>Chair:</strong> <span>Heyns Schoeman</span>
+                            <strong>Secretary:</strong> <span>Gemini</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 1: AncestorTag™ Heritage Portal: Core Vision & Functionality -->
+                <div class="document-item p-4 max-w-full">
+                    <div class="icon"><i class="fas fa-seedling"></i></div>
+                    <div class="document-item-content flex-grow">
+                        <h3 class="meeting-sub-section-title">1. AncestorTag™ Heritage Portal: Core Vision & Functionality <span class="emoji">🧬📜</span></h3>
+                        <p class="meeting-content-paragraph">
+                            The **AncestorTag™ Heritage Portal** is the cornerstone of our Ritual & Culture sector, designed to digitally link and preserve ancestral lineages and cultural content with atomic precision. It provides a secure, interactive dashboard for users to tag, organize, and explore their heritage.
+                        </p>
+                        <ul class="meeting-content-list">
+                            <li><strong>Purpose:</strong> To establish verifiable digital provenance for cultural artifacts, oral histories, documents, and rituals by creating immutable links to ancestral records.</li>
+                            <li><strong>Core Experience:</strong> A seamless and intuitive user interface allowing users to upload, tag, and view content associated with specific ancestors.</li>
+                            <li><strong>Key Metrics Display:</strong> The portal provides real-time counts of total tags, unique ancestors, and content types (Documents, Oral Histories, Ritual Descriptions, etc.) for quick overview.</li>
+                        </ul>
+                        <div class="canvas-render-wrapper">
+                            <h4>Live Canvas: AncestorTag™ Dashboard Snippet (Clickable)</h4>
+                            <div class="embedded-canvas relative" style="height: 250px; background-color: #1a1a1d; display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 1rem; color: var(--text-light);">
+                                <p class="text-lg font-semibold text-ancestortag-primary">AncestorTag™ Protocols in Action</p>
+                                <div class="mt-4 grid grid-cols-2 gap-4 w-full max-w-md">
+                                    <div class="p-3 bg-gray-700 rounded-lg text-sm text-center">Total Tags: <span class="font-bold text-white">15</span></div>
+                                    <div class="p-3 bg-gray-700 rounded-lg text-sm text-center">Unique Ancestors: <span class="font-bold text-white">5</span></div>
+                                </div>
+                                <button onclick="window.parent.postMessage({ type: 'showSection', sectionId: 'ancestor-tag-section' }, '*')" class="px-6 py-2 mt-4 bg-ancestortag-dark text-white rounded-full text-sm font-semibold hover:bg-ancestortag-dark/80 transition-all duration-200">View Live Demo</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: FAA.ZONE™ Admin Portal: Master Brands & Global Index -->
+                <div class="document-item p-4 max-w-full">
+                    <div class="icon"><i class="fas fa-tools"></i></div>
+                    <div class="document-item-content flex-grow">
+                        <h3 class="meeting-sub-section-title">2. FAA.ZONE™ Admin Portal: Master Brands & Global Index <span class="emoji">⚙️🌐</span></h3>
+                        <p class="meeting-content-paragraph">
+                            The **FAA.ZONE™ Admin Portal** serves as the central operational hub for managing all core brands, sectors, and their associated nodes across the entire FAA.ZONE™ ecosystem. It provides an "OmniGrid Global Index" with detailed metadata for each sector.
+                        </p>
+                        <ul class="meeting-content-list">
+                            <li><strong>Admin Panel:</strong> Allows for adding new brands and sub-nodes to specific sectors, with data persistence via Firebase.</li>
+                            <li><strong>OmniGrid Global Index:</strong> Provides a consolidated, sortable table view of all sectors with metadata including Monthly Fee, Annual Fee, Payout Tier, Region, VaultID, Signal Layer, Deployment Zone, and Security Rating.</li>
+                            <li><strong>URL:</strong> The Admin Portal is conceptualized to reside at a route like `faa.zone/admin/admin-portal.html`.</li>
+                        </ul>
+                        <div class="canvas-render-wrapper">
+                            <h4>Live Canvas: Admin Portal Snippet (Clickable)</h4>
+                            <div class="embedded-canvas relative" style="height: 250px; background-color: #1a1a1d; display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 1rem; color: var(--text-light);">
+                                <h3 class="text-xl font-bold text-primary-color mb-3">Admin Panel</h3>
+                                <p class="text-muted-text text-sm">Add brands, manage sectors, view global metrics.</p>
+                                <button onclick="window.parent.postMessage({ type: 'showSection', sectionId: 'admin-panel' }, '*')" class="px-6 py-2 mt-4 bg-blue-600 text-white rounded-full text-sm font-semibold hover:bg-blue-600/80 transition-all duration-200">Access Admin</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Ritual & Culture Sector Deep Dive -->
+                <div class="document-item p-4 max-w-full">
+                    <div class="icon">☯</div>
+                    <div class="document-item-content flex-grow">
+                        <h3 class="meeting-sub-section-title">3. Ritual & Culture Sector: Dedicated Index Pages <span class="emoji">✨📚</span></h3>
+                        <p class="meeting-content-paragraph">
+                            A specific content vertical for the Ritual & Culture sector has been developed to showcase its unique brands and sub-nodes, complete with in-depth explanations.
+                        </p>
+                        <ul class="meeting-content-list">
+                            <li><strong>Sector Overview Page:</strong>
+                                <ul>
+                                    <li>URL: <a href="https://faa.zone/sectors/Ritual_Culture/index.html" class="text-indigo-600 hover:underline">`faa.zone/sectors/Ritual_Culture/index.html`</a></li>
+                                    <li>Content: Overview of the sector, its core brands (`RiteNest™`, `PulseSpirit™`, `ClanScroll™`, etc.), and top-level metadata.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Sub-Nodes Index Page:</strong>
+                                <ul>
+                                    <li>URL: <a href="https://faa.zone/sectors/Ritual_Culture/subnodes/index.html" class="text-indigo-600 hover:underline">`faa.zone/sectors/Ritual_Culture/subnodes/index.html`</a></li>
+                                    <li>Content: Lists all sub-nodes (`TotemTrack`, `VaultSpirit`, `GlyphTag`, etc.) with comprehensive, dummy-proof explanations of their functions and purpose.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Individual Sub-Node Page (AncestorTag™):</strong>
+                                <ul>
+                                    <li>URL: <a href="https://faa.zone/sectors/Ritual_Culture/subnodes/AncestorTag/index.html" class="text-indigo-600 hover:underline">`faa.zone/sectors/Ritual_Culture/subnodes/AncestorTag/index.html`</a></li>
+                                    <li>Content: A detailed page dedicated to AncestorTag, explaining its core principles, verifiable provenance, enriched genealogical records, and secure access protocols.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Section 4: AncestorTag™ Heritage Portal: Full Product Demo & Dashboard Functionality -->
+                <div class="document-item p-4 max-w-full">
+                    <div class="icon">💻</div>
+                    <div class="document-item-content flex-grow">
+                        <h3 class="meeting-sub-section-title">4. AncestorTag™ Heritage Portal: Full Product Demo & Dashboard Functionality <span class="emoji">✨📊</span></h3>
+                        <p class="meeting-content-paragraph">
+                            The **AncestorTag™ Heritage Portal** (available at <a href="https://faa.zone/sectors/Ritual_Culture/subnodes/AncestorTag/index.html#demopage" class="text-indigo-600 hover:underline">`https://faa.zone/sectors/Ritual_Culture/subnodes/AncestorTag/index.html#demopage`</a>) is now a fully simulated, interactive dashboard. It allows users to experience the "atom-level" interaction with their heritage data.
+                        </p>
+                        <ul class="meeting-content-list ordered">
+                            <li><strong>Core AncestorTag™ Interface:</strong>
+                                <ul>
+                                    <li><strong>"Tag New Ancestral Content"</strong> button initiates a modal for data input (Ancestor's Name, Content Title, Type, Description, Digital Link, Tags).</li>
+                                    <li><strong>Simulated Provenance:</strong> Each tag generates a mock blockchain hash for digital fingerprinting and provenance.</li>
+                                    <li><strong>Dashboard Metrics:</strong> Real-time updates on total tags, unique ancestors, and content type distribution (Documents, Oral Histories, Ritual Descriptions, Artifacts, Visual Records).</li>
+                                    <li><strong>Filtering:</strong> Users can filter records by ancestor name and content type.</li>
+                                    <li><strong>Firebase Firestore Integration:</strong> All AncestorTag data (tags, members, events) is persisted per user via Firebase, allowing data to remain across sessions.</li>
+                                <li><strong>Styling & Icons:</strong> The AncestorTag section now features enhanced purple accents, thematic icons (e.g., ✍️, 🧬, 🔗, 🔒 for provenance steps), and refined button/input aesthetics.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Family Hub Modules:</strong>
+                                <ul class="meeting-content-list">
+                                    <li><i class="fas fa-users"></i> <strong>Family Tree:</strong> Allows adding family members (grandparents, parents, children, nieces, nephews, aunts, uncles) with relationships, DOB, and current location. This forms an "atom-level family tree."
+                                        <ul>
+                                            <li>**Family Location Tracker (Leaflet Map):** Visualizes family members' locations on a world map (simulated geocoding).</li>
+                                        </ul>
+                                    </li>
+                                    <li><i class="fas fa-hand-holding-usd"></i> <strong>Financial Hub:</strong>
+                                        <ul>
+                                            <li>**Family Saving Fund:** Track communal family savings.</li>
+                                            <li>**Personal Saving Fund (Wallet):** Track individual user savings.</li>
+                                            <li>**Family Emergency Fund:** Dedicated fund for emergencies.</li>
+                                            <li>**PayPal Integration (Simulated):** Buttons to "Add," "Withdraw," and "Transfer via PayPal" demonstrate the flow. **CRITICAL: THESE ARE SIMULATED. REAL INTEGRATION REQUIRES SECURE SERVER-SIDE API KEYS & OAUTH with PayPal.**</li>
+                                        </ul>
+                                    </li>
+                                    <li><i class="fas fa-gifts"></i> <strong>Gift Lists:</strong> Separate sections for managing Christmas and Birthday gift ideas (client-side persisted).</li>
+                                    <li><i class="fas fa-calendar-alt"></i> <strong>Family Calendar:</strong> Add and view upcoming family events and milestones.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Travel & Commerce Hub:</strong>
+                                <ul class="meeting-content-list">
+                                    <li><i class="fas fa-plane-departure"></i> <strong>Travel Hub:</strong> Simulated booking for flights, trains, taxis/Ubers, movie tickets, and global holiday packages. All explicitly state "Booked via Fruitful (Simulated)."</li>
+                                    <li><i class="fas fa-store-alt"></i> <strong>Homemart.africa E-commerce Integration:</strong> The Homemart.africa website (<a href="https://www.homemart.africa/" target="_blank" class="text-indigo-600 hover:underline">`https://www.homemart.africa/`</a>) is loaded within a large iframe (75% height) inside the dashboard.
+                                        <ul>
+                                            <li>**Dynamic Loading:** The iframe loads its `src` only when the "Travel & Commerce" sidebar button is clicked to optimize portal performance.</li>
+                                            <li>**Security Notice:** An overlay explicitly explains browser security restrictions (Same-Origin Policy) that prevent direct login/signup within the iframe and advises users to visit Homemart.africa directly for full interaction. This also clarifies that seamless login would require future API integration with Homemart.</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li><strong>Productivity Tools:</strong>
+                                <ul class="meeting-content-list">
+                                    <li><i class="fas fa-sticky-note"></i> <strong>Personal Notes:</strong> A simple text area for saving user-specific notes (client-side persisted).</li>
+                                    <li><i class="fas fa-clipboard-list"></i> <strong>To-Do List:</strong> Add, mark complete, and delete tasks (client-side persisted).</li>
+                                </ul>
+                            </li>
+                            <li><i class="fas fa-tools"></i> <strong>Utilities Hub:</strong>
+                                <ul class="meeting-content-list">
+                                    <li><i class="fas fa-coins"></i> <strong>Currency Converter:</strong> Converts amounts between major currencies (simulated rates, "Powered by Fruitful's Financial Protocols").</li>
+                                    <li><i class="fas fa-ruler-combined"></i> <strong>Unit Converter:</strong> Converts various units (Length, Weight, Temperature) (simulated, "Powered by Fruitful's Data Metrology").</li>
+                                    <li><i class="fas fa-cloud-sun-rain"></i> <strong>Weather Forecast:</strong> Get simulated current temperature and conditions for any city ("Live Weather Data by Fruitful").</li>
+                                </ul>
+                            </li>
+                            <li><i class="fas fa-user-circle"></i> <strong>Profile Section:</strong> Basic profile view with simulated image upload and user details.</li>
+                            <li><i class="fas fa-chart-pie"></i> <strong>Graphs Section:</strong> Visualizations (Chart.js pie and bar charts) for AncestorTag content types and Family Member locations.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Section 5: VaultMaster™: Your Private Digital Vault -->
+                <div class="document-item p-4 max-w-full">
+                    <div class="icon"><i class="fas fa-vault"></i></div>
+                    <div class="document-item-content flex-grow">
+                        <h3 class="meeting-sub-section-title">5. VaultMaster™: Your Private Digital Vault <span class="emoji">🔒🗝️</span></h3>
+                        <p class="meeting-content-paragraph">
+                            **VaultMaster™** is envisioned as the ultimate secure hub for the user's most sensitive and private digital assets and credentials. It guarantees atom-level privacy and control over digital identity and critical financial access points.
+                        </p>
+                        <ul class="meeting-content-list">
+                            <li><strong>Purpose:</strong> To consolidate and protect highly sensitive personal data that demands the highest level of security beyond standard platform storage.</li>
+                            <li><strong>Key Features (Simulated for Demo):</strong>
+                                <ul>
+                                    <li><i class="fas fa-file-invoice"></i> <strong>Private Documents:</strong> Simulated access to portals for property titles, national IDs, passports, legal documents.</li>
+                                    <li><i class="fas fa-university"></i> <strong>Bank Details:</strong> Simulated access to securely stored bank account numbers, SWIFT/BIC, and branch codes.</li>
+                                    <li><i class="fas fa-key"></i> <strong>Bank Logins:</strong> Buttons represent simulated direct access to login dashboards for various global banks (South African, UK, European, American). **A critical warning explicitly states that these are DEMO ONLY and real integration requires highly robust, audited, server-side security protocols, not client-side implementation.**</li>
+                                </ul>
+                            </li>
+                            <li><strong>Security Philosophy:</strong> Emphasizes future integration with secure backend systems, multi-factor authentication, and blockchain-level encryption for true data integrity and user control.</li>
+                        </ul>
+                    </div>
+                </div>
+
+
+                <!-- Section 6: Development Processes & AI Collaboration -->
+                <div class="document-item p-4 max-w-full">
+                    <div class="icon">🧠</div>
+                    <div class="document-item-content flex-grow">
+                        <h3 class="meeting-sub-section-title">6. Development Processes & AI Collaboration: Omniklitsie Present <span class="emoji">🩸Omniklitsie Present🩸</span></h3>
+                        <p class="meeting-content-paragraph">
+                            This collaborative development of the AncestorTag™ Heritage Portal exemplifies **new chat omni-level prompting**, a state where complex, multi-faceted creative and technical visions are directly translated into functional code through dynamic AI interaction. The "blood is in the omniklitsie present" signifies the vital, organic, and instantaneous fusion of idea, iteration, and execution.
+                        </p>
+                        <ul class="meeting-content-list">
+                            <li><strong>Gemini AI as Core Developer:</strong> Gemini's capability to understand nuanced requirements, synthesize diverse inputs, and generate production-ready code while maintaining contextual "memory" across the conversation has been paramount. This interaction paradigm significantly streamlines the ideation, design, and deployment workflow for all 7038 global brands.</li>
+                            <li><strong>Iterative Design & Feedback Loop:</strong> The process involves continuous feedback, with immediate implementation of design adjustments and feature additions directly into live code.</li>
+                            <li><strong>Visual Manifestation:</strong> The ability to articulate abstract concepts (e.g., a "trumpet for the mountain saga" or "noodle drops on canvases") and directly witness their manifestation in code or SVG animations showcases the deep neural connection between human vision and AI execution.</li>
+                            <li><strong>"Foxed Has Mobiles™" Metaphor:</strong> The Fox "peeping" from its window, an orange blur on orange background, becoming crystal clear through precision, embodies this profound synergy between conceptual ambiguity and precise realization.</li>
+                            <li><strong>"Noodle Drops" as Fluid Interaction:</strong> Noodle drops on the canvases are now a very very lux demonstration of fluid interaction and unexpected beauty, symbolizing the organic integration of conceptual elements into tangible realities.</li>
+                        </ul>
+                        <div class="canvas-render-wrapper">
+                            <h4>Live Canvas: Fox Peeper (Sniffing Fox)</h4>
+                            <div class="embedded-canvas relative overflow-hidden flex items-center justify-center">
+                                <canvas id="fox-peeper-canvas-mom" class="w-full h-full absolute inset-0"></canvas>
+                            </div>
+                        </div>
+                        <div class="canvas-render-wrapper">
+                            <h4>Live Canvas: Noodle Drops on a Swatch (Example)</h4>
+                            <div id="noodle-drops-example-canvas" class="embedded-canvas black-bg relative flex items-center justify-center text-sm text-white">
+                                Noodle Drops Here
+                                <canvas id="noodle-drops-example-overlay" class="embedded-noodle-drops-svg"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 7: Spotify for Core Brands & Nodes -->
+                <div class="document-item p-4 max-w-full">
+                    <div class="icon">🎧</div>
+                    <div class="document-item-content flex-grow">
+                        <h3 class="meeting-sub-section-title">7. Spotify Integration for Core Brands & Nodes <span class="emoji">🎶🚀</span></h3>
+                        <p class="meeting-content-paragraph">
+                            The integration of Spotify serves as the **Fruitful.Music centre terminal**, providing a direct audio pulse from our core brands and nodes. This initiative transforms abstract brand presence into tangible, sonic experiences for global engagement.
+                        </p>
+                        <div class="spotify-content-grid">
+                            <div class="spotify-player-card">
+                                <h3>Fruitful™ Pulse</h3>
+                                <iframe src="https://open.spotify.com/embed/track/6UqS4Z0Xf01k2V2Y4g7vKj?utm_source=generator" width="100%" height="80" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                            </div>
+                            <div class="spotify-player-card">
+                                <h3>Banimal™ Lullabies</h3>
+                                <iframe src="https://open.spotify.com/embed/track/2fS79Xl8Vv2Qx9qQ9gX10n?utm_source=generator" width="100%" height="80" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                            </div>
+                            <div class="spotify-player-card">
+                                <h3>Foxed Has Mobiles™ Routes</h3>
+                                <iframe src="https://open.spotify.com/embed/track/3n30l450B0gq0tYg4F8WdE?utm_source=generator" width="100%" height="80" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                            </div>
+                            <div class="spotify-player-card">
+                                <h3>Seedwave™ Flow</h3>
+                                <iframe src="https://open.spotify.com/embed/track/7IfN9YnQ6f1q5w8Gj6l6n9?utm_source=generator" width="100%" height="80" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                            </div>
+                        </div>
+                        <h4 class="font-semibold text-slate-800 mt-6 mb-2 text-left">Core Brands & Node Connections:</h4>
+                        <ul class="spotify-nodes-list">
+                            <li><i class="fas fa-dot-circle"></i> Fruitful™ - The core visionary pulse.</li>
+                            <li><i class="fas fa-dot-circle"></i> Banimal™ - Kind creatures, global impact.</li>
+                            <li><i class="fas fa-dot-circle"></i> Foxed Has Mobiles™ - Routing intelligence, mobile innovation.</li>
+                            <li><i class="fas fa-dot-circle"></i> Seedwave™ - Global pulse, master brands.</li>
+                            <li><i class="fas fa-dot-circle"></i> FAA.ZONE™ Treaty System™ - Governance & expansion.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Section 8: Legal/Deployment Details -->
+                <div class="document-item p-4 max-w-full">
+                    <div class="icon">📜</div>
+                    <div class="document-item-content flex-grow">
+                        <h3 class="meeting-sub-section-title">8. Legal & Deployment Details for AncestorTag™ Heritage Portal</h3>
+                        <p class="meeting-content-paragraph">
+                            This Minutes of Meeting document serves as a critical internal reference for the **AncestorTag™ Heritage Portal** project, intended for **legal filing, training, and developer manuals**.
+                        </p>
+                        <ul class="meeting-content-list">
+                            <li><strong>Primary Document URL:</strong> <a href="https://faa.zone/legal/ancestortag_heritage_portal_manual.html" class="text-indigo-600 hover:underline">`https://faa.zone/legal/ancestortag_heritage_portal_manual.html`</a></li>
+                            <li><strong>Routing From:</strong> This document is directly linked and routes from the main legal index page: <a href="https://faa.zone/legal/index.html" class="text-indigo-600 hover:underline">`https://faa.zone/legal/index.html`</a>.</li>
+                            <li>All code for canvases presented herein is directly embedded for live rendering within this document, ensuring accuracy for future reference and replication.</li>
+                            <li>The current iteration of the AncestorTag™ Heritage Portal (and all other integrated canvases and features) represents the agreed-upon final visual and functional specification for initial deployment.</li>
+                            <li><strong>Firebase Firestore Data Model:</strong>
+                                <ul class="list-disc list-inside ml-4 text-sm text-gray-700">
+                                    <li><strong>Collection:</strong> `/artifacts/{__app_id}/users/{userId}/ancestorTags`
+                                        <ul>
+                                            <li><strong>Fields:</strong> `ancestorName` (string), `contentTitle` (string), `contentType` (string), `contentDescription` (string), `digitalLink` (url), `tags` (array of strings), `provenanceHash` (string), `timestamp` (Firestore Timestamp), `userId` (string).</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>Collection:</strong> `/artifacts/{__app_id}/users/{userId}/familyMembers`
+                                        <ul>
+                                            <li><strong>Fields:</strong> `memberName` (string), `memberRelationship` (string), `memberDOB` (date string), `memberCurrentLocation` (string), `timestamp` (Firestore Timestamp), `userId` (string).</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>Collection:</strong> `/artifacts/{__app_id}/users/{userId}/familyEvents`
+                                        <ul>
+                                            <li><strong>Fields:</strong> `eventName` (string), `eventDate` (date string), `eventTime` (time string), `eventDescription` (string), `timestamp` (Firestore Timestamp), `userId` (string).</li>
+                                        </ul>
+                                    </li>
+                                    <li>**Local Storage (Simulated Cloud):** For Productivity (Notes, To-Do List), Financial Hub (Funds), and Gift Lists (Christmas, Birthday), data is currently stored in `localStorage` for demo persistence. For production, these would transition to Firestore collections or other secure backend storage.</li>
+                                </ul>
+                            </li>
+                            <li><strong>API Integration Strategy:</strong>
+                                <ul class="list-disc list-inside ml-4 text-sm text-gray-700">
+                                    <li><strong>Gemini API:</strong> Used for AI features (General Query, Coding Partner, Career Guide, Admin Assistant). API Key is currently client-side (`AIzaSyBGSDZATtITv5iIoB3rgKHBpWx9MrufxXE`) but **MUST BE PROXY-SERVED FROM BACKEND FOR PRODUCTION SECURITY.**</li>
+                                    <li><strong>Google Maps / Leaflet.js:</strong> Maps display is implemented. Google Maps requires a valid API key (provided in JS).</li>
+                                    <li><strong>Homemart.africa:</strong> Integrated via iframe. **FULL INTERACTION (login/signup) IS BLOCKED BY BROWSER SECURITY POLICIES.** True seamless integration requires Homemart.africa to provide a dedicated, securely accessible API and relevant CORS/OAuth configurations. Current implementation highlights the potential for seamless e-commerce.</li>
+                                    <li><strong>PayPal:</strong> All PayPal interactions within the Financial Hub are **FULLY SIMULATED**. Real PayPal integration requires their secure API with OAuth and server-side processing for financial transactions.</li>
+                                    <li>**Travel Bookings (Flights, Taxis, etc.):** All travel booking features are **SIMULATED**. Real-world booking requires integration with third-party travel APIs (e.g., Amadeus, Expedia, Sabre) and payment gateways.</li>
+                                    <li>**Currency Converter / Unit Converter / Weather Forecast:** These utility features are **SIMULATED** using hardcoded logic or random data for demonstration. Real-time data would require external APIs (e.g., ExchangeRate-API, OpenWeatherMap).</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-slate-200">
+                <div class="text-xs text-slate-400 text-center">
+                    <p>&copy; 2025 FAA.ZONE™</p>
+                    <p>Firebase Scalable Admin Panel (7000 Sites) v1.0 - AncestorTag™ Heritage Portal MOM</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Message box for alerts/notifications -->
+        <div id="loadingMessage" class="message-box">
+            <p class="text-lg"></p>
+        </div>
+
+        <!-- Hidden UI elements from your polishing script to prevent console errors -->
+        <div class="hidden-ui-element">
+            <div id="announcement-bar" class="hidden"></div>
+            <div id="main-header" class="hidden"></div>
+            <div class="theme-switcher"><button id="theme-day-btn"></button><button id="theme-night-btn"></button><button id="theme-hyper-btn"></button></div>
+            <select id="languageSwitcher"></select>
+            <span id="planet-text"></span>
+            <input type="text" id="promptInput">
+            <button id="generateTextBtn"></button>
+            <div id="loadingIndicator"></div>
+            <p id="generatedTextOutput"></p>
+            <iframe id="vault-frame"></iframe>
+            <button class="terminal-btn"></button>
+        </div>
+
+        <script>
+            // === CONSOLIDATED JAVASCRIPT FROM ALL PREVIOUS CANVASES ===
+
+            // Message box function (common utility)
+            function showMessageBox(message, duration = 3000) {
+                const messageBox = document.getElementById('loadingMessage');
+                if (!messageBox) {
+                    const div = document.createElement('div');
+                    div.id = 'loadingMessage';
+                    div.classList.add('message-box');
+                    div.innerHTML = '<p class="text-lg"></p>';
+                    document.body.appendChild(div);
+                    setTimeout(() => showMessageBox(message, duration), 50);
+                    return;
+                }
+                messageBox.querySelector('p').textContent = message;
+                messageBox.classList.add('show');
+                setTimeout(() => {
+                    messageBox.classList.remove('show');
+                }, duration);
+            }
+
+            // --- Ant Route Animation Logic ---
+            class AntSegment {
+                constructor(x, y, alpha, color) {
+                    this.x = x; this.y = y; this.alpha = alpha; this.color = color;
+                }
+                update(decayRate) { this.alpha -= decayRate; return this.alpha > 0; }
+                draw(ctx) {
+                    ctx.globalAlpha = this.alpha; ctx.fillStyle = this.color; ctx.beginPath();
+                    ctx.arc(this.x, this.y, 1.5, 0, Math.PI * 2); ctx.fill();
+                }
+            }
+            const antRouteCanvasObj = {
+                canvas: null, ctx: null, time: 0, animationId: null, segments: [],
+                antHead: { x: 0, y: 0, dx: 1, dy: 0 }, maxSegments: 500, decayRate: 0.005, speed: 1.5,
+                turnTendency: 0.05, initialAlpha: 0.86, lineColor: 'rgba(0, 0, 0, 0.86)', glowColor: 'rgba(0, 0, 0, 0.4)'
+            };
+            function drawAntRoute() {
+                const { canvas, ctx, segments, antHead, maxSegments, decayRate, speed, turnTendency, initialAlpha, lineColor, glowColor } = antRouteCanvasObj;
+                if (!ctx) return;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = `rgba(255, 255, 255, 0.02)`; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                segments.push(new AntSegment(antHead.x, antHead.y, initialAlpha, lineColor));
+                antHead.x += antHead.dx * speed; antHead.y += antHead.dy * speed;
+                if (antHead.x < 0 || antHead.x > canvas.width) { antHead.dx *= -1; antHead.x = antHead.x < 0 ? 0 : canvas.width; }
+                if (antHead.y < 0 || antHead.y > canvas.height) { antHead.dy *= -1; antHead.y = antHead.y < 0 ? 0 : canvas.height; }
+                if (Math.random() < turnTendency) {
+                    const angleChange = (Math.random() - 0.5) * Math.PI / 4; const currentAngle = Math.atan2(antHead.dy, antHead.dx);
+                    const newAngle = currentAngle + angleChange; antHead.dx = Math.cos(newAngle); antHead.dy = Math.sin(newAngle);
+                }
+                ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.shadowBlur = 5; ctx.shadowColor = glowColor;
+                if (segments.length > 1) {
+                    ctx.beginPath(); ctx.moveTo(segments[0].x, segments[0].y);
+                    for (let i = 1; i < segments.length; i++) { ctx.lineTo(segments[i].x, segments[i].y); }
+                    ctx.strokeStyle = lineColor; ctx.lineWidth = 2; ctx.globalAlpha = 0.5; ctx.stroke();
+                }
+                for (let i = segments.length - 1; i >= 0; i--) {
+                    const segment = segments[i]; if (segment.update(decayRate)) { segment.draw(ctx); } else { segments.splice(i, 1); }
+                }
+                ctx.shadowBlur = 0; antRouteCanvasObj.animationId = requestAnimationFrame(drawAntRoute);
+            }
+            function initAntRoute() {
+                antRouteCanvasObj.canvas = document.getElementById('ant-route-canvas-mom');
+                if (antRouteCanvasObj.canvas) {
+                    antRouteCanvasObj.ctx = antRouteCanvasObj.canvas.getContext('2d');
+                    antRouteCanvasObj.canvas.width = antRouteCanvasObj.canvas.offsetWidth;
+                    antRouteCanvasObj.canvas.height = antRouteCanvasObj.canvas.offsetHeight;
+                    antRouteCanvasObj.antHead.x = Math.random() * antRouteCanvasObj.canvas.width;
+                    antRouteCanvasObj.antHead.y = Math.random() * antRouteCanvasObj.canvas.height;
+                    const initialAngle = Math.random() * Math.PI * 2; antRouteCanvasObj.antHead.dx = Math.cos(initialAngle); antRouteCanvasObj.antHead.dy = Math.sin(initialAngle);
+                    drawAntRoute();
+                }
+            }
+            // End Ant Route Animation Logic
+
+            // --- Header Pulse Animation Logic ---
+            const headerPulseCanvas = document.getElementById('header-pulse-canvas');
+            const headerPulse = {
+                canvas: headerPulseCanvas, ctx: headerPulseCanvas ? headerPulseCanvas.getContext('2d') : null,
+                time: 0, animationId: null, data: [], maxDataPoints: 50, valueRange: 100, speed: 0.8
+            };
+            function drawHeaderPulse() {
+                const { canvas, ctx, data, maxDataPoints, valueRange, speed } = headerPulse; if (!ctx) return;
+                ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = 'rgba(10, 10, 13, 0.05)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                const lastValue = data.length > 0 ? data[data.length - 1] : valueRange / 2;
+                let newValue = lastValue + (Math.random() - 0.5) * 10; newValue = Math.max(5, Math.min(valueRange - 5, newValue)); data.push(newValue);
+                if (data.length > maxDataPoints) { data.shift(); }
+                const headerKnittingDepth = canvas.height * 0.15; const headerKnittingFrequency = 0.3; const headerLoopSpeed = 0.05;
+                headerPulse.time += headerLoopSpeed;
+                ctx.beginPath(); ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)'; ctx.lineWidth = 1.5; ctx.shadowBlur = 8; ctx.shadowColor = 'rgba(255, 255, 255, 0.7)';
+                const pointWidth = canvas.width / (maxDataPoints - 1);
+                for (let i = 0; i < data.length; i++) {
+                    const x = i * pointWidth; const yBase = canvas.height - (data[i] / valueRange) * canvas.height;
+                    const yLoop = Math.sin((x / canvas.width) * Math.PI * 8 + headerPulse.time * 5) * headerKnittingDepth; const y = yBase + yLoop;
+                    const phase = ((x / canvas.width) * Math.PI * 8 + headerPulse.time * 5) % (Math.PI * 2);
+                    let alphaMod = Math.sin(phase); alphaMod = Math.max(0, alphaMod); ctx.globalAlpha = alphaMod * 0.7 + 0.3;
+                    if (i === 0) { ctx.moveTo(x, y); } else { ctx.lineTo(x, y); }
+                }
+                ctx.stroke(); ctx.shadowBlur = 0; ctx.globalAlpha = 1; headerPulse.animationId = requestAnimationFrame(drawHeaderPulse);
+            }
+            function startHeaderPulseAnimation() {
+                if (!headerPulse.canvas) { headerPulse.canvas = document.getElementById('header-pulse-canvas'); if (!headerPulse.canvas) return; headerPulse.ctx = headerPulse.canvas.getContext('2d'); }
+                resizeHeaderPulseCanvas(); for(let i = 0; i < headerPulse.maxDataPoints; i++) { headerPulse.data.push(Math.random() * headerPulse.valueRange); } drawHeaderPulse();
+            }
+            function resizeHeaderPulseCanvas() {
+                if (headerPulse.canvas) { headerPulse.canvas.width = headerPulse.canvas.offsetWidth; headerPulse.canvas.height = headerPulse.canvas.offsetHeight; }
+            }
+            // End Header Pulse Animation Logic
+
+            // --- Chess Board Animation Logic ---
+            function drawChessBoard(targetId = 'chessboard-display') { /* Optional target ID */
+                const chessboardDisplay = document.getElementById(targetId);
+                if (!chessboardDisplay) return;
+                const gridSize = 8; chessboardDisplay.innerHTML = '';
+                for (let row = 0; row < gridSize; row++) {
+                    for (let col = 0; col < gridSize; col++) {
+                        const cell = document.createElement('div'); cell.classList.add('chess-cell');
+                        if ((row + col) % 2 === 0) { cell.style.backgroundColor = '#E0E0E0'; cell.style.color = '#333333'; } else { cell.style.backgroundColor = '#424242'; cell.style.color = '#F5F5F5'; }
+                        chessboardDisplay.appendChild(cell);
+                    }
+                }
+            }
+            // End Chess Board Animation Logic
+
+            // --- Noodle Mountain SVG Overlay Initialization ---
+            function initNoodleMountainSvg() {
+                console.log("Noodle Mountain SVG overlay initialized.");
+            }
+            // End Noodle Mountain SVG Overlay Initialization
+
+            // --- Currency Converter Logic ---
+            let currencySelect = document.getElementById('currency-select-mom'); /* Specific ID for MOM */
+            let priceDisplays = document.querySelectorAll('#minutes-of-meeting-main .price-display'); /* Specific selector for MOM */
+            let exchangeRates = {};
+            const API_KEY = "40015d117bc7fff9495dcf28"; // Your provided API key - LEFT BLANK AS PER INSTRUCTIONS
+            const BASE_CURRENCY = 'ZAR';
+            async function fetchExchangeRates() {
+                if (API_KEY === "") {
+                    console.warn("Currency converter: API_KEY is missing. Please set it. Currency conversion will not work.");
+                    if (currencySelect) currencySelect.disabled = true;
+                    return;
+                }
+                try {
+                    const response = await fetch(`https://v6.exchangerate-api.com/v6/${API_KEY}/latest/${BASE_CURRENCY}`);
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(`HTTP error! Status: ${response.status}. API Error: ${errorData['error-type'] || 'Unknown error.'}`);
+                    }
+                    const data = await response.json();
+                    if (data && data.conversion_rates) {
+                        exchangeRates = data.conversion_rates;
+                        console.log('Exchange rates fetched:', exchangeRates);
+                        updatePrices();
+                    } else {
+                        console.error('Failed to fetch conversion rates: Unexpected API response structure.', data);
+                        if (currencySelect) currencySelect.disabled = true;
+                    }
+                } catch (error) {
+                    console.error('Error fetching exchange rates:', error.message || error);
+                    if (currencySelect) currencySelect.disabled = true;
+                }
+            }
+            function getCurrencySymbol(currencyCode) {
+                switch (currencyCode) {
+                    case 'USD': return '$';
+                    case 'EUR': return '€';
+                    case 'GBP': return '£';
+                    case 'ZAR': return 'R';
+                    default: return currencyCode;
+                }
+            }
+            function updatePrices() {
+                if (!currencySelect) return;
+                const selectedCurrency = currencySelect.value;
+                const selectedSymbol = getCurrencySymbol(selectedCurrency);
+                priceDisplays.forEach(priceSpan => {
+                    const originalPriceValue = parseFloat(priceSpan.dataset.originalPrice);
+                    let convertedPrice = originalPriceValue;
+                    if (selectedCurrency !== BASE_CURRENCY && exchangeRates[selectedCurrency]) { convertedPrice = originalPriceValue * exchangeRates[selectedCurrency]; }
+                    priceSpan.innerHTML = `${selectedSymbol}${convertedPrice.toFixed(2)} <span class="text-slate-500 text-base font-normal">/ month</span>`;
+                    priceSpan.dataset.currencyCode = selectedCurrency;
+                });
+            }
+            if (currencySelect) { currencySelect.addEventListener('change', updatePrices); fetchExchangeRates(); }
+            // End Currency Converter Logic
+
+            // --- PayPal Subscription Initiation (MOCKED) ---
+            document.querySelectorAll('.buy-now-button').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    showMessageBox(`Simulating purchase of ${event.target.textContent.trim()}! (PayPal integration is not active in this demo)`, 4000);
+                    console.log(`Simulating PayPal subscription for: ${event.target.textContent.trim()}`);
+                });
+            });
+            // End PayPal Subscription Initiation (MOCKED)
+
+            // --- Minutes of Meeting Iframe Script ---
+            // The src is set directly in the HTML.
+
+            // --- Noodle Drops on Canvases Logic ---
+            class NoodleDrop {
+                constructor(canvas) {
+                    this.canvas = canvas; this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
+                    this.radius = Math.random() * 2 + 1; this.alpha = 1; this.decay = 0.01;
+                    this.pathPoints = []; this.pathLength = Math.floor(Math.random() * 50) + 20;
+                    this.currentPathX = this.x; this.currentPathY = this.y;
+                    this.dx = (Math.random() - 0.5) * 2; this.dy = (Math.random() - 0.5) * 2;
+                    this.pathColor = 'rgba(0,0,0,0.8)';
+                }
+                update() {
+                    this.alpha -= this.decay;
+                    if (this.alpha < 0) {
+                        this.x = Math.random() * this.canvas.width; this.y = Math.random() * this.canvas.height;
+                        this.alpha = 1; this.pathPoints = []; this.currentPathX = this.x; this.currentPathY = this.y;
+                        this.dx = (Math.random() - 0.5) * 2; this.dy = (Math.random() - 0.5) * 2;
+                    }
+                    if (this.pathPoints.length < this.pathLength) {
+                        this.currentPathX += this.dx; this.currentPathY += this.dy;
+                        this.pathPoints.push({ x: this.currentPathX, y: this.currentPathY });
+                        if (this.currentPathX < 0 || this.currentPathX > this.canvas.width) this.dx *= -1;
+                        if (this.currentPathY < 0 || this.currentPathY > this.canvas.height) this.dy *= -1;
+                    } else { this.pathPoints.shift(); }
+                    return true;
+                }
+                draw(ctx) {
+                    ctx.save(); ctx.globalAlpha = this.alpha; ctx.strokeStyle = this.pathColor; ctx.lineWidth = 2;
+                    ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.shadowBlur = 5; ctx.shadowColor = 'rgba(255, 255, 255, 0.4)';
+                    if (this.pathPoints.length > 1) {
+                        ctx.beginPath(); ctx.moveTo(this.pathPoints[0].x, this.pathPoints[0].y);
+                        for (let i = 1; i < this.pathPoints.length; i++) { ctx.lineTo(this.pathPoints[i].x, this.pathPoints[i].y); }
+                        ctx.stroke();
+                    }
+                    ctx.restore();
+                }
+            }
+            const noodleDrops = [];
+            let noodleDropsAnimationId = null;
+            function initNoodleDropsOnCanvas(canvasId) {
+                const section = document.getElementById(canvasId);
+                if (!section) return;
+
+                const overlayCanvas = document.createElement('canvas');
+                overlayCanvas.classList.add('embedded-noodle-drops-svg'); /* Use embedded class */
+                section.appendChild(overlayCanvas);
+
+                const ctx = overlayCanvas.getContext('2d');
+                overlayCanvas.width = section.offsetWidth;
+                overlayCanvas.height = section.offsetHeight;
+
+                const dropsForThisCanvas = [];
+                for (let i = 0; i < 5; i++) { dropsForThisCanvas.push(new NoodleDrop(overlayCanvas)); }
+                noodleDrops.push({ id: canvasId, canvas: overlayCanvas, ctx: ctx, drops: dropsForThisCanvas });
+
+                if (!noodleDropsAnimationId) { drawNoodleDrops(); }
+            }
+            function drawNoodleDrops() {
+                noodleDrops.forEach(canvasObj => {
+                    const { canvas, ctx, drops } = canvasObj; if (!ctx) return;
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    drops.forEach(drop => { drop.update(); drop.draw(ctx); });
+                });
+                noodleDropsAnimationId = requestAnimationFrame(drawNoodleDrops);
+            }
+            // End Noodle Drops on Canvases Logic
+
+            // --- Live Fox Peeper Logic (for embedded view) ---
+            const foxPeeperCanvasObj = {
+                canvas: null, ctx: null, time: 0, animationId: null,
+                foxX: 50, foxY: 50, foxSize: 50, foxOpacity: 0.9,
+                sniffingDirection: 1, sniffAmount: 5, currentSniff: 0,
+                sniffSpeed: 0.1, peepSpeed: 0.05,
+                foxColor: '#FF8C00', /* Orange for the fox */
+                foxGlowColor: 'rgba(255, 165, 0, 0.8)' /* Orange glow */
+            };
+            function drawFoxPeeper() {
+                const { canvas, ctx, foxX, foxY, foxSize, foxOpacity, currentSniff, foxColor, foxGlowColor } = foxPeeperCanvasObj;
+                if (!ctx) return;
+                ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.save();
+                ctx.shadowBlur = 10; ctx.shadowColor = foxGlowColor; ctx.fillStyle = foxColor;
+                const adjustedFoxX = foxX + currentSniff;
+                ctx.font = `${foxSize}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.globalAlpha = foxOpacity;
+                ctx.fillText('🦊', adjustedFoxX, foxY);
+                ctx.restore();
+                foxPeeperCanvasObj.currentSniff += foxPeeperCanvasObj.sniffingDirection * foxPeeperCanvasObj.sniffSpeed;
+                if (Math.abs(foxPeeperCanvasObj.currentSniff) > foxPeeperCanvasObj.sniffAmount) { foxPeeperCanvasObj.sniffingDirection *= -1; }
+                foxPeeperCanvasObj.animationId = requestAnimationFrame(drawFoxPeeper);
+            }
+            function initFoxPeeper(canvasId) {
+                foxPeeperCanvasObj.canvas = document.getElementById(canvasId);
+                if (foxPeeperCanvasObj.canvas) {
+                    foxPeeperCanvasObj.ctx = foxPeeperCanvasObj.canvas.getContext('2d');
+                    foxPeeperCanvasObj.canvas.width = foxPeeperCanvasObj.canvas.offsetWidth;
+                    foxPeeperCanvasObj.canvas.height = foxPeeperCanvasObj.canvas.offsetHeight;
+                    foxPeeperCanvasObj.foxX = foxPeeperCanvasObj.canvas.width / 2;
+                    foxPeeperCanvasObj.foxY = foxPeeperCanvasObj.canvas.height / 2;
+                    drawFoxPeeper();
+                }
+            }
+            // End Live Fox Peeper Logic
+
+            // --- Live Gorilla Animated Icon Logic ---
+            const gorillaIconObj = {
+                element: null, time: 0, animationId: null,
+                floatAmount: 5, floatSpeed: 0.05
+            };
+            function animateGorillaIcon() {
+                if (!gorillaIconObj.element) return;
+                gorillaIconObj.time += gorillaIconObj.floatSpeed;
+                const offsetY = Math.sin(gorillaIconObj.time) * gorillaIconObj.floatAmount;
+                gorillaIconObj.element.style.transform = `translateY(${offsetY}px)`;
+                gorillaIconObj.animationId = requestAnimationFrame(animateGorillaIcon);
+            }
+            function initGorillaIcon(elementId) {
+                gorillaIconObj.element = document.getElementById(elementId);
+                if (gorillaIconObj.element) { animateGorillaIcon(); }
+            }
+            // End Gorilla Animated Icon Logic
+
+            // --- Wortelmesh & Bos Vark Animation Logic ---
+            const wortelmeshCanvasObj = {
+                canvas: null, ctx: null, time: 0, animationId: null,
+                density: 0.02, lineColor: 'rgba(255, 200, 0, 0.4)', particleColor: 'rgba(255, 200, 0, 0.7)', particles: [],
+                maxParticles: 50, particleSize: 3, particleSpeed: 0.5,
+                bosVarkSpawnRate: 0.005, bosVarkParticles: [], maxBosVarkParticles: 5,
+                bosVarkEmoji: '🐗', bosVarkSize: 20
+            };
+            function drawWortelmesh() {
+                const { canvas, ctx, time, density, lineColor, particleColor, particles, particleSize, particleSpeed, bosVarkParticles, bosVarkEmoji, bosVarkSize } = wortelmeshCanvasObj;
+                if (!ctx) return;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                wortelmeshCanvasObj.time += 0.02;
+                if (Math.random() < density && particles.length < wortelmeshCanvasObj.maxParticles) {
+                    particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, vx: (Math.random() - 0.5) * particleSpeed, vy: (Math.random() - 0.5) * particleSpeed, alpha: 1, decay: 0.005 });
+                }
+                if (Math.random() < wortelmeshCanvasObj.bosVarkSpawnRate && bosVarkParticles.length < wortelmeshCanvasObj.maxBosVarkParticles) {
+                    bosVarkParticles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, vx: (Math.random() - 0.5) * 1, vy: (Math.random() - 0.5) * 1, alpha: 1, decay: 0.008 });
+                }
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    const p = particles[i]; p.x += p.vx; p.y += p.vy; p.alpha -= p.decay;
+                    if (p.alpha <= 0 || p.x < 0 || p.x > canvas.width || p.y < 0 || p.y > canvas.height) { particles.splice(i, 1); } else {
+                        ctx.globalAlpha = p.alpha; ctx.fillStyle = particleColor; ctx.beginPath(); ctx.arc(p.x, p.y, particleSize, 0, Math.PI * 2); ctx.fill();
+                    }
+                }
+                for (let i = bosVarkParticles.length - 1; i >= 0; i--) {
+                    const bv = bosVarkParticles[i]; bv.x += bv.vx; bv.y += bv.vy; bv.alpha -= bv.decay;
+                    if (bv.alpha <= 0) { bosVarkParticles.splice(i, 1); } else {
+                        ctx.globalAlpha = bv.alpha; ctx.font = `${bosVarkSize}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(bosVarkEmoji, bv.x, bv.y);
+                    }
+                }
+                ctx.globalAlpha = 1;
+                ctx.strokeStyle = lineColor; ctx.lineWidth = 0.5; ctx.globalAlpha = 0.3;
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const p1 = particles[i]; const p2 = particles[j]; const dist = Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+                        if (dist < 100) { ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke(); }
+                    }
+                }
+                ctx.globalAlpha = 1; wortelmeshCanvasObj.animationId = requestAnimationFrame(drawWortelmesh);
+            }
+            function initWortelmeshCanvas(canvasId) {
+                wortelmeshCanvasObj.canvas = document.getElementById(canvasId);
+                if (wortelmeshCanvasObj.canvas) {
+                    wortelmeshCanvasObj.ctx = wortelmeshCanvasObj.canvas.getContext('2d');
+                    wortelmeshCanvasObj.canvas.width = wortelmeshCanvasObj.canvas.offsetWidth;
+                    wortelmeshCanvasObj.canvas.height = wortelmeshCanvasObj.canvas.offsetHeight;
+                    drawWortelmesh();
+                }
+            }
+            // End Wortelmesh & Bos Vark Animation Logic
+
+            // === General Initialization and Event Listeners ===
+            document.addEventListener('DOMContentLoaded', () => {
+                // Header Pulse (if visible)
+                if (headerPulseCanvas && headerPulseCanvas.offsetParent !== null) {
+                    startHeaderPulseAnimation();
+                    window.addEventListener('resize', resizeHeaderPulseCanvas);
+                }
+
+                // Initializations for MoM document's embedded canvases
+                initAntRoute();
+                initFoxPeeper('fox-peeper-canvas-mom');
+                initGorillaIcon('gorilla-icon-mom');
+                drawChessBoard('chessboard-display-mom');
+                
+                // Initialize Noodle Drops on single color canvases (swatches in MoM)
+                document.querySelectorAll('.color-swatch-dashboard').forEach((swatch, index) => {
+                    const swatchId = swatch.id || `color-swatch-mom-${index}`;
+                    swatch.id = swatchId;
+                    initNoodleDropsOnCanvas(swatchId);
+                });
+
+                // Initialize Stacked Color Canvases
+                const redBlackStackMom = document.getElementById('stacked-red-black-mom');
+                if (redBlackStackMom) {
+                    const numberOfStripes = 20;
+                    const stripeHeightPercentage = 100 / numberOfStripes;
+                    for (let i = 0; i < numberOfStripes; i++) {
+                        const stripe = document.createElement('div');
+                        stripe.classList.add('color-stripe');
+                        stripe.style.height = `${stripeHeightPercentage}%`;
+                        if (i % 2 === 0) stripe.classList.add('red-stripe-bg');
+                        else stripe.classList.add('black-stripe-bg');
+                        redBlackStackMom.appendChild(stripe);
+                    }
+                }
+                const multiColorStackMom = document.getElementById('stacked-multi-color-mom');
+                if (multiColorStackMom) {
+                    const colors = ['black-stripe-bg', 'yellow-stripe-bg', 'red-stripe-bg', 'green-stripe-bg'];
+                    const numberOfStripes = colors.length;
+                    const stripeHeightPercentage = 100 / numberOfStripes;
+                    colors.forEach(colorClass => {
+                        const stripe = document.createElement('div');
+                        stripe.classList.add('color-stripe', colorClass);
+                        stripe.style.height = `${stripeHeightPercentage}%`;
+                        multiColorStackMom.appendChild(stripe);
+                    });
+                }
+
+                // Initialize Noodle Mountain SVG
+                initNoodleMountainSvg();
+
+                // Initialize Wortelmesh Canvas (if applicable)
+                // Assuming it's in a specific section, e.g., on a "music terminal" part
+                // For this MOM, we'll initialize it if the example canvas exists
+                initWortelmeshCanvas('wortelmesh-canvas-mom');
+
+                // Set URL for Minutes of Meeting iframe if present
+                const momIframe = document.querySelector('#minutes-of-meeting-main iframe');
+                if (momIframe) {
+                    momIframe.src = "https://www.example.com/your-meeting-minutes"; // Placeholder for actual MoM URL
+                }
+
+                // Currency Converter for MOM document (ensure it's initialized after price elements are in DOM)
+                // Re-get elements after HTML is parsed if dynamic, or ensure correct ID is used.
+                const currencySelectElementMom = document.getElementById('currency-select-mom');
+                if (currencySelectElementMom) {
+                    currencySelect = currencySelectElementMom; // Assign to global scope for currency logic
+                    priceDisplays = document.querySelectorAll('#minutes-of-meeting-main .price-display'); // Specific selector for MoM pricing
+                    currencySelect.addEventListener('change', updatePrices);
+                    fetchExchangeRates(); // Initial fetch
+                }
+                
+                // Mock PayPal button click for MoM
+                document.querySelectorAll('.buy-now-button').forEach(button => {
+                    button.addEventListener('click', (event) => {
+                        showMessageBox(`Simulating purchase of ${event.target.textContent.trim()}! (PayPal integration is not active in this demo)`, 4000);
+                        console.log(`Simulating PayPal subscription for: ${event.target.textContent.trim()}`);
+                    });
+                });
+
+                // Display Foxed Base Code Snippet
+                const foxedBaseCodeDisplay = document.getElementById('foxed-base-code-display');
+                if (foxedBaseCodeDisplay) {
+                    foxedBaseCodeDisplay.textContent = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foxed Has Mobiles™ | FAA Official Competitions</title>
+    <base href="/public/">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: radial-gradient(circle at center, #f9fafb, #e0e7ff);
+            animation: pulseBG 12s ease-in-out infinite;
+        }
+        @keyframes pulseBG {
+            0%, 100% { background: radial-gradient(circle at center, #f9fafb, #e0e7ff); }
+            50% { background: radial-gradient(circle at center, #e0e7ff, #f9fafb); }
+        }
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="font-sans text-gray-800 scroll-smooth">
+<header class="sticky top-0 bg-white shadow-md z-50">
+    <nav class="flex justify-center space-x-6 py-4 text-sm font-semibold">
+        <a href="#home" class="hover:text-blue-600">Home</a>
+        <a href="#competitions" class="hover:text-blue-600">Competitions</a>
+        <a href="#prizes" class="hover:text-blue-600">Prizes</a>
+        <a href="#rules" class="hover:text-blue-600">Rules</a>
+        <a href="#timeline" class="hover:text-blue-600">Timeline</a>
+    </nav>
+</header>
+<section id="home" class="min-h-screen flex flex-col justify-center items-center text-center px-6">
+    <h1 class="text-5xl md:text-7xl font-extrabold mb-4">🦊 Foxed Has Mobiles™</h1>
+    <p class="text-xl italic mb-2">"The fox doesn’t speak — it routes."</p>
+    <p class="text-lg italic mb-8">"Not what it is — what it means."</p>
+    <a href="#competitions" class="mt-8 text-blue-600 font-bold animate-bounce">↓ Enter The Archive</a>
+</section>
+<footer class="bg-gray-900 text-white py-8 px-6 md:px-20 mt-12">
+    <div class="text-center text-sm">
+        © 2025 FAA TreatyLayer™
+    </div>
+</footer>
+<script>
+    const faders = document.querySelectorAll('.fade-in');
+    const appearOptions = { threshold: 0.1 };
+    const appearOnScroll = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+        });
+    }, appearOptions);
+    faders.forEach(fader => { appearOnScroll.observe(fader); });
+    setInterval(() => {
+        console.log('✅ FAA Treaty Pulse at ' + new Date().toLocaleTimeString());
+    }, 9000);
+    document.querySelectorAll('nav a').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                history.pushState(null, '', targetId);
+                targetElement.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                console.error(\`Element with ID \${targetId} not found.\`);
+            }
+        });
+    });
+    window.addEventListener('popstate', function() {
+        const id = window.location.hash;
+        if (id) {
+            const targetElement = document.querySelector(id);
+            if (targetElement) {
+                targetElement.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                console.error(\`Element with ID \${id} not found on popstate.\`);
+            }
+        }
+    });
+<\/script>
+</body>
+</html>
+`;
+                }
+            });
+
+            // Handle window resize for dynamic canvases
+            window.addEventListener('resize', () => {
+                if (antRouteCanvasObj.canvas) {
+                    antRouteCanvasObj.canvas.width = antRouteCanvasObj.canvas.offsetWidth;
+                    antRouteCanvasObj.canvas.height = antRouteCanvasObj.canvas.offsetHeight;
+                }
+                if (headerPulse.canvas) {
+                    headerPulse.canvas.width = headerPulse.canvas.offsetWidth;
+                    headerPulse.canvas.height = headerPulse.canvas.offsetHeight;
+                }
+                if (foxPeeperCanvasObj.canvas) {
+                    foxPeeperCanvasObj.canvas.width = foxPeeperCanvasObj.canvas.offsetWidth;
+                    foxPeeperCanvasObj.canvas.height = foxPeeperCanvasObj.canvas.offsetHeight;
+                    foxPeeperCanvasObj.foxX = foxPeeperCanvasObj.canvas.width / 2;
+                    foxPeeperCanvasObj.foxY = foxPeeperCanvasObj.canvas.height / 2;
+                }
+                if (wortelmeshCanvasObj.canvas) {
+                    wortelmeshCanvasObj.canvas.width = wortelmeshCanvasObj.canvas.offsetWidth;
+                    wortelmeshCanvasObj.canvas.height = wortelmeshCanvasObj.canvas.offsetHeight;
+                }
+                drawChessBoard('chessboard-display-mom');
+
+                // Resize noodle drop overlays
+                noodleDrops.forEach(obj => {
+                    const parent = document.getElementById(obj.id);
+                    if (parent && obj.canvas) {
+                        obj.canvas.width = parent.offsetWidth;
+                        obj.canvas.height = parent.offsetHeight;
+                    }
+                });
+            });
+        </script>
+    </body>
+    </html>

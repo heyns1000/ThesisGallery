@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domain & Email Infrastructure Status</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <!-- 
+    Analysis & Plan Summary:
+    Narrative Structure:
+    1. Executive Summary: High-level status of both web and email domains based on the full meeting minutes.
+    2. Web Presence Deep Dive: Visualize the pipeline from GitHub to DNS to the final "pending verification" status.
+    3. Email Security Posture: Analyze the health of email authentication records (MX, SPF, DKIM, DMARC).
+    4. Action Items: Clear, actionable next steps derived directly from the analysis of the minutes.
+
+    Visualization Choices:
+    - Data: Overall Status -> Goal: Inform -> Viz: Styled HTML "Status Cards" for a quick summary (No SVG).
+    - Data: Web Deployment Pipeline -> Goal: Organize -> Viz: HTML/CSS Flowchart to show the process (No SVG/Mermaid).
+    - Data: DNS Record Connectivity -> Goal: Compare -> Viz: Chart.js Bar Chart to show all records are connected (Canvas).
+    - Data: Email Authentication Setup -> Goal: Compare/Inform -> Viz: Chart.js Donut Chart to show completion status of each protocol (Canvas).
+    - Data: Required Next Steps -> Goal: Organize -> Viz: Styled HTML Ordered List for clarity (No SVG).
+
+    Color Palette Chosen: Brilliant Blues.
+    - #0047AB (Cobalt Blue)
+    - #4169E1 (Royal Blue)
+    - #ADD8E6 (Light Blue)
+    - #F0F8FF (Alice Blue - Background)
+    - #36454F (Charcoal - Text)
+    - Status colors: #FFD700 (Warning/Pending), #FFA07A (Error/Incomplete)
+
+    Confirmation: NEITHER Mermaid JS NOR SVG were used in this output. All visualizations are rendered using either Chart.js (which uses the Canvas API) or structured HTML with Tailwind CSS.
+    -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F0F8FF;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+                max-height: 400px;
+            }
+        }
+    </style>
+</head>
+<body class="text-[#36454F]">
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-[#0047AB] mb-2">Hourly Digital Infrastructure Report - Multiple Divisions</h1>
+            <p class="text-lg text-gray-600">Status as of July 5, 2025</p>
+        </header>
+
+        <main class="space-y-12">
+
+            <section id="summary">
+                <h2 class="text-3xl font-bold text-center mb-8 text-[#0047AB]">Executive Summary</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-l-8 border-[#4169E1] flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-2xl font-bold mb-2">🌐 Web Presence: `fruitful.crate.dance`</h3>
+                            <p class="text-gray-600 mb-4">All DNS records are correctly configured and connected through Vercel. However, the site is not yet live pending a final verification step, likely within the Canva platform.</p>
+                        </div>
+                        <p class="text-2xl font-black text-right text-[#FF8C00]">Verification Pending</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-l-8 border-red-500 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-2xl font-bold mb-2">📧 Email Security: `shoshaloza.faa.zone`</h3>
+                            <p class="text-gray-600 mb-4">Foundational setup (MX/SPF) is complete with Zoho, but critical security protocols (DKIM & DMARC) must be fully implemented to prevent fraud and ensure deliverability.</p>
+                        </div>
+                        <p class="text-2xl font-black text-right text-red-600">Action Required</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="web-deep-dive">
+                <h2 class="text-3xl font-bold text-center mb-8 text-[#0047AB]">Web Presence Deep Dive</h2>
+                <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                    <h3 class="text-2xl font-bold mb-6 text-center">Deployment Pipeline & DNS Status</h3>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                        <div>
+                            <h4 class="font-bold text-xl mb-4 text-center">From Code to Cloud</h4>
+                            <div class="space-y-4">
+                                <div class="flex items-center space-x-4">
+                                    <div class="bg-[#4169E1] text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-xl">1</div>
+                                    <div>
+                                        <p class="font-semibold">GitHub Commit</p>
+                                        <p class="text-sm text-gray-500">`index.html` created in `heyns1000` repo (commit `3b07399`).</p>
+                                    </div>
+                                </div>
+                                <div class="ml-5 h-8 border-l-2 border-dashed border-[#4169E1]"></div>
+                                <div class="flex items-center space-x-4">
+                                    <div class="bg-[#4169E1] text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-xl">2</div>
+                                    <div>
+                                        <p class="font-semibold">Vercel Deployment</p>
+                                        <p class="text-sm text-gray-500">`fruitful-crate-dance-faa.vercel.app` shows "Valid Configuration".</p>
+                                    </div>
+                                </div>
+                                <div class="ml-5 h-8 border-l-2 border-dashed border-[#4169E1]"></div>
+                                <div class="flex items-center space-x-4">
+                                    <div class="bg-[#4169E1] text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-xl">3</div>
+                                    <div>
+                                        <p class="font-semibold">DNS Records Pointed</p>
+                                        <p class="text-sm text-gray-500">All TXT and A records (`103.169.142.0`) are "Connected".</p>
+                                    </div>
+                                </div>
+                                <div class="ml-5 h-8 border-l-2 border-dashed border-[#FF8C00]"></div>
+                                <div class="flex items-center space-x-4">
+                                    <div class="bg-[#FFD700] text-[#36454F] w-10 h-10 rounded-full flex items-center justify-center font-bold text-xl">!</div>
+                                    <div>
+                                        <p class="font-semibold">Final Status: Verification Pending</p>
+                                        <p class="text-sm text-gray-500">Website cannot be viewed due to pending verification.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-bold text-xl mb-4 text-center">DNS Record Health</h4>
+                            <p class="text-center text-gray-600 mb-4">The DNS records report 100% connectivity, confirming the issue lies with application-level verification, not DNS propagation.</p>
+                            <div class="chart-container">
+                                <canvas id="dnsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="email-deep-dive">
+                <h2 class="text-3xl font-bold text-center mb-8 text-[#0047AB]">Email Security Posture</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                        <h3 class="text-2xl font-bold mb-2 text-center">Authentication Protocol Status</h3>
+                        <p class="text-center text-gray-600 mb-4">Email deliverability and brand protection depend on these records. While MX and SPF are set, the security gaps in DKIM and DMARC are critical.</p>
+                        <div class="chart-container">
+                            <canvas id="emailAuthChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg flex flex-col">
+                        <h3 class="text-2xl font-bold mb-4 text-center">Key User Account Status</h3>
+                         <div class="bg-blue-50 border border-[#ADD8E6] rounded-lg p-4 flex-grow">
+                            <p class="text-lg font-semibold text-[#0047AB]">Khumo Bra</p>
+                            <p class="text-sm text-gray-600 mb-4">khumo.champion@shoshaloza.faa.zone</p>
+                            <ul class="space-y-2 text-sm">
+                                <li class="flex justify-between"><strong>Role:</strong> <span>User</span></li>
+                                <li class="flex justify-between"><strong>Status:</strong> <span class="font-semibold text-green-600">Active</span></li>
+                                <li class="flex justify-between"><strong>Services Enabled:</strong> <span>Mail, Calendar, Contacts</span></li>
+                                <li class="flex justify-between"><strong>Storage Used:</strong> <span>0 B / 5 GB</span></li>
+                                <li class="flex justify-between"><strong>Last Login Time:</strong> <span>05/07/2025 03:38 PM</span></li>
+                                <li class="flex justify-between"><strong>Account Expiry:</strong> <span>25/06/2027</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="action-items">
+                <h2 class="text-3xl font-bold text-center mb-8 text-[#0047AB]">Priority Action Plan</h2>
+                <div class="max-w-3xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                    <p class="text-center mb-6">The following steps are required to complete the infrastructure setup and ensure full functionality and security, based on the meeting notes.</p>
+                    <ol class="space-y-4 list-decimal list-inside">
+                        <li class="p-4 bg-amber-100 border-l-4 border-amber-500 rounded-r-lg">
+                            <span class="font-bold">Activate DKIM in Zoho:</span> The DNS record `shoshaloza._domainkey.shoshaloza` is verified in DNS. The final step is to log into the Zoho Mail admin panel and explicitly click "Add" or "Activate" in the DKIM section to begin signing outgoing emails.
+                        </li>
+                         <li class="p-4 bg-amber-100 border-l-4 border-amber-500 rounded-r-lg">
+                            <span class="font-bold">Generate and Publish DMARC Record:</span> In the Zoho DMARC settings, enter an email address for aggregate reports (e.g., `dmarc-reports@shoshaloza.faa.zone`). Generate the policy, starting with `p=none` for monitoring, and publish the resulting TXT record in your DNS.
+                        </li>
+                        <li class="p-4 bg-amber-100 border-l-4 border-amber-500 rounded-r-lg">
+                            <span class="font-bold">Finalize Website Domain Verification:</span> Investigate the Canva dashboard for `fruitful.crate.dance.faa.zone`. Since DNS is connected, there is likely a final "Verify" or "Confirm" button that needs to be clicked within the Canva platform itself to make the website live.
+                        </li>
+                    </ol>
+                </div>
+            </section>
+
+        </main>
+
+        <footer class="text-center mt-16 text-gray-500 text-sm">
+            <p>This infographic is a visual representation of the "Comprehensive Minutes of Meeting" dated July 5, 2025.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const chartJsTooltip = {
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                if (Array.isArray(label)) {
+                                  return label.join(' ');
+                                } else {
+                                  return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            const processLabels = (labels) => {
+                const maxLen = 16;
+                return labels.map(label => {
+                    if (label.length <= maxLen) {
+                        return label;
+                    }
+                    const words = label.split(' ');
+                    const lines = [];
+                    let currentLine = '';
+                    for (const word of words) {
+                        if ((currentLine + ' ' + word).trim().length > maxLen) {
+                            if (currentLine.length > 0) lines.push(currentLine);
+                            currentLine = word;
+                        } else {
+                            currentLine = (currentLine === '') ? word : currentLine + ' ' + word;
+                        }
+                    }
+                    if (currentLine.length > 0) lines.push(currentLine);
+                    return lines;
+                });
+            };
+
+            const dnsCtx = document.getElementById('dnsChart');
+            if(dnsCtx) {
+                new Chart(dnsCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: processLabels(['TXT Record (Canva)', 'A Record (Root)', 'A Record (www)']),
+                        datasets: [{
+                            label: 'Connection Status',
+                            data: [100, 100, 100],
+                            backgroundColor: ['#4169E1', '#4169E1', '#4169E1'],
+                            borderColor: '#0047AB',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        ...chartJsTooltip,
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                ticks: {
+                                    callback: function(value) {
+                                        return value + '%'
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                           ...chartJsTooltip.plugins,
+                            legend: {
+                                display: false
+                            },
+                            title: {
+                                display: false,
+                            }
+                        }
+                    }
+                });
+            }
+
+            const emailAuthCtx = document.getElementById('emailAuthChart');
+            if(emailAuthCtx) {
+                new Chart(emailAuthCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: processLabels(['MX (Configured)', 'SPF (Configured)', 'DKIM (Pending Activation)', 'DMARC (Not Configured)']),
+                        datasets: [{
+                            label: 'Configuration Status',
+                            data: [25, 25, 25, 25],
+                            backgroundColor: [
+                                '#4169E1',
+                                '#ADD8E6',
+                                '#FFD700',
+                                '#FFA07A'
+                            ],
+                            borderColor: '#F0F8FF',
+                            borderWidth: 4,
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        ...chartJsTooltip,
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '60%',
+                        plugins: {
+                           ...chartJsTooltip.plugins,
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    boxWidth: 15,
+                                    padding: 20
+                                }
+                            },
+                             title: {
+                                display: false,
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>

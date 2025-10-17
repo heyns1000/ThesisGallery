@@ -1,0 +1,41 @@
+[
+    {
+        "type": "A",
+        "name": "fruitfulplanet.com",
+        "content": "34.111.179.208",
+        "proxied": true
+    },
+    {
+        "type": "TXT",
+        "name": "@",
+        "content": "zoho-verification=zb63949941.zmverify.zoho.com",
+        "ttl": 3600
+    },
+    {
+        "type": "MX",
+        "name": "@",
+        "content": "mx.zoho.com",
+        "priority": 10,
+        "ttl": 3600
+    },
+    {
+        "type": "MX",
+        "name": "@",
+        "content": "mx2.zoho.com",
+        "priority": 20,
+        "ttl": 3600
+    },
+    {
+        "type": "MX",
+        "name": "@",
+        "content": "mx3.zoho.com",
+        "priority": 50,
+        "ttl": 3600
+    },
+    {
+        "type": "TXT",
+        "name": "@",
+        "content": "v=spf1 include:zoho.com ~all",
+        "ttl": 3600
+    }
+]

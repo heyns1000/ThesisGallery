@@ -1,0 +1,3426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fruitful Planet Dashboard - Master API Template</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter for clean typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Leaflet CSS for OpenStreetMap -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+    <!-- Chart.js for graphs (Node Pulse Graph) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.js"></script>
+    <style>
+        /* Consolidated Root Variables & Base Styles */
+        :root {
+            /* Text Colors */
+            --text-color-light: #1d1d1f;
+            --text-color-dark: #f5f5f7;
+            --muted-text-light: #6e6e73;
+            --muted-text-dark: #a0a0a5;
+
+            /* Background Colors */
+            --bg-color-light: #f5f5f7;
+            --bg-color-dark: #1a1a1c; /* Default dark background for most sections */
+            --dark-bg-seedwave: #0a0a0d; /* Slightly darker for specific Seedwave sections like hero canvas background */
+
+            /* Card/Element Backgrounds */
+            --card-bg-light: #ffffff;
+            --card-bg-dark: #2a2a2e; /* General card background */
+            --card-bg-seedwave: #1c1c21; /* Darker card background for Seedwave metrics/spotify */
+
+            /* Border Colors */
+            --border-color-light: #e8e8ed;
+            --border-color-dark: #3a3a3e; /* General border color */
+            --border-dark-seedwave: #3a3a42; /* Slightly darker border for Seedwave elements */
+
+            /* Primary/Accent Colors */
+            --primary-color: #0071e3; /* Apple Blue (General primary for MindLift/Banimal) */
+            --mindlift-color: #7B68EE; /* MediumPurple for MindLift theme */
+            --mindlift-accent-color: #9370DB; /* Brighter purple */
+            --primary-glow-seedwave: #00e393; /* Greenish glow, Tesla-inspired (Seedwave) */
+            --secondary-glow-seedwave: #007bff; /* Blue glow, Google/Apple-inspired (Seedwave) */
+            --seedwave-green-glow-text: #00e393; /* Specific lime green glow for Seedwave header */
+            --accent-red-seedwave: #ff4d4d; /* Red accent for Seedwave charts */
+            --dashboard-primary-color: #22c55e; /* Original Fruitful Dashboard green */
+            --dashboard-secondary-color: #3b82f6; /* Original Fruitful Dashboard blue */
+
+
+            /* Specific Card Colors (for Pricing and other sections) */
+            --pro-card-bg-light: #f0e6fa;
+            --pro-card-bg-dark: #3c3c42;
+            --pro-border-light: #c2a7e7;
+            --pro-border-dark: #5c5c63;
+            --pro-button-color: #8A2BE2;
+            --pro-button-hover-color: #6A1FB8;
+
+            --enterprise-card-bg-light: #e6f0ff;
+            --enterprise-card-bg-dark: #222225;
+            --enterprise-border-light: #a0c3ff;
+            --enterprise-border-dark: #4a4a50;
+            --enterprise-button-color: #483D8B;
+            --enterprise-button-hover-color: #382D7B;
+
+            --banimal-card-bg-light: #e0ffe0;
+            --banimal-card-bg-dark: #1f3d2f;
+            --banimal-border-light: #a8d5a8;
+            --banimal-border-dark: #3a5c3e;
+            --banimal-button-color: #4CAF50; /* Original green, will be overridden for special blue */
+            --banimal-button-hover-color: #388E3C;
+
+            /* Other Specific Colors */
+            --fcu-color: #4CAF50; /* Green for announcement bar, matches banimal button */
+            --fcu-accent-color: #66BB6A;
+
+            --secure-sign-purple: #8A2BE2;
+            --secure-sign-blue: #4169E1;
+            --secure-sign-purple-hover: #7b27cb;
+            --secure-sign-blue-hover: #375ac7;
+
+            /* Dynamic Heights for Layout (managed by JS) */
+            --announcement-bar-height: 0px;
+
+            /* Hyper Mode Colors */
+            --hyper-bg-color: #000033;
+            --hyper-text-color: #FFCCFF;
+            --hyper-card-bg: #110044;
+            --hyper-border-color: #330066;
+            --hyper-primary-color: #FF00FF; /* Magenta */
+            --hyper-accent-color: #FF69B4; /* HotPink */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            /* Default to dark mode */
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-dark);
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+        }
+
+        /* Light Mode */
+        body.light-mode {
+            background-color: var(--bg-color-light);
+            color: var(--text-color-light);
+        }
+        .light-mode .section-padding {
+            background-color: var(--card-bg-light);
+            border-color: var(--border-color-light);
+        }
+        .light-mode .section-title {
+            color: var(--text-color-light);
+        }
+        .light-mode .feature-card,
+        .light-mode .metadata-card,
+        .light-mode .pricing-card,
+        .light-mode .currency-converter-section,
+        .light-mode .fixed-pricing-section,
+        .light-mode #top-tracks-list,
+        .light-mode #playlist-message,
+        .light-mode #audio-players,
+        .light-mode #spotify-album-embed,
+        .light-mode .manual-block,
+        .light-mode .api-keys-card { /* Added manual-block, api-keys-card */
+            background-color: var(--card-bg-light);
+            border-color: var(--border-color-light);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        .light-mode .pricing-card.pro-card { background-color: var(--pro-card-bg-light); border-color: var(--pro-border-light); }
+        .light-mode .pricing-card.enterprise-card { background-color: var(--enterprise-card-bg-light); border-color: var(--enterprise-border-light); }
+        .light-mode .pricing-card.banimal-card { background-color: var(--banimal-card-bg-light); border-color: var(--banimal-border-light); }
+        .light-mode .feature-card h3,
+        .light-mode .metadata-card h3,
+        .light-mode .pricing-card h3,
+        .light-mode .currency-converter-section h2,
+        .light-mode .fixed-pricing-section h2,
+        .light-mode #top-tracks-list h3,
+        .light-mode .manual-block h3,
+        .light-mode .api-keys-card h3 { /* Added manual-block h3, api-keys-card h3 */
+            color: var(--text-color-light);
+        }
+        .light-mode .feature-card p,
+        .light-mode .metadata-card ul li,
+        .light-mode .pricing-card p,
+        .light-mode .pricing-card ul li,
+        .light-mode #top-tracks-list li,
+        .light-mode .manual-block pre code,
+        .light-mode .api-keys-card p,
+        .light-mode .api-keys-card ul li { /* Added manual-block code, api-keys-card p, ul li */
+            color: var(--muted-text-light);
+        }
+        .light-mode .api-keys-card p .font-mono,
+        .light-mode .api-keys-card ul li .font-mono { /* Specific color for keys in light mode */
+             color: var(--text-color-light); /* Make key values readable */
+        }
+        .light-mode .manual-block .copy-btn,
+        .light-mode .api-keys-card .copy-btn { /* Added manual-block copy-btn, api-keys-card copy-btn */
+             color: var(--muted-text-light);
+             background-color: #f0f0f0;
+             border-color: var(--border-color-light);
+        }
+        .light-mode .manual-block .copy-btn:hover,
+        .light-mode .api-keys-card .copy-btn:hover {
+            background-color: #e0e0e0;
+        }
+
+        .light-mode .metadata-card ul li strong { color: var(--text-color-light); }
+        .light-mode .ai-help-section h3 { color: var(--text-color-light); }
+        .light-mode .ai-help-section .form-label { color: var(--muted-text-light); }
+        .light-mode .ai-help-section .form-input, .light-mode .ai-help-section .form-select {
+            background-color: #f0f0f0;
+            border-color: var(--border-color-light);
+            color: var(--text-color-light);
+        }
+        .light-mode .ai-help-section .form-input::placeholder { color: #888; }
+        .light-mode #node-pulse-graph .w-full { background-color: #e8e8ed; border-color: #d1d1d1; }
+        .light-mode #node-pulse-graph p { color: var(--muted-text-light); }
+        .light-mode footer.new-footer { background-color: #d1d1d1; border-top-color: #a0a0a5; }
+        .light-mode footer.new-footer h1 { color: var(--text-color-light); }
+        .light-mode footer.new-footer p { color: var(--muted-text-light); }
+        .light-mode footer.new-footer a { color: var(--primary-color); }
+        .light-mode .theme-controls button {
+            background-color: var(--card-bg-light);
+            color: var(--text-color-light);
+            border-color: var(--border-color-light);
+        }
+        .light-mode .theme-controls #theme-day-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        .light-mode .theme-controls #theme-night-btn,
+        .light-mode .theme-controls #theme-hyper-btn {
+            background-color: var(--card-bg-light);
+            color: var(--muted-text-light);
+            border-color: var(--border-color-light);
+        }
+        .light-mode .theme-controls #languageSwitcher {
+            background-color: var(--card-bg-light); /* Ensure background is theme-aware */
+            color: var(--text-color-light); /* Ensure text is theme-aware */
+            border-color: var(--border-color-light); /* Ensure border is theme-aware */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%236e6e73'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
+        }
+        .light-mode .header-content-wrapper {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-bottom-color: var(--border-color-light);
+        }
+        .light-mode .logo-group {
+            color: var(--text-color-light);
+        }
+        .light-mode .logo-fruitful { color: var(--primary-color); }
+        .light-mode .logo-separator { color: var(--muted-text-light); }
+        .light-mode .logo-seedwave { color: var(--primary-glow-seedwave); text-shadow: 0 0 10px rgba(0, 227, 147, 0.3); }
+        .light-mode #header-pulse-canvas { background-color: transparent; }
+        .light-mode .hero-section {
+            background: radial-gradient(circle at center, rgba(0, 227, 147, 0.05) 0%, transparent 60%);
+        }
+        .light-mode .pulse-container {
+            background-color: #f8f8f8;
+            border-color: var(--border-color-light);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .light-mode .pulse-container canvas { background-color: transparent; }
+        .light-mode .whimsical-card {
+            background-color: var(--card-bg-light);
+            border-color: var(--border-color-light);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        .light-mode .whimsical-card h3 { color: var(--text-color-light); }
+        .light-mode .whimsical-card p { color: var(--muted-text-light); }
+        .light-mode .whimsical-icon { text-shadow: 0 0 15px rgba(0, 227, 147, 0.2); }
+        .light-mode .spotify-btn-secondary { background-color: #ddd; color: #333; border-color: #bbb; }
+        .light-mode .spotify-btn-secondary:hover { background-color: #ccc; }
+        .light-mode .currency-converter-section input,
+        .light-mode .currency-converter-section select {
+            background-color: #f0f0f0;
+            border-color: var(--border-color-light);
+            color: var(--text-color-light);
+        }
+        .light-mode .pricing-card .price { /* Apply gradient for default pricing */
+            background: linear-gradient(90deg, var(--primary-color), var(--mindlift-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Dark Mode */
+        body.dark-mode {
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-dark);
+        }
+        .dark-mode .section-padding {
+            background-color: var(--card-bg-dark);
+            border-color: var(--border-color-dark);
+        }
+        .dark-mode .section-title {
+            color: var(--text-color-dark);
+        }
+        .dark-mode .feature-card,
+        .dark-mode .metadata-card,
+        .dark-mode .pricing-card,
+        .dark-mode .currency-converter-section,
+        .dark-mode .fixed-pricing-section,
+        .dark-mode #top-tracks-list,
+        .dark-mode #playlist-message,
+        .dark-mode #audio-players,
+        .dark-mode #spotify-album-embed,
+        .dark-mode .manual-block,
+        .dark-mode .api-keys-card { /* Added manual-block, api-keys-card */
+            background-color: var(--card-bg-dark);
+            border-color: var(--border-color-dark);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        .dark-mode .pricing-card.pro-card { background-color: var(--pro-card-bg-dark); border-color: var(--pro-border-dark); }
+        .dark-mode .pricing-card.enterprise-card { background-color: var(--enterprise-card-bg-dark); border-color: var(--enterprise-border-dark); }
+        .dark-mode .pricing-card.banimal-card { background-color: var(--banimal-card-bg-dark); border-color: var(--banimal-border-dark); }
+        .dark-mode .feature-card h3,
+        .dark-mode .metadata-card h3,
+        .dark-mode .pricing-card h3,
+        .dark-mode .currency-converter-section h2,
+        .dark-mode .fixed-pricing-section h2,
+        .dark-mode #top-tracks-list h3,
+        .dark-mode .manual-block h3,
+        .dark-mode .api-keys-card h3 { /* Added manual-block h3, api-keys-card h3 */
+            color: var(--text-color-dark);
+        }
+        .dark-mode .feature-card p,
+        .dark-mode .metadata-card ul li,
+        .dark-mode .pricing-card p,
+        .dark-mode .pricing-card ul li,
+        .dark-mode #top-tracks-list li,
+        .dark-mode .manual-block pre code,
+        .dark-mode .api-keys-card p,
+        .dark-mode .api-keys-card ul li { /* Added manual-block code, api-keys-card p, ul li */
+            color: var(--muted-text-dark);
+        }
+        .dark-mode .api-keys-card p .font-mono,
+        .dark-mode .api-keys-card ul li .font-mono { /* Specific color for keys in dark mode */
+             color: var(--text-color-dark); /* Make key values readable */
+        }
+        .dark-mode .manual-block .copy-btn,
+        .dark-mode .api-keys-card .copy-btn { /* Added manual-block copy-btn, api-keys-card copy-btn */
+             color: var(--muted-text-dark);
+             background-color: #3a3a3e;
+             border-color: var(--border-color-dark);
+        }
+        .dark-mode .manual-block .copy-btn:hover,
+        .dark-mode .api-keys-card .copy-btn:hover {
+            background-color: #4a4a50;
+        }
+
+        .dark-mode .metadata-card ul li strong { color: var(--text-color-dark); }
+        .dark-mode .ai-help-section h3 { color: var(--text-color-dark); }
+        .dark-mode .ai-help-section .form-label { color: var(--muted-text-dark); }
+        .dark-mode .ai-help-section .form-input, .dark-mode .ai-help-section .form-select {
+            background-color: #3a3a3e;
+            border-color: var(--border-color-dark);
+            color: var(--text-color-dark);
+        }
+        .dark-mode .ai-help-section .form-input::placeholder { color: #718096; }
+        .dark-mode #node-pulse-graph .w-full { background-color: #0a0a0d; border-color: #3a3a3e; }
+        .dark-mode #node-pulse-graph p { color: var(--muted-text-dark); }
+        .dark-mode footer.new-footer { background-color: #1a1a1a; border-top-color: #2a2a2e; }
+        .dark-mode footer.new-footer h1 { color: #ffffff; }
+        .dark-mode footer.new-footer p { color: #d1d5db; }
+        .dark-mode footer.new-footer a { color: #60a5fa; }
+        .dark-mode .theme-controls button {
+            background-color: var(--card-bg-dark);
+            color: var(--text-color-dark);
+            border-color: var(--border-color-dark);
+        }
+        .dark-mode .theme-controls #theme-night-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        .dark-mode .theme-controls #theme-day-btn,
+        .dark-mode .theme-controls #theme-hyper-btn {
+            background-color: var(--card-bg-dark);
+            color: var(--muted-text-dark);
+            border-color: var(--border-color-dark);
+        }
+        .dark-mode .theme-controls #languageSwitcher {
+            background-color: var(--card-bg-dark); /* Ensure background is theme-aware */
+            color: var(--text-color-dark); /* Ensure text is theme-aware */
+            border-color: var(--border-color-dark); /* Ensure border is theme-aware */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23a0a0a5'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
+        }
+        .dark-mode header {
+            background-color: rgba(10, 10, 13, 0.8);
+            border-bottom-color: var(--border-dark-seedwave);
+        }
+        .dark-mode .hero-section {
+            background: radial-gradient(circle at center, rgba(0, 227, 147, 0.05) 0%, transparent 60%);
+        }
+        .dark-mode .pulse-container {
+            background-color: var(--card-bg-seedwave);
+            border-color: var(--border-dark-seedwave);
+        }
+        .dark-mode .whimsical-card {
+            background-color: var(--card-bg-dark);
+            border-color: var(--border-color-dark);
+        }
+        .dark-mode .spotify-btn-secondary { background-color: #333; color: #fff; border-color: #555; }
+        .dark-mode .spotify-btn-secondary:hover { background-color: #555; }
+        .dark-mode .currency-converter-section input,
+        .dark-mode .currency-converter-section select {
+            background-color: #2a2a30;
+            border-color: var(--border-color-dark);
+            color: var(--text-color-dark); /* Ensure text is visible in dark mode */
+        }
+        .dark-mode .pricing-card .price { /* Apply gradient for default pricing */
+            background: linear-gradient(90deg, var(--primary-glow-seedwave), var(--secondary-glow-seedwave));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Hyper Mode */
+        body.hyper-mode {
+            background-color: var(--hyper-bg-color);
+            color: var(--hyper-text-color);
+        }
+        .hyper-mode .mindlift-hero {
+            background: linear-gradient(135deg, var(--hyper-primary-color) 0%, var(--hyper-accent-color) 100%);
+            box-shadow: 0 10px 30px rgba(255, 0, 255, 0.4);
+        }
+        .hyper-mode .section-padding {
+            background-color: var(--hyper-card-bg);
+            border-color: var(--hyper-border-color);
+        }
+        .hyper-mode .section-title {
+            color: var(--hyper-text-color);
+        }
+        .hyper-mode .feature-card,
+        .hyper-mode .metadata-card,
+        .hyper-mode .pricing-card,
+        .hyper-mode .currency-converter-section,
+        .hyper-mode .fixed-pricing-section,
+        .hyper-mode #top-tracks-list,
+        .hyper-mode #playlist-message,
+        .hyper-mode #audio-players,
+        .hyper-mode #spotify-album-embed {
+            background-color: var(--hyper-card-bg);
+            border-color: var(--hyper-border-color);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        }
+        .hyper-mode .pricing-card.pro-card { background-color: var(--hyper-card-bg); border-color: var(--hyper-border-color); }
+        .hyper-mode .pricing-card.enterprise-card { background-color: var(--hyper-card-bg); border-color: var(--hyper-border-color); }
+        .hyper-mode .pricing-card.banimal-card { background-color: var(--hyper-card-bg); border-color: var(--hyper-border-color); }
+        .hyper-mode .feature-card h3,
+        .hyper-mode .metadata-card h3,
+        .hyper-mode .pricing-card h3,
+        .hyper-mode .currency-converter-section h2,
+        .hyper-mode .fixed-pricing-section h2,
+        .hyper-mode #top-tracks-list h3 {
+            color: var(--hyper-text-color);
+        }
+        .hyper-mode .feature-card .icon,
+        .hyper-mode .ai-help-section h3 i {
+            color: var(--hyper-accent-color);
+        }
+        .hyper-mode .feature-card p,
+        .hyper-mode .metadata-card ul li,
+        .hyper-mode .pricing-card p,
+        .hyper-mode .pricing-card ul li,
+        .hyper-mode #top-tracks-list li {
+            color: var(--hyper-text-color); /* Adjusted for better contrast in hyper mode */
+        }
+        .hyper-mode .metadata-card ul li strong { color: var(--hyper-text-color); }
+        .hyper-mode .ai-help-section h3 { color: var(--hyper-text-color); }
+        .hyper-mode .ai-help-section .form-label { color: var(--hyper-text-color); }
+        .hyper-mode .ai-help-section .form-input, .hyper-mode .ai-help-section .form-select {
+            background-color: #000022;
+            border-color: var(--hyper-border-color);
+            color: var(--hyper-text-color);
+        }
+        .hyper-mode .ai-help-section .form-input::placeholder { color: #FFCCFF; }
+        .hyper-mode #node-pulse-graph .w-full { background-color: #000011; border-color: #330066; }
+        .hyper-mode #node-pulse-graph p { color: var(--hyper-text-color); }
+        .hyper-mode footer.new-footer { background-color: var(--hyper-card-bg); border-top-color: var(--hyper-border-color); }
+        .hyper-mode footer.new-footer h1 { color: var(--hyper-text-color); }
+        .hyper-mode footer.new-footer p { color: var(--hyper-text-color); }
+        .hyper-mode footer.new-footer a { color: var(--hyper-text-color); }
+        .hyper-mode .theme-controls button,
+        .hyper-mode .theme-controls #languageSwitcher {
+            background-color: var(--hyper-card-bg);
+            color: var(--hyper-text-color);
+            border-color: var(--hyper-border-color);
+        }
+        .hyper-mode .theme-controls #theme-hyper-btn.active {
+            background-color: var(--hyper-primary-color);
+            color: white;
+            border-color: var(--hyper-primary-color);
+        }
+        .hyper-mode .theme-controls #theme-day-btn,
+        .hyper-mode .theme-controls #theme-night-btn {
+            background-color: var(--hyper-card-bg);
+            color: var(--muted-text-dark); /* Use a muted version of hyper-text for non-active */
+            border-color: var(--hyper-border-color);
+        }
+        .hyper-mode .theme-controls #languageSwitcher {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23FFCCFF'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
+        }
+        .hyper-mode header {
+            background-color: rgba(0, 0, 15, 0.8);
+            border-bottom-color: var(--hyper-border-color);
+        }
+        .hyper-mode .hero-section {
+            background: radial-gradient(circle at center, rgba(255, 0, 255, 0.08) 0%, transparent 60%);
+        }
+        .hyper-mode .pulse-container {
+            background-color: var(--hyper-card-bg);
+            border-color: var(--hyper-border-color);
+        }
+        .hyper-mode .whimsical-card {
+            background-color: var(--hyper-card-bg);
+            border-color: var(--hyper-border-color);
+        }
+        .hyper-mode .whimsical-card h3 { color: var(--hyper-text-color); }
+        .hyper-mode .whimsical-card p { color: var(--hyper-text-color); }
+        .hyper-mode .whimsical-icon { text-shadow: 0 0 15px rgba(255, 0, 255, 0.5); }
+        .hyper-mode .spotify-btn-primary { background: linear-gradient(45deg, #00FF00, #00AA00); box-shadow: 0 4px 15px rgba(0, 255, 0, 0.4); }
+        .hyper-mode .spotify-btn-primary:hover { background: linear-gradient(45deg, #00AA00, #00FF00); box-shadow: 0 6px 20px rgba(0, 255, 0, 0.6); }
+        .hyper-mode .spotify-btn-secondary { background-color: #220044; color: var(--hyper-text-color); border-color: #5500AA; }
+        .hyper-mode .spotify-btn-secondary:hover { background-color: #5500AA; }
+        .hyper-mode .currency-converter-section input,
+        .hyper-mode .currency-converter-section select {
+            background-color: #000022;
+            border-color: var(--hyper-border-color);
+            color: var(--hyper-text-color);
+        }
+        .hyper-mode .pricing-card .price { /* Apply gradient for default pricing */
+            background: linear-gradient(90deg, var(--hyper-primary-color), var(--hyper-accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 8px rgba(255, 0, 255, 0.3);
+        }
+        .hyper-mode .pricing-card.pro-card .price,
+        .hyper-mode .pricing-card.enterprise-card .price,
+        .hyper-mode .pricing-card.banimal-card .price { /* No special color override in hyper mode for consistency */
+            color: var(--hyper-text-color);
+        }
+        .hyper-mode .pricing-card.pro-card ul li i,
+        .hyper-mode .pricing-card.enterprise-card ul li i,
+        .hyper-mode .pricing-card.banimal-card ul li i {
+            color: var(--hyper-text-color);
+        }
+
+
+        /* Global Container & Section Defaults */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section-padding {
+            padding: 80px 20px;
+            border-bottom: 1px solid var(--border-color-dark);
+            border-top: 1px solid var(--border-color-dark);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .section-padding:last-of-type {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 50px;
+            transition: color 0.3s ease;
+        }
+
+        /* Announcement Bar Styling */
+        #announcement-bar {
+            background-color: var(--fcu-color);
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            position: sticky;
+            top: 0;
+            z-index: 1001;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #announcement-bar .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        #announcement-bar.hidden {
+            display: none;
+        }
+
+        /* Header Specifics */
+        header {
+            background-color: rgba(10, 10, 13, 0.8); /* Semi-transparent dark background */
+            backdrop-filter: blur(10px); /* Frosted glass effect */
+            border-bottom: 1px solid var(--border-dark-seedwave);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: var(--announcement-bar-height); /* Position header below announcement bar */
+            z-index: 1000; /* Increased z-index to be above other sections */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            /* NEW: Responsive adjustments for header content */
+            flex-wrap: wrap; /* Allow items to wrap to next line */
+            gap: 0.5rem; /* Small gap between wrapped items */
+        }
+
+        .header-content-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-color-dark);
+            transition: color 0.3s ease;
+            flex-shrink: 0;
+            /* NEW: Adjust for small screens */
+            width: auto; /* Allow content to dictate width */
+            justify-content: flex-start; /* Align left */
+        }
+
+        .logo-fruitful {
+            color: var(--primary-color);
+            font-size: 1.6rem;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .logo-separator {
+            color: var(--muted-text-dark);
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+        
+        .logo-seedwave {
+            color: var(--seedwave-green-glow-text);
+            font-size: 1.6rem;
+            font-weight: 800;
+            text-decoration: none;
+            text-shadow: 0 0 10px rgba(0, 227, 147, 0.6);
+        }
+
+        #header-pulse-canvas {
+            flex-grow: 1;
+            height: 40px;
+            background-color: transparent;
+            margin: 0 20px;
+            max-width: 600px;
+        }
+
+        /* Hero Sections (MindLift and Seedwave Pulse Grid) */
+        .mindlift-hero {
+            text-align: center;
+            padding: 100px 20px;
+            background: linear-gradient(135deg, var(--mindlift-color) 0%, var(--mindlift-accent-color) 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            margin: 20px auto;
+            max-width: 1200px;
+            box-shadow: 0 10px 30px rgba(123, 104, 238, 0.4);
+            z-index: 9; /* Ensure it is below header but above general content */
+        }
+        .mindlift-hero h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            letter-spacing: -0.05em;
+            color: white;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+        }
+        .mindlift-hero p {
+            font-size: 1.5rem;
+            max-width: 900px;
+            margin: 0 auto 40px;
+            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        .mindlift-hero .cta-button {
+            background-color: white;
+            color: var(--mindlift-color);
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border-radius: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: inline-block;
+            text-decoration: none;
+        }
+        .mindlift-hero .cta-button:hover {
+            background-color: #f0f0f0;
+            color: var(--mindlift-accent-color);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .global-pulse-grid-section {
+            padding: 6rem 2rem;
+            text-align: center;
+            background-color: var(--dark-bg-seedwave); /* Matches Seedwave section bg */
+            border-top: 1px solid var(--border-dark-seedwave);
+            border-bottom: 1px solid var(--border-dark-seedwave);
+        }
+        .global-pulse-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 1rem;
+            width: 100%;
+            height: 60vh; /* Adjust height as needed */
+            max-width: 1200px;
+            margin: 2rem auto;
+        }
+        .pulse-container {
+            position: relative;
+            background-color: var(--card-bg-seedwave);
+            border-radius: 0.75rem;
+            overflow: hidden;
+            border: 1px solid var(--border-dark-seedwave);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Added min-dimensions for rendering visibility */
+            min-width: 150px;
+            min-height: 150px;
+        }
+        .pulse-container canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            background-color: transparent;
+            z-index: 1;
+        }
+
+        /* Metrics / Info Cards (Seedwave) */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .metric-card {
+            background-color: var(--card-bg-seedwave);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            border: 1px solid var(--border-dark-seedwave);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .metric-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+        }
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 227, 147, 0.1) 0%, transparent 70%);
+            transform: rotate(45deg);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 0;
+        }
+        .metric-card:hover::before {
+            opacity: 1;
+        }
+        .metric-card-content {
+            position: relative;
+            z-index: 1;
+        }
+        .metric-card-icon {
+            font-size: 3.5rem;
+            color: var(--primary-glow-seedwave);
+            margin-bottom: 1rem;
+            text-shadow: 0 0 15px rgba(0, 227, 147, 0.5);
+        }
+        .metric-card h3 {
+            color: var(--text-color-dark); /* Now correctly using theme variable */
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .metric-card p {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .metric-value {
+            font-size: 2.8rem;
+            font-weight: 900;
+            background: linear-gradient(90deg, var(--primary-glow-seedwave), var(--secondary-glow-seedwave));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(0, 227, 147, 0.5);
+            margin-top: 1rem;
+            display: block;
+        }
+
+        /* Master License Brands & Whimsical Ventures (Seedwave) */
+        .whimsical-card-grid, .master-brands-grid { /* Reusing styles for master brands as well */
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .whimsical-card {
+            background-color: var(--card-bg-seedwave);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            border: 1px solid var(--border-dark-seedwave);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .whimsical-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+        }
+        .whimsical-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            line-height: 1;
+            text-shadow: 0 0 15px rgba(0, 227, 147, 0.5);
+        }
+        .whimsical-card h3 {
+            color: var(--text-color-dark); /* Now correctly using theme variable */
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+        .whimsical-card p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.7);
+            flex-grow: 1;
+        }
+
+        /* Feature Grid Layout (MindLift) */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        .feature-card {
+            background-color: var(--card-bg-dark);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color-dark);
+            text-align: left;
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-card .icon {
+            color: var(--mindlift-color); /* Now correctly using theme variable */
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        .feature-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-color-dark); /* Now correctly using theme variable */
+        }
+        .feature-card p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--muted-text-dark); /* Now correctly using theme variable */
+        }
+        .feature-card ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 15px;
+        }
+        .feature-card ul li {
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+        }
+
+        /* Metadata Metrics Section (MindLift) */
+        .metadata-metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        .metadata-card {
+            background-color: var(--card-bg-dark); /* Using general card bg */
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color-dark);
+            text-align: left;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.15);
+        }
+        .metadata-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-color-dark); /* Now correctly using theme variable */
+        }
+        .metadata-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .metadata-card ul li {
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            line-height: 1.5;
+            color: var(--muted-text-dark); /* Now correctly using theme variable */
+        }
+        .metadata-card ul li strong {
+            color: var(--text-color-dark); /* Now correctly using theme variable */
+        }
+
+        /* Pricing Section (MindLift with Banimal Loop Plan) */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+            align-items: start;
+            justify-content: center;
+        }
+        @media (min-width: 1024px) {
+            .pricing-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        .pricing-card {
+            background-color: var(--card-bg-dark); /* Using general card bg */
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            border: 1px solid var(--border-color-dark);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s ease;
+            height: 100%;
+            text-align: left;
+            max-width: 450px;
+            margin: 0 auto;
+        }
+        .pricing-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+        .pricing-card.highlight { /* Used for Pro plan in MindLift original */
+            border-color: var(--mindlift-color);
+            box-shadow: 0 8px 25px rgba(123, 104, 238, 0.3);
+        }
+        .pricing-card h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-align: center;
+            color: var(--text-color-dark); /* Now correctly using theme variable */
+        }
+        .pricing-card .price {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            text-align: center;
+            background: linear-gradient(90deg, var(--primary-color), var(--mindlift-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .pricing-card .price-description {
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+            text-align: center;
+            color: var(--muted-text-dark); /* Now correctly using theme variable */
+        }
+        .pricing-card ul {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 20px;
+            text-align: left;
+            width: 100%;
+            flex-grow: 1;
+        }
+        .pricing-card ul li {
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            color: var(--muted-text-dark); /* Now correctly using theme variable */
+        }
+        .pricing-card ul li i {
+            color: var(--mindlift-color); /* Default checkmark color */
+            margin-right: 10px;
+        }
+        /* Overrides for specific pricing card checkmark colors */
+        .pricing-card.pro-card ul li i { color: var(--pro-button-color); }
+        .pricing-card.enterprise-card ul li i { color: var(--enterprise-button-color); }
+        .pricing-card.banimal-card ul li i { color: var(--banimal-button-color); }
+
+        /* Custom styling for the Banimal PayPal button to be blue with white text */
+        .pricing-card.banimal-card .paypal-button-container {
+             /* Target the button generated by PayPal SDK within its container */
+            & .paypal-button {
+                background: var(--secure-sign-blue) !important; /* Forces blue background */
+                color: white !important; /* Forces white text */
+            }
+            & .paypal-button:hover {
+                background: var(--secure-sign-blue-hover) !important;
+            }
+        }
+
+        /* Currency Converter (Seedwave) */
+        .currency-converter-section {
+            background-color: var(--card-bg-seedwave);
+            border-radius: 1rem;
+            padding: 3rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            border: 1px solid var(--border-dark-seedwave);
+            max-width: 800px;
+            margin: 4rem auto;
+            text-align: center;
+        }
+        .currency-converter-section h2 {
+            font-size: 2.5rem;
+            color: var(--primary-glow-seedwave); /* Now correctly using theme variable */
+            text-shadow: 0 0 10px rgba(0, 227, 147, 0.4);
+            margin-bottom: 2rem;
+        }
+        .currency-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            align-items: center;
+        }
+        .currency-input-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            width: 100%;
+            max-width: 400px;
+        }
+        .currency-input-group label {
+            font-size: 1.1rem;
+            color: var(--text-color-dark); /* Now correctly using theme variable */
+            white-space: nowrap;
+        }
+        .currency-input-group input,
+        .currency-input-group select {
+            flex-grow: 1;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-dark-seedwave);
+            background-color: var(--card-bg-dark); /* Ensure theme-aware background */
+            color: var(--text-color-dark); /* Ensure theme-aware text */
+            font-size: 1rem;
+        }
+        .currency-input-group input:focus,
+        .currency-input-group select:focus {
+            outline: none;
+            border-color: var(--primary-glow-seedwave);
+            box-shadow: 0 0 0 3px rgba(0, 227, 147, 0.3);
+        }
+        .convert-button {
+            padding: 1rem 2.5rem;
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 5px 20px rgba(0, 123, 255, 0.4);
+        }
+        .convert-button:hover {
+            background: linear-gradient(45deg, #0056b3, #007bff);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.6);
+            transform: translateY(-2px);
+        }
+        .conversion-result {
+            margin-top: 2rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-color-dark); /* Now correctly using theme variable */
+        }
+
+        /* Spotify Integration (Seedwave) */
+        .spotify-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            margin-bottom: 3rem;
+        }
+        .spotify-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+        }
+        .spotify-btn-primary {
+            background: linear-gradient(45deg, #1DB954, #128A3C);
+            color: white;
+            box-shadow: 0 4px 15px rgba(29, 185, 84, 0.4);
+        }
+        .spotify-btn-primary:hover {
+            background: linear-gradient(45deg, #128A3C, #1DB954);
+            box-shadow: 0 6px 20px rgba(29, 185, 84, 0.6);
+            transform: translateY(-2px);
+        }
+        .spotify-btn-secondary {
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #555;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .spotify-btn-secondary:hover {
+            background-color: #555;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transform: translateY(-2px);
+        }
+        #top-tracks-list, #playlist-message, #audio-players, #spotify-album-embed {
+            background-color: var(--card-bg-seedwave);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            border: 1px solid var(--border-dark-seedwave);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            text-align: left;
+        }
+        #top-tracks-list ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        #top-tracks-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.8);
+        }
+        #top-tracks-list li:last-child {
+            border-bottom: none;
+        }
+        #top-tracks-list li strong {
+            color: var(--primary-glow-seedwave);
+        }
+        #playlist-message {
+            color: var(--text-color-dark); /* Now correctly using theme variable */
+            font-weight: 500;
+        }
+        #audio-players {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        #audio-players iframe {
+            width: 100%;
+            height: 80px;
+            border-radius: 12px;
+            border: none;
+        }
+        #spotify-album-embed iframe {
+            width: 100%;
+            border-radius: 12px;
+            border: none;
+        }
+
+        /* Node.js Infiltration Pulse Graph (Seedwave) */
+        #node-pulse-graph .w-full {
+            background-color: #0a0a0d; /* Matching seedwave dark bg */
+            padding: 6px; /* Reduced padding to look sleek */
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 1px solid var(--border-dark-seedwave);
+        }
+        #node-pulse-graph p {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 1rem;
+        }
+
+        /* AI Help/FAQ Section (MindLift) */
+        .ai-help-section h3 {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .ai-help-section h3 i {
+            color: var(--mindlift-accent-color);
+            margin-right: 15px;
+            font-size: 1.8rem;
+        }
+        .ai-help-section .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--muted-text-dark); /* Now correctly using theme variable */
+        }
+        .ai-help-section .form-input, .ai-help-section .form-select {
+            background-color: var(--card-bg-dark); /* Now correctly using theme variable */
+            color: var(--text-color-dark); /* Now correctly using theme variable */
+            border: 1px solid var(--border-color-dark); /* Now correctly using theme variable */
+            border-radius: 8px; /* Fixed from 8-px */
+            padding: 12px 15px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+        }
+        .ai-help-section .form-input::placeholder {
+            color: #718096; /* Muted placeholder text */
+        }
+        .ai-help-section .form-input:focus, .ai-help-section .form-select:focus {
+            outline: none;
+            border-color: var(--primary-color); /* Now correctly using theme variable */
+            box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.2);
+        }
+        .ai-help-section .checkout-action-button {
+            display: block;
+            width: 100%;
+            height: 56px;
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: white;
+            border: none;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            background-color: var(--secure-sign-purple); /* Now correctly using theme variable */
+        }
+        .ai-help-section .checkout-action-button:hover {
+            background-color: var(--secure-sign-purple-hover);
+            transform: translateY(-2px);
+        }
+        .ai-help-section .hidden {
+            display: none;
+        }
+        .ai-help-section .result-text {
+            white-space: pre-wrap;
+            margin-top: 1rem;
+        }
+
+        /* Disclaimer Section */
+        .disclaimer-section {
+            background-color: var(--card-bg-dark); /* Now correctly using theme variable */
+            padding: 40px 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #cc0000;
+            border-top: 1px solid var(--border-color-dark); /* Now correctly using theme variable */
+            margin-top: 40px;
+        }
+        .disclaimer-section p strong {
+            font-weight: 700;
+        }
+
+        /* Planet Pulse Text Styling */
+        #planet-text {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-top: 40px;
+            margin-bottom: 40px;
+            color: var(--mindlift-color); /* Now correctly using theme variable */
+            overflow: hidden;
+            white-space: nowrap;
+            animation: pulse-glow 3s infinite alternate;
+            transition: all 0.5s ease-in-out;
+            text-shadow: none;
+        }
+        @keyframes pulse-glow {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.05); opacity: 0.9; }
+        }
+
+        /* Consolidated Footer */
+        .new-footer {
+            background-color: var(--dark-bg-seedwave); /* Now correctly using theme variable */
+            color: var(--muted-text-dark); /* Now correctly using theme variable */
+            padding: 2.5rem;
+            text-align: center;
+            margin-top: auto;
+            border-top: 1px solid var(--border-color-dark); /* Now correctly using theme variable */
+            font-size: 0.9rem;
+        }
+        .new-footer a {
+            color: var(--muted-text-dark); /* Now correctly using theme variable */
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .new-footer a:hover {
+            color: var(--primary-glow-seedwave); /* Now correctly using theme variable */
+        }
+        .banimal-footer-content {
+            max-width: 48rem;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 2rem;
+        }
+        .banimal-footer-content h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            line-height: 1.25;
+            color: white; /* Always white */
+            margin-bottom: 0.5rem;
+        }
+        .banimal-footer-content .text-blue-400 {
+            color: #60a5fa; /* Always blue */
+        }
+        .banimal-footer-content p {
+            font-size: 1rem;
+            line-height: 1.625;
+            color: #d1d5db; /* Always gray-300 */
+            margin-bottom: 1.5rem;
+        }
+        .new-footer .cta-button {
+            background-color: #3b82f6; /* Always blue */
+            color: white; /* Always white */
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition-property: background-color;
+            transition-duration: 0.2s;
+            text-decoration: none;
+        }
+        .new-footer .cta-button:hover {
+            background-color: #2563eb;
+        }
+        .new-footer .cta-button .ml-2 {
+            margin-left: 0.5rem;
+        }
+        .new-footer .copyright {
+            font-size: 0.875rem;
+            color: #6b7280; /* Always gray-500 */
+            margin-top: 2rem;
+        }
+
+        /* Theme Controls */
+        .theme-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem; /* Reduced gap */
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        .theme-controls button {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid transparent;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+        .theme-controls #languageSwitcher {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid var(--border-color-dark); /* Consistent border */
+            background-color: var(--card-bg-dark); /* Consistent background */
+            color: var(--text-color-dark); /* Consistent text color */
+
+            /* Custom arrow icon that changes color with text */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1.5em;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='currentColor'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
+            padding-right: 2.5rem;
+
+            width: fit-content;
+            min-width: 120px;
+            max-width: 180px;
+            flex-grow: 0;
+            flex-shrink: 1;
+            position: relative;
+            z-index: 9999; /* Ensure dropdown is on top */
+        }
+
+        /* Specific theme overrides for language switcher to ensure robust color */
+        body.light-mode .theme-controls #languageSwitcher {
+            background-color: var(--card-bg-light);
+            color: var(--text-color-light);
+            border-color: var(--border-color-light);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%236e6e73'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
+        }
+        body.dark-mode .theme-controls #languageSwitcher {
+            background-color: var(--card-bg-dark);
+            color: var(--text-color-dark);
+            border-color: var(--border-color-dark);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23a0a0a5'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
+        }
+        body.hyper-mode .theme-controls #languageSwitcher {
+            background-color: var(--hyper-card-bg);
+            color: var(--hyper-text-color);
+            border-color: var(--hyper-border-color);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23FFCCFF'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
+        }
+
+        /* Responsive Adjustments (from original dashboard CSS, adapted) */
+        @media (max-width: 1024px) {
+            .dashboard-sidebar {
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color-dashboard);
+                padding-bottom: 1rem;
+                flex-direction: row; /* Make sidebar horizontal on medium screens */
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.5rem;
+            }
+            .dashboard-sidebar-nav-item {
+                flex-grow: 1; /* Allow items to stretch */
+                justify-content: center; /* Center text and icon in items */
+                font-size: 0.9rem; /* Smaller font size */
+                padding: 0.5rem; /* Smaller padding */
+            }
+            .dashboard-container {
+                flex-direction: column;
+            }
+            .dashboard-main-content {
+                width: 100%;
+            }
+            .grid-cols-2-md {
+                grid-template-columns: 1fr; /* Stack columns on small screens */
+            }
+            .main-content-wrapper { /* Corrected from dashboard-main-content-wrapper */
+                flex-direction: column;
+            }
+            .music-sub-sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color-dashboard);
+                padding-bottom: 1rem;
+                flex-direction: row; /* Make sub-sidebar horizontal */
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.5rem;
+                margin-right: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            /* General Header Layout for Mobile */
+            header {
+                padding: 0.5rem 1rem; /* Reduced horizontal padding */
+                flex-direction: column; /* Stack header content vertically */
+                justify-content: center; /* Center items when wrapped */
+                text-align: center;
+                gap: 0.5rem; /* Reduced gap between wrapped lines for compactness */
+            }
+            header .flex.items-center.space-x-4 { /* Target the parent of theme controls and language switcher */
+                width: 100%; /* Take full width on small screens */
+                justify-content: center; /* Center content within their full width */
+                margin-top: 0.5rem; /* Add some space between stacked groups */
+                margin-bottom: 0.5rem;
+            }
+            header .logo-group {
+                width: 100%; /* Take full width on small screens */
+                justify-content: center; /* Center logo */
+                margin-bottom: 0.5rem; /* Add space below logo */
+            }
+            header nav {
+                width: 100%; /* Take full width on small screens */
+                justify-content: center; /* Center nav links */
+                margin-bottom: 0.5rem;
+                flex-wrap: wrap; /* Allow nav links to wrap */
+            }
+            header nav a {
+                padding: 0.4rem 0.8rem; /* Smaller padding for nav links on small screens */
+                font-size: 0.9rem; /* Smaller font size for nav links */
+            }
+            .logo-group {
+                gap: 0.5rem; /* Smaller gap in logo group */
+            }
+            .logo-group .logo-fruitful, .logo-group .logo-seedwave { font-size: 1.2rem; } /* Smaller logo text */
+            .logo-separator { font-size: 1rem; } /* Smaller separator */
+            #header-pulse-canvas { display: none; } /* Hide canvas on small screens */
+            .mindlift-hero h1 { font-size: 2.8rem; }
+            .mindlift-hero p { font-size: 1.2rem; }
+            .global-pulse-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: repeat(6, 1fr);
+                max-height: none;
+            }
+            .section-title { font-size: 2.2rem; }
+            .section-padding { padding: 4rem 1rem; }
+            .metrics-grid, .whimsical-card-grid, .feature-grid, .metadata-metrics-grid, .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+            .metric-card-icon { font-size: 3rem; }
+            .metric-card h3 { font-size: 1.5rem; }
+            .metric-value { font-size: 2.2rem; }
+            .whimsical-icon { font-size: 3.5rem; }
+            .whimsical-card h3 { font-size: 1.8rem; }
+            .whimsical-card p { font-size: 1rem; }
+            .currency-converter-section { padding: 2rem; }
+            .currency-converter-section h2 { font-size: 2rem; }
+            .pricing-card { padding: 30px; }
+            .pricing-card h3 { font-size: 1.6rem; }
+            .pricing-card .price { font-size: 2rem; }
+            .spotify-controls { flex-direction: column; }
+            #node-pulse-graph .w-full { padding: 10px; }
+            .ai-help-section h3 { font-size: 1.3rem; flex-direction: column; text-align: center; }
+            .ai-help-section h3 i { margin-right: 0; margin-bottom: 10px; }
+            #planet-text { font-size: 1.5rem; }
+            .new-footer { padding: 1.5rem; }
+            .banimal-footer-content h1 { font-size: 2.25rem; }
+            .banimal-footer-content p { font-size: 0.9rem; }
+            .new-footer .cta-button { padding: 0.6rem 1.2rem; font-size: 0.9rem; }
+
+            /* Checkout Page Specific Responsive Adjustments */
+            .checkout-header h1 {
+                font-size: 2.5rem; /* Smaller h1 on mobile */
+            }
+            .checkout-header .slogan {
+                font-size: 1.1rem; /* Smaller slogan on mobile */
+            }
+            .checkout-step-text {
+                font-size: 0.75rem; /* Smaller step text */
+            }
+            .checkout-step-number {
+                width: 30px; /* Smaller circle */
+                height: 30px;
+                font-size: 0.8rem;
+            }
+            .form-input, .form-select {
+                padding: 10px 12px; /* Smaller input padding */
+                font-size: 0.9rem;
+            }
+            .checkout-action-button {
+                height: 48px; /* Smaller button height */
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-background-color text-text-color-dark">
+
+    <!-- NEW: Announcement Bar -->
+    <div id="announcement-bar" class="bg-fcu-color text-white text-center p-2 text-sm relative z-50">
+        <div class="container mx-auto flex justify-center items-center h-full relative">
+            <span data-lang-key="announcement-text"></span>
+            <button class="close-btn text-white text-lg ml-4" aria-label="Close Announcement">&times;</button>
+        </div>
+    </div>
+
+    <!-- Main Dashboard Header -->
+    <header id="main-header" class="dashboard-header-bg p-4 shadow-lg sticky z-50 flex items-center justify-between border-b border-dark" style="top: var(--announcement-bar-height);">
+        <div class="flex items-center gap-3">
+            <i class="fas fa-seedling text-3xl dashboard-primary-text"></i>
+            <span class="text-2xl font-bold text-text-light">Fruitful Dashboard</span>
+        </div>
+        <div class="flex items-center gap-4">
+            <input 
+                type="text" 
+                placeholder="Search..." 
+                class="px-4 py-2 rounded-full bg-gray-700 border border-dark text-text-light placeholder-muted-text focus:outline-none focus:ring-2 focus:ring-dashboard-primary-color"
+            >
+            <button class="text-text-light hover:text-dashboard-primary-color transition duration-200">
+                <i class="fas fa-bell text-xl"></i>
+            </button>
+            <button class="text-text-light hover:text-dashboard-primary-color transition duration-200">
+                <i class="fas fa-user-circle text-xl"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Dashboard Container -->
+    <div class="flex flex-grow dashboard-container">
+        <!-- Dashboard Sidebar Navigation -->
+        <nav class="sidebar-bg w-64 p-6 border-r border-dark flex flex-col items-start space-y-4 shadow-md sidebar">
+            <h2 class="text-xl font-semibold dashboard-primary-text mb-4">Navigation</h2>
+            <a href="#" class="sidebar-nav-item flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 text-text-light hover:bg-hover-bg-light" onclick="showSection('overview')">
+                <i class="fas fa-tachometer-alt"></i> Overview
+            </a>
+            <a href="#" class="sidebar-nav-item flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 text-text-light hover:bg-hover-bg-light" onclick="showSection('analytics')">
+                <i class="fas fa-chart-line"></i> Data Analytics
+            </a>
+            <a href="#" class="sidebar-nav-item flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 text-text-light hover:bg-hover-bg-light" onclick="showSection('admin-panel')">
+                <i class="fas fa-users-cog"></i> Admin Panel
+            </a>
+            <a href="#" class="sidebar-nav-item flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 text-text-light hover:bg-hover-bg-light" onclick="showSection('music')">
+                <i class="fas fa-music"></i> Music & Media
+            </a>
+            <a href="#" class="sidebar-nav-item flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 text-text-light hover:bg-hover-bg-light" onclick="showSection('ai-gemini')">
+                <i class="fas fa-robot"></i> AI Gemini
+            </a>
+            <a href="#" class="sidebar-nav-item flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 text-text-light hover:bg-hover-bg-light" onclick="showSection('maps')">
+                <i class="fas fa-map-marked-alt"></i> Maps
+            </a>
+            <a href="#" class="sidebar-nav-item flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 text-text-light hover:bg-hover-bg-light" onclick="showSection('vaultmesh-checkout')">
+                <i class="fas fa-shopping-bag"></i> VaultMesh Checkout
+            </a>
+            <a href="#" class="sidebar-nav-item flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 text-text-light hover:bg-hover-bg-light" onclick="showSection('meeting-minutes')">
+                <i class="fas fa-clipboard-list"></i> Meeting Minutes
+            </a>
+            <a href="#" class="sidebar-nav-item flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 text-text-light hover:bg-hover-bg-light" onclick="showSection('api-keys-section')">
+                <i class="fas fa-key"></i> API Keys
+            </a>
+            <a href="#" class="sidebar-nav-item flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 text-text-light hover:bg-hover-bg-light" onclick="showSection('global-manuals-section')">
+                <i class="fas fa-book"></i> Manuals
+            </a>
+            <a href="#" class="sidebar-nav-item flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 text-text-light hover:bg-hover-bg-light">
+                <i class="fas fa-cog"></i> Settings
+            </a>
+        </nav>
+
+        <!-- Main Content Area for Dashboard Sections -->
+        <main class="flex-grow p-8 main-content-bg overflow-y-auto main-content">
+            <div class="flex h-full main-content-wrapper">
+                <!-- Music Sub-Sidebar (conditionally visible) -->
+                <nav id="musicSubSidebar" class="sidebar-bg w-48 p-4 border-r border-dark flex-col items-start space-y-3 shadow-md mr-8 hidden music-sub-sidebar">
+                    <h3 class="text-lg font-semibold dashboard-primary-text mb-3">Music Library</h3>
+                    <a href="#" class="sidebar-nav-item flex items-center gap-2 w-full p-2 rounded-lg text-base font-medium transition duration-200 text-text-light hover:bg-hover-bg-light" onclick="showMusicSubSection('allMusic')">
+                        <i class="fas fa-compact-disc"></i> All Music
+                    </a>
+                    <a href="#" class="sidebar-nav-item flex items-center gap-2 w-full p-2 rounded-lg text-base font-medium transition duration-200 text-text-light hover:bg-hover-bg-light" onclick="showMusicSubSection('musicPlaylists')">
+                        <i class="fas fa-list-music"></i> Playlists
+                    </a>
+                    <a href="#" class="sidebar-nav-item flex items-center gap-2 w-full p-2 rounded-lg text-base font-medium transition duration-200 text-text-light hover:bg-hover-bg-light" onclick="showMusicSubSection('artists')">
+                        <i class="fas fa-microphone-alt"></i> Artists
+                    </a>
+                </nav>
+
+                <div class="flex-grow">
+                    <!-- Overview Section -->
+                    <section id="overview" class="mb-8 p-6 dashboard-card-bg rounded-lg shadow-xl border border-dark">
+                        <h2 class="text-3xl font-bold dashboard-primary-text mb-6">Dashboard Overview</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="metric-card">
+                                <h3>Total Users</h3>
+                                <p class="dashboard-primary-text">15,420</p>
+                            </div>
+                            <div class="metric-card">
+                                <h3>Active Projects</h3>
+                                <p class="dashboard-secondary-text">245</p>
+                            </div>
+                            <div class="metric-card">
+                                <h3>Data Processed (TB)</h3>
+                                <p class="text-teal-400">89.5</p>
+                            </div>
+                            <div class="metric-card">
+                                <h3>Total Checkouts</h3>
+                                <p class="text-purple-400">7,210</p>
+                            </div>
+                            <div class="metric-card">
+                                <h3>Conversion Rate</h3>
+                                <p class="text-green-500">3.2%</p>
+                            </div>
+                            <div class="metric-card">
+                                <h3>Pending AI Requests</h3>
+                                <p class="text-orange-400">18</p>
+                            </div>
+                        </div>
+                        <div class="mt-8">
+                            <h3 class="text-2xl font-semibold text-text-light mb-4">Quick Stats</h3>
+                            <ul class="list-disc list-inside muted-text space-y-2">
+                                <li>Daily Active Users: 3,120</li>
+                                <li>New Registrations This Week: 125</li>
+                                <li>Average Session Duration: 12 min</li>
+                                <li>System Uptime: 99.9%</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <!-- Data Analytics Section -->
+                    <section id="analytics" class="hidden mb-8 p-6 dashboard-card-bg rounded-lg shadow-xl border border-dark">
+                        <h2 class="text-3xl font-bold dashboard-primary-text mb-6">Data Analytics</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 grid-cols-2-md">
+                            <div class="p-5 bg-gray-700 rounded-lg shadow-md">
+                                <h3 class="text-xl font-semibold text-text-light mb-2">Usage Trends</h3>
+                                <p class="muted-text">Graph showing daily user activity and data consumption.</p>
+                                <div class="mt-4 bg-gray-800 h-48 flex items-center justify-center rounded-md">
+                                    <span class="muted-text">Placeholder Chart</span>
+                                </div>
+                            </div>
+                            <div class="p-5 bg-gray-700 rounded-lg shadow-md">
+                                <h3 class="text-xl font-semibold text-text-light mb-2">Performance Metrics</h3>
+                                <p class="muted-text">Key performance indicators over time.</p>
+                                <div class="mt-4 bg-gray-800 h-48 flex items-center justify-center rounded-md">
+                                    <span class="muted-text">Placeholder Chart</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Admin Panel Section -->
+                    <section id="admin-panel" class="hidden mb-8 p-6 dashboard-card-bg rounded-lg shadow-xl border border-dark">
+                        <h2 class="text-3xl font-bold dashboard-primary-text mb-6">Admin Panel</h2>
+                        <p class="muted-text mb-4">Manage users, review content, and configure system settings.</p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                            <div class="p-5 bg-gray-700 rounded-lg shadow-md">
+                                <h3 class="text-xl font-semibold text-text-light mb-2">Total Active Admins</h3>
+                                <p class="text-4xl font-bold dashboard-secondary-text">7</p>
+                            </div>
+                            <div class="p-5 bg-gray-700 rounded-lg shadow-md">
+                                <h3 class="text-xl font-semibold text-text-light mb-2">Pending Approvals</h3>
+                                <p class="text-4xl font-bold text-yellow-400">12</p>
+                            </div>
+                            <div class="p-5 bg-gray-700 rounded-lg shadow-md">
+                                <h3 class="text-xl font-semibold text-text-light mb-2">System Health</h3>
+                                <p class="text-4xl font-bold text-green-400">Optimal</p>
+                            </div>
+                        </div>
+
+                        <h3 class="text-2xl font-semibold text-text-light mb-4">User Management</h3>
+                        <div class="flex flex-col md:flex-row gap-4 mb-6">
+                            <input
+                                type="text"
+                                placeholder="Search users..."
+                                class="flex-grow px-4 py-2 rounded-lg bg-gray-700 border border-dark text-text-light placeholder-muted-text focus:outline-none focus:ring-2 focus:ring-primary-color"
+                            >
+                            <select class="px-4 py-2 rounded-lg bg-gray-700 border border-dark text-text-light focus:outline-none focus:ring-2 focus:ring-primary-color">
+                                <option value="">Filter by Role</option>
+                                <option value="admin">Admin</option>
+                                <option value="user">User</option>
+                                <option value="moderator">Moderator</option>
+                            </select>
+                            <button class="px-4 py-2 bg-primary-color text-white font-semibold rounded-lg hover:bg-green-600 transition duration-200">Apply Filters</button>
+                        </div>
+                        <div class="overflow-x-auto mb-8">
+                            <table class="min-w-full bg-gray-700 rounded-lg shadow-md">
+                                <thead>
+                                    <tr>
+                                        <th class="py-3 px-4 text-left text-sm font-semibold text-muted-text uppercase tracking-wider border-b border-dark">User ID</th>
+                                        <th class="py-3 px-4 text-left text-sm font-semibold text-muted-text uppercase tracking-wider border-b border-dark">Name</th>
+                                        <th class="py-3 px-4 text-left text-sm font-semibold text-muted-text uppercase tracking-wider border-b border-dark">Email</th>
+                                        <th class="py-3 px-4 text-left text-sm font-semibold text-muted-text uppercase tracking-wider border-b border-dark">Role</th>
+                                        <th class="py-3 px-4 text-left text-sm font-semibold text-muted-text uppercase tracking-wider border-b border-dark">Status</th>
+                                        <th class="py-3 px-4 text-left text-sm font-semibold text-muted-text uppercase tracking-wider border-b border-dark">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="hover:bg-gray-600 transition duration-200">
+                                        <td class="py-3 px-4 border-b border-dark">FRTL-001</td>
+                                        <td class="py-3 px-4 border-b border-dark">Alice Smith</td>
+                                        <td class="py-3 px-4 border-b border-dark">alice@example.com</td>
+                                        <td class="py-3 px-4 border-b border-dark">Admin</td>
+                                        <td class="py-3 px-4 border-b border-dark"><span class="bg-green-500 text-white text-xs font-semibold px-2.5 py-0.5 rounded-full">Active</span></td>
+                                        <td class="py-3 px-4 border-b border-dark">
+                                            <button class="text-blue-400 hover:text-blue-300 mr-2">Edit</button>
+                                            <button class="text-red-400 hover:text-red-300">Delete</button>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-600 transition duration-200">
+                                        <td class="py-3 px-4 border-b border-dark">FRTL-002</td>
+                                        <td class="py-3 px-4 border-b border-dark">Bob Johnson</td>
+                                        <td class="py-3 px-4 border-b border-dark">bob@example.com</td>
+                                        <td class="py-3 px-4 border-b border-dark">User</td>
+                                        <td class="py-3 px-4 border-b border-dark"><span class="bg-yellow-500 text-white text-xs font-semibold px-2.5 py-0.5 rounded-full">Pending</span></td>
+                                        <td class="py-3 px-4 border-b border-dark">
+                                            <button class="text-blue-400 hover:text-blue-300 mr-2">Edit</button>
+                                            <button class="text-red-400 hover:text-red-300">Delete</button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                            </table>
+                        </div>
+
+                        <h3 class="text-2xl font-semibold text-text-light mb-4">Admin Assistant (AI Powered)</h3>
+                        <p class="muted-text mb-3">Ask Gemini AI for insights on administrative tasks, user trends, or content moderation advice.</p>
+                        <textarea id="adminAIPrompt" rows="4" class="w-full p-3 rounded-lg bg-gray-700 border border-dark text-text-light placeholder-muted-text focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="e.g., 'Summarize recent user activity trends for the past week.', 'Suggest a policy for handling spam content.'"></textarea>
+                        <button id="sendAdminAIPrompt" class="px-6 py-3 bg-purple-500 text-white font-semibold rounded-lg hover:bg-purple-600 transition duration-200 mt-4 self-end">
+                            Ask Admin Assistant
+                        </button>
+                        <div class="mt-4 p-4 bg-gray-700 rounded-lg border border-dark">
+                            <h4 class="text-lg font-semibold text-text-light mb-2">Admin Assistant Response:</h4>
+                            <div id="adminAIResponse" class="text-text-light whitespace-pre-wrap">
+                                Your AI-powered admin assistant response will appear here.
+                            </div>
+                            <div id="adminAIError" class="text-red-400 mt-2 hidden"></div>
+                        </div>
+
+                    </section>
+
+                    <!-- Music & Media Section -->
+                    <section id="music" class="hidden mb-8 p-6 dashboard-card-bg rounded-lg shadow-xl border border-dark flex-grow music-content-area">
+                        <h2 class="text-3xl font-bold dashboard-primary-text mb-6">Music & Media</h2>
+                        <p class="muted-text text-center mb-6">Explore curated music and media content from our partners.</p>
+
+                        <div id="allMusicContent" class="flex flex-col items-center justify-center space-y-6">
+                            <h3 class="text-xl font-semibold text-text-light mb-2">All Music Tracks</h3>
+                            <div class="w-full max-w-xl">
+                                <h4 class="text-lg font-semibold text-text-light mb-2">Album: The Fated Sky</h4>
+                                <iframe style="border-radius:12px" src="https://open.spotify.com/embed/album/3RyjFxsU9hcmg14vqzUUMy?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                            </div>
+
+                            <div class="w-full max-w-xl">
+                                <h4 class="text-lg font-semibold text-text-light mb-2">Track: No Reason</h4>
+                                <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/2kdQY3b6dDRGonyIzcWljc?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                            </div>
+
+                            <div class="w-full max-w-xl">
+                                <h4 class="text-lg font-semibold text-text-light mb-2">Track: Space Song</h4>
+                                <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/6Xe9wT5xeZETPwtaP2ynUz?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                            </div>
+                        </div>
+
+                        <div id="musicPlaylistsContent" class="hidden">
+                            <h3 class="text-xl font-semibold text-text-light mb-4">Your Music Playlists</h3>
+                            <ul class="list-disc list-inside muted-text space-y-2">
+                                <li>Fruitful Focus Playlist</li>
+                                <li>Deep Work Rhythms</li>
+                                <li>Relax & Grow Collection</li>
+                            </ul>
+                        </div>
+
+                        <div id="artistsContent" class="hidden">
+                            <h3 class="text-xl font-semibold text-text-light mb-4">Featured Artists</h3>
+                            <ul class="list-disc list-inside muted-text space-y-2">
+                                <li>Artist A - Genre: Ambient</li>
+                                <li>Artist B - Genre: Lo-Fi</li>
+                                <li>Artist C - Genre: Classical</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <!-- AI Gemini Section -->
+                    <section id="ai-gemini" class="hidden mb-8 p-6 dashboard-card-bg rounded-lg shadow-xl border border-dark">
+                        <h2 class="text-3xl font-bold dashboard-primary-text mb-6">AI Gemini Integration</h2>
+                        <p class="muted-text mb-4">Interact with the Gemini AI model directly from your dashboard.</p>
+
+                        <div class="api-key-warning mb-4">
+                            <strong>Security Alert!</strong> For production, never expose your API key directly in client-side code. Use a backend server to proxy your AI requests.
+                        </div>
+
+                        <!-- General Gemini Prompt -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-text-light mb-3">General Query ✨</h3>
+                            <textarea id="geminiPrompt" rows="4" class="w-full p-3 rounded-lg bg-gray-700 border border-dark text-text-light placeholder-muted-text focus:outline-none focus:ring-2 focus:ring-primary-color" placeholder="Enter your prompt for Gemini AI here... (e.g., 'Explain how AI works in a few words', 'Write a short poem about fruit.')"></textarea>
+                            <button id="sendGeminiPrompt" class="px-6 py-3 bg-primary-color text-white font-semibold rounded-lg hover:bg-green-600 transition duration-200 mt-4 self-end">
+                                Send to Gemini
+                            </button>
+                            <div class="mt-4 p-4 bg-gray-700 rounded-lg border border-dark">
+                                <h4 class="text-lg font-semibold text-text-light mb-2">Gemini AI Response:</h4>
+                                <div id="geminiResponse" class="text-text-light whitespace-pre-wrap">
+                                    Type a general prompt and click "Send to Gemini" to get a response.
+                                </div>
+                                <div id="geminiError" class="text-red-400 mt-2 hidden"></div>
+                            </div>
+                        </div>
+
+                        <!-- Coding Partner Feature -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-text-light mb-3">Coding Partner ✨</h3>
+                            <p class="muted-text mb-3">Get explanations for code, generate snippets, or debug issues.</p>
+                            <textarea id="codingPrompt" rows="6" class="w-full p-3 rounded-lg bg-gray-700 border border-dark text-text-light placeholder-muted-text focus:outline-none focus:ring-2 focus:ring-secondary-color" placeholder="e.g., 'Explain this Python code: def factorial(n): ...', or 'Write a JavaScript function to sort an array.'"></textarea>
+                            <button id="sendCodingPrompt" class="px-6 py-3 bg-secondary-color text-white font-semibold rounded-lg hover:bg-blue-600 transition duration-200 mt-4 self-end">
+                                Ask Coding Partner
+                            </button>
+                            <div class="mt-4 p-4 bg-gray-700 rounded-lg border border-dark">
+                                <h4 class="text-lg font-semibold text-text-light mb-2">Coding Partner Response:</h4>
+                                <div id="codingResponse" class="text-text-light whitespace-pre-wrap">
+                                    Ask your coding question here.
+                                </div>
+                                <div id="codingError" class="text-red-400 mt-2 hidden"></div>
+                            </div>
+                        </div>
+
+                        <!-- Career Guide Feature -->
+                        <div>
+                            <h3 class="text-xl font-semibold text-text-light mb-3">Career Guide ✨</h3>
+                            <p class="muted-text mb-3">Receive advice on career paths, resume building, or interview preparation.</p>
+                            <textarea id="careerPrompt" rows="4" class="w-full p-3 rounded-lg bg-gray-700 border border-dark text-text-light placeholder-muted-text focus:outline-none focus:ring-2 focus:ring-teal-400" placeholder="e.g., 'What are key skills for a data scientist?', or 'Give me tips for a software engineering interview.'"></textarea>
+                            <button id="sendCareerPrompt" class="px-6 py-3 bg-teal-500 text-white font-semibold rounded-lg hover:bg-teal-600 transition duration-200 mt-4 self-end">
+                                Get Career Advice
+                            </button>
+                            <div class="mt-4 p-4 bg-gray-700 rounded-lg border border-dark">
+                                <h4 class="text-lg font-semibold text-text-light mb-2">Career Guide Response:</h4>
+                                <div id="careerResponse" class="text-text-light whitespace-pre-wrap">
+                                    Ask your career question here.
+                                </div>
+                                <div id="careerError" class="text-red-400 mt-2 hidden"></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Maps Section -->
+                    <section id="maps" class="hidden mb-8 p-6 dashboard-card-bg rounded-lg shadow-xl border border-dark">
+                        <h2 class="text-3xl font-bold dashboard-primary-text mb-6">Interactive Maps</h2>
+                        <p class="muted-text mb-4">Explore different mapping integrations for your dashboard.</p>
+
+                        <div class="space-y-8">
+                            <div class="dashboard-card-bg p-4 rounded-lg border border-dark">
+                                <h3 class="text-2xl font-semibold dashboard-secondary-text mb-3">Google Maps (Advanced Marker)</h3>
+                                <p class="muted-text mb-3">An interactive map powered by Google Maps Platform, featuring advanced markers. Requires an API key.</p>
+                                <gmp-map center="40.12150192260742,-100.45039367675781" zoom="4" map-id="DEMO_MAP_ID">
+                                    <gmp-advanced-marker position="40.12150192260742,-100.45039367675781" title="My location"></gmp-advanced-marker>
+                                </gmp-map>
+                                <div class="api-key-warning mt-4">
+                                    <strong>IMPORTANT:</strong> The Google Maps API key is embedded in the script tag in `showSection` function. For production, **never expose your API key directly in client-side code.** Consider using a backend proxy.
+                                    <br>
+                                    If you are getting an `InvalidKeyMapError`, ensure `AIzaSyBPG8dG29cl0TvYRGyLozejGed5Wj5Ab80` is valid and has "Maps JavaScript API" enabled in your Google Cloud Console, along with correct application restrictions.
+                                </div>
+                            </div>
+
+                            <div class="dashboard-card-bg p-4 rounded-lg border border-dark">
+                                <h3 class="text-2xl font-semibold dashboard-secondary-text mb-3">Leaflet.js with OpenStreetMap</h3>
+                                <p class="muted-text mb-3">A free and open-source interactive map solution using OpenStreetMap data. No API key needed for basic use.</p>
+                                <div id="leaflet-map-container"></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Meeting Minutes Section -->
+                    <section id="meeting-minutes" class="hidden mb-8 p-6 dashboard-card-bg rounded-lg shadow-xl border border-dark">
+                        <h2 class="text-3xl font-bold dashboard-primary-text mb-6">Meeting Minutes: Fruitful Dashboard Development</h2>
+                        <p class="text-lg muted-text mb-4">A quick recap of our discussions regarding API integrations and future features.</p>
+
+                        <div class="space-y-8">
+                            <div>
+                                <h3 class="text-2xl font-semibold text-text-light mb-3">Meeting Details:</h3>
+                                <ul class="list-disc list-inside ml-4 text-text-light space-y-1">
+                                    <li><strong>Date:</strong> June 23, 2025</li>
+                                    <li><strong>Time:</strong> 18:45 SAST (6:45 PM, Silver Lakes Golf Estate, Gauteng, South Africa)</li>
+                                    <li><strong>Attendees:</strong> Fruitful Dashboard Development Team (represented by user and Gemini AI)</li>
+                                </ul>
+                            </div>
+
+                            <div>
+                                <h3 class="text-2xl font-semibold text-text-light mb-3">1. Review of Previous API Discussions:</h3>
+                                <div class="space-y-4 ml-4">
+                                    <div class="dashboard-card-bg p-4 rounded-lg border border-dark">
+                                        <h4 class="text-xl font-medium dashboard-secondary-text mb-2">Design Styling API Key:</h4>
+                                        <p class="muted-text"><strong>Conclusion:</strong> No single "API key" for generic styling. Styling handled primarily by CSS (e.g., Tailwind CSS). Specific design services (e.g., Google Fonts, mapping APIs with custom styles) *would* require their own API keys.</p>
+                                        <p class="muted-text mt-1"><strong>Action:</strong> Continue using Tailwind CSS. Explore specific API-driven styling if a particular design service is integrated.</p>
+                                    </div>
+                                    <div class="dashboard-card-bg p-4 rounded-lg border border-dark">
+                                        <h4 class="text-xl font-medium dashboard-secondary-text mb-2">Language Toggler:</h4>
+                                        <p class="muted-text"><strong>Conclusion:</strong> Achieved via JavaScript logic and `data-key` attributes for translatable text. No external API key strictly necessary for the toggler if translations are stored locally.</p>
+                                        <p class="muted-text mt-1"><strong>Action:</strong> Current implementation is good. For complex internationalization, consider dedicated I18n JavaScript libraries or a translation API if dynamic, on-the-fly translation is required.</p>
+                                    </div>
+                                    <div class="dashboard-card-bg p-4 rounded-lg border border-dark">
+                                        <h4 class="text-xl font-medium dashboard-secondary-text mb-2">Selector to Change All Text in HTML with Script:</h4>
+                                        <p class="muted-text"><strong>Conclusion:</strong> `document.querySelectorAll()` with specific tag names or custom attributes is the best method for targeted text manipulation. Use `document.querySelectorAll('*')` with extreme caution.</p>
+                                        <p class="muted-text mt-1"><strong>Action:</strong> Continue using specific selectors for controlled text modification.</p>
+                                    </div>
+                                    <div class="dashboard-card-bg p-4 rounded-lg border border-dark">
+                                        <h4 class="text-xl font-medium dashboard-secondary-text mb-2">General Helpful API Categories (Recap):</h4>
+                                        <ul class="list-disc list-inside ml-4 muted-text space-y-1">
+                                            <li>**Mapping & Location:** Google Maps Platform (requires key).</li>
+                                            <li>**Data & Information:** OpenWeatherMap (key), REST Countries (often no key), News API (key), Free Dictionary (no key).</li>
+                                            <li>**Authentication & User Management:** Firebase Auth, Auth0.</li>
+                                            <li>**Payment Processing:** Stripe (key), PayPal (credentials).</li>
+                                            <li>**AI/ML:** OpenAI (key), Hugging Face Inference API (key), **Gemini API (key - our current focus!)**.</li>
+                                            <li>**Image/Media:** Pexels API / Unsplash API (keys).</li>
+                                            <li>**Utility:** Bitly API (key), SendGrid API / Mailgun API (keys).</li>
+                                        </ul>
+                                        <p class="api-key-warning mt-3">
+                                            <strong>CRITICAL SECURITY NOTE:</strong> Never expose API keys directly in client-side code. Use a backend server or strict restrictions.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h3 class="text-2xl font-semibold text-text-light mb-3">2. Gemini API Integration (Current Progress & Understanding):</h3>
+                                <div class="space-y-4 ml-4">
+                                    <div class="dashboard-card-bg p-4 rounded-lg border border-dark">
+                                        <h4 class="text-xl font-medium dashboard-secondary-text mb-2">What does a Gemini API Key do? (for "Baby Staff"):</h4>
+                                        <p class="text-text-light mb-2">Imagine the Gemini AI as a super-smart robot brain that lives far away in a Google data center. This robot brain can do amazing things like talk like a human, understand pictures, summarize long texts, and write code.</p>
+                                        <p class="text-text-light mb-2">**Your Gemini API Key is like a special secret VIP pass** that allows your Fruitful Dashboard to "talk" to this super-smart robot brain. It tells Google it's *our* dashboard asking, keeps track of usage, and ensures safe communication.</p>
+                                        <p class="text-text-light">**Crucial Point for "Baby Staff":** This API key is a **secret!** Never show it to anyone who shouldn't have access, and never put it directly into code that everyone can see (like the HTML if it's on a public website). It's like your house key – keep it safe!</p>
+                                    </div>
+                                    <div class="dashboard-card-bg p-4 rounded-lg border border-dark">
+                                        <h4 class="text-xl font-medium dashboard-secondary-text mb-2">Key Acquisition:</h4>
+                                        <p class="muted-text">API keys are obtained via <a href="https://aistudio.google.com/" target="_blank" class="text-secondary-color hover:underline">Google AI Studio</a>.</p>
+                                    </div>
+                                    <div class="dashboard-card-bg p-4 rounded-lg border border-dark">
+                                        <h4 class="text-xl font-medium dashboard-secondary-text mb-2">Current Dashboard Implementation:</h4>
+                                        <p class="muted-text">A new "AI Gemini" section has been added with a general prompt area, plus new specialized "Coding Partner" and "Career Guide" features, all powered by Gemini AI. The API key for Gemini is now explicitly set using the key you provided (`AIzaSyBGSDZATtITv5iIoB3rgKHBpWx9MrufxXE`).</p>
+                                        <p class="api-key-warning mt-2">
+                                            <strong>ACTION REQUIRED for PRODUCTION:</strong> While the key is now in the code, for any production deployment, move this API call to a secure backend server to protect your key.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h3 class="text-2xl font-semibold text-text-light mb-3">3. Discussion of New API-related Features for Fruitful Dashboard:</h3>
+                                <div class="space-y-6 ml-4">
+                                    <div class="dashboard-card-bg p-4 rounded-lg border border-dark">
+                                        <h4 class="text-xl font-medium dashboard-secondary-text mb-2"><i class="fas fa-code"></i> Coding Partner Integration:</h4>
+                                        <p class="muted-text"><strong>Concept:</strong> Use Gemini AI's code generation and explanation capabilities.</p>
+                                        <p class="muted-text"><strong>API(s) to explore:</strong> Gemini API (already integrated).</p>
+                                        <p class="muted-text"><strong>Implementation Idea:</strong> Integrated into "AI Gemini" section with dedicated input/output.</p>
+                                    </div>
+                                    <div class="dashboard-card-bg p-4 rounded-lg border border-dark">
+                                        <h4 class="text-xl font-medium dashboard-secondary-text mb-2"><i class="fas fa-graduation-cap"></i> Career Guide Integration:</h4>
+                                        <p class="muted-text"><strong>Concept:</strong> Leverage AI to provide career advice, resume tips, interview prep, or learning paths.</p>
+                                        <p class="muted-text"><strong>API(s) to explore:</strong> Gemini API (primary), potentially specialized career APIs for structured data.</p>
+                                        <p class="muted-text"><strong>Implementation Idea:</strong> New "Career Insights" section where users input goals/questions for AI-generated guidance.</p>
+                                    </div>
+                                    <div class="dashboard-card-bg p-4 rounded-lg border border-dark">
+                                        <h4 class="text-xl font-medium dashboard-secondary-text mb-2"><i class="fas fa-mobile-alt"></i> "🦊 Foxed Has Mobiles™" - Product Data/Inventory Integration:</h4>
+                                        <p class="muted-text"><strong>Concept:</strong> Pull mobile product data (names, specs, prices, stock) from a dedicated system.</p>
+                                        <p class="muted-text"><strong>API(s) to explore:</strong> Likely a **custom API** from "Foxed Has Mobiles™" or a third-party e-commerce platform API (Shopify, WooCommerce).</p>
+                                        <p class="muted-text"><strong>Action:</strong> Contact "Foxed Has Mobiles™" for API documentation and keys.</p>
+                                    </div>
+                                    <div class="dashboard-card-bg p-4 rounded-lg border border-dark">
+                                        <h4 class="text-xl font-medium dashboard-secondary-text mb-2"><i class="fas fa-shield-alt"></i> "🌳 Baobab Security Network™" - Security Monitoring:</h4>
+                                        <p class="muted-text"><strong>Concept:</strong> Display security alerts, network status, or security logs.</p>
+                                        <p class="muted-text"><strong>API(s) to explore:</strong> Likely a **custom API** from "Baobab Security Network™".</p>
+                                        <p class="muted-text"><strong>Action:</strong> Obtain API documentation and credentials from "Baobab Security Network™".</p>
+                                    </div>
+                                    <div class="dashboard-card-bg p-4 rounded-lg border border-dark">
+                                        <h4 class="text-xl font-medium dashboard-secondary-text mb-2"><i class="fas fa-shopping-cart"></i> "🌱Global_Complete_purchase" & "🌱Global_checkout_success" - E-commerce Analytics:</h4>
+                                        <p class="muted-text"><strong>Concept:</strong> Track successful purchases and checkout completions.</p>
+                                        <p class="muted-text"><strong>API(s) to explore:</strong> Google Analytics Data API, Custom E-commerce Platform API, CRM/ERP APIs.</p>
+                                        <p class="muted-text"><strong>Implementation Idea:</strong> New charts/metrics in "Data Analytics" showing conversion rates, successful purchases, checkout funnel performance.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h3 class="text-2xl font-semibold text-text-light mb-3">4. Live Demos (for Visual Learners / "Baby Staff"):</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="dashboard-card-bg p-4 rounded-lg shadow-md border border-dark flex flex-col items-center">
+                                        <h4 class="text-xl font-medium dashboard-secondary-text mb-2">Live Google Map</h4>
+                                        <p class="muted-text mb-3">A real-time map, demonstrating location services. (Replace with your actual embed!)</p>
+                                        <div class="w-full h-64 bg-gray-800 rounded-lg overflow-hidden flex items-center justify-center">
+                                            <iframe src="YOUR_GOOGLE_MAP_EMBED_CODE" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                                            <span class="muted-text absolute text-center">**PLACEHOLDER MAP**<br>Get your embed code from Google Maps.</span>
+                                        </div>
+                                    </div>
+                                    <div class="dashboard-card-bg p-4 rounded-lg shadow-md border border-dark flex flex-col items-center">
+                                        <h4 class="text-xl font-medium dashboard-secondary-text mb-2">Live YouTube Video</h4>
+                                        <p class="muted-text mb-3">An embedded video, showing media integration. (Replace with your actual embed!)</p>
+                                        <div class="w-full h-64 bg-gray-800 rounded-lg overflow-hidden flex items-center justify-center">
+                                            <iframe width="100%" height="100%" src="YOUR_YOUTUBE_EMBED_CODE" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                            <span class="muted-text absolute text-center">**PLACEHOLDER VIDEO**<br>Get your embed code from YouTube.</span>
+                                        </div>
+                                    </div>
+                                    <div class="dashboard-card-bg p-4 rounded-lg shadow-md border border-dark flex flex-col items-center">
+                                        <h4 class="text-xl font-medium dashboard-secondary-text mb-2">Live Spotify Music</h4>
+                                        <p class="muted-text mb-3">Interactive Spotify embeds for albums/tracks.</p>
+                                        <div class="w-full h-64 bg-gray-800 rounded-lg overflow-hidden flex flex-col items-center justify-center space-y-2 p-2">
+                                            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/album/3RyjFxsU9hcmg14vqzUUMy?utm_source=generator" width="90%" height="100" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                                            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/2kdQY3b6dDRGonyIzcWljc?utm_source=generator" width="90%" height="100" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                                            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/6Xe9wT5xeZETPwtaP2ynUz?utm_source=generator" width="90%" height="100" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                                        </div>
+                                    </div>
+                                    <div class="dashboard-card-bg p-4 rounded-lg shadow-md border border-dark flex flex-col items-center">
+                                        <h4 class="text-xl font-medium dashboard-secondary-text mb-2">Gemini AI Test (re-iterated)</h4>
+                                        <p class="muted-text mb-3">See our core AI integration in action.</p>
+                                        <div class="w-full h-64 bg-gray-800 rounded-lg p-4 overflow-auto text-sm text-text-light">
+                                            <p>This is where our Gemini AI interacts. You can test it in the "AI Gemini" section!</p>
+                                            <p class="mt-2 muted-text">Example: Ask the AI "What is the capital of France?"</p>
+                                            <p class="mt-2 text-red-400">**Remember to add your actual API Key!**</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h3 class="text-2xl font-semibold text-text-light mb-3">5. Action Items for the Team:</h3>
+                                <ul class="list-disc list-inside ml-4 text-text-light space-y-2">
+                                    <li>**IMMEDIATE & CRITICAL:** Replace `YOUR_GEMINI_API_KEY` in the JavaScript with your actual key from Google AI Studio.</li>
+                                    <li>**SECURITY:** Begin planning for secure backend proxying of all API calls for production deployment.</li>
+                                    <li>**API ACQUISITION:** Contact "Foxed Has Mobiles™" and "Baobab Security Network™" for their API documentation and access credentials.</li>
+                                    <li>**ANALYTICS:** Investigate Google Analytics Data API or e-commerce platform APIs for detailed purchase/checkout event tracking.</li>
+                                    <li>**UI/UX:** Brainstorm and design user interfaces for "Coding Partner" and "Career Guide" functionalities.</li>
+                                    <li>**EMBED CODES:** Generate actual embed codes for the live demos (Google Maps, YouTube, Spotify) to make this section truly "live" for the team.</li>
+                                    <li>**CONTINUOUS LEARNING:** Encourage "baby staff" to review API documentation for any integrated service to understand capabilities and limitations.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Banimal Landing Page Content -->
+    <section id="banimal-landing-page" class="hidden content-section">
+        <canvas id="banimal-canvas"></canvas>
+        <div class="banimal-hero-content">
+            <h1>Banimal™: <br> <span>🐑Kind Creatures. Global Impact.</span></h1>
+            <p>
+                Discover Banimal's world of thoughtful baby essentials & innovative lighting. For every purchase, we deliver the same item to a child in need, identified by the Baobab Security Network's data-driven insights.
+            </p>
+            <div class="button-container flex flex-wrap justify-center gap-4 mt-6">
+                <a href="global_brands.html" class="cta-button">
+                    Explore Banimal's World <i class="fas fa-arrow-right"></i>
+                </a>
+                <a href="https://www.banimal.co.za/" target="_blank" class="cta-button shop-now-button">
+                    Shop Now <i class="fas fa-external-link-alt"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-8 px-6 md:px-12 text-center">
+        © 2025 FAA™ Treaty System™. All Rights Reserved. Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.
+    </footer>
+
+    <script>
+        // API Keys (Consolidated from all provided documents)
+        // IMPORTANT: For production, these keys should NOT be hardcoded in client-side HTML.
+        // Use environment variables and a backend proxy for secure API calls.
+        const PAYPAL_CLIENT_ID = "BAAGdPecRsf6dw_nIrWqUen0GdW0UsBZapp1Gn62xkPdD-Vqc-4lqWAidKK8LOObXux8pHJGjXknZoar6Q";
+        const PAYPAL_HOSTED_BUTTON_IDS = {
+            starter: "EMWGPGHNN8Y8E",
+            pro: "QGU3ZUQCMD49Q",
+            enterprise: "9C88S44F93M5J",
+            banimal: "YOUR_BANIMAL_PAYPAL_BUTTON_ID_HERE" // REMEMBER TO REPLACE THIS PLACEHOLDER
+        };
+        const GOOGLE_MAPS_API_KEY = "AIzaSyBPG8dG29cl0TvYRGyLozejGed5Wj5Ab80";
+        const SPOTIFY_ACCESS_TOKEN = "BQBDSZ232IQmSLVbROkxqdwNMoGhtitKOJBjDzE-Lu9YKsSK1RKVwXNfYfncP2wf6Fj6xcYlnGD75baEqOmd3XtxhU..."; // This token is temporary and will expire!
+        const GEMINI_API_KEY = "AIzaSyBGSDZATtITv5iIoB3rgKHBpWx9MrufxXE";
+        const XERO_CLIENT_ID = "81B3573D453040508996432C5DAD565B";
+        const XERO_CLIENT_SECRET = "FIaJGmsaCcKR3Z8kWxPnQd04EhYy6_bImPmoitQDP1U6Smaq";
+        const XERO_REDIRECT_URI = "https://seedwave.faa.zone/admin_panel_xero.html";
+        const XERO_WEBHOOK_KEY = "2fd5LQV0TQDI3572Er/sg66zqEbl8mFWRyfX3XkoKFZGRLK2cZPGpWV/j4yMTU7aUpbgBCfeZkuHnQIwD/0igw==";
+        const CURRENCY_CONVERTER_API_KEY = "40015d117bc7fff9495dcf28"; // New: Your provided currency converter API key
+
+        // Object to hold all translations
+        const translations = {
+            en: {
+                "lang-name": "English",
+                "announcement-text": "🚀 Accelerate Your Workflow! Get 15% off Pro Grid for a limited time!",
+                "header-slogan": "Buy one item, and we sponsor one! ❤️",
+                "back-to-shop": "← Back to Shop",
+                "complete-purchase": "Complete Your Purchase",
+                "shipping-step": "Shipping",
+                "payment-step": "Payment",
+                "review-step": "Review",
+                "shipping-info-heading": "Shipping Information",
+                "full-name-label": "Full Name",
+                "full-name-placeholder": "John Doe",
+                "address-label": "Address",
+                "address-placeholder": "123 Main Street",
+                "city-label": "City",
+                "city-placeholder": "Luxembourg City",
+                "zip-code-label": "Zip Code",
+                "zip-code-placeholder": "12345",
+                "payment-method-heading": "Payment Method",
+                "card-number-label": "Card Number",
+                "month-label": "Month",
+                "year-label": "Year",
+                "cvv-label": "CVV",
+                "order-summary-heading": "Order Summary",
+                "product-item-1": "Product Item 1",
+                "product-item-2": "Product Item 2",
+                "shipping-cost": "Shipping",
+                "total-cost": "Total",
+                "ai-help-heading": "AI Help & FAQ Answers",
+                "ai-help-slogan": "Ask your question about AgroChain™, Banimal Loop™ or FAA.zone, and our AI will answer.",
+                "your-question-label": "Your Question:",
+                "faq-placeholder": "e.g., What is the core protocol of AgroChain™?",
+                "get-answer-button": "Get Answer ✨",
+                "generating-answer-loading": "Generating answer...",
+                "error-no-ai-answer": "Error: No answer from AI. Please try again later.",
+                "reason": "Reason:",
+                "error-ai-connection": "Error: Could not connect to language model. Check console for network issues.",
+                "please-enter-question": "Please enter a question to get an answer.",
+                "finalize-button": "Finalize & Confirm Order",
+                "review-order-button": "Review Order Details",
+                "planet-pulse-text": "🌐 Planet.Flow.Change",
+                "banimal-footer-heading": "Banimal™:",
+                "banimal-footer-slogan": "🐑Kind Creatures. Global Impact.",
+                "banimal-footer-text": "Discover Banimal's world of thoughtful baby essentials & innovative lighting. For every purchase, we deliver the same item to a child in need, identified by the Baobab Security Network's data-driven insights.",
+                "explore-banimal-button": "Explore Banimal's World",
+                "copyright-text-footer": "© 👟2025 Banimal™. All rights reserved.",
+                "powered-by-text": "A proud initiative of Fruitful™ Treaty System™",
+                "light-mode-button": "Light Mode",
+                "dark-mode-button": "Dark Mode",
+                "hyper-mode-button": "Hyper Mode"
+            },
+            lb: { // Luxembourgish translations
+                "lang-name": "Lëtzebuergesch",
+                "announcement-text": "🚀 Beschleunegt Äre Workflow! Kritt 15% Rabatt op Pro Grid fir eng limitéiert Zäit!",
+                "header-slogan": "Kaaft een Artikel a mir sponseren een! ❤️",
+                "back-to-shop": "← Zréck an de Buttek",
+                "complete-purchase": "Komplett Äre Kaf",
+                "shipping-step": "Versand",
+                "payment-step": "Bezuelung",
+                "review-step": "Iwwerpréiwen",
+                "shipping-info-heading": "Versandinformatioun",
+                "full-name-label": "Voll Numm",
+                "full-name-placeholder": "Max Mustermann",
+                "address-label": "Adress",
+                "address-placeholder": "123 Haaptstrooss",
+                "city-label": "Stad",
+                "city-placeholder": "Stad Lëtzebuerg",
+                "zip-code-label": "Postleetzuel",
+                "zip-code-placeholder": "L-1234",
+                "payment-method-heading": "Bezuelmethod",
+                "card-number-label": "Kaartennummer",
+                "month-label": "Mount",
+                "year-label": "Joer",
+                "cvv-label": "CVV",
+                "order-summary-heading": "Bestellungsresumé",
+                "product-item-1": "Produkt Artikel 1",
+                "product-item-2": "Produkt Artikel 2",
+                "shipping-cost": "Versand",
+                "total-cost": "Total",
+                "ai-help-heading": "AI Hëllef & FAQ Äntwerten",
+                "ai-help-slogan": "Stellt Är Fro iwwer AgroChain™, Banimal Loop™ oder FAA.zone, an eis KI äntwert.",
+                "your-question-label": "Är Fro:",
+                "faq-placeholder": "z.B. Wat ass de Kärprotokoll vun AgroChain™?",
+                "get-answer-button": "Kritt Äntwert ✨",
+                "generating-answer-loading": "Äntwert gëtt generéiert...",
+                "error-no-ai-answer": "Feeler: Keng Äntwert vun der KI. Probéiert et w.e.g. méi spéit nach eng Kéier.",
+                "reason": "Grond:",
+                "error-ai-connection": "Feeler: Konnt net mat der Sproochemodell verbannen. Kuckt d'Konsol fir Netzproblemer.",
+                "please-enter-question": "Gitt w.e.g. eng Fro an, fir eng Äntwert ze kréien.",
+                "finalize-button": "Finaliséieren & Bestätegen Bestellung",
+                "review-order-button": "Bestellungsdetailer iwwerpréiwen",
+                "planet-pulse-text": "fruchtbarer.planet.wandel",
+                "banimal-footer-heading": "Banimal™:",
+                "banimal-footer-slogan": "🐑Kind Creatures. Global Impact.",
+                "banimal-footer-text": "Entdeckt d'Welt vu Banimal's nodenkleche Baby-Essentials an innovative Beliichtung. Fir all Kaf liwwere mir deeselwechten Artikel un e Kand an Nout, identifizéiert duerch d'Date-driven Abléck vum Baobab Sécherheetsnetz.",
+                "explore-banimal-button": "Entdeckt d'Welt vu Banimal",
+                "copyright-text-footer": "&copy; 2025 Banimal™. All Rechter reservéiert.",
+                "powered-by-text": "A proud initiative of Fruitful™ Treaty System™",
+                "light-mode-button": "Liicht Modus",
+                "dark-mode-button": "Däischter Modus",
+                "hyper-mode-button": "Hyper Modus"
+            },
+            es: { // Spanish translations
+                "lang-name": "Español",
+                "announcement-text": "🚀 ¡Acelera tu flujo de trabajo! ¡Obtén un 15% de descuento en Pro Grid por tiempo limitado!",
+                "header-slogan": "¡Compra un artículo y nosotros patrocinamos uno! ❤️",
+                "back-to-shop": "← Volver a la Tienda",
+                "complete-purchase": "Completar Tu Compra",
+                "shipping-step": "Envío",
+                "payment-step": "Pago",
+                "review-step": "Revisar",
+                "shipping-info-heading": "Información de Envío",
+                "full-name-label": "Nombre Completo",
+                "full-name-placeholder": "Juan Pérez",
+                "address-label": "Dirección",
+                "address-placeholder": "123 Calle Principal",
+                "city-label": "Ciudad",
+                "city-placeholder": "Ciudad de Luxemburgo",
+                "zip-code-label": "Código Postal",
+                "zip-code-placeholder": "28001",
+                "payment-method-heading": "Método de Pago",
+                "card-number-label": "Número de Tarjeta",
+                "month-label": "Mes",
+                "year-label": "Año",
+                "cvv-label": "CVV",
+                "order-summary-heading": "Resumen del Pedido",
+                "product-item-1": "Artículo del Producto 1",
+                "product-item-2": "Artículo del Producto 2",
+                "shipping-cost": "Envío",
+                "total-cost": "Total",
+                "ai-help-heading": "Ayuda de IA y Preguntas Frecuentes",
+                "ai-help-slogan": "Haz tu pregunta sobre AgroChain™, Banimal Loop™ o FAA.zone, y nuestra IA te responderá.",
+                "your-question-label": "Tu Pregunta:",
+                "faq-placeholder": "Ejemplo: ¿Cuál es el protocolo principal de AgroChain™?",
+                "get-answer-button": "Obtener Respuesta ✨",
+                "generating-answer-loading": "Generando respuesta...",
+                "error-no-ai-answer": "Error: No hay respuesta de la IA. Por favor, inténtalo de nuevo más tarde.",
+                "reason": "Razón:",
+                "error-ai-connection": "Error: No se pudo conectar al modelo de lenguaje. Verifica la consola por problemas de red.",
+                "please-enter-question": "Por favor, introduce una pregunta para obtener una respuesta.",
+                "finalize-button": "Finalizar y Confirmar Pedido",
+                "review-order-button": "Revisar Detalles del Pedido",
+                "planet-pulse-text": "fruchtbarer.planet.wandel",
+                "banimal-footer-heading": "Banimal™:",
+                "banimal-footer-slogan": "🐑Criaturas Amables. Impacto Global.",
+                "banimal-footer-text": "Descubre el mundo de Banimal de artículos esenciales para bebés y soluciones de iluminación innovadoras. Por cada compra, entregamos el mismo artículo a un niño necesitado, identificado por los datos de la Red de Seguridad Baobab.",
+                "explore-banimal-button": "Explorar el Mundo de Banimal",
+                "copyright-text-footer": "&copy; 👟2025 Banimal™. Todos los derechos reservados.",
+                "powered-by-text": "Una orgullosa iniciativa de Fruitful™ Treaty System™",
+                "light-mode-button": "Light Mode",
+                "dark-mode-button": "Dark Mode",
+                "hyper-mode-button": "Hyper Mode"
+            },
+            fr: { // French translations
+                "lang-name": "Français",
+                "announcement-text": "🚀 Accélérez votre flux de trabajo ! Obtenez 15% de réduction sur Pro Grid para un temps limitado !",
+                "header-slogan": "Achetez un article, et nous en parrainons un ! ❤️",
+                "back-to-shop": "← Retour à la Boutique",
+                "complete-purchase": "Finaliser Votre Achat",
+                "shipping-step": "Expédition",
+                "payment-step": "Paiement",
+                "review-step": "Vérifier",
+                "shipping-info-heading": "Informations de Livraison",
+                "full-name-label": "Nom Complet",
+                "full-name-placeholder": "Jean Dupont",
+                "address-label": "Adresse",
+                "address-placeholder": "123 Rue Principale",
+                "city-label": "Ville",
+                "city-placeholder": "Ville de Luxembourg",
+                "zip-code-label": "Code Postal",
+                "zip-code-placeholder": "L-1111",
+                "payment-method-heading": "Méthode de Paiement",
+                "card-number-label": "Numéro de Carte",
+                "month-label": "Mois",
+                "year-label": "Année",
+                "cvv-label": "CVV",
+                "order-summary-heading": "Récapitulatif de Commande",
+                "product-item-1": "Article Produit 1",
+                "product-item-2": "Article Produit 2",
+                "shipping-cost": "Livraison",
+                "total-cost": "Total",
+                "ai-help-heading": "Aide IA & Réponses FAQ",
+                "ai-help-slogan": "Posez votre question sur AgroChain™, Banimal Loop™ ou FAA.zone, et notre IA vous répondra.",
+                "your-question-label": "Votre Question :",
+                "faq-placeholder": "Ex: Quel est le protocole de base d'AgroChain™ ?",
+                "get-answer-button": "Obtenir la Réponse ✨",
+                "generating-answer-loading": "Génération de la réponse...",
+                "error-no-ai-answer": "Erreur : Pas de réponse de l'IA. Veuillez réessayer plus tard.",
+                "reason": "Raison :",
+                "error-ai-connection": "Erreur : Impossible de se connecter au modèle de langage. Vérifiez la console pour les problèmes de réseau.",
+                "please-enter-question": "Veuillez saisir une question pour obtenir une réponse.",
+                "finalize-button": "Finaliser et Confirmer la Commande",
+                "review-order-button": "Vérifier les Détails de la Commande",
+                "planet-pulse-text": "fruchtbarer.planet.wandel",
+                "banimal-footer-heading": "Banimal™ :",
+                "banimal-footer-slogan": "🐑Créatures Douces. Impact Mondial.",
+                "banimal-footer-text": "Découvrez le monde de Banimal : des essentiels pour bébés et des solutions d'éclairage innovantes. Pour chaque achat, nous livrons le même article à un enfant dans le besoin, identifié grâce aux données du Réseau de Sécurité Baobab.",
+                "explore-banimal-button": "Explorer le Monde de Banimal",
+                "copyright-text-footer": "&copy; 👟2025 Banimal™. Tous droits réservés.",
+                "powered-by-text": "Une fière initiative de Fruitful™ Treaty System™"
+            },
+            de: { // German translations
+                "lang-name": "Deutsch",
+                "announcement-text": "🚀 Beschleunigen Sie Ihren Workflow! Erhalten Sie 15% Rabatt auf Pro Grid für begrenzte Zeit!",
+                "header-slogan": "Kaufen Sie einen Artikel, und wir sponsern einen! ❤️",
+                "back-to-shop": "← Zurück zum Shop",
+                "complete-purchase": "Kauf abschließen",
+                "shipping-step": "Versand",
+                "payment-step": "Zahlung",
+                "review-step": "Überprüfung",
+                "shipping-info-heading": "Versandinformationen",
+                "full-name-label": "Vollständiger Name",
+                "full-name-placeholder": "Max Mustermann",
+                "address-label": "Adresse",
+                "address-placeholder": "Musterstraße 123",
+                "city-label": "Stadt",
+                "city-placeholder": "Luxemburg-Stadt",
+                "zip-code-label": "Postleitzahl",
+                "zip-code-placeholder": "12345",
+                "payment-method-heading": "Zahlungsmethode",
+                "card-number-label": "Kartennummer",
+                "month-label": "Monat",
+                "year-label": "Joer",
+                "cvv-label": "CVV",
+                "order-summary-heading": "Bestellübersicht",
+                "product-item-1": "Produktartikel 1",
+                "product-item-2": "Produktartikel 2",
+                "shipping-cost": "Versand",
+                "total-cost": "Gesamt",
+                "ai-help-heading": "KI-Hilfe & FAQ-Antworten",
+                "ai-help-slogan": "Stellen Sie Ihre Frage zu AgroChain™, Banimal Loop™ oder FAA.zone, und unsere KI wird antworten.",
+                "your-question-label": "Ihre Frage:",
+                "faq-placeholder": "z.B. Wat ass de Kärprotokoll vun AgroChain™?",
+                "get-answer-button": "Antwort erhalten ✨",
+                "generating-answer-loading": "Antwort wird generiert...",
+                "error-no-ai-answer": "Fehler: Keine Antwort von der KI. Bitte versuchen Sie es später noch einmal.",
+                "reason": "Grond:",
+                "error-ai-connection": "Fehler: Verbindung zum Sprachmodell konnte nicht hergestellt werden. Überprüfen Sie die Konsole auf Netzwerkprobleme.",
+                "please-enter-question": "Bitte geben Sie eine Frage ein, um eine Antwort zu erhalten.",
+                "finalize-button": "Bestellung abschließen & bestätigen",
+                "review-order-button": "Bestelldetails überprüfen",
+                "planet-pulse-text": "fruchtbarer.planet.wandel",
+                "banimal-footer-heading": "Banimal™:",
+                "banimal-footer-slogan": "🐑Freundliche Kreaturen. Globaler Einfluss.",
+                "banimal-footer-text": "Entdecken Sie Banimals Welt der durchdachten Babyartikel und innovativen Beleuchtung. Für jeden Kauf liefern wir den gleichen Artikel an ein bedürftiges Kind, identifiziert durch die datengestützten Erkenntnisse des Baobab Sicherheitsnetzwerks.",
+                "explore-banimal-button": "Entdecken Sie Banimals Welt",
+                "copyright-text-footer": "&copy; 👟2025 Banimal™. Alle Rechte vorbehalten.",
+                "powered-by-text": "Eine stolze Initiative von Fruitful™ Treaty System™"
+            },
+            zh: { // Chinese Simplified translations
+                "lang-name": "简体中文",
+                "announcement-text": "🚀 加速您的工作流程！限时享受 Pro Grid 15% 折扣！",
+                "header-slogan": "买一件，我们赞助一件！❤️",
+                "back-to-shop": "← 返回商店",
+                "complete-purchase": "完成您的购买",
+                "shipping-step": "配送",
+                "payment-step": "支付",
+                "review-step": "审查",
+                "shipping-info-heading": "配送信息",
+                "full-name-label": "全名",
+                "full-name-placeholder": "张三",
+                "address-label": "地址",
+                "address-placeholder": "主街123号",
+                "city-label": "城市",
+                "city-placeholder": "卢森堡市",
+                "zip-code-label": "邮政编码",
+                "zip-code-placeholder": "100000",
+                "payment-method-heading": "支付方式",
+                "card-number-label": "卡号",
+                "month-label": "月",
+                "year-label": "年",
+                "cvv-label": "CVV",
+                "order-summary-heading": "订单摘要",
+                "product-item-1": "商品1",
+                "product-item-2": "商品2",
+                "shipping-cost": "运费",
+                "total-cost": "总计",
+                "ai-help-heading": "AI 帮助和常见问题解答",
+                "ai-help-slogan": "提出您关于 AgroChain™、Banimal Loop™ 或 FAA.zone 的问题，我们的 AI 将为您解答。",
+                "your-question-label": "您的问题：",
+                "faq-placeholder": "例如：AgroChain™ 的核心协议是什么？",
+                "get-answer-button": "获取答案 ✨",
+                "generating-answer-loading": "正在生成答案...",
+                "error-no-ai-answer": "错误：AI 没有返回答案。请稍后再试。",
+                "reason": "原因：",
+                "error-ai-connection": "错误：无法连接到语言模型。请检查控制台以查看网络问题。",
+                "please-enter-question": "请输入问题以获取答案。",
+                "finalize-button": "完成并确认订单",
+                "review-order-button": "查看订单详情",
+                "planet-pulse-text": "fruchtbarer.planet.wandel",
+                "banimal-footer-heading": "Banimal™：",
+                "banimal-footer-slogan": "🐑善良生物。全球影响。",
+                "banimal-footer-text": "探索 Banimal 的世界：周到的婴儿必需品和创新的照明产品。每次购买，我们都会将相同的物品捐赠给巴奥巴安全网络数据洞察识别出的有需要的儿童。",
+                "explore-banimal-button": "探索 Banimal 的世界",
+                "copyright-text-footer": "&copy; 👟2025 Banimal™. 所有权利保留。",
+                "powered-by-text": "Fruitful™ Treaty System™ 的一项自豪倡议",
+                "light-mode-button": "Light Mode",
+                "dark-mode-button": "Dark Mode",
+                "hyper-mode-button": "Hyper Mode"
+            },
+            hi: { // Hindi translations
+                "lang-name": "हिंदी",
+                "announcement-text": "🚀 अपने वर्कफ़्लो को तेज़ करें! सीमित समय के लिए प्रो ग्रिड पर 15% की छूट पाएं!",
+                "header-slogan": "एक आइटम खरीदें, और हम एक को प्रायोजित करते हैं! ❤️",
+                "back-to-shop": "← दुकान पर वापस",
+                "complete-purchase": "अपनी खरीद पूरी करें",
+                "shipping-step": "शिपिंग",
+                "payment-step": "भुगतान",
+                "review-step": "समीक्षा",
+                "shipping-info-heading": "शिपिंग जानकारी",
+                "full-name-label": "पूरा नाम",
+                "full-name-placeholder": "जॉन डो",
+                "address-label": "पता",
+                "address-placeholder": "123 मुख्य सड़क",
+                "city-label": "शहर",
+                "city-placeholder": "लक्ज़मबर्ग शहर",
+                "zip-code-label": "ज़िप कोड",
+                "zip-code-placeholder": "110001",
+                "payment-method-heading": "भुगतान विधि",
+                "card-number-label": "कार्ड नंबर",
+                "month-label": "महीना",
+                "year-label": "साल",
+                "cvv-label": "CVV",
+                "order-summary-heading": "आर्डर सारांश",
+                "product-item-1": "उत्पाद आइटम 1",
+                "product-item-2": "उत्पाद आइटम 2",
+                "shipping-cost": "शिपिंग",
+                "total-cost": "कुल",
+                "ai-help-heading": "एआई मदद और अक्सर पूछे जाने वाले प्रश्न",
+                "ai-help-slogan": "AgroChain™, Banimal Loop™ या FAA.zone के बारे में अपना प्रश्न पूछें, और हमारी एआई जवाब देगी।",
+                "your-question-label": "आपका प्रश्न:",
+                "faq-placeholder": "उदाहरण के लिए, AgroChain™ का मुख्य प्रोटोकॉल क्या है?",
+                "get-answer-button": "उत्तर प्राप्त करें ✨",
+                "generating-answer-loading": "उत्तर उत्पन्न हो रहा है...",
+                "error-no-ai-answer": "त्रुटि: एआई से कोई जवाब नहीं। कृपया बाद में पुनः प्रयास करें।",
+                "reason": "कारण:",
+                "error-ai-connection": "त्रुटि: भाषा मॉडल से कनेक्ट नहीं हो सका। नेटवर्क समस्याओं के लिए कंसोल जांचें।",
+                "please-enter-question": "कृपया उत्तर प्राप्त करने के लिए एक प्रश्न दर्ज करें।",
+                "finalize-button": "ऑर्डर को अंतिम रूप दें और पुष्टि करें",
+                "review-order-button": "ऑर्डर विवरण की समीक्षा करें",
+                "planet-pulse-text": "fruchtbarer.planet.wandel",
+                "banimal-footer-heading": "Banimal™:",
+                "banimal-footer-slogan": "🐑दयालु जीव। वैश्विक प्रभाव।",
+                "banimal-footer-text": "विचारशील शिशु आवश्यक वस्तुओं और अभिनव प्रकाश व्यवस्था की Banimal दुनिया की खोज करें। प्रत्येक खरीद के लिए, हम बाओबाब सुरक्षा नेटवर्क के डेटा-संचालित अंतर्दृष्टि द्वारा पहचाने गए जरूरतमंद बच्चे को वही आइटम वितरित करते हैं।",
+                "explore-banimal-button": "Banimal की दुनिया का अन्वेषण करें",
+                "copyright-text-footer": "&copy; 👟2025 Banimal™. सभी अधिकार सुरक्षित।",
+                "powered-by-text": "फ्रूटफुल™ ट्रीटी सिस्टम™ की एक गर्वपूर्ण पहल"
+            },
+            ar: { // Arabic translations
+                "lang-name": "العربية",
+                "announcement-text": "🚀 سارع بتحسين سير عملك! احصل على خصم 15% على برو جريد لفترة محدودة!",
+                "header-slogan": "اشترِ منتجًا واحدًا، ونحن نرعى واحدًا! ❤️",
+                "back-to-shop": "← العودة إلى المتجر",
+                "complete-purchase": "إتمام عملية الشراء",
+                "shipping-step": "الشحن",
+                "payment-step": "الدفع",
+                "review-step": "المراجعة",
+                "shipping-info-heading": "معلومات الشحن",
+                "full-name-label": "الاسم الكامل",
+                "full-name-placeholder": "محمد علي",
+                "address-label": "العنوان",
+                "address-placeholder": "123 الشارع الرئيسي",
+                "city-label": "المدينة",
+                "city-placeholder": "مدينة لوكسمبورغ",
+                "zip-code-label": "الرمز البريدي",
+                "zip-code-placeholder": "10000",
+                "payment-method-heading": "طريقة الدفع",
+                "card-number-label": "رقم البطاقة",
+                "month-label": "الشهر",
+                "year-label": "السنة",
+                "cvv-label": "CVV",
+                "order-summary-heading": "ملخص الطلب",
+                "product-item-1": "المنتج 1",
+                "product-item-2": "المنتج 2",
+                "shipping-cost": "الشحن",
+                "total-cost": "الإجمالي",
+                "ai-help-heading": "مساعدة الذكاء الاصطناعي والإجابات الشائعة",
+                "ai-help-slogan": "اطرح سؤالك حول AgroChain™، Banimal Loop™ أو FAA.zone، وسيقوم الذكاء الاصطناعي لدينا بالإجابة.",
+                "your-question-label": "سؤالك:",
+                "faq-placeholder": "مثال: ما هو البروتوكول الأساسي لـ AgroChain™؟",
+                "get-answer-button": "احصل على الإجابة ✨",
+                "generating-answer-loading": "جارٍ إنشاء الإجابة...",
+                "error-no-ai-answer": "خطأ: لا توجد إجابة من الذكاء الاصطناعي. يرجى المحاولة مرة أخرى لاحقًا.",
+                "reason": "السبب:",
+                "error-ai-connection": "خطأ: لم يتمكن من الاتصال بنموذج اللغة. تحقق من وحدة التحكم لمشاكل الشبكة.",
+                "please-enter-question": "الرجاء إدخال سؤال للحصول على إجابة.",
+                "finalize-button": "إنهاء وتأكيد الطلب",
+                "review-order-button": "مراجعة تفاصيل الطلب",
+                "planet-pulse-text": "fruchtbarer.planet.wandel",
+                "banimal-footer-heading": "Banimal™:",
+                "banimal-footer-slogan": "🐑مخلوقات طيبة. تأثير عالمي.",
+                "banimal-footer-text": "اكتشف عالم Banimal من أساسيات الأطفال المدروسة وحلول الإضاءة المبتكرة. مقابل كل عملية شراء، نقدم نفس العنصر لطفل محتاج، يتم تحديده من خلال رؤى شبكة أمان الباوباب المستندة إلى البيانات.",
+                "explore-banimal-button": "استكشف عالم Banimal",
+                "copyright-text-footer": "&copy; 👟2025 Banimal™. جميع الحقوق محفوظة.",
+                "powered-by-text": "مبادرة فخرية من Fruitful™ Treaty System™"
+            }
+        };
+
+        // Global state variables
+        let googleMapScriptLoaded = false;
+        let leafletMapInstance = null; // To store Leaflet map instance
+
+        // Function to update header top position based on announcement bar visibility
+        const updateHeaderTop = () => {
+            const announcementBar = document.getElementById('announcement-bar');
+            const mainHeader = document.getElementById('main-header');
+            if (announcementBar && mainHeader) {
+                const announcementHeight = announcementBar.classList.contains('hidden') ? 0 : announcementBar.offsetHeight;
+                document.documentElement.style.setProperty('--announcement-bar-height', `${announcementHeight}px`);
+                // Ensure mainHeader's top style is directly set if it's position:fixed/sticky
+                mainHeader.style.top = `${announcementHeight}px`;
+            }
+        };
+
+        // --- Theme Switching Logic ---
+        function setTheme(theme) {
+            document.body.classList.remove('light-mode', 'dark-mode', 'hyper-mode');
+            document.getElementById('theme-day-btn')?.classList.remove('active');
+            document.getElementById('theme-night-btn')?.classList.remove('active');
+            document.getElementById('theme-hyper-btn')?.classList.remove('active');
+
+            if (theme === 'dark') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('theme-night-btn')?.classList.add('active');
+            } else if (theme === 'hyper') {
+                document.body.classList.add('hyper-mode');
+                document.getElementById('theme-hyper-btn')?.classList.add('active');
+            } else { // 'day' (light) mode
+                document.body.classList.add('light-mode');
+                document.getElementById('theme-day-btn')?.classList.add('active');
+            }
+            localStorage.setItem('themeMode', theme);
+            updateHeaderTop(); // Recalculate header position on theme change (as height might change)
+
+            // Re-render chart for theme consistency
+            if (nodePulseChartInstance) {
+                renderNodePulseChart();
+            }
+            // Re-draw rhythmic canvas to pick up new colors
+            drawGlyph();
+        }
+
+        // --- Language Switcher Logic ---
+        function setLanguage(lang) {
+            document.body.lang = lang; // Update the HTML body's lang attribute
+            localStorage.setItem('selectedLanguage', lang); // Save user preference
+
+            document.querySelectorAll('[data-lang-key]').forEach(element => {
+                const key = element.getAttribute('data-lang-key');
+                const translation = translations[lang] && translations[lang][key] !== undefined
+                    ? translations[lang][key]
+                    : (translations['en'] && translations['en'][key] !== undefined ? translations['en'][key] : undefined);
+
+                if (translation !== undefined) {
+                    if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                        element.placeholder = translation;
+                    } else if (["explore-banimal-button", "get-answer-button", "sendGeminiPrompt", "sendCodingPrompt", "sendCareerPrompt", "sendAdminAIPrompt", "finalize-button", "review-order-button"].includes(key)) {
+                        const iconHtml = element.innerHTML.match(/<i class=".*"><\/i>/);
+                        if (iconHtml) {
+                            element.innerHTML = translation + ' ' + iconHtml[0];
+                        } else {
+                            element.textContent = translation;
+                        }
+                    } else if (["shipping-info-heading", "payment-method-heading", "order-summary-heading", "ai-help-heading"].includes(key)) {
+                        const iconHtml = element.innerHTML.match(/<i class=".*"><\/i>/);
+                        if (iconHtml) {
+                            element.innerHTML = iconHtml[0] + ' ' + translation;
+                        } else {
+                            element.textContent = translation;
+                        }
+                    } else {
+                        element.textContent = translation;
+                    }
+                } else {
+                    console.warn(`Missing translation for key '${key}' in language '${lang}'. Falling back to English.`);
+                    if (translations['en'] && translations['en'][key] !== undefined) {
+                        if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                            element.placeholder = translations['en'][key];
+                        } else if (["explore-banimal-button", "get-answer-button", "sendGeminiPrompt", "sendCodingPrompt", "sendCareerPrompt", "sendAdminAIPrompt", "finalize-button", "review-order-button"].includes(key)) {
+                            const iconHtml = element.innerHTML.match(/<i class=".*"><\/i>/);
+                            if (iconHtml) {
+                                element.innerHTML = translations['en'][key] + ' ' + iconHtml[0];
+                            } else {
+                                element.textContent = translations['en'][key];
+                            }
+                        } else if (["shipping-info-heading", "payment-method-heading", "order-summary-heading", "ai-help-heading"].includes(key)) {
+                            const iconHtml = element.innerHTML.match(/<i class=".*"><\/i>/);
+                            if (iconHtml) {
+                                element.innerHTML = iconHtml[0] + ' ' + translations['en'][key];
+                            } else {
+                                element.textContent = translations['en'][key];
+                            }
+                        } else {
+                            element.textContent = translations['en'][key];
+                        }
+                    }
+                }
+            });
+
+            // Specific updates for AI response messages on language change
+            const faqAnswerOutput = document.getElementById('faqAnswerOutput');
+            const faqPromptInput = document.getElementById('faqPromptInput');
+            if (faqAnswerOutput && faqPromptInput) {
+                if (!faqPromptInput.value.trim() && faqAnswerOutput.textContent === translations['en']['please-enter-question']) {
+                    faqAnswerOutput.textContent = translations[lang]['please-enter-question'];
+                }
+                if (faqAnswerOutput.textContent.startsWith(translations['en']['error-no-ai-answer'])) {
+                    faqAnswerOutput.textContent = translations[lang]['error-no-ai-answer'];
+                } else if (faqAnswerOutput.textContent.startsWith(translations['en']['error-ai-connection'])) {
+                    faqAnswerOutput.textContent = translations[lang]['error-ai-connection'];
+                }
+            }
+            // Repeat for other AI output areas
+            const geminiResponse = document.getElementById('geminiResponse');
+            const geminiPrompt = document.getElementById('geminiPrompt');
+            if (geminiResponse && geminiPrompt) {
+                if (!geminiPrompt.value.trim() && geminiResponse.textContent.includes(translations['en']['please-enter-question'])) {
+                    geminiResponse.textContent = translations[lang]['please-enter-question'];
+                }
+                if (geminiResponse.textContent.includes(translations['en']['error-no-ai-answer'])) {
+                    geminiResponse.textContent = translations[lang]['error-no-ai-answer'];
+                } else if (geminiResponse.textContent.includes(translations['en']['error-ai-connection'])) {
+                    geminiResponse.textContent = translations[lang]['error-ai-connection'];
+                }
+            }
+            const codingResponse = document.getElementById('codingResponse');
+            const codingPrompt = document.getElementById('codingPrompt');
+            if (codingResponse && codingPrompt) {
+                if (!codingPrompt.value.trim() && codingResponse.textContent.includes(translations['en']['please-enter-question'])) {
+                    codingResponse.textContent = translations[lang]['please-enter-question'];
+                }
+                if (codingResponse.textContent.includes(translations['en']['error-no-ai-answer'])) {
+                    codingResponse.textContent = translations[lang]['error-no-ai-answer'];
+                } else if (codingResponse.textContent.includes(translations['en']['error-ai-connection'])) {
+                    codingResponse.textContent = translations[lang]['error-ai-connection'];
+                }
+            }
+            const careerResponse = document.getElementById('careerResponse');
+            const careerPrompt = document.getElementById('careerPrompt');
+            if (careerResponse && careerPrompt) {
+                if (!careerPrompt.value.trim() && careerResponse.textContent.includes(translations['en']['please-enter-question'])) {
+                    careerResponse.textContent = translations[lang]['please-enter-question'];
+                }
+                if (careerResponse.textContent.includes(translations['en']['error-no-ai-answer'])) {
+                    careerResponse.textContent = translations[lang]['error-no-ai-answer'];
+                } else if (careerResponse.textContent.includes(translations['en']['error-ai-connection'])) {
+                    careerResponse.textContent = translations[lang]['error-ai-connection'];
+                }
+            }
+            const adminAIResponse = document.getElementById('adminAIResponse');
+            const adminAIPrompt = document.getElementById('adminAIPrompt');
+            if (adminAIResponse && adminAIPrompt) {
+                if (!adminAIPrompt.value.trim() && adminAIResponse.textContent.includes(translations['en']['please-enter-question'])) {
+                    adminAIResponse.textContent = translations[lang]['please-enter-question'];
+                }
+                if (adminAIResponse.textContent.includes(translations['en']['error-no-ai-answer'])) {
+                    adminAIResponse.textContent = translations[lang]['error-no-ai-answer'];
+                } else if (adminAIResponse.textContent.includes(translations['en']['error-ai-connection'])) {
+                    adminAIResponse.textContent = translations[lang]['error-ai-connection'];
+                }
+            }
+        }
+
+
+        // --- Dashboard & Section Management ---
+        let activeSectionId = 'innovate-connect-thrive'; // Default visible section
+
+        function showSection(sectionId) {
+            // Hide all content sections
+            document.querySelectorAll('main .content-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+
+            // Show the selected section
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.remove('hidden');
+                activeSectionId = sectionId; // Update active section tracking
+            }
+
+            // Update navigation link active state
+            document.querySelectorAll('nav a[data-view-id]').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-view-id') === sectionId) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Specific handling for maps section to load Google Maps script and initialize Leaflet
+            if (sectionId === 'maps-section') {
+                if (!googleMapScriptLoaded) {
+                    const script = document.createElement('script');
+                    script.id = 'google-maps-api-script';
+                    script.async = true;
+                    script.defer = true;
+                    script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&callback=initGoogleMap&libraries=maps,marker&v=beta`;
+                    document.body.appendChild(script);
+                    googleMapScriptLoaded = true;
+                }
+                initLeafletMap(); // Ensure Leaflet map is initialized when this section is shown
+            }
+             // Ensure PayPal buttons are re-rendered if on checkout section
+            if (sectionId === 'vaultmesh-checkout') {
+                renderAllPayPalButtons();
+            }
+        }
+
+        // --- Maps Initialization Functions ---
+        function initGoogleMap() {
+            // This function is called by the Google Maps script when it loads.
+            // gmp-map and gmp-advanced-marker are web components that handle their own rendering
+            // once the Google Maps API script is loaded.
+            console.log('Google Maps API loaded and ready for web components.');
+            // You can optionally create a programmatic map here if needed,
+            // e.g., googleMapInstance = new google.maps.Map(document.getElementById('map-canvas'), {...});
+        }
+
+        function initLeafletMap() {
+            const mapContainer = document.getElementById("leaflet-map-container");
+            if (!mapContainer || leafletMapInstance) return; // Prevent re-initialization
+
+            leafletMapInstance = L.map(mapContainer).setView([51.505, -0.09], 13); 
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(leafletMapInstance);
+            L.marker([51.5, -0.09]).addTo(leafletMapInstance).bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
+        }
+
+        // --- Canvas setup for Rhythmic Canvas (in Innovate, Connect, Thrive section) ---
+        const rhythmicCanvas = document.getElementById('rhythmic-canvas');
+        const rhythmicCtx = rhythmicCanvas ? rhythmicCanvas.getContext('2d') : null;
+
+        function resizeRhythmicCanvas() {
+            if (rhythmicCanvas) {
+                rhythmicCanvas.width = rhythmicCanvas.offsetWidth;
+                rhythmicCanvas.height = rhythmicCanvas.offsetHeight;
+                drawGlyph(); // Redraw content on resize
+            }
+        }
+
+        function drawGlyph() {
+            if (rhythmicCtx) {
+                rhythmicCtx.clearRect(0, 0, rhythmicCanvas.width, rhythmicCanvas.height);
+                const centerX = rhythmicCanvas.width / 2;
+                const centerY = rhythmicCanvas.height / 2;
+                const radius = Math.min(centerX, centerY) * 0.4;
+
+                rhythmicCtx.beginPath();
+                rhythmicCtx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                rhythmicCtx.strokeStyle = getComputedStyle(document.body).getPropertyValue('--primary-color');
+                rhythmicCtx.lineWidth = 5;
+                rhythmicCtx.stroke();
+
+                rhythmicCtx.fillStyle = getComputedStyle(document.body).getPropertyValue('--secondary-color');
+                rhythmicCtx.font = `${radius * 0.6}px Inter, sans-serif`;
+                rhythmicCtx.textAlign = 'center';
+                rhythmicCtx.textBaseline = 'middle';
+                rhythmicCtx.fillText('🌀', centerX, centerY); // Simple glyph
+            }
+        }
+
+        // --- Chart.js for Node Pulse Graph (Dashboard Overview Section) ---
+        let nodePulseChartInstance = null;
+        function renderNodePulseChart() {
+            const ctx = document.getElementById('nodePulseChart')?.getContext('2d');
+            if (!ctx) return;
+
+            if (nodePulseChartInstance) {
+                nodePulseChartInstance.destroy(); // Destroy existing chart instance
+            }
+
+            const dataPoints = 50;
+            const labels = Array.from({length: dataPoints}, (_, i) => `Tick ${i+1}`);
+            const coreNodeData = Array.from({length: dataPoints}, (v, i) => Math.floor(Math.max(0, 50 + (i * 1.5) + (Math.random() - 0.5) * 40)));
+            const arrayCountData = Array.from({length: dataPoints}, (v, i) => Math.floor(Math.max(0, 100 + (i * 2) + (Math.random() - 0.5) * 60)));
+            const repoInfiltrationData = Array.from({length: dataPoints}, (v, i) => Math.floor(Math.max(0, 10 + (i * 0.8) + (Math.random() - 0.5) * 20)));
+
+            // Get current theme colors
+            const primaryGlow = getComputedStyle(document.documentElement).getPropertyValue('--primary-glow-seedwave').trim() || 'rgba(0, 227, 147, 0.9)';
+            const secondaryGlow = getComputedStyle(document.documentElement).getPropertyValue('--secondary-glow-seedwave').trim() || 'rgba(0, 123, 255, 0.9)';
+            const accentRed = getComputedStyle(document.documentElement).getPropertyValue('--accent-red-seedwave').trim() || 'rgba(255, 77, 77, 0.9)';
+            const textColorDark = getComputedStyle(document.documentElement).getPropertyValue('--text-color-dark').trim() || '#e2e8f0';
+            const borderColorDark = getComputedStyle(document.documentElement).getPropertyValue('--border-color-dark').trim() || '#4a5568';
+            const cardBgDark = getComputedStyle(document.documentElement).getPropertyValue('--card-bg-dark').trim() || '#2a2a2e';
+
+            nodePulseChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: 'Core Nodes (Thousands)', data: coreNodeData, borderColor: primaryGlow, backgroundColor: `${primaryGlow.replace('0.9)', '0.1)')}`, fill: true, tension: 0.4, pointRadius: 0, borderWidth: 2 },
+                        { label: 'Array Counts (Hundreds)', data: arrayCountData, borderColor: secondaryGlow, backgroundColor: `${secondaryGlow.replace('0.9)', '0.1)')}`, fill: true, tension: 0.4, pointRadius: 0, borderWidth: 2 },
+                        { label: 'Repo Infiltrations', data: repoInfiltrationData, borderColor: accentRed, backgroundColor: `${accentRed.replace('0.9)', '0.1)')}`, fill: true, tension: 0.4, pointRadius: 0, borderWidth: 2 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: { duration: 0 },
+                    scales: {
+                        x: { display: false },
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: textColorDark },
+                            grid: { color: borderColorDark }
+                        }
+                    },
+                    plugins: {
+                        legend: { labels: { color: textColorDark } }
+                    },
+                    layout: {
+                        padding: 10
+                    }
+                }
+            });
+
+            // Update chart data periodically
+            setInterval(() => {
+                if (!nodePulseChartInstance) return;
+                const lastCore = nodePulseChartInstance.data.datasets[0].data[nodePulseChartInstance.data.datasets[0].data.length - 1];
+                const lastArray = nodePulseChartInstance.data.datasets[1].data[nodePulseChartInstance.data.datasets[1].data.length - 1];
+                const lastRepo = nodePulseChartInstance.data.datasets[2].data[nodePulseChartInstance.data.datasets[2].data.length - 1];
+
+                const newDataPointCore = Math.floor(Math.max(0, lastCore + (Math.random() - 0.5) * 20));
+                const newDataPointArray = Math.floor(Math.max(0, lastArray + (Math.random() - 0.5) * 30));
+                const newDataPointRepo = Math.floor(Math.max(0, lastRepo + (Math.random() - 0.5) * 10));
+
+                nodePulseChartInstance.data.labels.push(`Tick ${nodePulseChartInstance.data.labels.length + 1}`);
+                nodePulseChartInstance.data.datasets[0].data.push(newDataPointCore);
+                nodePulseChartInstance.data.datasets[1].data.push(newDataPointArray);
+                nodePulseChartInstance.data.datasets[2].data.push(newDataPointRepo);
+
+                if (nodePulseChartInstance.data.labels.length > dataPoints) {
+                    nodePulseChartInstance.data.labels.shift();
+                    nodePulseChartInstance.data.datasets[0].data.shift();
+                    nodePulseChartInstance.data.datasets[1].data.shift();
+                    nodePulseChartInstance.data.datasets[2].data.shift();
+                }
+                nodePulseChartInstance.update('none'); // 'none' for no animation during update
+            }, 1000);
+        }
+
+
+        // --- Spotify Integration Logic ---
+        let globalTopTracks = []; // Stores top tracks fetched from Spotify
+
+        async function fetchWebApiSpotify(endpoint, method, body) {
+            try {
+                // Using the consolidated Spotify Access Token.
+                // IMPORTANT: This token is temporary and should be securely handled via a backend in production.
+                const tokenToUse = SPOTIFY_ACCESS_TOKEN; 
+
+                if (!tokenToUse || tokenToUse === 'YOUR_SPOTIFY_TOKEN_HERE') {
+                    displaySpotifyMessage('Spotify token is not available or invalid. Please check the API Keys section.', 'red');
+                    return null;
+                }
+
+                const res = await fetch(`https://api.spotify.com/${endpoint}`, {
+                    headers: {
+                        Authorization: `Bearer ${tokenToUse}`,
+                        'Content-Type': 'application/json'
+                    },
+                    method,
+                    body: body ? JSON.stringify(body) : null
+                });
+                if (!res.ok) {
+                    const errorData = await response.json();
+                    console.error('Spotify API Error:', errorData);
+                    displaySpotifyMessage(`Error: ${errorData.error.message || 'Something went wrong with Spotify API.'}`, 'red');
+                    return null;
+                }
+                return await res.json();
+            } catch (error) {
+                console.error('Network or other error:', error);
+                displaySpotifyMessage(`Network error: ${error.message}`, 'red');
+                return null;
+            }
+        }
+
+        async function getSpotifyUserProfile() {
+            return await fetchWebApiSpotify('v1/me', 'GET');
+        }
+
+        async function getTopTracks() {
+            displaySpotifyMessage('Fetching your top tracks...', 'gray');
+            const topTracksListElement = document.getElementById('top-tracks-list');
+            const topTracksUl = topTracksListElement?.querySelector('ul');
+            if (topTracksUl) topTracksUl.innerHTML = ''; // Clear previous tracks
+            topTracksListElement?.classList.remove('hidden');
+            document.getElementById('audio-players').innerHTML = ''; // Clear previous audio players
+
+            try {
+                const response = (await fetchWebApiSpotify('v1/me/top/tracks?time_range=long_term&limit=5', 'GET'));
+                if (response && response.items && response.items.length > 0) {
+                    globalTopTracks = response.items;
+                    globalTopTracks.forEach(track => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<strong>${track.name}</strong> by ${track.artists.map(artist => artist.name).join(', ')}`;
+                        topTracksUl?.appendChild(li);
+                    });
+                    displaySpotifyMessage('Top 5 tracks fetched successfully!', 'green');
+                } else {
+                    if (topTracksUl) topTracksUl.innerHTML = '<li>No top tracks found or an error occurred.</li>';
+                    displaySpotifyMessage('Could not retrieve top tracks. Please check your token and try again.', 'red');
+                    globalTopTracks = [];
+                }
+            } catch (error) {
+                console.error('Error getting top tracks:', error);
+                displaySpotifyMessage('Failed to fetch top tracks.', 'red');
+                globalTopTracks = [];
+            }
+        }
+
+        async function createPlaylistAndSaveSongs() {
+            if (globalTopTracks.length === 0) {
+                displaySpotifyMessage('Please fetch your top tracks first!', 'orange');
+                return;
+            }
+            displaySpotifyMessage('Creating playlist and adding songs...', 'gray');
+            try {
+                const userProfile = await getSpotifyUserProfile();
+                if (!userProfile || !userProfile.id) {
+                    displaySpotifyMessage('Could not retrieve user profile to create playlist. Is your token valid?', 'red');
+                    return;
+                }
+                const spotifyUserId = userProfile.id; // Correctly define spotifyUserId
+                const playlistName = `My Seedwave Top Tracks - ${new Date().toLocaleDateString()}`;
+                const playlistDescription = "Top 5 tracks generated by Seedwave's Global Synergy Hub!";
+                const createPlaylistResponse = await fetchWebApiSpotify(
+                    `v1/users/${spotifyUserId}/playlists`, 'POST', { name: playlistName, public: false, description: playlistDescription }
+                );
+                if (!createPlaylistResponse || !createPlaylistResponse.id) {
+                    displaySpotifyMessage('Failed to create playlist.', 'red');
+                    return;
+                }
+                const playlistId = createPlaylistResponse.id;
+                const trackUris = globalTopTracks.map(track => track.uri);
+                const addItemsResponse = await fetchWebApiSpotify(
+                    `v1/playlists/${playlistId}/tracks`, 'POST', { uris: trackUris }
+                );
+                if (addItemsResponse && addItemsResponse.snapshot_id) {
+                    displaySpotifyMessage(`Playlist "${playlistName}" created and tracks added successfully!`, 'green');
+                } else {
+                    displaySpotifyMessage('Failed to add tracks to playlist.', 'red');
+                }
+            } catch (error) {
+                console.error('Error creating/saving playlist:', error);
+                displaySpotifyMessage('Failed to create or save playlist.', 'red');
+            }
+        }
+
+        async function playTopTracks() {
+            if (globalTopTracks.length === 0) {
+                displaySpotifyMessage('Please fetch your top tracks first!', 'orange');
+                return;
+            }
+            displaySpotifyMessage('Loading audio players...', 'gray');
+            const audioPlayersDiv = document.getElementById('audio-players');
+            if (audioPlayersDiv) audioPlayersDiv.innerHTML = ''; // Clear existing players
+            globalTopTracks.forEach(track => {
+                const trackId = track.id;
+                const iframe = document.createElement('iframe');
+                iframe.src = `https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=0`;
+                iframe.width = "100%";
+                iframe.height = "80";
+                iframe.setAttribute('frameborder', '0');
+                iframe.setAttribute('allowfullscreen', '');
+                iframe.setAttribute('allow', 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture');
+                audioPlayersDiv?.appendChild(iframe);
+            });
+            displaySpotifyMessage('Audio players loaded!', 'green');
+        }
+
+        function displaySpotifyMessage(message, type = 'gray') {
+            const msgBox = document.getElementById('playlist-message');
+            if (msgBox) {
+                msgBox.textContent = message;
+                msgBox.className = 'mt-6 p-4 rounded-lg border'; // Reset classes
+                msgBox.classList.remove('hidden');
+                if (type === 'green') { msgBox.classList.add('bg-green-800', 'bg-opacity-30', 'border-green-700'); }
+                else if (type === 'red') { msgBox.classList.add('bg-red-800', 'bg-opacity-30', 'border-red-700'); }
+                else if (type === 'orange') { msgBox.classList.add('bg-orange-800', 'bg-opacity-30', 'border-orange-700'); }
+                else { msgBox.classList.add('bg-gray-800', 'bg-opacity-30', 'border-gray-700'); }
+            }
+        }
+
+        // Dynamic Spotify Album/Track/Playlist Embed
+        document.getElementById('embed-spotify-url-btn')?.addEventListener('click', () => {
+            const spotifyUrlInput = document.getElementById('spotify-url-input');
+            const dynamicSpotifyContentDiv = document.getElementById('dynamic-spotify-content');
+
+            if (!spotifyUrlInput || !dynamicSpotifyContentDiv) return;
+
+            const url = spotifyUrlInput.value.trim();
+            if (!url) {
+                dynamicSpotifyContentDiv.innerHTML = '<p class="text-red-400 text-center">Please enter a Spotify URL.</p>';
+                return;
+            }
+
+            const match = url.match(/spotify\.com\/(track|album|playlist)\/([a-zA-Z0-9]+)/);
+            if (match) {
+                const type = match[1];
+                const id = match[2];
+                const embedSrc = `https://open.spotify.com/embed/${type}/${id}?utm_source=generator&theme=0`;
+                const iframeHeight = (type === 'album' || type === 'playlist') ? '352' : '80'; // Larger for albums/playlists
+
+                dynamicSpotifyContentDiv.innerHTML = `
+                    <iframe style="border-radius:12px" 
+                            src="${embedSrc}" 
+                            width="100%" height="${iframeHeight}" 
+                            frameBorder="0" allowfullscreen="" 
+                            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                            loading="lazy"></iframe>
+                `;
+            } else {
+                dynamicSpotifyContentDiv.innerHTML = '<p class="text-red-400 text-center">Invalid Spotify URL. Please enter a track, album, or playlist URL.</p>';
+            }
+        });
+
+
+        // --- Currency Converter Logic ---
+        async function convertCurrency() {
+            const amountInput = document.getElementById('amount');
+            const fromCurrencySelect = document.getElementById('fromCurrency');
+            const toCurrencySelect = document.getElementById('toCurrency');
+            const resultElement = document.getElementById('convertedResult');
+
+            if (!amountInput || !fromCurrencySelect || !toCurrencySelect || !resultElement) return;
+
+            const amount = parseFloat(amountInput.value);
+            const fromCurrency = fromCurrencySelect.value;
+            const toCurrency = toCurrencySelect.value;
+
+            if (isNaN(amount) || amount <= 0) {
+                resultElement.textContent = 'Please enter a valid amount.';
+                return;
+            }
+
+            resultElement.textContent = `Converting ${amount.toFixed(2)} ${fromCurrency} to ${toCurrency}...`;
+
+            try {
+                // Using ExchangeRate-API (v6) - assuming this is the service for your key
+                const apiUrl = `https://v6.exchangerate-api.com/v6/${CURRENCY_CONVERTER_API_KEY}/latest/${fromCurrency}`;
+                
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch exchange rates: ${response.status} ${response.statusText}`);
+                }
+                const data = await response.json();
+
+                if (data.result === 'success' && data.conversion_rates) {
+                    const rate = data.conversion_rates[toCurrency];
+                    if (rate) {
+                        const convertedAmount = amount * rate;
+                        resultElement.textContent = `${amount.toFixed(2)} ${fromCurrency} = ${convertedAmount.toFixed(2)} ${toCurrency}`;
+                    } else {
+                        resultElement.textContent = `Conversion rate not available for ${toCurrency}.`;
+                    }
+                } else {
+                    resultElement.textContent = `Error: ${data['error-type'] || 'Unknown API error'}.`;
+                    console.error("Currency API response error:", data);
+                }
+
+            } catch (error) {
+                console.error("Error during currency conversion:", error);
+                resultElement.textContent = `Error: Could not get live rates. ${error.message}`;
+            }
+        }
+
+
+        // Planet Pulse Text Logic
+        const planetPhrases = [
+            { text: "fruchtbarer.planet.wandel", lang: "de" },
+            { text: "fertile.planet.change", lang: "en" },
+            { text: "planète.fertile.changement", lang: "fr" },
+            { text: "planeta.fértil.cambio", lang: "es" },
+            { text: "丰饶。星球。变革", lang: "zh" },
+            { text: "उर्वर। ग्रह। परिवर्तन", lang: "hi" },
+            { text: "كوكب.خصب.تغيير", lang: "ar" }
+        ];
+        let currentPhraseIndex = 0;
+
+        function updatePlanetText() {
+            const planetTextElement = document.getElementById('planet-text');
+            if (planetTextElement) {
+                planetTextElement.classList.remove('pulse-animation');
+                void planetTextElement.offsetWidth; // Trigger reflow
+                
+                currentPhraseIndex = (currentPhraseIndex + 1) % planetPhrases.length;
+                const nextPhrase = planetPhrases[currentPhraseIndex];
+                
+                planetTextElement.textContent = nextPhrase.text;
+                planetTextElement.lang = nextPhrase.lang;
+                
+                planetTextElement.classList.add('pulse-animation');
+            }
+        }
+
+        // AI-Powered Help/FAQ Logic
+        async function callGeminiAPI(prompt, responseDiv, errorDiv, model = "gemini-2.0-flash") {
+            // Disable relevant buttons and show loading indicator
+            let clickedButton = null;
+            if (responseDiv.id === 'faqAnswerOutput') clickedButton = document.getElementById('getFaqAnswerBtn');
+            else if (responseDiv.id === 'geminiResponse') clickedButton = document.getElementById('sendGeminiPrompt');
+            else if (responseDiv.id === 'codingResponse') clickedButton = document.getElementById('sendCodingPrompt');
+            else if (responseDiv.id === 'careerResponse') clickedButton = document.getElementById('sendCareerPrompt');
+            else if (responseDiv.id === 'adminAIResponse') clickedButton = document.getElementById('sendAdminAIPrompt');
+
+            if (clickedButton) clickedButton.disabled = true;
+            const loadingIndicator = document.getElementById(responseDiv.id.replace('Response', 'LoadingIndicator') || responseDiv.id.replace('Output', 'LoadingIndicator'));
+            if (loadingIndicator) loadingIndicator.classList.remove('hidden');
+
+            responseDiv.textContent = ''; // Clear previous output
+            responseDiv.style.color = "var(--text-color-dark)"; // Reset color
+            if (errorDiv) errorDiv.classList.add('hidden'); // Hide previous errors
+
+
+            if (!prompt.trim()) {
+                responseDiv.textContent = translations[document.body.lang]['please-enter-question'];
+                responseDiv.style.color = "red";
+                if (clickedButton) clickedButton.disabled = false;
+                if (loadingIndicator) loadingIndicator.classList.add('hidden');
+                return;
+            }
+
+            if (!GEMINI_API_KEY || GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY') {
+                responseDiv.textContent = '';
+                if (errorDiv) {
+                    errorDiv.textContent = 'Error: Gemini API Key is missing or invalid. Please ensure it\'s set correctly in the API Keys section.';
+                    errorDiv.classList.remove('hidden');
+                } else {
+                    responseDiv.textContent = 'Error: Gemini API Key is missing or invalid. Check console for details.';
+                    responseDiv.style.color = 'red';
+                }
+                if (clickedButton) clickedButton.disabled = false;
+                if (loadingIndicator) loadingIndicator.classList.add('hidden');
+                return;
+            }
+
+            try {
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
+
+                console.log("Attempting to call Gemini API with prompt:", prompt);
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                console.log("Raw API Response Object:", response);
+                const result = await response.json();
+                console.log("Parsed API Result JSON:", result);
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    console.log("Extracted Generated Text:", text);
+                    responseDiv.textContent = text;
+                } else {
+                    responseDiv.textContent = translations[document.body.lang]['error-no-ai-answer'];
+                    responseDiv.style.color = "red";
+                    if (result.error && result.error.message) {
+                        responseDiv.textContent += ` ${translations[document.body.lang]['reason']} ${result.error.message}`;
+                    }
+                }
+            } catch (error) {
+                responseDiv.textContent = translations[document.body.lang]['error-ai-connection'];
+                responseDiv.style.color = "red";
+                if (errorDiv) {
+                    errorDiv.textContent = `Failed to get AI response: ${error.message}. Check your Gemini API key and network.`;
+                    errorDiv.classList.remove('hidden');
+                }
+                console.error("Error calling Gemini API:", error);
+            } finally {
+                if (clickedButton) clickedButton.disabled = false;
+                if (loadingIndicator) loadingIndicator.classList.add('hidden');
+            }
+        }
+
+
+        // Function to render all PayPal hosted buttons
+        function renderAllPayPalButtons() {
+            // This function is now mostly a placeholder as buttons are static forms.
+            // However, if there were dynamic elements for PayPal, they would be handled here.
+            console.log("PayPal buttons are rendered via static HTML forms.");
+        }
+
+        // NEW: Copy to Clipboard Function (Used for Global Manuals and API Keys)
+        function copyToClipboard(elementId) {
+            const textElement = document.getElementById(elementId);
+            if (!textElement) {
+                console.error('Element to copy not found:', elementId);
+                return;
+            }
+
+            // Get the text content, making sure to preserve line breaks from <pre>
+            const textToCopy = textElement.textContent || textElement.innerText;
+
+            // Use document.execCommand('copy') as navigator.clipboard.writeText()
+            // might not work reliably in iframe environments.
+            const textarea = document.createElement('textarea');
+            textarea.value = textToCopy;
+            textarea.style.position = 'fixed'; // Avoid scrolling to bottom
+            textarea.style.opacity = '0'; // Hide it visually
+            document.body.appendChild(textarea);
+            textarea.select(); // Select the text
+
+            try {
+                const successful = document.execCommand('copy'); // Execute copy command
+                if (successful) {
+                    console.log('Text copied successfully!');
+                    // Optional: Provide visual feedback on the button itself
+                    const copyButton = document.querySelector(`.copy-btn[data-copy-target="${elementId}"]`);
+                    if (copyButton) {
+                        const originalIcon = copyButton.innerHTML;
+                        copyButton.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                        setTimeout(() => {
+                            copyButton.innerHTML = originalIcon;
+                        }, 1500); // Revert button text after a short delay
+                    }
+                } else {
+                    console.error('Failed to copy text.');
+                }
+            } catch (err) {
+                console.error('Error copying text:', err);
+            } finally {
+                document.body.removeChild(textarea); // Remove the temporary textarea
+            }
+        }
+
+
+        // --- On Load Initializations ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Theme Switching Setup ---
+            const themeDayBtn = document.getElementById('theme-day-btn');
+            const themeNightBtn = document.getElementById('theme-night-btn');
+            const themeHyperBtn = document.getElementById('theme-hyper-btn');
+
+            if (themeDayBtn && themeNightBtn && themeHyperBtn) {
+                themeDayBtn.addEventListener('click', () => setTheme('day'));
+                themeNightBtn.addEventListener('click', () => setTheme('dark'));
+                themeHyperBtn.addEventListener('click', () => setTheme('hyper'));
+
+                const savedTheme = localStorage.getItem('themeMode') || 'dark'; // Default to dark mode
+                setTheme(savedTheme);
+            } else {
+                console.warn("Theme buttons not found in DOM. Ensure IDs are correct.");
+            }
+
+            // --- Language Switcher Setup ---
+            const languageSwitcher = document.getElementById('languageSwitcher');
+            if (languageSwitcher) {
+                for (const langCode in translations) {
+                    const option = document.createElement('option');
+                    option.value = langCode;
+                    option.textContent = translations[langCode]["lang-name"] || langCode.toUpperCase();
+                    languageSwitcher.appendChild(option);
+                }
+                languageSwitcher.addEventListener('change', (e) => {
+                    const selectedLang = e.target.value;
+                    setLanguage(selectedLang);
+                });
+                const initialLang = localStorage.getItem('selectedLanguage') || 'en';
+                languageSwitcher.value = initialLang;
+                setLanguage(initialLang); // Apply initial language to content
+            } else {
+                console.warn("Language switcher not found in DOM. Ensure ID is correct.");
+            }
+
+            // --- Announcement Bar Logic ---
+            const announcementBar = document.getElementById('announcement-bar');
+            if (announcementBar && announcementBar.querySelector('.close-btn')) {
+                announcementBar.querySelector('.close-btn').addEventListener('click', () => {
+                    announcementBar.classList.add('hidden');
+                    updateHeaderTop();
+                    localStorage.setItem('hideAnnouncementBar', 'true');
+                });
+                if (localStorage.getItem('hideAnnouncementBar') === 'true') {
+                    announcementBar.classList.add('hidden');
+                } else {
+                    announcementBar.classList.remove('hidden');
+                }
+            }
+            updateHeaderTop(); // Initial positioning
+            window.addEventListener('resize', updateHeaderTop); // Update on resize
+
+
+            // --- Main Navigation (Section Switching) ---
+            document.querySelectorAll('nav a[data-view-id]').forEach(navLink => {
+                navLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const viewId = navLink.getAttribute('data-view-id');
+                    if (viewId) {
+                        showSection(viewId);
+                    }
+                });
+            });
+
+            // Set initial active section (e.g., 'innovate-connect-thrive')
+            showSection('innovate-connect-thrive');
+
+
+            // --- Rhythmic Canvas Setup ---
+            const rhythmicCanvas = document.getElementById('rhythmic-canvas');
+            const rhythmicCtx = rhythmicCanvas ? rhythmicCanvas.getContext('2d') : null;
+            if (rhythmicCanvas && rhythmicCtx) {
+                resizeRhythmicCanvas();
+                drawGlyph();
+                window.addEventListener('resize', resizeRhythmicCanvas);
+            }
+
+            // --- Node Pulse Chart Initialization ---
+            renderNodePulseChart();
+
+            // --- Spotify Button Event Listeners ---
+            document.getElementById('getTopTracksBtn')?.addEventListener('click', getTopTracks);
+            document.getElementById('createPlaylistBtn')?.addEventListener('click', createPlaylistAndSaveSongs);
+            document.getElementById('playTracksBtn')?.addEventListener('click', playTopTracks);
+
+            // --- Currency Converter Event Listener ---
+            document.getElementById('convertCurrencyBtn')?.addEventListener('click', convertCurrency);
+            convertCurrency(); // Perform initial conversion on load
+
+            // --- Planet Pulse Text Animation ---
+            setInterval(updatePlanetText, 3000);
+            updatePlanetText(); // Initial call
+
+            // --- AI/Gemini Button Event Listeners (General, Coding, Career, Admin Assistant, FAQ) ---
+            document.getElementById('sendGeminiPrompt')?.addEventListener('click', async () => {
+                const promptText = document.getElementById('geminiPrompt').value;
+                callGeminiAPI(promptText, document.getElementById('geminiResponse'), document.getElementById('geminiError'));
+            });
+            document.getElementById('sendCodingPrompt')?.addEventListener('click', async () => {
+                const codingPromptText = document.getElementById('codingPrompt').value;
+                callGeminiAPI(`Act as a coding assistant. ${codingPromptText}`, document.getElementById('codingResponse'), document.getElementById('codingError'));
+            });
+            document.getElementById('sendCareerPrompt')?.addEventListener('click', async () => {
+                const careerPromptText = document.getElementById('careerPrompt').value;
+                callGeminiAPI(`Act as a career guide. ${careerPromptText}`, document.getElementById('careerResponse'), document.getElementById('careerError'));
+            });
+            document.getElementById('sendAdminAIPrompt')?.addEventListener('click', async () => {
+                const adminPromptText = document.getElementById('adminAIPrompt').value;
+                callGeminiAPI(`Act as an admin assistant for a dashboard. ${adminPromptText}`, document.getElementById('adminAIResponse'), document.getElementById('adminAIError'));
+            });
+            document.getElementById('getFaqAnswerBtn')?.addEventListener('click', async () => {
+                const faqPromptInput = document.getElementById('faqPromptInput');
+                const faqAnswerOutput = document.getElementById('faqAnswerOutput');
+                const prompt = faqPromptInput.value.trim();
+                const fullPromptForFaq = `The user has a question about Banimal Loop™ or a similar product/promotion. Answer this question as precisely and concisely as possible. If the question is not related to Banimal Loop™ or its promotion ("Buy one item, and we sponsor one!"), please state that you can only answer questions on these topics. User's question: "${prompt}" Information to consider: - Banimal Loop™ is a product/promotion where the user buys one item and the company sponsors one. - The company is part of the FAA.ZONE ecosystem (but MindLift™ details are not primarily relevant here). Answer:`;
+                
+                // Pass a dummy error div if no specific error div for FAQ, or use the existing one if applicable
+                callGeminiAPI(fullPromptForFaq, faqAnswerOutput, document.createElement('div'), "gemini-2.0-flash");
+            });
+
+            // Initial rendering of PayPal buttons (after PayPal SDK is loaded)
+            window.addEventListener('load', () => {
+                // This ensures initGoogleMap is called by the script itself
+                // And then we can render PayPal buttons.
+                // PayPal buttons are now static forms, so no JS rendering needed here.
+            });
+
+            // Add event listeners for copy buttons in Global Manuals section and API Keys section
+            document.querySelectorAll('.copy-btn').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const targetId = event.currentTarget.dataset.copyTarget;
+                    if (targetId) {
+                        copyToClipboard(targetId);
+                    }
+                });
+            });
+
+        });
+    </script>
+</body>
+</html>

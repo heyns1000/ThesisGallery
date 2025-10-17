@@ -1,0 +1,3022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="dynamicTitle">TRIPOT Business Rescue Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Leaflet CSS for OpenStreetMap (kept for consistency with the base template, though not strictly used in the new context) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* Define a consistent color palette for Dashboard components within the overall dark theme */
+        :root {
+            /* TRIPOT Business Rescue Theme Colors */
+            --primary-color: #3b82f6; /* Strong Blue for emphasis */
+            --secondary-color: #8b5cf6; /* Softer Purple for accents */
+            --accent-color: #f97316; /* Orange for warnings/highlights */
+            --button-color: #3b82f6; /* Blue for buttons */
+            --button-color-dark: #2563eb; /* Darker blue for button hover */
+            --background-gradient-start: #1f215a; /* Dark blue-purple */
+            --background-gradient-end: #0d1117; /* Very dark charcoal */
+            --text-color: #e2e8f0; /* Light gray for readability */
+            --muted-text: #a0aec0; /* Muted gray */
+            --card-bg: #1a1b20; /* Dark card background */
+            --border-color: rgba(255,255,255,0.1); /* Subtle white border */
+
+            /* Dashboard specific colors, adapting to the new overall theme */
+            --dark-bg-dashboard: #1a1a1d; /* Deep charcoal */
+            --medium-dark-bg-dashboard: #2a2a2e; /* Slightly lighter charcoal */
+            --card-bg-dashboard: #374151; /* Dark gray for dashboard cards */
+            --text-light-dashboard: #e0e0e0;
+            --text-muted-dashboard: #9ca3af;
+            --border-color-dashboard: #4b5563;
+            --hover-bg-light: rgba(255, 255, 255, 0.1); /* Hover for navigation */
+
+            /* Consolidated Fruitful Logo Color (now white) - Not used for TRIPOT branding directly */
+            --fruitful-corporate-white: #ffffff;
+
+            /* Core brand specific variables (will be dynamically set for TRIPOT) */
+            --core-brand-bg-start: var(--background-gradient-start);
+            --core-brand-bg-end: var(--background-gradient-end);
+            --core-brand-text-color: var(--text-color);
+            --core-brand-dark-text: var(--text-color);
+            --core-brand-muted-text: var(--muted-text);
+            --core-brand-accent-color: var(--accent-color);
+            --core-brand-button-color: var(--button-color);
+            --core-brand-button-color-dark: var(--button-color-dark);
+
+            /* Featured core brand specific variables (will be dynamically set for TRIPOT) */
+            --featured-core-brand-bg-start: var(--background-gradient-start);
+            --featured-core-brand-bg-end: var(--background-gradient-end);
+            --featured-core-brand-text-color: var(--text-color);
+            --featured-core-brand-muted-text: var(--muted-text);
+            --featured-core-brand-button-color: var(--button-color);
+            --featured-core-brand-button-color-dark: var(--button-color-dark);
+        }
+
+        /* Base Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d1117; /* Darker base background */
+            color: var(--text-color); /* Lighter text for contrast */
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            display: flex; /* Make body a flex container for full height */
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Custom Scrollbar Styling for Dark Theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1b20; /* Darker track */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4a4d5c; /* Muted gray thumb */
+            border-radius: 10px;
+            transition: background 0.3s ease;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6b6e7f; /* Lighter on hover */
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Header - Sleek and modern */
+        header {
+            background-color: rgba(26, 32, 44, 0.9); /* Darker, slightly transparent */
+            backdrop-filter: blur(12px); /* Stronger frosted glass */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* More visible border */
+            padding-top: 1.2rem;
+            padding-bottom: 1.2rem;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.4); /* Deeper shadow */
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 50;
+            display: flex; /* Ensure it's a flex container */
+            justify-content: space-between; /* Space out logo and nav */
+            align-items: center;
+        }
+        header h1 {
+            color: var(--text-color); /* Light text for logo */
+            font-weight: 800;
+            font-size: 1.6rem;
+            letter-spacing: -0.03em;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); /* Vibrant gradient for logo text */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        header nav a {
+            color: var(--muted-text); /* Muted gray for nav links */
+            font-size: 0.95rem;
+            font-weight: 500;
+            padding: 0.6rem 1rem;
+            border-radius: 8px; /* Softer rounding */
+            transition: all 0.2s ease-in-out;
+            position: relative;
+        }
+        header nav a:hover {
+            color: var(--text-color); /* Brighter on hover */
+            background-color: rgba(99, 102, 241, 0.1); /* Subtle purple tint on hover */
+            transform: translateY(-2px); /* Slight lift */
+        }
+        header nav a::after { /* Underline effect */
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -2px;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+            transition: all 0.3s ease-out;
+            transform: translateX(-50%);
+            border-radius: 1px;
+        }
+        header nav a:hover::after {
+            width: 80%;
+        }
+        /* Active link for both landing page sections and dashboard toggle */
+        .header-nav-active {
+            color: white !important;
+            font-weight: 700 !important;
+        }
+        .header-nav-active::after {
+            width: 100% !important;
+            background: linear-gradient(90deg, var(--secondary-color), var(--primary-color)) !important;
+        }
+
+        /* Hero Section - Dynamic and impactful */
+        .hero-section {
+            background: linear-gradient(135deg, var(--background-gradient-start), var(--background-gradient-end)); /* Deeper, richer gradient */
+            min-height: 80vh;
+            padding: 8rem 2rem;
+            border-bottom-left-radius: 60px;
+            border-bottom-right-radius: 60px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.7);
+            color: var(--text-color);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInScale 1s ease-out;
+        }
+        .hero-section::before { /* Animated background pattern */
+            content: '';
+            position: absolute;
+            top: -20%;
+            left: -20%;
+            width: 140%;
+            height: 140%;
+            background: radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.1), transparent 70%),
+                        radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.1), transparent 70%);
+            animation: rotateAndZoom 40s linear infinite;
+            opacity: 0.6;
+            z-index: 1;
+        }
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes rotateAndZoom {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.05); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+        .hero-content {
+            z-index: 10;
+            position: relative;
+        }
+        .hero-section h2 {
+            font-size: 4.5rem; /* Even larger, bolder headline */
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            line-height: 1.05;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .hero-section h2 span {
+            background: linear-gradient(90deg, var(--accent-color), var(--secondary-color)); /* Warm gradient accent */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-section p {
+            font-size: 1.3rem;
+            font-weight: 300; /* Lighter weight for body text */
+            color: var(--muted-text); /* Slightly muted white */
+            margin-top: 2rem;
+            margin-bottom: 3rem;
+            max-width: 900px;
+        }
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(90deg, var(--primary-color), var(--button-color)); /* Brighter purple gradient */
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1.15rem;
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+        .cta-button:hover {
+            filter: brightness(1.2);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5), 0 0 25px rgba(139, 92, 246, 0.8); /* Subtle glow using a blue/purple hue */
+        }
+        .cta-button span { /* Re-add emoji for "cooler" vibe if desired */
+            display: inline-block;
+            margin-left: 0.5rem;
+            animation: bounceEmoji 1s infinite alternate;
+        }
+        @keyframes bounceEmoji {
+            from { transform: translateY(0); }
+            to { transform: translateY(-3px); }
+        }
+
+
+        /* Sections - Layered and defined */
+        .landing-section { /* Applied to all main landing sections */
+            padding: 8rem 2rem;
+            background-color: #121317; /* Darker section background */
+            box-shadow: inset 0 5px 20px rgba(0,0,0,0.2); /* Inner shadow for depth */
+            border-bottom: 1px solid rgba(255,255,255,0.08); /* Subtle separator */
+            color: var(--text-color);
+        }
+        .landing-section:nth-of-type(odd) { /* Alternate background for sections */
+            background-color: #0d1117;
+        }
+        .landing-section:last-of-type {
+            border-bottom: none;
+        }
+        .landing-section h2, .landing-section h3 {
+            color: var(--text-color);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 2.5rem;
+            font-size: 2.8rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .landing-section p {
+            color: var(--muted-text);
+            font-size: 1.15rem;
+            line-height: 1.6;
+        }
+
+        /* Feature Cards - Glowing and interactive */
+        .feature-card {
+            background-color: var(--card-bg); /* Dark card background */
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.6);
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease-in-out, border-color 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7), 0 0 25px var(--secondary-color); /* Stronger glow on hover */
+            border-color: var(--secondary-color); /* Purple border on hover */
+        }
+        .feature-card div:first-child { /* Icon */
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color); /* Electric blue for icons */
+            text-shadow: 0 0 15px rgba(59, 130, 246, 0.6); /* Icon glow based on primary blue */
+        }
+        .feature-card h4 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 0.75rem;
+        }
+        .feature-card p {
+            font-size: 1rem;
+            color: var(--muted-text);
+        }
+
+        /* Countdown Section (adapted from original business_rescue_spa) */
+        .countdown-section {
+            background-color: rgba(251, 191, 36, 0.1); /* amber-100 with opacity */
+            border-left: 4px solid #f59e0b; /* amber-500 */
+            color: #d97706; /* amber-900 */
+            padding: 1.5rem;
+            border-radius: 0.5rem 0 0 0.5rem; /* rounded-r-lg but only left side now */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .countdown-section h2 {
+            color: #d97706; /* amber-900 */
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: none; /* Override default section h2 text-shadow */
+        }
+        .countdown-section p {
+            color: #d97706;
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+        .countdown-timer-box {
+            background-color: rgba(255, 255, 255, 0.1); /* white/60 adapted for dark theme */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+        }
+        .countdown-timer-box p {
+            color: var(--text-color); /* Changed to light text for visibility */
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        #countdown-timer {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: #ef4444; /* red-600 */
+            margin-top: 0.5rem;
+        }
+        .countdown-timer-box .text-xs {
+            color: var(--muted-text); /* Muted gray for consistency */
+            margin-top: 0.25rem;
+        }
+
+
+        /* Share Signal Section - Digital display feel (repurposed for sales momentum) */
+        #sales-momentum {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            padding: 5rem 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            box-shadow: inset 0 5px 20px rgba(0,0,0,0.2);
+        }
+        #sales-momentum h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+        #sales-value {
+            font-size: 4rem;
+            font-weight: 800;
+            color: var(--primary-color); /* Neon green for price */
+            letter-spacing: -0.03em;
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.6); /* Strong glow based on primary blue */
+            animation: pricePulse 2s infinite alternate;
+        }
+        @keyframes pricePulse {
+            from { text-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+            to { text-shadow: 0 0 25px rgba(59, 130, 246, 0.8); }
+        }
+        #momentum-timestamp {
+            color: var(--muted-text);
+            font-size: 0.9rem;
+        }
+
+        /* Seedwave Growth - Dynamic chart (repurposed for sales recovery) */
+        #sales-recovery-chart {
+            background-color: #0d1117;
+            padding: 6rem 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            box-shadow: inset 0 5px 20px rgba(0,0,0,0.2);
+        }
+        #sales-recovery-chart h2 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 3rem;
+            color: var(--text-color);
+        }
+        #sales-recovery-chart .w-full {
+            background-color: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.6);
+        }
+
+        /* Commitment Section (repurposed from Treaty Section) */
+        #commitment-section {
+            background-color: #0d1117;
+            padding: 6rem 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            box-shadow: inset 0 5px 20px rgba(0,0,0,0.2);
+        }
+        #commitment-section h2 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--text-color);
+            margin-bottom: 2rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        #commitment-section p {
+            font-size: 1.2rem;
+            color: var(--muted-text);
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 2.5rem;
+        }
+        #commitment-section blockquote {
+            font-size: 1.8rem;
+            color: var(--primary-color); /* Blue for quote */
+            font-weight: 700;
+            line-height: 1.4;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            text-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+        }
+        #commitment-section blockquote::before, #commitment-section blockquote::after {
+            content: '“';
+            font-size: 3em;
+            line-height: 0.1;
+            vertical-align: -0.4em;
+            color: #333333; /* Muted quote color */
+            margin-right: 0.1em;
+        }
+        #commitment-section blockquote::after {
+            content: '”';
+            margin-left: 0.05em;
+        }
+
+        /* Business Rescue Log (repurposed from Signal Packet) */
+        .business-rescue-log {
+            background-color: #0a0a0a;
+            color: var(--primary-color);
+            padding: 4rem 2rem;
+            border-bottom: 1px solid #333;
+            box-shadow: inset 0 5px 20px rgba(0,0,0,0.4);
+        }
+        .business-rescue-log pre {
+            background-color: #000000;
+            border: 1px solid var(--primary-color); /* Blue border */
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); /* Strong glow */
+            white-space: pre-wrap;
+            word-break: break-all;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            font-size: 0.9rem;
+        }
+
+        /* Executive Summary (repurposed from VaultMesh) */
+        #executive-summary {
+            background-color: #121317;
+            padding: 6rem 2rem;
+            color: var(--text-color);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            box-shadow: inset 0 5px 20px rgba(0,0,0,0.2);
+        }
+        #executive-summary h2 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--text-color);
+            margin-bottom: 2rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        #executive-summary h2.text-purple-400 { /* This class is now unused as text is dynamically set */
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        #executive-summary h3 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-top: 3rem;
+            margin-bottom: 1.2rem;
+        }
+        #executive-summary p {
+            font-size: 1.1rem;
+            color: var(--muted-text);
+            line-height: 1.6;
+        }
+        #executive-summary ul {
+            list-style-type: none; /* Remove default bullets */
+            padding-left: 0;
+            margin-left: 0;
+            color: var(--muted-text);
+        }
+        #executive-summary ul li {
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+        #executive-summary ul li::before { /* Custom bullet point */
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--primary-color); /* Blue bullet */
+            font-size: 1.2em;
+            line-height: 1;
+            top: 0.1em;
+        }
+        #executive-summary ul.list-decimal li::before { /* Ensure decimal still works if applied */
+            content: counter(list-item) ".";
+            color: var(--primary-color); /* Blue for numbered lists */
+        }
+        #executive-summary code {
+            background-color: #2a2c33;
+            padding: 0.3em 0.6em;
+            border-radius: 6px;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            color: var(--primary-color);
+            border: 1px solid #444444;
+        }
+
+        /* About Section - Clean and impactful (repurposed) */
+        #about-br {
+            background-color: #0d1117;
+            padding: 6rem 2rem;
+            color: var(--text-color);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            box-shadow: inset 0 5px 20px rgba(0,0,0,0.2);
+        }
+        #about-br h3 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--text-color);
+            margin-bottom: 2rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        #about-br p {
+            font-size: 1.2rem;
+            color: var(--muted-text);
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Call to Action Section - Bold and inviting (repurposed) */
+        #contact-brm { /* Renamed to avoid conflict with dashboard CTA button */
+            background: linear-gradient(135deg, var(--background-gradient-start), var(--background-gradient-end)); /* Strong purple gradient */
+            padding: 8rem 2rem;
+            color: white;
+            text-align: center;
+            border-top-left-radius: 60px; /* Rounded top corners */
+            border-top-right-radius: 60px;
+            box-shadow: 0 -15px 50px rgba(0,0,0,0.7);
+        }
+        #contact-brm h3 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 2rem;
+            line-height: 1.1;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        #contact-brm p {
+            font-size: 1.3rem;
+            color: var(--muted-text);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 3rem;
+        }
+        #contact-brm .cta-button {
+            background: var(--primary-color); /* Blue button */
+            color: #1a1a1a; /* Dark text on button */
+            padding: 1.2rem 3rem;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 1.25rem;
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        #contact-brm .cta-button:hover {
+            filter: brightness(1.2);
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5), 0 0 30px rgba(59, 130, 246, 0.8); /* Blue glow */
+        }
+        #contact-brm .cta-button span {
+            display: inline-block;
+            margin-left: 0.75rem;
+            animation: bounceEmoji 1s infinite alternate;
+        }
+
+        /* Core Brand Landing Page Content (repurposed for Company Profile) */
+        #company-profile-page {
+            background: linear-gradient(135deg, var(--core-brand-bg-start), var(--core-brand-bg-end)); /* Use specific core brand colors */
+            min-height: 100vh; /* Ensure it takes full viewport height */
+            padding: 8rem 2rem;
+            display: flex; /* Use flex to center content */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--core-brand-text-color);
+            position: relative; /* For canvas z-index */
+            z-index: 10; /* Ensure it's above other sections if they overlap */
+            overflow: hidden; /* To contain particles */
+        }
+
+        /* Ensure canvas is behind content but visible */
+        #company-profile-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1; /* Behind content */
+        }
+
+        .company-profile-content {
+            position: relative;
+            z-index: 5; /* Above canvas */
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .company-profile-content h1 {
+            font-size: 4.5rem;
+            font-weight: 900;
+            line-height: 1.1;
+            color: var(--core-brand-text-color);
+            text-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        }
+        .company-profile-content h1 span {
+            background: linear-gradient(90deg, var(--core-brand-accent-color), var(--core-brand-button-color)); /* Accent color */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .company-profile-content p {
+            font-size: 1.3rem;
+            color: var(--core-brand-muted-text);
+            margin-top: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        .company-profile-cta-button {
+            background: linear-gradient(90deg, var(--core-brand-button-color), var(--core-brand-button-color-dark)); /* Use core brand specific button colors */
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1.15rem;
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+        .company-profile-cta-button:hover {
+            filter: brightness(1.2);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5), 0 0 25px var(--core-brand-button-color);
+        }
+
+        /* Dashboard Specific Styles (Adapted for overall theme) */
+        #tripot-br-dashboard-wrapper {
+            background-color: #0d1117; /* Use main body background for wrapper */
+        }
+        .dashboard-header-bg { background-color: var(--medium-dark-bg-dashboard); }
+        .dashboard-sidebar-bg { background-color: var(--medium-dark-bg-dashboard); }
+        .dashboard-main-content-bg { background-color: #121317; } /* Use a slightly different dark tone */
+        .dashboard-card-bg { background-color: var(--card-bg-dashboard); }
+        .dashboard-primary-text { color: var(--primary-color); }
+        .dashboard-secondary-text { color: var(--secondary-color); }
+        .dashboard-muted-text { color: var(--text-muted-dashboard); }
+        .dashboard-border-dark { border-color: var(--border-color-dashboard); }
+        .dashboard-hover-bg-light { background-color: rgba(255, 255, 255, 0.1); }
+
+        /* Responsive adjustments for Dashboard elements */
+        .dashboard-container {
+            display: flex;
+            flex-grow: 1; /* Allow dashboard container to grow */
+        }
+        .dashboard-sidebar {
+            width: 64; /* Tailwind w-64 */
+            padding: 1.5rem; /* Tailwind p-6 */
+            border-right: 1px solid var(--border-color-dashboard);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem; /* Tailwind space-y-4 converted to gap */
+        }
+        .dashboard-sidebar-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem; /* Tailwind gap-3 */
+            width: 100%;
+            padding: 0.75rem; /* Tailwind p-3 */
+            border-radius: 0.5rem; /* Tailwind rounded-lg */
+            font-size: 1.125rem; /* Tailwind text-lg */
+            font-weight: 500; /* Tailwind font-medium */
+            transition: all 0.2s;
+            color: var(--text-light-dashboard);
+        }
+        .dashboard-sidebar-nav-item:hover {
+             background-color: var(--hover-bg-light);
+        }
+
+        .dashboard-active-nav-item {
+            background-color: var(--primary-color);
+            color: white !important;
+        }
+        .dashboard-active-nav-item:hover {
+            background-color: var(--primary-color) !important;
+        }
+
+        .dashboard-main-content {
+            flex-grow: 1;
+            padding: 2rem; /* Tailwind p-8 */
+            overflow-y: auto;
+        }
+
+        /* Sub-Sidebar (e.g., for Operational Areas) - Adapting from Music Sub-Sidebar */
+        .operational-sub-sidebar {
+            width: 48; /* Tailwind w-48 */
+            padding: 1rem; /* Tailwind p-4 */
+            border-right: 1px solid var(--border-color-dashboard);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.75rem; /* Tailwind space-y-3 */
+            margin-right: 2rem; /* Tailwind mr-8 */
+        }
+        .operational-sub-sidebar .dashboard-sidebar-nav-item {
+            font-size: 1rem; /* Tailwind text-base */
+            padding: 0.5rem; /* Tailwind p-2 */
+            gap: 0.5rem; /* Tailwind gap-2 */
+        }
+        .operational-content-area {
+            flex-grow: 1;
+        }
+
+        /* Dashboard Card Styles */
+        .dashboard-card {
+            padding: 1.5rem; /* Tailwind p-6 */
+            background-color: var(--card-bg-dashboard);
+            border-radius: 0.5rem; /* Tailwind rounded-lg */
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1); /* Tailwind shadow-xl */
+            border: 1px solid var(--border-color-dashboard);
+        }
+        .dashboard-sub-card {
+            padding: 1.25rem; /* Tailwind p-5 */
+            background-color: #4a5568; /* a bit lighter gray for internal cards */
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .api-key-warning {
+            color: #ef4444; /* red-500 */
+            background-color: #fecaca; /* red-200 */
+            border-left: 4px solid #ef4444;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-weight: 600;
+        }
+        /* Styles for map containers (still using original styles, as map types changed) */
+        gmp-map, #leaflet-map-container { /* Updated selector for gmp-map */
+            height: 400px; /* Adjust height as needed */
+            width: 100%;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: #374151; /* card-bg */
+        }
+
+        /* Form Styling for Sign-in/Sign-up/Settings */
+        .auth-form-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 2.5rem;
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.6);
+            border: 1px solid var(--border-color);
+        }
+        .auth-form-container h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .auth-form-container label {
+            display: block;
+            font-size: 1rem;
+            color: var(--muted-text);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        .auth-form-container input[type="text"],
+        .auth-form-container input[type="email"],
+        .auth-form-container input[type="password"] {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color-dashboard);
+            background-color: #2a2a2e; /* Slightly lighter than card bg */
+            color: var(--text-light-dashboard);
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .auth-form-container input[type="text"]:focus,
+        .auth-form-container input[type="email"]:focus,
+        .auth-form-container input[type="password"]:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3); /* primary-color with opacity */
+        }
+        .auth-form-container button[type="submit"] {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+        }
+        .auth-form-container button[type="submit"]:hover {
+            filter: brightness(1.15);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4), 0 0 15px rgba(139, 92, 246, 0.5); /* Subtle glow based on secondary */
+        }
+        .auth-form-container .text-center a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        .auth-form-container .text-center a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Toggle switch for settings */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+            margin-bottom: 1rem;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+        input:focus + .slider {
+            box-shadow: 0 0 1px var(--primary-color);
+        }
+        input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        /* Responsive adjustments for Core Brand sections */
+        @media (max-width: 768px) {
+            #company-profile-page { padding-top: 6rem; padding-bottom: 6rem; }
+            .company-profile-content h1 { font-size: 3rem; }
+            .company-profile-content h1 span { font-size: 0.6em; }
+            .company-profile-content p { font-size: 1rem; }
+            .button-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .featured-section { /* Generalizing featured core brand styling */
+                padding: 4rem 1.5rem;
+                margin: 2rem auto;
+            }
+            .featured-section h2 {
+                font-size: 2.2rem;
+            }
+            .featured-section p {
+                font-size: 1rem;
+            }
+            .featured-section .cta-button {
+                padding: 0.8rem 1.8rem;
+                font-size: 1rem;
+            }
+            .dashboard-sidebar {
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color-dashboard);
+                padding-bottom: 1rem;
+            }
+            .dashboard-sidebar-nav-item {
+                justify-content: center; /* Center items on small screens */
+            }
+            .dashboard-container {
+                flex-direction: column;
+            }
+            .dashboard-main-content {
+                width: 100%;
+            }
+            .grid-cols-2-md {
+                grid-template-columns: 1fr; /* Stack columns on small screens */
+            }
+            /* Adjust main content padding when sidebars stack */
+            .dashboard-main-content-wrapper {
+                flex-direction: column;
+            }
+            .operational-sub-sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color-dashboard);
+                padding-bottom: 1rem;
+            }
+            .operational-content-area {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="py-4 px-6 md:px-12 flex justify-between items-center text-white">
+        <h1 id="headerFruitfulText" class="text-2xl font-extrabold tracking-tight">TRIPOT BR</h1>
+        <nav class="flex items-center space-x-4">
+            <a href="javascript:void(0)" class="header-nav-item transition-colors duration-200" onclick="showMainSection('hero-section')">Home</a>
+            <a href="javascript:void(0)" class="header-nav-item transition-colors duration-200" onclick="showMainSection('key-pillars')">Key Pillars</a>
+            <a href="javascript:void(0)" class="header-nav-item transition-colors duration-200" id="headerCoreBrandLink" onclick="showMainSection('company-profile-page')">Company Profile</a>
+            <a href="javascript:void(0)" class="header-nav-item transition-colors duration-200" onclick="showMainSection('sales-momentum')">Sales Momentum</a>
+            <a href="javascript:void(0)" class="header-nav-item transition-colors duration-200" onclick="showMainSection('key-documents-portals')">Key Docs</a>
+            <a href="javascript:void(0)" class="header-nav-item transition-colors duration-200" onclick="showMainSection('commitment-section')">Commitment</a>
+            <a href="javascript:void(0)" class="header-nav-item transition-colors duration-200" onclick="showMainSection('executive-summary')">Summary</a>
+            <a href="javascript:void(0)" class="header-nav-item transition-colors duration-200" onclick="showMainSection('about-br')">About</a>
+            <a href="javascript:void(0)" class="header-nav-item px-4 py-2 rounded-full font-semibold transition-colors duration-200 header-sign-up" onclick="showMainSection('sign-up-section')">Sign Up</a>
+            <a href="javascript:void(0)" class="header-nav-item transition-colors duration-200" onclick="showMainSection('sign-in-section')">Sign In</a>
+            <a href="javascript:void(0)" class="header-nav-item transition-colors duration-200" onclick="showMainSection('tripot-br-dashboard-wrapper')">Dashboard</a>
+            <!-- Sector Index dropdown (repurposed for single sector) -->
+            <div class="relative group">
+                <button class="header-nav-item transition-colors duration-200 focus:outline-none flex items-center">
+                    Sector Index <i class="fas fa-chevron-down ml-2 text-xs"></i>
+                </button>
+                <div id="sectorDropdown" class="absolute right-0 mt-2 w-64 bg-gray-800 rounded-lg shadow-lg py-2 hidden group-hover:block transition-all duration-300 ease-out transform scale-y-0 origin-top opacity-0">
+                    <!-- Sector links will be dynamically populated here -->
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Landing Page Sections -->
+    <section id="hero-section" class="landing-section text-center">
+        <div class="hero-content">
+            <h2 class="text-5xl md:text-6xl font-extrabold mb-6 leading-tight" id="heroHeadline">
+                TRIPOT Business Rescue: <br> <span class="dynamic-accent-text">Charting a Path to Recovery.</span>
+            </h2>
+            <p class="text-xl md:text-2xl mb-10 max-w-2xl mx-auto" id="heroSubtitle">
+                Access critical updates, key documents, and the strategic plan for TRIPOT (PTY) LTD's financial restructuring and operational revival.
+            </p>
+            <a href="javascript:void(0)" class="cta-button" id="heroCtaButton" onclick="showMainSection('executive-summary')">
+                Explore the Plan <span>➡️</span>
+            </a>
+            <!-- Countdown Timer (Integrated from original business_rescue_spa) -->
+            <div class="countdown-section mt-8 md:mt-12 text-left">
+                <h2>Time-Sensitive Action</h2>
+                <p class="mb-4">Immediate action taken to pre-empt court proceedings and initiate formal business rescue.</p>
+                <div class="countdown-timer-box">
+                    <p>Time until landlord's scheduled court date</p>
+                    <div id="countdown-timer" class="text-2xl md:text-3xl font-bold mt-2"></div>
+                    <p class="text-xs mt-1">on 1 July 2025</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- New: Direct Dashboard Access Button for Development (kept for ease of access during dev) -->
+    <div class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50">
+        <button onclick="showMainSection('tripot-br-dashboard-wrapper')"
+                class="px-6 py-3 bg-blue-600 text-white font-bold rounded-full shadow-lg hover:bg-blue-700 transition duration-300 transform hover:scale-105 flex items-center space-x-2">
+            <i class="fas fa-tachometer-alt"></i> <span>Go to Dashboard (Dev Access)</span>
+        </button>
+    </div>
+
+
+    <section id="key-pillars" class="landing-section py-16 md:py-24 px-6 md:px-12 text-center">
+        <div class="max-w-6xl mx-auto">
+            <h3 class="text-4xl font-bold text-center mb-16" id="featuresTitle">
+                Key Pillars of the Business Rescue Plan
+            </h3>
+            <div id="featuresGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature cards will be dynamically loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Company Profile Section (repurposed from Featured Core Brand Section) -->
+    <section id="company-profile-section" class="landing-section featured-section">
+        <h2 id="featuredCoreBrandTitle">🏢 TRIPOT Company Profile 🏢</h2>
+        <p id="featuredCoreBrandDescription">
+            This section provides a detailed overview of TRIPOT (PTY) LTD, highlighting its operational strengths, market position, and resilience in challenging times.
+        </p>
+        <p id="featuredCoreBrandSubDescription">
+            Founded in 2021, TRIPOT (PTY) LTD is a wholesale business recognized for its vendor numbers with major retailers like Pick n Pay, Est Africa, Mica, and Build It. Despite recent import delays, the company holds valuable private label stock and is committed to its recovery and staff retention.
+        </p>
+        <a href="javascript:void(0)" class="cta-button" id="featuredCoreBrandCtaButton" onclick="showMainSection('company-profile-page')">
+            View Full Profile <i class="fas fa-industry"></i>
+        </a>
+    </section>
+
+    <section id="sales-momentum" class="landing-section py-12 text-center">
+        <h2 class="text-3xl font-semibold mb-2">Projected Sales Momentum</h2>
+        <div id="sales-value" class="text-5xl font-bold">$XX.XX</div>
+        <div class="text-sm text-gray-400 mt-1">Last updated: <span id="momentum-timestamp">Live</span></div>
+    </section>
+
+    <section id="sales-recovery-chart" class="landing-section py-16 px-6 text-center">
+        <h2 class="text-4xl font-bold mb-8">📈 Sales Recovery Projection 📈</h2>
+        <div class="w-full max-w-4xl mx-auto p-6 rounded-xl shadow-lg">
+            <canvas id="brandChart"></canvas>
+        </div>
+    </section>
+
+    <!-- Removed Founder's Glyph as it's not relevant for Business Rescue -->
+
+    <section id="key-documents-portals" class="landing-section py-16 px-6">
+        <h3 class="text-4xl font-bold text-center mb-10">🔐 Key Documents & Stakeholder Portals</h3>
+
+        <div class="w-full max-w-6xl mx-auto mb-10">
+            <div class="w-full h-[600px] border-4 rounded-xl shadow-2xl overflow-hidden">
+                <iframe
+                    id="vault-frame"
+                    src=""
+                    class="w-full h-full rounded-xl"
+                    frameborder="0"
+                    title="TRIPOT Business Rescue Documents"
+                    sandbox="allow-scripts allow-same-origin allow-forms"
+                ></iframe>
+            </div>
+        </div>
+
+        <div id="terminalButtons" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            <!-- Terminal buttons will be dynamically loaded here -->
+        </div>
+    </section>
+
+    <section id="sector-scrolls" class="landing-section py-16 px-6 text-center bg-gray-800">
+        <h2 class="text-4xl font-bold mb-8">ℹ️ Portal Navigation</h2>
+        <p class="max-w-2xl mx-auto text-lg mb-8">Click the button below to navigate to the core of the TRIPOT Business Rescue Portal.</p>
+        <div id="sectorGlyphGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
+            <!-- Sector glyphs will be dynamically loaded here -->
+        </div>
+    </section>
+
+    <div id="sector-content-container" class="mt-10 px-6 max-w-6xl mx-auto">
+        <!-- Dynamic sector content will be loaded here -->
+        <!-- These hidden sections are placeholders for showSectorPanel (now showSubNodePanel) -->
+        <div id="embedded-sales-division" class="brand-snapshot hidden"></div>
+        <div id="embedded-imports-logistics" class="brand-snapshot hidden"></div>
+        <div id="embedded-finance-admin" class="brand-snapshot hidden"></div>
+        <div id="embedded-human-resources" class="brand-snapshot hidden"></div>
+    </div>
+
+
+    <section id="commitment-section" class="landing-section py-16 px-6 text-center">
+        <h2 class="text-4xl font-bold mb-6">🤝 Our Commitment to Stakeholders</h2>
+        <p class="max-w-2xl mx-auto text-lg mb-8">TRIPOT (PTY) LTD is fully committed to a transparent and effective business rescue process, ensuring the best possible outcome for all involved parties.</p>
+        <blockquote class="text-2xl italic font-semibold">"Through transparency, strategic action, and unwavering commitment, we will navigate this challenge and rebuild a stronger, more resilient TRIPOT."</blockquote>
+    </section>
+
+    <!-- Removed Signal Packet content section, leaving just the ID for potential future use or removal -->
+    <section id="signal-packet" class="landing-section py-10 text-xs text-center hidden">
+        <pre class="max-w-2xl mx-auto p-4 rounded-lg overflow-auto"><code>{
+    "status": "business_rescue_active",
+    "company": "TRIPOT (PTY) LTD",
+    "event": "resolution_filed_pending_brm_appointment"
+}</code></pre>
+    </section>
+
+
+    <section id="executive-summary" class="landing-section py-20 px-6">
+        <div class="max-w-4xl mx-auto text-left space-y-6">
+
+            <h2 class="text-4xl font-bold">📋 Business Rescue Plan: Executive Summary</h2>
+
+            <p>TRIPOT (PTY) LTD has initiated voluntary business rescue proceedings under Section 129(1) of the Companies Act, 71 of 2008. This strategic move aims to safeguard company assets, ensure operational continuity, and facilitate a structured financial restructuring, providing a better return for creditors than immediate liquidation.</p>
+
+            <ul class="list-disc ml-6 space-y-2">
+                <li>Formal initiation to protect company assets (e.g., office equipment).</li>
+                <li>Leveraging existing inventory and strong import relationships.</li>
+                <li>Commitment to engaging a qualified Business Rescue Practitioner (BRP).</li>
+                <li>Strategic plan for sales acceleration and staff reinstatement to regain profitability.</li>
+            </ul>
+
+            <p>The process addresses immediate financial distress stemming from import delays and aims to stabilize the business through a legally protected period, allowing for a comprehensive turnaround strategy.</p>
+
+            <h3 class="text-2xl font-semibold mt-10">✅ Key Steps & Progress</h3>
+            <ul class="list-decimal ml-6 space-y-1">
+                <li>Commence Business Rescue Proceedings (Completed)</li>
+                <li>File with CIPC (Pending Filing)</li>
+                <li>Appoint Business Rescue Practitioner (Pending Appointment)</li>
+                <li>Notify Creditors (Pending Notification)</li>
+                <li>Develop & Implement Restructuring Plan (Initiated Post-Appointment)</li>
+                <li>Execute Sales & Operational Turnaround (Ongoing with Plan)</li>
+                <li>Stakeholder Engagement & Communication (Ongoing)</li>
+            </ul>
+
+            <h3 class="text-xl font-bold mt-10">📊 Financial & Operational Outlook</h3>
+            <p>Despite current challenges, the Company has a strong foundation:</p>
+            <ul class="list-disc ml-6 space-y-1">
+                <li>Valuable existing inventory ready for valuation.</li>
+                <li>Confirmed sales orders providing immediate revenue potential.</li>
+                <li>Importer partners willing to supply on Cash on Delivery (COD) basis.</li>
+                <li>No significant bank loans, overdrafts, or external debt beyond rental-to-own agreements.</li>
+                <li>Highly experienced staff available for reinstatement to drive sales.</li>
+            </ul>
+
+            <p class="text-sm mt-10">📎 This executive summary outlines the core strategy. The full official resolution is available via the 'View Full Signed Resolution' button for detailed legal context.</p>
+        </div>
+    </section>
+
+    <section id="about-br" class="landing-section py-16 md:py-24 px-6 md:px-12 text-center">
+        <div class="max-w-4xl mx-auto">
+            <h3 class="text-4xl font-bold mb-8">About This Business Rescue</h3>
+            <p class="text-lg leading-relaxed mb-6">
+                This Business Rescue process for TRIPOT (PTY) LTD is being undertaken to address a period of financial distress primarily caused by unforeseen global supply chain disruptions impacting stock imports. Our objective is to restructure the company's affairs, optimize operations, and return to sustainable profitability.
+            </p>
+            <p class="text-lg leading-relaxed">
+                We are committed to preserving the value of the business, protecting jobs, and maximizing returns for all creditors and stakeholders, ensuring a transparent and legally compliant process as outlined by the Companies Act, 71 of 2008.
+            </p>
+        </div>
+    </section>
+
+    <section id="contact-brm" class="landing-section py-16 md:py-24 px-6 md:px-12 text-center">
+        <div class="max-w-3xl mx-auto">
+            <h3 class="text-4xl font-extrabold mb-8 leading-tight">
+                Connect with the Business Rescue Management
+            </h3>
+            <p class="text-xl mb-10">
+                For inquiries, updates, or to provide information related to the business rescue, please reach out to the appointed Business Rescue Practitioner or their team.
+            </p>
+            <a href="mailto:brp@tripot.co.za" class="cta-button">
+                Contact the BRP Team <span>✉️</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Company Profile Landing Page Content (Dynamic, for full profile view) -->
+    <section id="company-profile-page" class="hidden content-section">
+        <canvas id="company-profile-canvas"></canvas>
+        <div class="company-profile-content">
+            <h1 id="coreBrandHeadline">TRIPOT (PTY) LTD: <br> <span id="coreBrandSlogan">Wholesale Excellence, Resilient Future.</span></h1>
+            <p id="coreBrandDescriptionHero">
+                Founded in 2021, TRIPOT (PTY) LTD is a wholesale business recognized for its vendor numbers with major retailers like Pick n Pay, Est Africa, Mica, and Build It. Despite recent import delays, the company holds valuable private label stock and is committed to its recovery and staff retention.
+            </p>
+            <div class="button-container flex flex-wrap justify-center gap-4 mt-6">
+                <a href="javascript:void(0)" class="cta-button company-profile-cta-button" id="coreBrandExploreButton" onclick="showMainSection('executive-summary')">
+                    Explore Business Plan <i class="fas fa-file-alt"></i>
+                </a>
+                <a href="mailto:info@tripot.co.za" target="_blank" class="cta-button company-profile-cta-button" id="coreBrandShopButton">
+                    General Inquiries <i class="fas fa-envelope"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sign In Section (New) -->
+    <section id="sign-in-section" class="landing-section hidden py-16 md:py-24 px-6 md:px-12 text-center">
+        <div class="auth-form-container">
+            <h2>Sign In to Your TRIPOT Portal Account</h2>
+            <form id="signInForm" onsubmit="event.preventDefault(); handleSignIn();">
+                <label for="signInEmail">Email Address</label>
+                <input type="email" id="signInEmail" placeholder="your.email@example.com" required>
+
+                <label for="signInPassword">Password</label>
+                <input type="password" id="signInPassword" placeholder="********" required>
+
+                <button type="submit">Sign In</button>
+            </form>
+            <p class="text-center mt-6 text-sm text-gray-400">
+                Don't have an account? <a href="javascript:void(0)" onclick="showMainSection('sign-up-section')">Sign Up Here</a>
+            </p>
+            <div id="signInMessage" class="mt-4 text-red-400"></div>
+        </div>
+    </section>
+
+    <!-- Sign Up Section (New) -->
+    <section id="sign-up-section" class="landing-section hidden py-16 md:py-24 px-6 md:px-12 text-center">
+        <div class="auth-form-container">
+            <h2>Create Your TRIPOT Portal Account</h2>
+            <form id="signUpForm" onsubmit="event.preventDefault(); handleSignUp();">
+                <label for="signUpName">Full Name</label>
+                <input type="text" id="signUpName" placeholder="John Doe" required>
+
+                <label for="signUpEmail">Email Address</label>
+                <input type="email" id="signUpEmail" placeholder="your.email@example.com" required>
+
+                <label for="signUpPassword">Password</label>
+                <input type="password" id="signUpPassword" placeholder="********" required>
+
+                <label for="signUpConfirmPassword">Confirm Password</label>
+                <input type="password" id="signUpConfirmPassword" placeholder="********" required>
+
+                <button type="submit">Sign Up</button>
+            </form>
+            <p class="text-center mt-6 text-sm text-gray-400">
+                Already have an account? <a href="javascript:void(0)" onclick="showMainSection('sign-in-section')">Sign In Here</a>
+            </p>
+            <div id="signUpMessage" class="mt-4 text-red-400"></div>
+        </div>
+    </section>
+
+
+    <!-- TRIPOT Business Rescue Dashboard Content (initially hidden) -->
+    <div id="tripot-br-dashboard-wrapper" class="hidden flex-grow main-content-bg">
+        <div class="flex flex-grow dashboard-container">
+            <nav class="dashboard-sidebar-bg dashboard-sidebar">
+                <h2 class="text-xl font-semibold dashboard-primary-text mb-4">Portal Sections</h2>
+                <a href="javascript:void(0)" class="dashboard-sidebar-nav-item" onclick="showDashboardSection('br-overview')">
+                    <i class="fas fa-chart-pie"></i> Overview
+                </a>
+                <a href="javascript:void(0)" class="dashboard-sidebar-nav-item" onclick="showDashboardSection('company-details-panel')">
+                    <i class="fas fa-building"></i> Company Details
+                </a>
+                <a href="javascript:void(0)" class="dashboard-sidebar-nav-item" onclick="showDashboardSection('operational-areas')">
+                    <i class="fas fa-tasks"></i> Operational Areas
+                </a>
+                <a href="javascript:void(0)" class="dashboard-sidebar-nav-item" onclick="showDashboardSection('financial-analytics')">
+                    <i class="fas fa-chart-line"></i> Financial Analytics
+                </a>
+                <a href="javascript:void(0)" class="dashboard-sidebar-nav-item" onclick="showDashboardSection('stakeholder-comms')">
+                    <i class="fas fa-users-line"></i> Stakeholder Comms
+                </a>
+                <a href="javascript:void(0)" class="dashboard-sidebar-nav-item" onclick="showDashboardSection('ai-assistant')">
+                    <i class="fas fa-robot"></i> AI Assistant
+                </a>
+                 <a href="javascript:void(0)" class="dashboard-sidebar-nav-item" onclick="showDashboardSection('business-locations')">
+                    <i class="fas fa-map-marked-alt"></i> Business Locations
+                </a>
+                <a href="javascript:void(0)" class="dashboard-sidebar-nav-item" onclick="showDashboardSection('key-meetings')">
+                    <i class="fas fa-calendar-alt"></i> Key Meetings
+                </a>
+                <a href="javascript:void(0)" class="dashboard-sidebar-nav-item" onclick="showDashboardSection('portal-settings')">
+                    <i class="fas fa-cog"></i> Portal Settings
+                </a>
+            </nav>
+
+            <main class="flex-grow p-8 dashboard-main-content-bg overflow-y-auto dashboard-main-content">
+                <div class="flex h-full dashboard-main-content-wrapper">
+                    <nav id="operationalSubSidebar" class="dashboard-sidebar-bg operational-sub-sidebar hidden">
+                        <h3 class="text-lg font-semibold dashboard-primary-text mb-3">Operational Segments</h3>
+                        <a href="javascript:void(0)" class="dashboard-sidebar-nav-item" onclick="showOperationalSubSection('sales-division')">
+                            <i class="fas fa-chart-bar"></i> Sales & Distribution
+                        </a>
+                        <a href="javascript:void(0)" class="dashboard-sidebar-nav-item" onclick="showOperationalSubSection('imports-logistics')">
+                            <i class="fas fa-truck-loading"></i> Imports & Logistics
+                        </a>
+                        <a href="javascript:void(0)" class="dashboard-sidebar-nav-item" onclick="showOperationalSubSection('finance-admin')">
+                            <i class="fas fa-file-invoice-dollar"></i> Finance & Admin
+                        </a>
+                        <a href="javascript:void(0)" class="dashboard-sidebar-nav-item" onclick="showOperationalSubSection('human-resources')">
+                            <i class="fas fa-users-gear"></i> Human Resources
+                        </a>
+                    </nav>
+
+                    <div class="flex-grow">
+                        <section id="br-overview" class="mb-8 dashboard-card">
+                            <h2 class="text-3xl font-bold dashboard-primary-text mb-6" id="dashboardOverviewTitle">TRIPOT Business Rescue Overview</h2>
+                            <p class="dashboard-muted-text mb-4" id="dashboardOverviewDescription">
+                                This section provides a high-level overview of the current status of TRIPOT (PTY) LTD's business rescue proceedings, summarizing key metrics and recent progress.
+                            </p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div class="dashboard-sub-card">
+                                    <h3 class="text-xl font-semibold dashboard-text-light mb-2">Assets Under Protection</h3>
+                                    <p class="text-4xl font-bold dashboard-primary-text">R 5M+</p>
+                                </div>
+                                <div class="dashboard-sub-card">
+                                    <h3 class="text-xl font-semibold dashboard-text-light mb-2">Creditors Notified</h3>
+                                    <p class="text-4xl font-bold dashboard-secondary-text">XX / YY</p>
+                                </div>
+                                <div class="dashboard-sub-card">
+                                    <h3 class="text-xl font-semibold dashboard-text-light mb-2">Recovery Phase</h3>
+                                    <p class="text-4xl font-bold text-teal-400">Phase 1 (Stabilization)</p>
+                                </div>
+                            </div>
+                            <div class="mt-8">
+                                <h3 class="text-2xl font-semibold dashboard-text-light mb-4">Quick Status Updates</h3>
+                                <ul class="list-disc list-inside dashboard-muted-text space-y-2">
+                                    <li>Formal Resolution: Filed with CIPC</li>
+                                    <li>BRP Appointment: Pending</li>
+                                    <li>Current Operations: Limited, focusing on inventory assessment</li>
+                                    <li>Next Legal Date: 1 July 2025 (Landlord Hypothec)</li>
+                                </ul>
+                            </div>
+                        </section>
+
+                        <!-- Company Details Dashboard Panel (repurposed from Core Brand Dashboard Panel) -->
+                        <section id="company-details-panel" class="hidden mb-8 dashboard-card">
+                            <h2 class="text-3xl font-bold dashboard-primary-text mb-6" id="coreBrandDashboardTitle">Company Details: TRIPOT (PTY) LTD</h2>
+                            <div class="flex flex-col md:flex-row items-center gap-6 mb-8">
+                                <i id="coreBrandDashboardIcon" class="text-6xl text-blue-400"></i>
+                                <div>
+                                    <h3 class="text-2xl font-semibold dashboard-text-light" id="coreBrandDashboardName">TRIPOT (PTY) LTD</h3>
+                                    <p class="dashboard-muted-text" id="coreBrandDashboardSlogan">Wholesale Excellence, Resilient Future.</p>
+                                </div>
+                            </div>
+                            <p class="dashboard-muted-text mb-6" id="coreBrandDashboardDescription">
+                                This panel provides detailed information about TRIPOT (PTY) LTD, including its business model, key relationships, and current operational status under business rescue.
+                            </p>
+                            <h4 class="text-xl font-semibold dashboard-text-light mb-3">Key Highlights:</h4>
+                            <ul id="coreBrandDashboardHighlights" class="list-disc list-inside dashboard-muted-text space-y-2 ml-4">
+                                <!-- Dynamically populated highlights -->
+                            </ul>
+                            <div class="mt-6 text-center">
+                                <a href="javascript:void(0)" id="coreBrandDashboardCta" class="px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition duration-200">
+                                    View Full Company Profile <i class="fas fa-info-circle ml-2"></i>
+                                </a>
+                            </div>
+                        </section>
+
+                        <!-- Operational Areas Dashboard Panel (repurposed from Sub-Node Index Dashboard Panel) -->
+                        <section id="operational-areas" class="hidden mb-8 dashboard-card">
+                            <h2 class="text-3xl font-bold dashboard-primary-text mb-6" id="subNodeIndexTitle">Operational Areas Under Review</h2>
+                            <p class="dashboard-muted-text mb-4" id="subNodeIndexDescription">
+                                Explore the various operational divisions and specialized functions within TRIPOT that are central to the business rescue restructuring and recovery plan.
+                            </p>
+                            <div id="subNodeGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <!-- Sub-node cards will be dynamically loaded here -->
+                            </div>
+
+                            <!-- Sub-Node Details Display Area (repurposed for Operational Area Details) -->
+                            <div id="subNodeDetailsContainer" class="mt-8 dashboard-card hidden">
+                                <h3 id="subNodeDetailTitle" class="text-2xl font-bold dashboard-primary-text mb-4"></h3>
+                                <p id="subNodeDetailDescription" class="dashboard-muted-text mb-4"></p>
+                                <div id="subNodeDetailContent">
+                                    <!-- Dynamic content based on sub-node will go here -->
+                                </div>
+                                <button onclick="hideSubNodeDetails()" class="mt-6 px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition duration-200">
+                                    <i class="fas fa-arrow-left mr-2"></i> Back to Operational Areas
+                                </button>
+                            </div>
+                        </section>
+
+                        <section id="financial-analytics" class="hidden mb-8 dashboard-card">
+                            <h2 class="text-3xl font-bold dashboard-primary-text mb-6">Financial Analytics</h2>
+                            <p class="dashboard-muted-text mb-4">
+                                Track key financial metrics and projections relevant to the business rescue process. These charts provide insights into the company's financial health and recovery trajectory.
+                            </p>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 grid-cols-2-md">
+                                <div class="dashboard-sub-card">
+                                    <h3 class="text-xl font-semibold dashboard-text-light mb-2">Debt vs. Asset Value</h3>
+                                    <p class="dashboard-muted-text">Comparison of total liabilities against protected assets.</p>
+                                    <div class="mt-4 dashboard-card bg-gray-800 p-4 rounded-md">
+                                        <canvas id="debtAssetChart"></canvas>
+                                    </div>
+                                </div>
+                                <div class="dashboard-sub-card">
+                                    <h3 class="text-xl font-semibold dashboard-text-light mb-2">Projected Sales Recovery</h3>
+                                    <p class="dashboard-muted-text">Forecasted revenue growth during the business rescue period.</p>
+                                    <div class="mt-4 dashboard-card bg-gray-800 p-4 rounded-md">
+                                        <canvas id="salesRecoveryChartDashboard"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section id="stakeholder-comms" class="hidden mb-8 dashboard-card">
+                            <h2 class="text-3xl font-bold dashboard-primary-text mb-6">Stakeholder Communications</h2>
+                            <p class="dashboard-muted-text mb-4">
+                                This section provides tools and information for transparent communication with all stakeholders, including creditors, staff, and partners.
+                            </p>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                                <div class="dashboard-sub-card">
+                                    <h3 class="text-xl font-semibold dashboard-text-light mb-2">Creditor Updates</h3>
+                                    <p class="text-4xl font-bold dashboard-secondary-text">Frequent</p>
+                                </div>
+                                <div class="dashboard-sub-card">
+                                    <h3 class="text-xl font-semibold dashboard-text-light mb-2">Staff Briefings</h3>
+                                    <p class="text-4xl font-bold text-yellow-400">Weekly</p>
+                                </div>
+                                <div class="dashboard-sub-card">
+                                    <h3 class="text-xl font-semibold dashboard-text-light mb-2">Partner Outreach</h3>
+                                    <p class="text-4xl font-bold text-green-400">Ongoing</p>
+                                </div>
+                            </div>
+
+                            <h3 class="text-2xl font-semibold dashboard-text-light mb-4">Communication Log</h3>
+                            <div class="overflow-x-auto mb-8">
+                                <table class="min-w-full bg-gray-700 rounded-lg shadow-md">
+                                    <thead>
+                                        <tr>
+                                            <th class="py-3 px-4 text-left text-sm font-semibold dashboard-muted-text uppercase tracking-wider border-b dashboard-border-dark">Date</th>
+                                            <th class="py-3 px-4 text-left text-sm font-semibold dashboard-muted-text uppercase tracking-wider border-b dashboard-border-dark">Audience</th>
+                                            <th class="py-3 px-4 text-left text-sm font-semibold dashboard-muted-text uppercase tracking-wider border-b dashboard-border-dark">Subject</th>
+                                            <th class="py-3 px-4 text-left text-sm font-semibold dashboard-muted-text uppercase tracking-wider border-b dashboard-border-dark">Status</th>
+                                            <th class="py-3 px-4 text-left text-sm font-semibold dashboard-muted-text uppercase tracking-wider border-b dashboard-border-dark">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="hover:bg-gray-600 transition duration-200">
+                                            <td class="py-3 px-4 border-b dashboard-border-dark">2025-06-26</td>
+                                            <td class="py-3 px-4 border-b dashboard-border-dark">CIPC</td>
+                                            <td class="py-3 px-4 border-b dashboard-border-dark">BR Commencement Filing</td>
+                                            <td class="py-3 px-4 border-b dashboard-border-dark"><span class="bg-green-500 text-white text-xs font-semibold px-2.5 py-0.5 rounded-full">Filed</span></td>
+                                            <td class="py-3 px-4 border-b dashboard-border-dark">
+                                                <button class="text-blue-400 hover:text-blue-300 mr-2">View Receipt</button>
+                                            </td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-600 transition duration-200">
+                                            <td class="py-3 px-4 border-b dashboard-border-dark">2025-06-27</td>
+                                            <td class="py-3 px-4 border-b dashboard-border-dark">Creditors</td>
+                                            <td class="py-3 px-4 border-b dashboard-border-dark">Initial Notification</td>
+                                            <td class="py-3 px-4 border-b dashboard-border-dark"><span class="bg-yellow-500 text-white text-xs font-semibold px-2.5 py-0.5 rounded-full">Pending Send</span></td>
+                                            <td class="py-3 px-4 border-b dashboard-border-dark">
+                                                <button class="text-blue-400 hover:text-blue-300 mr-2">Draft</button>
+                                                <button class="text-red-400 hover:text-red-300">Reschedule</button>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                </table>
+                            </div>
+                        </section>
+
+                        <section id="ai-assistant" class="hidden mb-8 dashboard-card">
+                            <h2 class="text-3xl font-bold dashboard-primary-text mb-6">AI Assistant</h2>
+                            <p class="dashboard-muted-text mb-4">Leverage AI to assist with various aspects of the business rescue process, from drafting communications to analyzing data.</p>
+
+                            <div class="api-key-warning mb-4">
+                                <strong>Security Alert!</strong> For production, never expose your API key directly in client-side code. Use a backend server to proxy your AI requests.
+                            </div>
+
+                            <!-- Smart Text Editor Section -->
+                            <div class="mb-8">
+                                <h3 class="text-xl font-semibold dashboard-text-light mb-3">✍️ Smart Text Editor</h3>
+                                <p class="dashboard-muted-text mb-3">Enter your text below to use advanced AI tools for analysis and generation related to business rescue documents and communications.</p>
+                                <textarea id="smartTextEditorInput" rows="8" class="w-full p-3 rounded-lg bg-gray-700 border dashboard-border-dark dashboard-text-light placeholder-dashboard-muted-text focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Type or paste text from reports, emails, or legal documents here..."></textarea>
+
+                                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+                                    <button id="btnSummarizeText" class="px-4 py-2 bg-purple-500 text-white font-semibold rounded-lg hover:bg-purple-600 transition duration-200 text-sm">
+                                        Summarize Document
+                                    </button>
+                                    <button id="btnDraftResponse" class="px-4 py-2 bg-purple-500 text-white font-semibold rounded-lg hover:bg-purple-600 transition duration-200 text-sm">
+                                        Draft Response
+                                    </button>
+                                    <button id="btnSimplifyLegal" class="px-4 py-2 bg-purple-500 text-white font-semibold rounded-lg hover:bg-purple-600 transition duration-200 text-sm">
+                                        Simplify Legal Text
+                                    </button>
+                                    <button id="btnGenerateReportSnippet" class="px-4 py-2 bg-purple-500 text-white font-semibold rounded-lg hover:bg-purple-600 transition duration-200 text-sm">
+                                        Generate Report Snippet
+                                    </button>
+                                    <button id="btnAnalyzeSentiment" class="px-4 py-2 bg-purple-500 text-white font-semibold rounded-lg hover:bg-purple-600 transition duration-200 text-sm">
+                                        Analyze Sentiment
+                                    </button>
+                                    <button id="btnExtractKeywords" class="px-4 py-2 bg-purple-500 text-white font-semibold rounded-lg hover:bg-purple-600 transition duration-200 text-sm">
+                                        Extract Key Points
+                                    </button>
+                                </div>
+
+                                <div class="mt-4 p-4 bg-gray-700 rounded-lg border dashboard-border-dark">
+                                    <h4 class="text-lg font-semibold dashboard-text-light mb-2" id="smartTextResultTitle">Smart Text Output:</h4>
+                                    <div id="smartTextResultContent" class="dashboard-text-light whitespace-pre-wrap min-h-[50px] flex items-center justify-center">
+                                        Your AI generated text will appear here.
+                                    </div>
+                                    <div id="smartTextError" class="text-red-400 mt-2 hidden"></div>
+                                </div>
+                            </div>
+
+                            <!-- Dynamic Query Feature -->
+                            <div class="mb-8">
+                                <h3 class="text-xl font-semibold dashboard-text-light mb-3">❓ Dynamic Query</h3>
+                                <p class="dashboard-muted-text mb-3">Ask the AI Assistant any question related to business rescue, regulations, or general business advice.</p>
+                                <textarea id="dynamicQueryInput" rows="4" class="w-full p-3 rounded-lg bg-gray-700 border dashboard-border-dark dashboard-text-light placeholder-dashboard-muted-text focus:outline-none focus:ring-2 focus:ring-primary-color" placeholder="e.g., 'What are the legal requirements for notifying creditors in South Africa?', 'Explain the role of a BRP.'"></textarea>
+                                <button id="sendDynamicQuery" class="px-6 py-3 bg-primary-color text-white font-semibold rounded-lg hover:bg-blue-600 transition duration-200 mt-4 self-end">
+                                    Ask Dynamic Query
+                                </button>
+                                <div class="mt-4 p-4 bg-gray-700 rounded-lg border dashboard-border-dark">
+                                    <h4 class="text-lg font-semibold dashboard-text-light mb-2">Dynamic Query Response:</h4>
+                                    <div id="dynamicQueryResponse" class="dashboard-text-light whitespace-pre-wrap">
+                                        Your AI assistant response will appear here.
+                                    </div>
+                                    <div id="dynamicQueryError" class="text-red-400 mt-2 hidden"></div>
+                                </div>
+                            </div>
+
+                             <!-- Removed Coding Partner and Career Guide as they are less specific to a BR portal -->
+
+                        </section>
+
+                        <section id="business-locations" class="hidden mb-8 dashboard-card">
+                            <h2 class="text-3xl font-bold dashboard-primary-text mb-6">Business Locations & Operational Reach</h2>
+                            <p class="dashboard-muted-text mb-4">Visualize key operational sites and potential distribution hubs for TRIPOT (PTY) LTD.</p>
+
+                            <div class="space-y-8">
+                                <div class="dashboard-card p-4 rounded-lg border dashboard-border-dark">
+                                    <h3 class="text-2xl font-semibold dashboard-secondary-text mb-3">Key Office Location</h3>
+                                    <p class="dashboard-muted-text mb-3">Primary business and office address for TRIPOT (PTY) LTD.</p>
+                                    <gmp-map center="-25.7479,28.2293" zoom="10" map-id="TRIPOT_HQ_MAP">
+                                        <gmp-advanced-marker position="-25.7479,28.2293" title="40 Zanie Straat, Newmark Estate, Pretoria"></gmp-advanced-marker>
+                                    </gmp-map>
+                                    <div class="api-key-warning mt-4">
+                                        <strong>IMPORTANT:</strong> The Google Maps API key is embedded in the script tag in `showDashboardSection` function. For production, **never expose your API key directly in client-side code.** Consider using a backend proxy.
+                                        <br>
+                                        If you are getting an `InvalidKeyMapError`, ensure the Maps JavaScript API is enabled for your Google Cloud Project, along with correct application restrictions.
+                                    </div>
+                                </div>
+
+                                <div class="dashboard-card p-4 rounded-lg border dashboard-border-dark">
+                                    <h3 class="text-2xl font-semibold dashboard-secondary-text mb-3">Warehouse & Distribution Points</h3>
+                                    <p class="dashboard-muted-text mb-3">Potential locations for inventory storage and distribution as part of the operational restructuring.</p>
+                                    <div id="leaflet-map-container"></div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section id="key-meetings" class="hidden mb-8 dashboard-card">
+                            <h2 class="text-3xl font-bold dashboard-primary-text mb-6">Key Meetings & Milestones</h2>
+                            <p class="text-lg dashboard-muted-text mb-4">A record of crucial meetings and their outcomes, vital for tracking the business rescue process.</p>
+
+                            <div class="space-y-8">
+                                <div>
+                                    <h3 class="text-2xl font-semibold dashboard-text-light mb-3">Recent Meeting Details:</h3>
+                                    <ul class="list-disc list-inside ml-4 dashboard-text-light space-y-1">
+                                        <li><strong>Date:</strong> June 26, 2025</li>
+                                        <li><strong>Time:</strong> 12:44 PM SAST (Pretoria, South Africa)</li>
+                                        <li><strong>Attendees:</strong> TRIPOT Director (Heyns Schoeman), Legal Counsel, Financial Advisor</li>
+                                        <li><strong>Focus:</strong> Resolution to initiate Business Rescue proceedings.</li>
+                                    </ul>
+                                </div>
+
+                                <div>
+                                    <h3 class="text-2xl font-semibold dashboard-text-light mb-3">Discussion Highlights:</h3>
+                                    <div class="space-y-4 ml-4">
+                                        <div class="dashboard-card p-4 rounded-lg border dashboard-border-dark">
+                                            <h4 class="text-xl font-medium dashboard-secondary-text mb-2">Formal Business Rescue Initiation:</h4>
+                                            <p class="dashboard-muted-text"><strong>Outcome:</strong> Board resolution passed to formally commence business rescue under Section 129(1) of the Companies Act.</p>
+                                            <p class="dashboard-muted-text mt-1"><strong>Action:</strong> Immediate filing with CIPC and preparation for BRP appointment.</p>
+                                        </div>
+                                        <div class="dashboard-card p-4 rounded-lg border dashboard-border-dark">
+                                            <h4 class="text-xl font-medium dashboard-secondary-text mb-2">Asset Protection Strategy:</h4>
+                                            <p class="dashboard-muted-text"><strong>Outcome:</strong> Confirmation of legal measures to protect movable assets at 40 Zanie Straat from landlord's hypothec execution.</p>
+                                            <p class="dashboard-muted-text mt-1"><strong>Action:</strong> BRP to work with legal team to secure moratorium.</p>
+                                        </div>
+                                        <div class="dashboard-card p-4 rounded-lg border dashboard-border-dark">
+                                            <h4 class="text-xl font-medium dashboard-secondary-text mb-2">Stakeholder Communication Plan:</h4>
+                                            <p class="dashboard-muted-text"><strong>Outcome:</strong> Agreement on a transparent communication strategy for all creditors, suppliers, and staff.</p>
+                                            <p class="dashboard-muted-text mt-1"><strong>Action:</strong> Draft initial notification letters and prepare for ongoing updates.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 class="text-2xl font-semibold dashboard-text-light mb-3">Action Items for the Team:</h3>
+                                    <ul class="list-disc list-inside ml-4 dashboard-text-light space-y-2">
+                                        <li><strong>IMMEDIATE & CRITICAL:</strong> Ensure all necessary documents for CIPC filing are prepared and submitted by June 26, 2025.</li>
+                                        <li><strong>LEGAL TEAM:</strong> Appoint an interim Business Rescue Practitioner (BRP) and commence legal procedures for the moratorium.</li>
+                                        <li><strong>OPERATIONS:</strong> Conduct a comprehensive inventory valuation for all stock, including private label goods.</li>
+                                        <li><strong>FINANCE:</strong> Prepare a detailed list of all creditors and outstanding amounts.</li>
+                                        <li><strong>COMMUNICATIONS:</strong> Draft and prepare to send initial notification letters to all registered creditors as per legal timelines.</li>
+                                        <li><strong>HUMAN RESOURCES:</strong> Develop a plan for potential staff reinstatement and retention under the business rescue plan.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section id="portal-settings" class="hidden mb-8 dashboard-card">
+                            <h2 class="text-3xl font-bold dashboard-primary-text mb-6">Portal Settings</h2>
+                            <p class="dashboard-muted-text mb-4">
+                                Manage your account preferences, notifications, and application settings for the TRIPOT Business Rescue Portal.
+                            </p>
+
+                            <div class="space-y-6">
+                                <div class="dashboard-sub-card">
+                                    <h3 class="text-xl font-semibold dashboard-text-light mb-3">Profile Settings</h3>
+                                    <div class="flex flex-col gap-4">
+                                        <div>
+                                            <label for="userName" class="block text-sm font-medium dashboard-muted-text mb-1">Full Name</label>
+                                            <input type="text" id="userName" value="Heyns Schoeman" class="w-full px-3 py-2 rounded-lg bg-gray-700 border dashboard-border-dark dashboard-text-light focus:outline-none focus:ring-2 focus:ring-primary-color">
+                                        </div>
+                                        <div>
+                                            <label for="userEmail" class="block text-sm font-medium dashboard-muted-text mb-1">Email Address</label>
+                                            <input type="email" id="userEmail" value="director@tripot.co.za" class="w-full px-3 py-2 rounded-lg bg-gray-700 border dashboard-border-dark dashboard-text-light focus:outline-none focus:ring-2 focus:ring-primary-color" disabled>
+                                            <p class="text-xs text-gray-500 mt-1">Email cannot be changed here.</p>
+                                        </div>
+                                        <button onclick="saveProfileSettings()" class="px-6 py-3 bg-primary-color text-white font-semibold rounded-lg hover:bg-blue-600 transition duration-200 self-start">
+                                            Save Profile
+                                        </button>
+                                        <div id="profileSaveMessage" class="mt-2 text-sm text-green-400 hidden"></div>
+                                    </div>
+                                </div>
+
+                                <div class="dashboard-sub-card">
+                                    <h3 class="text-xl font-semibold dashboard-text-light mb-3">Notification Preferences</h3>
+                                    <div class="flex items-center justify-between mb-3">
+                                        <span class="dashboard-muted-text">Email Notifications</span>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="emailNotifications" checked onchange="toggleNotification('Email')">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="dashboard-muted-text">Push Notifications</span>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="pushNotifications" onchange="toggleNotification('Push')">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="dashboard-sub-card">
+                                    <h3 class="text-xl font-semibold dashboard-text-light mb-3">Theme Settings</h3>
+                                    <div class="flex items-center justify-between">
+                                        <span class="dashboard-muted-text">Dark Mode</span>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="darkModeToggle" checked onchange="toggleDarkMode(this)">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-2">
+                                        Note: Theme changes currently apply globally based on portal configuration.
+                                    </p>
+                                </div>
+
+                                <div class="dashboard-sub-card">
+                                    <h3 class="text-xl font-semibold dashboard-text-light mb-3">API Key Management</h3>
+                                    <p class="dashboard-muted-text mb-4">
+                                        View and manage API keys for integrations. For security, sensitive keys are not editable here.
+                                    </p>
+                                    <div class="space-y-3 text-sm dashboard-text-light">
+                                        <p><strong>Google Maps API Key:</strong> <code>[Configured in script, not displayed for security]</code></p>
+                                        <p><strong>Gemini AI™ API Key:</strong> <code>[Configured in script, not displayed for security]</code></p>
+                                        <p><strong>PayPal SDK Client ID:</strong> <code>${window.API_KEYS.PAYPAL_SDK_CLIENT_ID}</code> <span class="text-yellow-400 text-xs">(For client-side; server-side processing recommended)</span></p>
+                                        <p><strong>Xero Client ID:</strong> <code>${window.API_KEYS.XERO_CLIENT_ID}</code> <span class="text-red-400 text-xs">(Backend Only!)</span></p>
+                                        <p><strong>Xero Redirect URI:</strong> <code>${window.API_KEYS.XERO_REDIRECT_URI}</code> <span class="text-red-400 text-xs">(Backend Only!)</span></p>
+                                        <p class="api-key-warning mt-3">
+                                            <strong>SECURITY ALERT:</strong> The above values are shown for demonstration. In a real application, most API keys (especially secrets) should be managed **only on your backend server** and never exposed client-side.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <footer class="py-8 px-6 md:px-12 text-center">
+        © 2025 TRIPOT (PTY) LTD. All Rights Reserved. Business Rescue Portal.
+    </footer>
+
+    <!-- Leaflet JS (kept as it was part of the provided template) -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+
+    <script>
+        // --- GLOBAL API KEYS AND CREDENTIALS (FOR DEMO/DEVELOPMENT) ---
+        // IMPORTANT SECURITY NOTE:
+        // For production environments, sensitive API keys (especially client secrets,
+        // webhook keys, and any key giving write access or access to sensitive user data)
+        // MUST NEVER be directly exposed in client-side JavaScript.
+        // Instead, these should be securely stored on a backend server, and client-side
+        // applications should communicate with your backend, which then proxies
+        // requests to the third-party APIs.
+        window.API_KEYS = {
+            // PayPal
+            PAYPAL_SDK_CLIENT_ID: "BAAGdPecRsf6dw_nIrWqUen0GdW0UsBZapp1Gn62xkPdD-Vqc-4lqWAidKK8LOObXux8pHJGjXknZoar6Q",
+            PAYPAL_HOSTED_BUTTON_STARTER: "EMWGPGHNN8Y8E",
+            PAYPAL_HOSTED_BUTTON_PRO: "QGU3ZUQCMD49Q",
+            PAYPAL_HOSTED_BUTTON_ENTERPRISE: "9C88S44F93M5J",
+            PAYPAL_HOSTED_BUTTON_BANIMAL_LOOP: "YOUR_BANIMAL_PAYPAL_BUTTON_ID_HERE", // Placeholder
+
+            // Google Maps (already present, now explicitly listed)
+            GOOGLE_MAPS_API_KEY: "AIzaSyBPG8dG29cl0TvYRGyLozejGed5Wj5Ab80",
+
+            // Spotify (Access Token - Note: These are short-lived. A backend would refresh them.)
+            SPOTIFY_ACCESS_TOKEN: "BQBDSZ232IQmSLV1BROkxqdwNMoGhtitKOJBjDzE-Lu9YKsSK1RKVwXNfYfncP2wf6Fj6xcYlnGD75baEqOmd3XtxhUhB-X6koPd92H9S0rQBqZ0HSKpsb04HiAme_FtqVLket7_s07gH9y1nxuPhbRyxp0r59oXtovV-uw0lCt2B7Mh5OmN3untEAGhfg6a6AZsaWLsv02dh6zKOQ_6DXHvCHZWxcVmoggu4eLA2NrqAf8rFRSNOw6HQpaN-VZkJWblznWQ0pT7ynzjpKOPlM_70N7vOLIZF8XnRmN1Oe784V-XfYNV-j1x1kdXGEpzlx1", // Long token, likely for API calls, not embeds.
+
+            // Gemini AI (already present)
+            GEMINI_API_KEY: "AIzaSyBGSDZATtITv5iIoB3rgKHBpWx9MrufxXE",
+
+            // Xero (CRITICAL: These MUST be handled server-side for production!)
+            XERO_CLIENT_ID: "81B3573D453040508996432C5DAD565B",
+            XERO_CLIENT_SECRET: "FIaJGmsaCcKR3Z8kWxPnQd04EhYy6_bImPmoitQDP1U6Smaq", // Highly sensitive!
+            XERO_REDIRECT_URI: "https://seedwave.faa.zone/admin_panel_xero.html",
+            XERO_WEBHOOK_KEY: "2fd5LQV0TQDI3572Er/sg66zqEbl8mFWRyfX3XkoKFZGRLK2cZPGpWV/j4yMTU7aUpbgBCfeZkuHnQIwD/0igw==", // Highly sensitive!
+        };
+
+
+        // --- GLOBAL CONFIGURATION FOR TRIPOT BUSINESS RESCUE PORTAL ---
+        window.allSectorConfigs = {
+            "tripot-business-rescue": {
+                name: "TRIPOT Business Rescue Portal",
+                shortName: "TRIPOT BR",
+                description: "Your dedicated portal for all information regarding TRIPOT (PTY) LTD's business rescue proceedings. Transparency and collaboration for a successful recovery.",
+                heroHeadline: "TRIPOT Business Rescue: <br> <span>Charting a Path to Recovery.</span>",
+                heroSubtitle: "Access critical updates, key documents, and the strategic plan for TRIPOT (PTY) LTD's financial restructuring and operational revival.",
+                ctaButtonText: "Explore the Plan <span>➡️</span>",
+                colors: {
+                    primary: "#3b82f6", // Strong Blue for emphasis
+                    secondary: "#8b5cf6", // Softer Purple for accents
+                    accent: "#f97316", // Orange for warnings/highlights
+                    button: "#3b82f6",
+                    buttonDark: "#2563eb",
+                    bgStart: "#1f215a", // Dark blue-purple
+                    bgEnd: "#0d1117", // Very dark charcoal
+                    textColor: "#e2e8f0",
+                    mutedText: "#a0aec0",
+                    cardBg: "#1a1b20",
+                    borderColor: "rgba(255,255,255,0.1)",
+                },
+                coreBrand: {
+                    id: "tripot-profile",
+                    name: "TRIPOT (PTY) LTD",
+                    slogan: "Wholesale Excellence, Resilient Future.",
+                    description: "This section details the operational profile of TRIPOT (PTY) LTD, a wholesale business with established vendor networks at national chains and significant import relationships.",
+                    subDescription: "Founded in 2021, TRIPOT (PTY) LTD is a wholesale business recognized for its vendor numbers with major retailers like Pick n Pay, Est Africa, Mica, and Build It. Despite recent import delays, the company holds valuable private label stock and is committed to its recovery and staff retention.",
+                    icon: "fas fa-warehouse",
+                    highlights: [
+                        "Established vendor relationships with national chains (Pick n Pay, Mica, Build It).",
+                        "Sole distributor for a key international import partner.",
+                        "Millions of Rands in private label stock secured in warehousing.",
+                        "No bank loans, overdrafts, or significant external debt (excluding rental agreements)."
+                    ],
+                    link: "#", // Will link internally to the dashboard's company details
+                    shopLink: "mailto:info@tripot.co.za", // Repurpose for general inquiries
+                    colors: { // Using main sector colors for consistency within the core brand section
+                        primary: "#3b82f6",
+                        accent: "#f97316",
+                        text: "#e2e8f0",
+                        mutedText: "#a0aec0",
+                        bgStart: "#1f215a",
+                        bgEnd: "#0d1117",
+                        button: "#3b82f6",
+                        buttonDark: "#2563eb"
+                    },
+                    canvasColors: ['rgba(59, 130, 246, ', 'rgba(139, 92, 246, '], // Blue/Purple for particles
+                },
+                features: [ // Key Pillars of the Business Rescue Plan
+                    { icon: "🔒", title: "Asset Preservation", description: "Safeguarding company assets from immediate liquidation, including essential office equipment." },
+                    { icon: "⚙️", title: "Operational Continuity", description: "Ensuring business operations continue by leveraging existing stock and import relationships." },
+                    { icon: "🤝", title: "Stakeholder Transparency", description: "Maintaining open, clear, and frequent communication with creditors, staff, and partners." },
+                    { icon: "📈", title: "Sales & Profit Revival", description: "Implementing aggressive strategies to accelerate sales, utilize inventory, and return to profitability." },
+                    { icon: "🧑‍💼", title: "Staff Reinstatement", description: "Prioritizing the reinstatement of experienced and qualified personnel to drive sales and recovery." },
+                    { icon: "💸", title: "Debt Restructuring", description: "Working with the Business Rescue Practitioner to manage and restructure outstanding financial obligations effectively." }
+                ],
+                terminals: [ // Key Documents & Stakeholder Portals
+                    { name: "Official Resolution", url: "#full-resolution-modal", icon: "📜" }, // Special internal link
+                    { name: "Creditor Information", url: "mailto:creditors@tripot.co.za", icon: "🏦" },
+                    { name: "Staff Communications", url: "mailto:staff@tripot.co.za", icon: "👥" },
+                    { name: "Legal Correspondence", url: "mailto:legal@tripot.co.za", icon: "⚖️" }
+                ],
+                subNodes: [ // Key Operational Areas under BR
+                    { id: "sales-division", name: "Sales & Distribution", description: "Focus on leveraging existing sales orders and national vendor numbers to generate immediate revenue.", icon: "fas fa-chart-line", link: "#" },
+                    { id: "imports-logistics", name: "Imports & Logistics", description: "Managing inbound stock, optimizing supply chain post-delay, and ensuring timely delivery of goods.", icon: "fas fa-truck-loading", link: "#" },
+                    { id: "finance-admin", name: "Finance & Administration", description: "Handling creditor communications, managing financial records, and ensuring legal compliance.", icon: "fas fa-file-invoice-dollar", link: "#" },
+                    { id: "human-resources", name: "Human Resources", description: "Managing staff retention, welfare, and implementing plans for potential reinstatement of key personnel.", icon: "fas fa-users-gear", link: "#" }
+                ],
+                dashboard: {
+                    overviewDescription: "This dashboard provides a comprehensive overview of TRIPOT (PTY) LTD's business rescue proceedings, offering insights into key operational areas, financial status, and strategic actions for recovery.",
+                }
+            }
+        };
+
+        // --- GLOBAL STATE ---
+        // Initially set to the TRIPOT Business Rescue sector
+        let currentSectorId = "tripot-business-rescue";
+        let currentSectorConfig = {}; // Will hold the configuration of the active sector
+
+        let googleMapScriptLoaded = false;
+        let leafletMapInstance = null;
+        let activeDashboardSubSection = 'br-overview'; // Default dashboard section
+        let activeOperationalSubSection = 'sales-division'; // Default operational sub-section
+
+        let companyProfileAnimationFrameId; // Changed from coreBrandAnimationFrameId to be specific
+
+
+        // Gemini AI Key and Google Maps API Key (from previous versions, kept for consistency)
+        const GEMINI_API_KEY = window.API_KEYS.GEMINI_API_KEY;
+        const GOOGLE_MAPS_API_KEY = window.API_KEYS.GOOGLE_MAPS_API_KEY;
+
+
+        // --- DYNAMIC RENDERING FUNCTIONS ---
+
+        // Function to update CSS variables based on the current sector's colors
+        function updateCssVariables(colors) {
+            const root = document.documentElement;
+            root.style.setProperty('--primary-color', colors.primary);
+            root.style.setProperty('--secondary-color', colors.secondary);
+            root.style.setProperty('--accent-color', colors.accent);
+            root.style.setProperty('--button-color', colors.button);
+            root.style.setProperty('--button-color-dark', colors.buttonDark);
+            root.style.setProperty('--background-gradient-start', colors.bgStart);
+            root.style.setProperty('--background-gradient-end', colors.bgEnd);
+            root.style.setProperty('--text-color', colors.textColor);
+            root.style.setProperty('--muted-text', colors.mutedText);
+            root.style.setProperty('--card-bg', colors.cardBg);
+            root.style.setProperty('--border-color', colors.borderColor);
+
+            // Core brand specific variables
+            root.style.setProperty('--core-brand-bg-start', colors.coreBrand?.colors?.bgStart || colors.bgStart);
+            root.style.setProperty('--core-brand-bg-end', colors.coreBrand?.colors?.bgEnd || colors.bgEnd);
+            root.style.setProperty('--core-brand-text-color', colors.coreBrand?.colors?.text || colors.textColor);
+            root.style.setProperty('--core-brand-dark-text', colors.coreBrand?.colors?.text || colors.textColor);
+            root.style.setProperty('--core-brand-muted-text', colors.coreBrand?.colors?.mutedText || colors.mutedText);
+            root.style.setProperty('--core-brand-accent-color', colors.coreBrand?.colors?.accent || colors.accent);
+            root.style.setProperty('--core-brand-button-color', colors.coreBrand?.colors?.button || colors.button);
+            root.style.setProperty('--core-brand-button-color-dark', colors.coreBrand?.colors?.buttonDark || colors.buttonDark);
+
+            // Featured section specific variables (usually same as core brand if featured)
+            root.style.setProperty('--featured-core-brand-bg-start', colors.coreBrand?.colors?.bgStart || colors.bgStart);
+            root.style.setProperty('--featured-core-brand-bg-end', colors.coreBrand?.colors?.bgEnd || colors.bgEnd);
+            root.style.setProperty('--featured-core-brand-text-color', colors.coreBrand?.colors?.text || colors.textColor);
+            root.style.setProperty('--featured-core-brand-muted-text', colors.coreBrand?.colors?.mutedText || colors.mutedText);
+            root.style.setProperty('--featured-core-brand-button-color', colors.coreBrand?.colors?.button || colors.button);
+            root.style.setProperty('--featured-core-brand-button-color-dark', colors.coreBrand?.colors?.buttonDark || colors.buttonDark);
+        }
+
+        // Renders all dynamic content for the current sector (TRIPOT Business Rescue in this case)
+        function renderCurrentSectorContent() {
+            currentSectorConfig = window.allSectorConfigs[currentSectorId]; // Will only be 'tripot-business-rescue'
+            const currentCoreBrand = currentSectorConfig.coreBrand;
+
+            // Update page title
+            document.getElementById('dynamicTitle').innerText = currentSectorConfig.name;
+
+            // Update CSS variables
+            updateCssVariables(currentSectorConfig.colors);
+
+            // Update Header
+            document.getElementById('headerFruitfulText').innerText = currentSectorConfig.shortName;
+            const headerCoreBrandLink = document.getElementById('headerCoreBrandLink');
+            if (headerCoreBrandLink) {
+                headerCoreBrandLink.innerText = currentCoreBrand.name.replace('(PTY) LTD', '').trim(); // Shorten for header
+                headerCoreBrandLink.onclick = () => showMainSection('company-profile-page');
+            }
+
+
+            // Update Hero Section
+            document.getElementById('heroHeadline').innerHTML = currentSectorConfig.heroHeadline;
+            document.getElementById('heroSubtitle').innerText = currentSectorConfig.heroSubtitle;
+            document.getElementById('heroCtaButton').innerHTML = currentSectorConfig.ctaButtonText;
+
+
+            // Update Features Grid (Key Pillars)
+            const featuresGrid = document.getElementById('featuresGrid');
+            featuresGrid.innerHTML = ''; // Clear existing features
+            currentSectorConfig.features.forEach(feature => {
+                const featureCard = document.createElement('div');
+                featureCard.className = 'feature-card';
+                featureCard.innerHTML = `
+                    <div>${feature.icon}</div>
+                    <h4>${feature.title}</h4>
+                    <p>${feature.description}</p>
+                `;
+                featuresGrid.appendChild(featureCard);
+            });
+
+            // Update Company Profile Section (formerly Featured Core Brand Section)
+            const companyProfileSection = document.getElementById('company-profile-section');
+            if (currentCoreBrand) {
+                companyProfileSection.classList.remove('hidden'); // Ensure it's visible
+                document.getElementById('featuredCoreBrandTitle').innerHTML = `🏢 ${currentCoreBrand.name} 🏢`;
+                document.getElementById('featuredCoreBrandDescription').innerText = currentCoreBrand.description;
+                document.getElementById('featuredCoreBrandSubDescription').innerText = currentCoreBrand.subDescription;
+                const featuredCtaButton = document.getElementById('featuredCoreBrandCtaButton');
+                if (featuredCtaButton) {
+                    featuredCtaButton.innerHTML = `View Full Profile <i class="${currentCoreBrand.icon}"></i>`;
+                    featuredCtaButton.onclick = () => showMainSection('company-profile-page');
+                }
+            } else {
+                companyProfileSection.classList.add('hidden'); // Hide if no core brand
+            }
+
+            // Update Key Documents & Portals (formerly Vault Terminal Buttons)
+            const terminalButtonsContainer = document.getElementById('terminalButtons');
+            terminalButtonsContainer.innerHTML = ''; // Clear existing buttons
+            if (currentSectorConfig.terminals && currentSectorConfig.terminals.length > 0) {
+                currentSectorConfig.terminals.forEach(terminal => {
+                    const button = document.createElement('button');
+                    button.className = 'terminal-btn p-6';
+                    button.innerHTML = `${terminal.icon} ${terminal.name}`;
+                    if (terminal.url === "#full-resolution-modal") {
+                        button.onclick = openResolutionModal; // Use the specific modal function
+                    } else {
+                        button.onclick = () => loadTerminal(terminal.url, button); // Pass button for active state
+                    }
+                    terminalButtonsContainer.appendChild(button);
+                });
+            } else {
+                terminalButtonsContainer.innerHTML = '<p class="text-gray-400">No specific key documents or portals configured.</p>';
+            }
+
+
+            // Update Portal Navigation (formerly Sector Glyphs Grid)
+            const sectorGlyphGrid = document.getElementById('sectorGlyphGrid');
+            sectorGlyphGrid.innerHTML = ''; // Clear existing glyphs
+            // Since we only have one relevant sector now, this will display only that one.
+            const sector = window.allSectorConfigs["tripot-business-rescue"];
+            const glyph = document.createElement('a');
+            glyph.href = `javascript:void(0)`;
+            glyph.className = 'glyph';
+            glyph.innerHTML = `<i class="${sector.coreBrand.icon}"></i> ${sector.name}`;
+            glyph.onclick = (event) => {
+                event.preventDefault();
+                showMainSection('hero-section'); // Go to top of current (only) sector
+            };
+            sectorGlyphGrid.appendChild(glyph);
+
+            // Update Sector Dropdown in Header (also for single sector)
+            const sectorDropdown = document.getElementById('sectorDropdown');
+            sectorDropdown.innerHTML = ''; // Clear existing dropdown items
+            const dropdownItem = document.createElement('a');
+            dropdownItem.href = `javascript:void(0)`;
+            dropdownItem.className = 'block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700';
+            dropdownItem.innerHTML = `<i class="${sector.coreBrand.icon} mr-2"></i> ${sector.name}`;
+            dropdownItem.onclick = (event) => {
+                event.preventDefault();
+                showMainSection('hero-section'); // Go to top of current (only) sector
+            };
+            sectorDropdown.appendChild(dropdownItem);
+
+
+            // Update Company Profile Landing Page (formerly Core Brand Landing Page)
+            const companyProfilePage = document.getElementById('company-profile-page');
+            const companyProfileCanvas = document.getElementById('company-profile-canvas');
+            if (currentCoreBrand) {
+                document.getElementById('coreBrandHeadline').innerHTML = `${currentCoreBrand.name}: <br> <span id="coreBrandSlogan">${currentCoreBrand.slogan}</span>`;
+                document.getElementById('coreBrandDescriptionHero').innerText = currentCoreBrand.subDescription;
+
+                const coreBrandExploreButton = document.getElementById('coreBrandExploreButton');
+                if (coreBrandExploreButton) {
+                    coreBrandExploreButton.href = currentCoreBrand.link; // Internal link
+                    coreBrandExploreButton.innerHTML = `Explore Business Plan <i class="fas fa-file-alt"></i>`;
+                }
+
+                const coreBrandShopButton = document.getElementById('coreBrandShopButton');
+                if (coreBrandShopButton) {
+                    coreBrandShopButton.href = currentCoreBrand.shopLink; // External link (mailto)
+                    coreBrandShopButton.innerHTML = `General Inquiries <i class="fas fa-envelope"></i>`;
+                }
+
+                // Initialize/reset canvas particles for the company profile landing page
+                if (companyProfileCanvas && companyProfileCanvas.getContext) {
+                    initCompanyProfileParticles(currentCoreBrand.canvasColors);
+                } else {
+                    console.warn("Company Profile Canvas or context not available.");
+                }
+
+            } else {
+                companyProfilePage.classList.add('hidden');
+                document.getElementById('headerCoreBrandLink').classList.add('hidden');
+            }
+
+
+            // Update Dashboard Overview (Section Home)
+            document.getElementById('dashboardOverviewTitle').innerText = currentSectorConfig.dashboard.name || 'Dashboard Overview';
+            document.getElementById('dashboardOverviewDescription').innerText = currentSectorConfig.dashboard.overviewDescription;
+
+            // Update Company Details Dashboard Panel (formerly Core Brand Dashboard Panel)
+            const companyDetailsPanel = document.getElementById('company-details-panel');
+            if (currentCoreBrand) {
+                document.getElementById('coreBrandDashboardTitle').innerText = `Company Details: ${currentCoreBrand.name}`;
+                document.getElementById('coreBrandDashboardIcon').className = `${currentCoreBrand.icon} text-6xl`;
+                document.getElementById('coreBrandDashboardName').innerText = currentCoreBrand.name;
+                document.getElementById('coreBrandDashboardSlogan').innerText = currentCoreBrand.slogan;
+                document.getElementById('coreBrandDashboardDescription').innerText = currentCoreBrand.description;
+
+                const highlightsList = document.getElementById('coreBrandDashboardHighlights');
+                if (highlightsList) {
+                    highlightsList.innerHTML = '';
+                    currentCoreBrand.highlights.forEach(highlight => {
+                        const li = document.createElement('li');
+                        li.innerText = highlight;
+                        highlightsList.appendChild(li);
+                    });
+                }
+                const coreBrandDashboardCta = document.getElementById('coreBrandDashboardCta');
+                if (coreBrandDashboardCta) {
+                    coreBrandDashboardCta.href = currentCoreBrand.link;
+                }
+            } else {
+                companyDetailsPanel.classList.add('hidden');
+            }
+
+            // Update Operational Areas Dashboard Panel (formerly Sub-Node Index Dashboard Panel)
+            const operationalAreasPanel = document.getElementById('operational-areas');
+            document.getElementById('subNodeIndexTitle').innerText = `Operational Areas Under Review`;
+            document.getElementById('subNodeIndexDescription').innerText = `Explore the various operational divisions and specialized functions within TRIPOT that are central to the business rescue restructuring and recovery plan.`;
+
+            const subNodeGrid = document.getElementById('subNodeGrid');
+            subNodeGrid.innerHTML = ''; // Clear existing sub-node cards
+            if (currentSectorConfig.subNodes && currentSectorConfig.subNodes.length > 0) {
+                currentSectorConfig.subNodes.forEach(node => {
+                    const subNodeCard = document.createElement('div');
+                    subNodeCard.className = 'dashboard-sub-card p-6 rounded-lg shadow-md border dashboard-border-dark';
+                    subNodeCard.innerHTML = `
+                        <div class="flex items-center mb-3">
+                            <i class="${node.icon} text-3xl text-blue-400 mr-4"></i>
+                            <h3 class="text-xl font-semibold dashboard-text-light">${node.name}</h3>
+                        </div>
+                        <p class="dashboard-muted-text">${node.description}</p>
+                        <a href="javascript:void(0)" onclick="showSubNodeDetails('${node.id}')" class="text-primary-color hover:underline text-sm mt-3 inline-block">Learn More <i class="fas fa-arrow-right text-xs ml-1"></i></a>
+                    `;
+                    subNodeGrid.appendChild(subNodeCard);
+                });
+            } else {
+                subNodeGrid.innerHTML = '<p class="dashboard-muted-text">No specific operational areas defined for this business rescue yet.</p>';
+            }
+
+            // No automatic scroll to top here. It will be handled conditionally below.
+        }
+
+        // Function to switch active sector (will likely only be called once for TRIPOT)
+        function switchSector(sectorId) {
+            // Stop any current company profile canvas animation before switching
+            if (companyProfileAnimationFrameId) {
+                cancelAnimationFrame(companyProfileAnimationFrameId);
+                companyProfileAnimationFrameId = null;
+            }
+
+            currentSectorId = sectorId;
+            renderCurrentSectorContent();
+            // Force a re-initialization of the charts for the new sector data
+            initializeSalesRecoveryChart();
+            initializeFinancialCharts();
+            console.log(`Switched to sector: ${currentSectorId}`);
+        }
+
+        // --- Landing Page Specific Functions ---
+
+        // Function to toggle main landing page sections and the dashboard
+        function showMainSection(sectionIdToShow) {
+            // Stop any active company profile canvas animations if not going to that section
+            if (companyProfileAnimationFrameId && sectionIdToShow !== 'company-profile-page') {
+                cancelAnimationFrame(companyProfileAnimationFrameId);
+                companyProfileAnimationFrameId = null;
+            }
+
+            // Hide all landing page sections
+            document.querySelectorAll('section').forEach(section => { // Select all sections
+                section.classList.add('hidden');
+            });
+            // Hide the dashboard wrapper
+            document.getElementById('tripot-br-dashboard-wrapper').classList.add('hidden');
+            document.getElementById('tripot-br-dashboard-wrapper').classList.remove('flex'); // Ensure flex is removed when hidden
+
+            // Show the selected section
+            const sectionToShow = document.getElementById(sectionIdToShow);
+            if (sectionToShow) {
+                sectionToShow.classList.remove('hidden');
+            }
+
+            // Update active state for main header navigation links
+            document.querySelectorAll('.header-nav-item').forEach(link => {
+                link.classList.remove('header-nav-active');
+            });
+            // Find the link that points to the current sectionIdToShow
+            const clickedLink = document.querySelector(`.header-nav-item[onclick*="showMainSection('${sectionIdToShow}')"]`);
+            if (clickedLink) {
+                clickedLink.classList.add('header-nav-active');
+            }
+
+            // Special handling for dashboard display
+            if (sectionIdToShow === 'tripot-br-dashboard-wrapper') {
+                sectionToShow.classList.add('flex'); // Ensure dashboard wrapper uses flex for layout
+                showDashboardSection(activeDashboardSubSection); // Show the default dashboard sub-section
+                // DO NOT SCROLL TO TOP FOR DASHBOARD ACTIVATION
+            } else {
+                // Ensure main dashboard sections are hidden when not viewing dashboard
+                document.querySelectorAll('#tripot-br-dashboard-wrapper main section').forEach(section => {
+                    section.classList.add('hidden');
+                });
+                // Hide operational sub-sidebar if moving away from dashboard
+                document.getElementById('operationalSubSidebar').classList.add('hidden');
+                // ONLY SCROLL TO TOP FOR MAIN LANDING SECTIONS
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // Special handling for Company Profile landing page to start canvas animation
+            if (sectionIdToShow === 'company-profile-page') {
+                const colors = currentSectorConfig.coreBrand?.canvasColors || currentSectorConfig.colors.canvasColors;
+                if (colors) {
+                    initCompanyProfileParticles(colors); // Re-initialize particles to avoid artifacts
+                    animateCompanyProfileCanvas();
+                }
+            }
+        }
+
+        // Function to load terminal content into the iframe (from landing page)
+        function loadTerminal(url, clickedButton) {
+            document.getElementById('vault-frame').src = url;
+            // Remove ring from all buttons and add to the clicked one
+            document.querySelectorAll('.terminal-btn').forEach(btn => btn.classList.remove('ring', 'ring-blue-500'));
+            if (clickedButton) {
+                clickedButton.classList.add('ring', 'ring-blue-500');
+            }
+            console.log("📜 Document loaded:", url);
+        }
+
+        // Function to open the full resolution modal
+        function openResolutionModal() {
+            const modal = document.getElementById('resolution-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.querySelector('.modal-content').classList.remove('scale-95');
+            }, 10);
+            document.querySelectorAll('.terminal-btn').forEach(btn => btn.classList.remove('ring', 'ring-blue-500'));
+            // Optionally highlight the button that triggered it
+            const resBtn = document.querySelector('.terminal-btn[onclick*="#full-resolution-modal"]');
+            if (resBtn) resBtn.classList.add('ring', 'ring-blue-500');
+        }
+
+        // Script for Sales Momentum (mock price update from landing page)
+        function updateSalesMomentum() {
+            const mockSales = (100000 + Math.random() * 50000).toFixed(2); // Mock Rands
+            document.getElementById('sales-value').innerText = `R ${mockSales}`;
+            document.getElementById('momentum-timestamp').innerText = new Date().toLocaleTimeString();
+        }
+
+        // Chart.js for Sales Recovery Projection (from landing page)
+        let salesRecoveryChart = null; // Store chart instance to destroy/recreate
+        function initializeSalesRecoveryChart() {
+            const ctx = document.getElementById('brandChart')?.getContext('2d');
+            if (ctx) {
+                // Destroy existing chart if it exists
+                if (salesRecoveryChart) {
+                    salesRecoveryChart.destroy();
+                }
+
+                salesRecoveryChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Q1 2025', 'Q2 2025', 'Q3 2025 (Proj.)', 'Q4 2025 (Proj.)', 'Q1 2026 (Proj.)'],
+                        datasets: [{
+                            label: 'Projected Sales (Rands)',
+                            data: [150000, 120000, 200000, 350000, 500000], // Mock data for sales recovery
+                            borderWidth: 2,
+                            borderColor: currentSectorConfig.colors.primary, // Dynamic color
+                            tension: 0.4,
+                            fill: true,
+                            backgroundColor: `rgba(${parseInt(currentSectorConfig.colors.primary.slice(1,3), 16)}, ${parseInt(currentSectorConfig.colors.primary.slice(3,5), 16)}, ${parseInt(currentSectorConfig.colors.primary.slice(5,7), 16)}, 0.15)`,
+                            pointRadius: 4,
+                            pointBackgroundColor: currentSectorConfig.colors.primary, // Dynamic color
+                            pointBorderColor: '#1a1b20',
+                            pointHoverRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)',
+                                    drawBorder: false
+                                },
+                                ticks: {
+                                    color: currentSectorConfig.colors.mutedText
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)',
+                                    drawBorder: false
+                                },
+                                ticks: {
+                                    color: currentSectorConfig.colors.mutedText
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                labels: {
+                                    color: currentSectorConfig.colors.textColor
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Full Resolution Modal (re-used from previous business_rescue_spa)
+        const resolutionModal = document.getElementById('resolution-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        closeModalBtn.addEventListener('click', () => {
+            resolutionModal.classList.add('opacity-0');
+            resolutionModal.querySelector('.modal-content').classList.add('scale-95');
+            setTimeout(() => {
+                resolutionModal.classList.add('hidden');
+            }, 300);
+        });
+        resolutionModal.addEventListener('click', (event) => {
+            if (event.target === resolutionModal) {
+                closeModalBtn.click(); // Use the existing close logic
+            }
+        });
+
+
+        // --- Dashboard Specific Functions ---
+
+        // This function initializes the Leaflet map (from dashboard)
+        let leafletMapInstance2 = null; // Use a new instance variable for this map
+        function initLeafletMap() {
+            const mapContainer = document.getElementById("leaflet-map-container");
+            if (!mapContainer) return;
+
+            // Destroy existing map instance if it exists to prevent duplicates
+            if (leafletMapInstance2) {
+                leafletMapInstance2.remove();
+                leafletMapInstance2 = null;
+            }
+
+            // Initialize the map and set its view to chosen geographical coordinates and a zoom level (Pretoria, South Africa)
+            leafletMapInstance2 = L.map(mapContainer).setView([-25.7479, 28.2293], 8);
+
+            // Add an OpenStreetMap tile layer to the map
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(leafletMapInstance2);
+
+            // Add markers for potential warehouses/distribution (mock locations)
+            L.marker([-25.75, 28.18]).addTo(leafletMapInstance2)
+                .bindPopup("<b>Pretoria West Warehouse</b><br>Potential Distribution Hub.").openPopup();
+
+            L.marker([-25.8, 28.3]).addTo(leafletMapInstance2)
+                .bindPopup("<b>Centurion Logistics Hub</b><br>Strategic Operations Point.").openPopup();
+
+            console.log("Leaflet map initialized for operational locations.");
+        }
+
+        // Chart.js for Financial Analytics (Dashboard)
+        let debtAssetChart = null;
+        let salesRecoveryChartDashboard = null;
+
+        function initializeFinancialCharts() {
+            const debtCtx = document.getElementById('debtAssetChart')?.getContext('2d');
+            if (debtCtx) {
+                if (debtAssetChart) debtAssetChart.destroy();
+                debtAssetChart = new Chart(debtCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Total Debt', 'Protected Assets'],
+                        datasets: [{
+                            data: [800000, 1500000], // Mock: R800k debt, R1.5M assets
+                            backgroundColor: [
+                                currentSectorConfig.colors.accent, // Red/Orange for Debt
+                                currentSectorConfig.colors.primary // Blue for Assets
+                            ],
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    color: currentSectorConfig.colors.textColor
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.label || '';
+                                        const value = context.raw;
+                                        return `${label}: R ${value.toLocaleString()}`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            const salesDashboardCtx = document.getElementById('salesRecoveryChartDashboard')?.getContext('2d');
+            if (salesDashboardCtx) {
+                if (salesRecoveryChartDashboard) salesRecoveryChartDashboard.destroy();
+                salesRecoveryChartDashboard = new Chart(salesDashboardCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun (Actual)', 'Jul (Proj.)', 'Aug (Proj.)', 'Sep (Proj.)'],
+                        datasets: [{
+                            label: 'Monthly Sales (Rands)',
+                            data: [100000, 90000, 80000, 70000, 60000, 55000, 150000, 250000, 350000], // Mock sales decline and recovery
+                            backgroundColor: currentSectorConfig.colors.primary,
+                            borderColor: currentSectorConfig.colors.primary,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                ticks: {
+                                    color: currentSectorConfig.colors.mutedText,
+                                    callback: function(value) {
+                                        return 'R ' + value.toLocaleString();
+                                    }
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                ticks: {
+                                    color: currentSectorConfig.colors.mutedText
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                labels: {
+                                    color: currentSectorConfig.colors.textColor
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+
+        function showDashboardSection(sectionId) {
+            activeDashboardSubSection = sectionId; // Update the active sub-section for dashboard
+
+            // Hide all dashboard sections
+            document.querySelectorAll('#tripot-br-dashboard-wrapper main section').forEach(section => {
+                section.classList.add('hidden');
+            });
+
+            // Show the selected dashboard section
+            const activeSection = document.getElementById(sectionId);
+            if (activeSection) {
+                activeSection.classList.remove('hidden');
+            }
+
+            // Update active state for dashboard sidebar links
+            document.querySelectorAll('.dashboard-sidebar-nav-item').forEach(link => {
+                link.classList.remove('dashboard-active-nav-item');
+            });
+            const clickedLink = document.querySelector(`.dashboard-sidebar-nav-item[onclick*="${sectionId}"]`);
+            if (clickedLink) {
+                clickedLink.classList.add('dashboard-active-nav-item');
+            }
+
+            // Handle visibility of operational sub-sidebar
+            const operationalSubSidebar = document.getElementById('operationalSubSidebar');
+            if (sectionId === 'operational-areas') {
+                operationalSubSidebar.classList.remove('hidden');
+                operationalSubSidebar.classList.add('flex'); // Use flex to make it visible and take space
+                showOperationalSubSection(activeOperationalSubSection); // Show the default operational sub-section
+            } else {
+                operationalSubSidebar.classList.add('hidden');
+                operationalSubSidebar.classList.remove('flex');
+            }
+
+            // Special handling for maps section to load Google Maps script and initialize Leaflet
+            if (sectionId === 'business-locations') {
+                // Load Google Maps script only once if not already loaded
+                if (!googleMapScriptLoaded && document.getElementById('google-maps-api-script') === null) {
+                    const script = document.createElement('script');
+                    script.id = 'google-maps-api-script'; // Give it a unique ID
+                    script.async = true;
+                    script.defer = true;
+                    script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&callback=console.debug&libraries=maps,marker&v=beta`;
+                    document.body.appendChild(script);
+                    googleMapScriptLoaded = true; // Mark as loaded or loading
+                }
+                // Initialize Leaflet map when the section is shown
+                initLeafletMap();
+            }
+
+            // Initialize charts for financial analytics when shown
+            if (sectionId === 'financial-analytics') {
+                initializeFinancialCharts();
+            }
+
+            // IMPORTANT: No scroll to top here, as this function is for *internal* dashboard navigation.
+        }
+
+        function showOperationalSubSection(subSectionId) {
+            activeOperationalSubSection = subSectionId; // Update the active sub-section
+
+            // Hide all operational sub-sections
+            document.querySelectorAll('#operational-areas > div:not(#subNodeGrid):not(#subNodeDetailsContainer)').forEach(subSection => {
+                subSection.classList.add('hidden');
+            });
+            // Ensure the main subNodeGrid is visible before displaying details if coming from another tab
+            document.getElementById('subNodeGrid').classList.remove('hidden');
+            document.getElementById('subNodeDetailsContainer').classList.add('hidden');
+
+
+            // Show the selected operational sub-section content via showSubNodeDetails
+            showSubNodeDetails(subSectionId);
+
+            // Update active state for operational sub-sidebar links
+            document.querySelectorAll('#operationalSubSidebar .dashboard-sidebar-nav-item').forEach(link => {
+                link.classList.remove('dashboard-active-nav-item');
+            });
+            const clickedSubLink = document.querySelector(`#operationalSubSidebar .dashboard-sidebar-nav-item[onclick*="showOperationalSubSection('${subSectionId}')"]`);
+            if (clickedSubLink) {
+                clickedSubLink.classList.add('dashboard-active-nav-item');
+            }
+        }
+
+        // Helper function for making API calls to Gemini™
+        async function callGeminiAPI(prompt, responseDiv, errorDiv) {
+            responseDiv.textContent = 'Generating response...';
+            responseDiv.classList.remove('text-red-400'); // Remove error styling
+            responseDiv.classList.add('text-blue-400'); // Add loading styling
+            errorDiv.classList.add('hidden'); // Hide previous errors
+
+            if (!prompt) {
+                responseDiv.textContent = 'Please enter a prompt.';
+                responseDiv.classList.remove('text-blue-400');
+                return;
+            }
+
+            if (!GEMINI_API_KEY || GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY') {
+                responseDiv.textContent = '';
+                errorDiv.textContent = 'Error: Gemini AI™ API Key is missing or invalid. Please ensure it\'s set correctly in window.API_KEYS.GEMINI_API_KEY.';
+                errorDiv.classList.remove('hidden');
+                responseDiv.classList.remove('text-blue-400');
+                responseDiv.classList.add('text-red-400');
+                return;
+            }
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: prompt
+                            }]
+                        }]
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`API Error: ${response.status} ${response.statusText} - ${errorData.error.message || 'Unknown error'}`);
+                }
+
+                const data = await response.json();
+                const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response from AI.';
+                responseDiv.textContent = aiResponse;
+                responseDiv.classList.remove('text-blue-400');
+                responseDiv.classList.add('dashboard-text-light'); // Reset to normal text color
+
+            } catch (error) {
+                console.error("Error calling Gemini AI API:", error);
+                responseDiv.textContent = ''; // Clear "Generating response..."
+                errorDiv.textContent = `Failed to get AI response: ${error.message}. Check your Gemini AI API key and network.`;
+                errorDiv.classList.remove('hidden');
+                responseDiv.classList.remove('text-blue-400');
+                responseDiv.classList.add('text-red-400');
+            }
+        }
+
+        // --- Smart Text Editor Logic ---
+        let smartTextInput = null;
+        let smartTextResultContent = null;
+        let smartTextResultTitle = null;
+        let smartTextErrorDiv = null;
+
+        function clearSmartTextResults() {
+            smartTextResultContent.textContent = 'Your AI generated text will appear here.';
+            smartTextResultContent.classList.remove('text-red-400', 'text-blue-400');
+            smartTextResultContent.classList.add('dashboard-text-light'); // Default color
+            smartTextResultTitle.textContent = 'Smart Text Output:';
+            smartTextErrorDiv.classList.add('hidden');
+        }
+
+        async function handleSmartTextOperation(operationType, promptModifier = "") {
+            const text = smartTextInput.value.trim();
+            clearSmartTextResults(); // Clear all previous results before new operation
+
+            if (!text) {
+                smartTextResultContent.textContent = "Please enter some text to process.";
+                smartTextResultContent.classList.add('text-red-400');
+                return;
+            }
+
+            smartTextResultContent.textContent = 'Processing...';
+            smartTextResultContent.classList.remove('dashboard-text-light');
+            smartTextResultContent.classList.add('text-blue-400'); // Indicate loading
+
+            let prompt = "";
+            let newTitle = "";
+
+            switch (operationType) {
+                case 'summarize':
+                    prompt = `Summarize the following text about business rescue or company operations:\n\n"${text}"`;
+                    newTitle = "Summary:";
+                    break;
+                case 'draft-response':
+                    prompt = `Draft a professional and concise response to the following text, acting as a business rescue practitioner. Ensure the tone is appropriate for stakeholders (e.g., creditors, staff, suppliers):\n\n"${text}"`;
+                    newTitle = "Drafted Response:";
+                    break;
+                case 'simplify-legal':
+                    prompt = `Simplify the following legal or complex business text into plain, easy-to-understand language:\n\n"${text}"`;
+                    newTitle = "Simplified Text:";
+                    break;
+                case 'generate-report-snippet':
+                    prompt = `Generate a brief, professional report snippet or executive summary based on the following key points or data:\n\n"${text}"`;
+                    newTitle = "Report Snippet:";
+                    break;
+                case 'sentiment':
+                    prompt = `Analyze the sentiment of the following text (e.g., positive, negative, neutral, urgent) and provide a brief explanation relevant to a business rescue context:\n\n"${text}"`;
+                    newTitle = "Sentiment Analysis:";
+                    break;
+                case 'keywords':
+                    prompt = `Extract the most important keywords and key phrases from the following text, listed as a comma-separated list, relevant to a business rescue context:\n\n"${text}"`;
+                    newTitle = "Extracted Key Points:";
+                    break;
+                default:
+                    smartTextResultContent.textContent = "Invalid operation.";
+                    smartTextResultContent.classList.add('text-red-400');
+                    smartTextResultContent.classList.remove('text-blue-400');
+                    return;
+            }
+
+            smartTextResultTitle.textContent = newTitle;
+            await callGeminiAPI(prompt, smartTextResultContent, smartTextErrorDiv);
+        }
+
+        // Event listeners for Smart Text Editor Buttons
+        document.addEventListener('DOMContentLoaded', () => {
+            smartTextInput = document.getElementById('smartTextEditorInput');
+            smartTextResultContent = document.getElementById('smartTextResultContent');
+            smartTextResultTitle = document.getElementById('smartTextResultTitle');
+            smartTextErrorDiv = document.getElementById('smartTextError');
+
+            document.getElementById('btnSummarizeText')?.addEventListener('click', () => handleSmartTextOperation('summarize'));
+            document.getElementById('btnDraftResponse')?.addEventListener('click', () => handleSmartTextOperation('draft-response'));
+            document.getElementById('btnSimplifyLegal')?.addEventListener('click', () => handleSmartTextOperation('simplify-legal'));
+            document.getElementById('btnGenerateReportSnippet')?.addEventListener('click', () => handleSmartTextOperation('generate-report-snippet'));
+            document.getElementById('btnAnalyzeSentiment')?.addEventListener('click', () => handleSmartTextOperation('sentiment'));
+            document.getElementById('btnExtractKeywords')?.addEventListener('click', () => handleSmartTextOperation('keywords'));
+
+            // Dynamic Query event listener
+            document.getElementById('sendDynamicQuery')?.addEventListener('click', async () => {
+                const promptText = document.getElementById('dynamicQueryInput').value.trim();
+                const responseDiv = document.getElementById('dynamicQueryResponse');
+                const errorDiv = document.getElementById('dynamicQueryError');
+                await callGeminiAPI(promptText, responseDiv, errorDiv);
+            });
+        });
+
+
+        // Countdown Timer Logic (from original business_rescue_spa)
+        const countdownElement = document.getElementById('countdown-timer');
+        const courtDate = new Date('2025-07-01T00:00:00').getTime(); // July 1, 2025
+
+        const updateCountdown = () => {
+            const now = new Date().getTime();
+            const distance = courtDate - now;
+
+            if (distance < 0) {
+                countdownElement.innerHTML = "Court date has passed";
+                clearInterval(countdownInterval);
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            countdownElement.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        };
+        
+        const countdownInterval = setInterval(updateCountdown, 1000); // Update every second
+        updateCountdown(); // Initial call
+
+
+        // --- Company Profile Canvas Animation Functions (Refactored from Core Brand) ---
+        let companyProfileCanvas = null;
+        let companyProfileCtx = null;
+        let companyProfileParticles = [];
+        const numCompanyProfileParticles = 150;
+        let currentCanvasColors = ['rgba(59, 130, 246, ', 'rgba(139, 92, 246, ']; // Default for canvas particles (blue/purple)
+
+
+        class CompanyProfileParticle {
+            constructor() {
+                this.x = Math.random() * companyProfileCanvas.width;
+                this.y = Math.random() * companyProfileCanvas.height;
+                this.radius = Math.random() * 1.5 + 0.5;
+                this.alpha = 0;
+                this.speed = Math.random() * 0.3 + 0.05;
+                this.directionX = Math.random() * 2 - 1;
+                this.directionY = Math.random() * 2 - 1;
+                const randomColorIndex = Math.floor(Math.random() * currentCanvasColors.length);
+                this.baseColor = currentCanvasColors[randomColorIndex];
+            }
+
+            update() {
+                this.x += this.directionX * this.speed;
+                this.y += this.directionY * this.speed;
+
+                if (this.alpha < 0.7 && this.speed > 0) {
+                    this.alpha += 0.003;
+                } else if (this.alpha > 0) {
+                    this.alpha -= 0.001;
+                } else {
+                    this.x = Math.random() * companyProfileCanvas.width;
+                    this.y = Math.random() * companyProfileCanvas.height;
+                    this.alpha = 0;
+                    this.speed = Math.random() * 0.3 + 0.05;
+                    this.directionX = Math.random() * 2 - 1;
+                    this.directionY = Math.random() * 2 - 1;
+                }
+
+                if (this.x < -this.radius || this.x > companyProfileCanvas.width + this.radius || this.y < -this.radius || this.y > companyProfileCanvas.height + this.radius) {
+                    this.x = Math.random() * companyProfileCanvas.width;
+                    this.y = Math.random() * companyProfileCanvas.height;
+                    this.alpha = 0;
+                    this.speed = Math.random() * 0.3 + 0.05;
+                    this.directionX = Math.random() * 2 - 1;
+                    this.directionY = Math.random() * 2 - 1;
+                }
+            }
+
+            draw() {
+                companyProfileCtx.beginPath();
+                companyProfileCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                companyProfileCtx.fillStyle = this.baseColor + this.alpha + ')';
+                companyProfileCtx.shadowBlur = 5;
+                companyProfileCtx.shadowColor = this.baseColor + (this.alpha * 0.8) + ')';
+                companyProfileCtx.fill();
+                companyProfileCtx.shadowBlur = 0;
+            }
+        }
+
+        function resizeCompanyProfileCanvas() {
+            if (companyProfileCanvas) {
+                companyProfileCanvas.width = window.innerWidth;
+                companyProfileCanvas.height = window.innerHeight;
+            }
+        }
+
+        function initCompanyProfileParticles(colors) {
+            companyProfileCanvas = document.getElementById('company-profile-canvas');
+            if (!companyProfileCanvas) return;
+
+            companyProfileCtx = companyProfileCanvas.getContext('2d');
+            resizeCompanyProfileCanvas();
+            window.removeEventListener('resize', resizeCompanyProfileCanvas); // Prevent duplicate listeners
+            window.addEventListener('resize', resizeCompanyProfileCanvas);
+
+            currentCanvasColors = colors; // Update colors for particles
+            companyProfileParticles = []; // Clear existing particles
+            for (let i = 0; i < numCompanyProfileParticles; i++) {
+                companyProfileParticles.push(new CompanyProfileParticle());
+            }
+        }
+
+        function animateCompanyProfileCanvas() {
+            if (!companyProfileCtx) return;
+
+            // Use the core brand's background color for clearing, but very transparently
+            const bgStartRgb = hexToRgb(currentSectorConfig.coreBrand?.colors?.bgStart || "#1f215a"); // Use TRIPOT bg for clearing
+            companyProfileCtx.fillStyle = `rgba(${bgStartRgb.r}, ${bgStartRgb.g}, ${bgStartRgb.b}, 0.02)`;
+            companyProfileCtx.fillRect(0, 0, companyProfileCanvas.width, companyProfileCanvas.height);
+
+            for (let i = 0; i < companyProfileParticles.length; i++) {
+                companyProfileParticles[i].update();
+                companyProfileParticles[i].draw();
+            }
+            companyProfileAnimationFrameId = requestAnimationFrame(animateCompanyProfileCanvas);
+        }
+
+        function hexToRgb(hex) {
+            const bigint = parseInt(hex.slice(1), 16);
+            const r = (bigint >> 16) & 255;
+            const g = (bigint >> 8) & 255;
+            const b = bigint & 255;
+            return { r, g, b };
+        }
+
+        // --- AUTHENTICATION PLACEHOLDER FUNCTIONS (For Firebase integration later) ---
+        function handleSignIn() {
+            const email = document.getElementById('signInEmail').value;
+            const password = document.getElementById('signInPassword').value;
+            const messageDiv = document.getElementById('signInMessage');
+
+            // Basic validation
+            if (!email || !password) {
+                messageDiv.textContent = 'Please enter both email and password.';
+                return;
+            }
+
+            messageDiv.textContent = 'Attempting to sign in... (Firebase integration pending)';
+            console.log('Sign In Attempt:', { email, password });
+
+            // In a real app, you'd use Firebase Auth signInWithEmailAndPassword here
+            setTimeout(() => { // Simulate API call
+                if (email === 'portal@tripot.co.za' && password === 'password123') { // Mock credentials
+                    messageDiv.textContent = 'Sign In successful! (This is a mock login)';
+                    messageDiv.style.color = '#22c55e'; // Green color
+                    showMainSection('tripot-br-dashboard-wrapper'); // Redirect to dashboard on mock success
+                } else {
+                    messageDiv.textContent = 'Mock Sign In Failed: Invalid credentials.';
+                    messageDiv.style.color = '#ef4444'; // Red color
+                }
+            }, 1500);
+        }
+
+        function handleSignUp() {
+            const name = document.getElementById('signUpName').value;
+            const email = document.getElementById('signUpEmail').value;
+            const password = document.getElementById('signUpPassword').value;
+            const confirmPassword = document.getElementById('signUpConfirmPassword').value;
+            const messageDiv = document.getElementById('signUpMessage');
+
+            // Basic validation
+            if (!name || !email || !password || !confirmPassword) {
+                messageDiv.textContent = 'Please fill in all fields.';
+                return;
+            }
+            if (password !== confirmPassword) {
+                messageDiv.textContent = 'Passwords do not match.';
+                return;
+            }
+            if (password.length < 6) { // Firebase minimum password length
+                messageDiv.textContent = 'Password must be at least 6 characters long.';
+                return;
+            }
+
+            messageDiv.textContent = 'Attempting to sign up... (Firebase integration pending)';
+            console.log('Sign Up Attempt:', { name, email, password });
+
+            // In a real app, you'd use Firebase Auth createUserWithEmailAndPassword here
+            setTimeout(() => { // Simulate API call
+                messageDiv.textContent = 'Sign Up successful! Please sign in. (This is a mock registration)';
+                messageDiv.style.color = '#22c55e'; // Green color
+                // Optionally clear form or redirect to sign-in
+                document.getElementById('signUpForm').reset();
+                showMainSection('sign-in-section'); // Redirect to sign-in after mock registration
+            }, 1500);
+        }
+
+        // --- Settings Panel Functions ---
+        function saveProfileSettings() {
+            const userName = document.getElementById('userName').value;
+            // In a real app, you'd save this to a backend/database
+            console.log("Saving user profile:", { userName });
+
+            const messageDiv = document.getElementById('profileSaveMessage');
+            messageDiv.textContent = 'Profile settings saved! (Mock Save)';
+            messageDiv.classList.remove('hidden');
+            setTimeout(() => {
+                messageDiv.classList.add('hidden');
+            }, 3000);
+        }
+
+        function toggleNotification(type) {
+            const checkbox = document.getElementById(`${type.toLowerCase()}Notifications`);
+            console.log(`${type} Notifications Toggled: ${checkbox.checked}`);
+            // In a real app, you'd send this preference to a backend
+        }
+
+        function toggleDarkMode(checkbox) {
+            if (checkbox.checked) {
+                document.documentElement.classList.add('dark');
+                document.body.style.setProperty('background-color', '#0d1117');
+                document.body.style.setProperty('color', '#e2e8f0');
+                console.log("Dark Mode Enabled (mock)");
+            } else {
+                document.documentElement.classList.remove('dark');
+                document.body.style.setProperty('background-color', '#f0f0f0'); // Example light mode bg
+                document.body.style.setProperty('color', '#333333');
+                console.log("Dark Mode Disabled (mock)");
+            }
+            // In a real app, you'd save this preference to local storage or a backend
+        }
+
+        function mockPayPalSdkIntegration() {
+            const paypalClientId = window.API_KEYS.PAYPAL_SDK_CLIENT_ID;
+            console.log(`Mock PayPal SDK Integration triggered with Client ID: ${paypalClientId}`);
+            // In a real scenario, you'd load the PayPal JS SDK script here dynamically
+            // and then render a PayPal button or perform a mock payment intent.
+            // For now, we use a simple alert-like modal replacement for user feedback.
+            showCustomModal("PayPal SDK Integration (Mock)", `Attempting to initialize PayPal SDK with ID: <br><code>${paypalClientId}</code>.<br>This is a mock call.`, false, null, "OK");
+        }
+
+        // Custom Modal Function (replaces alert/confirm)
+        function showCustomModal(title, message, isConfirm = false, onConfirm = null, okButtonText = "OK") {
+            const modalId = 'custom-modal';
+            let modal = document.getElementById(modalId);
+
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = modalId;
+                modal.className = 'fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-[100]';
+                modal.innerHTML = `
+                    <div class="bg-gray-800 p-8 rounded-lg shadow-xl max-w-sm w-full border border-gray-700">
+                        <h3 class="text-2xl font-bold text-white mb-4" id="custom-modal-title"></h3>
+                        <p class="text-gray-300 mb-6" id="custom-modal-message"></p>
+                        <div class="flex justify-end space-x-4">
+                            <button id="custom-modal-cancel" class="px-5 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition duration-200">Cancel</button>
+                            <button id="custom-modal-confirm" class="px-5 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"></button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            }
+
+            document.getElementById('custom-modal-title').innerHTML = title;
+            document.getElementById('custom-modal-message').innerHTML = message;
+            document.getElementById('custom-modal-confirm').innerText = okButtonText;
+
+            const confirmButton = document.getElementById('custom-modal-confirm');
+            const cancelButton = document.getElementById('custom-modal-cancel');
+
+            if (isConfirm) {
+                cancelButton.classList.remove('hidden');
+                confirmButton.onclick = () => {
+                    modal.classList.add('hidden');
+                    if (onConfirm) onConfirm(true);
+                };
+                cancelButton.onclick = () => {
+                    modal.classList.add('hidden');
+                    if (onConfirm) onConfirm(false);
+                };
+            } else {
+                cancelButton.classList.add('hidden');
+                confirmButton.onclick = () => {
+                    modal.classList.add('hidden');
+                };
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+
+        // --- Sub-Node Details Display Function (NEW) ---
+        function showSubNodeDetails(nodeId) {
+            const subNodeDetailsContainer = document.getElementById('subNodeDetailsContainer');
+            const subNodeDetailTitle = document.getElementById('subNodeDetailTitle');
+            const subNodeDetailDescription = document.getElementById('subNodeDetailDescription');
+            const subNodeDetailContent = document.getElementById('subNodeDetailContent');
+
+            // Hide the main grid of sub-nodes
+            document.getElementById('subNodeGrid').classList.add('hidden');
+
+            // Find the sub-node config
+            const currentSubNodes = currentSectorConfig.subNodes;
+            const selectedNode = currentSubNodes.find(node => node.id === nodeId);
+
+            if (selectedNode) {
+                subNodeDetailTitle.innerText = selectedNode.name;
+                subNodeDetailDescription.innerText = selectedNode.description;
+                subNodeDetailsContainer.classList.remove('hidden');
+
+                let contentHtml = '';
+                switch (nodeId) {
+                    case 'sales-division':
+                        contentHtml = `
+                            <p class="dashboard-text-light mb-3"><strong>Current Focus:</strong> Re-engaging national chain vendors (Pick n Pay, Mica, Build It) and leveraging existing sales orders for immediate cash flow. Preparing for new stock arrival to fulfill backorders.</p>
+                            <h4 class="text-xl font-semibold dashboard-text-light mb-2">Initiatives:</h4>
+                            <ul class="list-disc list-inside ml-4 dashboard-muted-text space-y-1">
+                                <li>Direct outreach to key retail buyers.</li>
+                                <li>Assessment of historical sales data for demand forecasting.</li>
+                                <li>Development of a revised sales strategy under business rescue.</li>
+                                <li>Reinstatement of experienced sales personnel.</li>
+                            </ul>
+                            <p class="dashboard-muted-text mt-4">The sales division is critical for generating the revenue needed to support the business rescue plan.</p>
+                        `;
+                        break;
+                    case 'imports-logistics':
+                        contentHtml = `
+                            <p class="dashboard-text-light mb-3"><strong>Status:</strong> Addressing import delays and establishing new, flexible logistics arrangements. Coordinating with international partners to ensure smooth receipt of private label stock on COD basis.</p>
+                            <h4 class="text-xl font-semibold dashboard-text-light mb-2">Key Actions:</h4>
+                            <ul class="list-disc list-inside ml-4 dashboard-muted-text space-y-1">
+                                <li>Negotiating revised shipping schedules.</li>
+                                <li>Securing warehousing solutions for incoming stock.</li>
+                                <li>Streamlining customs and clearance procedures.</li>
+                                <li>Implementing a "just-in-time" delivery model where feasible.</li>
+                            </ul>
+                            <p class="dashboard-muted-text mt-4">Efficient import and logistics are vital for replenishing inventory and fulfilling orders.</p>
+                        `;
+                        break;
+                    case 'finance-admin':
+                        contentHtml = `
+                            <p class="dashboard-text-light mb-3"><strong>Role:</strong> Central to managing financial communications, reconciling accounts, and ensuring compliance with business rescue regulations. Working closely with the BRP and legal team.</p>
+                            <h4 class="text-xl font-semibold dashboard-text-light mb-2">Responsibilities:</h4>
+                            <ul class="list-disc list-inside ml-4 dashboard-muted-text space-y-1">
+                                <li>Preparing accurate creditor lists and statements.</li>
+                                <li>Managing daily financial operations under BRP oversight.</li>
+                                <li>Ensuring timely submission of required legal documents.</li>
+                                <li>Forecasting cash flow and financial needs for the rescue plan.</li>
+                            </ul>
+                            <p class="dashboard-muted-text mt-4">Maintaining financial discipline and transparency is paramount during this period.</p>
+                        `;
+                        break;
+                    case 'human-resources':
+                        contentHtml = `
+                            <p class="dashboard-text-light mb-3"><strong>Priority:</strong> Supporting current staff and managing the strategic reinstatement of personnel with good qualities and long-term relationships to re-energize the sales and operational teams.</p>
+                            <h4 class="text-xl font-semibold dashboard-text-light mb-2">Initiatives:</h4>
+                            <ul class="list-disc list-inside ml-4 dashboard-muted-text space-y-1">
+                                <li>Developing a fair and transparent re-engagement policy.</li>
+                                <li>Providing support and communication to all employees.</li>
+                                <li>Assessing staffing needs for the restructured operations.</li>
+                                <li>Ensuring compliance with labor laws during business rescue.</li>
+                            </ul>
+                            <p class="dashboard-muted-text mt-4">Our people are our greatest asset, and their well-being is a core focus of the rescue plan.</p>
+                        `;
+                        break;
+                    default:
+                        contentHtml = `<p class="dashboard-muted-text">Details for "${selectedNode.name}" are not yet available. Please check back later.</p>`;
+                }
+                subNodeDetailContent.innerHTML = contentHtml;
+            } else {
+                subNodeDetailsContainer.classList.add('hidden');
+                console.warn('Sub-node details not found for ID:', nodeId);
+            }
+        }
+
+        function hideSubNodeDetails() {
+            document.getElementById('subNodeDetailsContainer').classList.add('hidden');
+            document.getElementById('subNodeGrid').classList.remove('hidden');
+        }
+
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set initial sector and render content
+            switchSector("tripot-business-rescue"); // Loads the TRIPOT sector on page load
+
+            // Initialize landing page features that don't depend on sector config
+            updateSalesMomentum();
+            setInterval(updateSalesMomentum, 9000); // Update sales momentum every 9 seconds
+
+            // Ensure a section is shown on initial load
+            showMainSection('hero-section');
+
+            // Initialize dark mode toggle (mock) - Ensure it reflects initial CSS state
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            if (darkModeToggle) {
+                // Read the initial state from CSS (assuming dark mode is default)
+                darkModeToggle.checked = document.documentElement.classList.contains('dark') ||
+                                         window.matchMedia('(prefers-color-scheme: dark)').matches;
+            }
+        });
+    </script>
+</body>
+</html>

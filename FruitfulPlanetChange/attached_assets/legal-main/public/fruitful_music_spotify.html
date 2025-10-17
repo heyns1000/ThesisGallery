@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fruitful.Music™ Launch Concept - Integrated Manual & App - FAA.Zone</title>
+    <link rel="icon" href="/favicon.ico">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter for clean typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Chart.js for data visualizations (used in manual's demo section) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.js"></script>
+    <!-- React and ReactDOM for UI rendering (for embedded app) -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel for JSX transformation (for embedded React app) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        /* Base Palette (Overall Document - Serene Orbit from manual) */
+        :root {
+            --bg-light: #F8F9FA; /* Overall document background */
+            --text-dark: #343A40; /* Overall document text */
+            --primary-blue: #007BFF; /* Manual link/heading accent */
+            --success-green: #28A745; /* Manual success/heading accent */
+            --warning-yellow: #FFC107; /* Manual warning accent */
+            --border-light: #E9ECEF; /* Manual border */
+            --card-bg: #FFFFFF; /* Manual section background */
+            --hover-light: #F0F2F5; /* Manual hover/code background */
+            --font-inter: 'Inter', sans-serif;
+
+            /* Fruitful.Music™ App Palette (Embedded App) */
+            --app-dark-bg: #1a1a1d; /* Deep charcoal for app's root */
+            --app-header-bg: #2a2a2e; /* App's header/sidebar/section background */
+            --app-text-light: #e0e0e0; /* App's general text */
+            --app-text-muted: #9ca3af; /* App's muted text */
+            --app-primary-green: #22c55e; /* App's vibrant green accents */
+            --app-secondary-blue: #3b82f6; /* App's soft blue accents */
+            --app-cta-button-bg: #4f46e5; /* App's indigo CTAs */
+            --app-hover-bg: #374151; /* App's dark gray hover states */
+            --app-border-dark: #4b5563; /* App's dark borders */
+            --app-aura-teal: #20c997; /* App's Aura output */
+        }
+
+        body {
+            font-family: var(--font-inter);
+            background-color: var(--bg-light); /* Overall light background */
+            color: var(--text-dark); /* Overall dark text */
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Overall Document Header/Nav/Main Sections */
+        header {
+            background-color: var(--card-bg);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            border-bottom: 1px solid var(--border-light);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-dark);
+            font-size: 1.4rem;
+            font-weight: 800;
+        }
+        .logo-fruitful { color: var(--primary-blue); }
+        .logo-separator { color: var(--border-light); font-size: 1.2rem; font-weight: 600; }
+        .logo-seedwave { color: var(--success-green); }
+        .nav-link {
+            color: var(--text-dark);
+            padding: 0.5rem 1rem;
+            border-radius: 0.3rem;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+        .nav-link:hover {
+            background-color: var(--hover-light);
+            color: var(--primary-blue);
+        }
+        .nav-link.active {
+            color: var(--primary-blue);
+            font-weight: 700;
+            border-bottom: 2px solid var(--primary-blue);
+        }
+
+        main {
+            flex-grow: 1;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        section {
+            background-color: var(--card-bg);
+            border-radius: 1rem;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-light);
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--primary-blue);
+            margin-bottom: 2rem;
+            text-align: center;
+            line-height: 1.2;
+        }
+        h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--success-green);
+            margin-top: 2rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 0.5rem;
+        }
+        h3 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        h4 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-top: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        p { margin-bottom: 1rem; }
+        ul, ol { list-style: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
+        li { margin-bottom: 0.5rem; }
+        strong { color: var(--primary-blue); }
+        em { color: var(--success-green); }
+
+        code {
+            background-color: var(--hover-light);
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.3rem;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            font-size: 0.9em;
+            color: var(--text-dark);
+        }
+        pre {
+            background-color: var(--hover-light);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-light);
+        }
+        pre code {
+            background-color: transparent;
+            padding: 0;
+            border-radius: 0;
+            color: var(--text-dark);
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        /* Interactive Elements (for manual's demo) */
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 2rem;
+            background-color: var(--primary-blue);
+            color: white;
+            text-decoration: none;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 15px rgba(0,123,255,0.2);
+        }
+        .cta-button:hover {
+            background-color: #0056b3;
+            box-shadow: 0 6px 20px rgba(0,123,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .accordion-header {
+            background-color: var(--hover-light);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: var(--text-dark);
+            transition: background-color 0.2s ease;
+            margin-top: 0.5rem;
+        }
+        .accordion-header:hover { background-color: var(--border-light); }
+        .accordion-content {
+            padding: 1rem;
+            border: 1px solid var(--border-light);
+            border-top: none;
+            border-radius: 0 0 0.5rem 0.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+        }
+        .accordion-content.active {
+            max-height: 500px; /* Max height for expansion */
+            padding: 1rem;
+        }
+        .accordion-header i { transition: transform 0.3s ease; }
+        .accordion-header.active i { transform: rotate(180deg); }
+
+        /* Chart Containers (for manual's demo) */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Max width for readability */
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; /* Base height */
+            max-height: 400px; /* Max height */
+            background-color: var(--hover-light);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        @media (min-width: 1024px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+
+        /* Spotify Demo Section (for manual's demo) */
+        .spotify-controls button {
+            background-color: #1DB954; /* Spotify Green */
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+        }
+        .spotify-controls button:hover { background-color: #1ed760; }
+        .spotify-output {
+            background-color: var(--hover-light);
+            border: 1px solid var(--border-light);
+            border-radius: 0.5rem;
+            padding: 1rem;
+        }
+        .spotify-output ul { list-style: none; padding: 0; }
+        .spotify-output li { padding: 0.4rem 0; border-bottom: 1px solid var(--border-light); }
+        .spotify-output li:last-child { border-bottom: none; }
+        .spotify-output strong { color: var(--primary-blue); }
+        .spotify-output iframe { border-radius: 0.5rem; }
+
+        /* Overall Document Footer */
+        footer {
+            background-color: var(--text-dark);
+            color: rgba(255,255,255,0.7);
+            padding: 2.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: 2.5rem;
+        }
+        footer a {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        footer a:hover { color: var(--primary-blue); }
+
+        /* Fruitful.Music™ App Specific Styles (Encapsulated) */
+        .fruitful-music-app-container {
+            background-color: var(--app-dark-bg); /* App's overall dark background */
+            color: var(--app-text-light); /* App's general text */
+            font-family: var(--font-inter);
+            min-height: 700px; /* Min height to ensure app content is visible */
+            border-radius: 1rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.8); /* Strong shadow for app block */
+            border: 1px solid var(--app-border-dark);
+            margin-top: 2rem; /* Space from previous section */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Contains internal scrolling if present */
+        }
+        .fruitful-music-app-container header {
+            background-color: var(--app-header-bg);
+            box-shadow: none; /* App's header should not cast shadow outside its container */
+            border-bottom: 1px solid var(--app-border-dark);
+            padding: 1rem 2rem; /* Keep app's header padding */
+        }
+        .fruitful-music-app-container header .text-green-500 { color: var(--app-primary-green); }
+        .fruitful-music-app-container header .text-gray-400 { color: var(--app-text-muted); }
+        .fruitful-music-app-container header input {
+            background-color: var(--app-hover-bg);
+            border: 1px solid var(--app-border-dark);
+            color: var(--app-text-light);
+        }
+        .fruitful-music-app-container header input::placeholder { color: var(--app-text-muted); }
+        .fruitful-music-app-container header input:focus {
+            border-color: var(--app-primary-green);
+            box-shadow: 0 0 0 2px rgba(34,197,94,0.3);
+        }
+
+        .fruitful-music-app-container nav {
+            background-color: var(--app-sidebar-bg);
+            border-right: 1px solid var(--app-border-dark);
+        }
+        .fruitful-music-app-container nav button {
+            color: var(--app-text-muted);
+        }
+        .fruitful-music-app-container nav button:hover {
+            background-color: var(--app-hover-bg);
+            color: var(--app-text-light);
+        }
+        .fruitful-music-app-container nav button.bg-gray-700 { /* Active tab for app */
+            background-color: var(--app-hover-bg);
+            color: var(--app-text-light);
+        }
+        .fruitful-music-app-container nav .fas { color: var(--app-text-muted); }
+        .fruitful-music-app-container nav .fas:hover { color: var(--app-text-light); }
+        .fruitful-music-app-container nav .fa-gem { color: var(--app-secondary-blue); }
+
+        .fruitful-music-app-container main {
+            background-color: var(--app-dark-bg);
+            padding: 1.5rem; /* Adjust main content padding within app */
+        }
+        .fruitful-music-app-container main h2 {
+            color: var(--app-primary-green);
+            border-bottom: none; /* Remove section border from app's h2 */
+            padding-bottom: 0;
+        }
+        .fruitful-music-app-container main section {
+            background-color: var(--app-header-bg); /* App's section background */
+            border: 1px solid var(--app-border-dark);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2); /* Lighter shadow for app's internal sections */
+            padding: 1.5rem; /* Adjust section padding within app */
+        }
+        .fruitful-music-app-container main section h2.text-green-400 { color: var(--app-primary-green); }
+        .fruitful-music-app-container main section h2.text-blue-400 { color: var(--app-secondary-blue); }
+        .fruitful-music-app-container main section h2.text-yellow-400 { color: var(--warning-yellow); } /* Keep yellow as is */
+        .fruitful-music-app-container main section h2.text-purple-400 { color: var(--app-cta-button-bg); }
+        .fruitful-music-app-container main section h2.text-indigo-400 { color: var(--app-secondary-blue); }
+        .fruitful-music-app-container main section h3 { color: var(--app-text-light); }
+        .fruitful-music-app-container main section p { color: var(--app-text-muted); }
+        .fruitful-music-app-container main section img { background-color: var(--app-primary-green); }
+        .fruitful-music-app-container main section .bg-gray-800 { background-color: var(--app-header-bg); }
+        .fruitful-music-app-container main section .bg-green-600 { background-color: var(--app-primary-green); }
+        .fruitful-music-app-container main section .bg-green-600:hover { background-color: #1a9c4b; }
+        .fruitful-music-app-container main section .bg-indigo-600 { background-color: var(--app-cta-button-bg); }
+        .fruitful-music-app-container main section .bg-indigo-600:hover { background-color: #3f36a0; }
+        .fruitful-music-app-container main section .bg-gray-800.shadow-md:hover { background-color: var(--app-hover-bg); }
+
+        /* Aura Suggestion Output (for app) */
+        .fruitful-music-app-container #auraSuggestionOutput {
+            background-color: var(--app-hover-bg);
+            border: 1px solid var(--app-border-dark);
+            color: var(--app-text-light);
+        }
+        .fruitful-music-app-container .text-teal-400 { color: var(--app-aura-teal); }
+
+        /* Footer / Now Playing Bar (for app) */
+        .fruitful-music-app-container footer {
+            background-color: var(--app-header-bg);
+            border-top: 1px solid var(--app-border-dark);
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.3);
+        }
+        .fruitful-music-app-container footer img { background-color: var(--app-primary-green); }
+        .fruitful-music-app-container footer p { color: var(--app-text-light); }
+        .fruitful-music-app-container footer .text-gray-400 { color: var(--app-text-muted); }
+        .fruitful-music-app-container footer button { color: var(--app-text-muted); }
+        .fruitful-music-app-container footer button:hover { color: var(--app-text-light); }
+        .fruitful-music-app-container footer button.bg-white { background-color: white; color: var(--app-dark-bg); }
+        .fruitful-music-app-container footer button.bg-white:hover { background-color: #f0f0f0; }
+        .fruitful-music-app-container footer .text-green-500 { color: var(--app-primary-green); }
+        .fruitful-music-app-container footer .text-red-500:hover { color: #ef4444; }
+        .fruitful-music-app-container footer .accent-green-500 { accent-color: var(--app-primary-green); }
+        .fruitful-music-app-container footer iframe { border: 1px solid var(--app-border-dark); }
+    </style>
+</head>
+<body>
+    <!-- Overall Document Header (from Spotify Integration Manual) -->
+    <header>
+        <div class="logo-group">
+            <span class="logo-fruitful">Fruitful™</span>
+            <span class="logo-separator">|</span>
+            <span class="logo-seedwave">Seedwave™</span>
+        </div>
+        <nav class="flex gap-4">
+            <a href="#overview" class="nav-link">Overview</a>
+            <a href="#spotify-demo-manual" class="nav-link">Live Demo (Manual)</a>
+            <a href="#metrics" class="nav-link">Metrics</a>
+            <a href="#strategy" class="nav-link">Strategy</a>
+            <a href="#technical" class="nav-link">Technical</a>
+            <a href="#fruitful-music-app-section" class="nav-link active">Fruitful.Music™ App</a>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Content from Spotify Integration Manual -->
+        <section id="overview" class="mb-8">
+            <h1>Spotify Integration Overview</h1>
+            <p class="text-lg text-center mb-6">Explore the seamless integration of Spotify's music pulse into the Seedwave™ ecosystem. This interactive manual provides insights into its purpose, functionality, and strategic importance.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h2>Purpose & Strategic Benefits</h2>
+                    <p>The Spotify integration enhances personalization, engagement, and offers unique utility within Seedwave™. It transforms how users interact with their music while showcasing our technical adaptability.</p>
+                    <ul>
+                        <li><strong>Elevated User Personalization:</strong> Tailored music experiences directly reflecting user listening habits.</li>
+                        <li><strong>Enhanced Platform Engagement:</strong> Interactive music features encourage extended user sessions.</li>
+                        <li><strong>Tangible Utility & Creative Curation:</strong> Create and manage Spotify playlists from within Seedwave™.</li>
+                        <li><strong>Demonstration of Technical Prowess:</strong> Showcases seamless integration with leading external APIs.</li>
+                    </ul>
+                </div>
+                <div>
+                    <h2>Future Expansions</h2>
+                    <p>This integration lays a critical groundwork for more sophisticated musical features and unique cross-platform experiences.</p>
+                    <ul>
+                        <li><strong>Collaborative Playlists:</strong> Synced with "Job Ant Hut" project management.</li>
+                        <li><strong>AI-Generated Soundtracks:</b> Dynamic music based on "Noodle Soup Innovations" data.</li>
+                        <li><strong>Personalized Music Feeds:</strong> Advanced recommendations from combined data.</li>
+                        <li><strong>Gamified Music Discovery:</strong> Interactive encounters with new artists via "Rhino Strike Protocols."</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="spotify-demo-manual" class="mb-8">
+            <h2>Live Spotify Demo: Music Pulse Interaction (Manual Section)</h2>
+            <p>Experience the core functionalities of the Spotify integration directly. Retrieve your top tracks, create a playlist, and listen to snippets without leaving this page.</p>
+            <div class="flex flex-wrap justify-center gap-4 my-6">
+                <button id="getTopTracksBtn" class="cta-button">
+                    <i class="fab fa-spotify"></i> Get My Top 5 Tracks
+                </button>
+                <button id="createPlaylistBtn" class="cta-button bg-gray-500 hover:bg-gray-600">
+                    <i class="fas fa-save"></i> Save to Playlist
+                </button>
+                <button id="playTracksBtn" class="cta-button bg-green-500 hover:bg-green-600">
+                    <i class="fas fa-play-circle"></i> Listen Now
+                </button>
+            </div>
+
+            <div id="demo-output" class="bg-white p-4 rounded-lg shadow-inner border border-gray-200">
+                <p id="demo-message" class="text-center text-sm mb-4">Click a button to interact with Spotify.</p>
+                <div id="top-tracks-list" class="hidden spotify-output">
+                    <h3>Your Top Tracks:</h3>
+                    <ul class="text-sm"></ul>
+                </div>
+                <div id="audio-players" class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </div>
+            <p class="text-sm text-gray-500 mt-4 text-center">
+                Note: This demo uses a sample token for illustration. For full functionality, a valid Spotify token is required.
+            </p>
+        </section>
+
+        <section id="metrics" class="mb-8">
+            <h2>Integration Metrics: Operational Pulse</h2>
+            <p>Monitor the health and activity of the Spotify integration through key performance indicators. These charts provide insights into API usage, success rates, and token management.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
+                <div class="chart-container">
+                    <canvas id="apiCallChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas id="successRateChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="strategy" class="mb-8">
+            <h2>Strategic Vision: Evolving the Pulse</h2>
+            <p>The Spotify integration is a foundational element for Seedwave™'s future growth, extending our digital footprint and enhancing user experiences with personalized content streams. This section outlines our forward-looking approach.</p>
+            <h3>Expanding Reach and Personalization:</h3>
+            <p>By leveraging user musical preferences, Seedwave™ can create more tailored content experiences, from custom news feeds to personalized educational modules. The integration allows us to understand user 'vibration' at a deeper level.</p>
+            <h3>Monetization Pathways:</h3>
+            <p>Future iterations envision curated music-driven experiences, potentially leading to new partnership opportunities with artists, labels, and event organizers. This can unlock novel revenue streams by linking digital commerce directly to cultural engagement, aligning with the spirit of 'Crate Dance™' activations.</p>
+            <h3>Data-Driven Innovation:</h3>
+            <p>The continuous flow of musical interaction data provides a rich source for our AI and machine learning models. This data can inform the development of more advanced 'Noodle Soup Innovations' in content delivery and 'Rhino Strike Protocols' in user interaction, ensuring Seedwave™ remains at the cutting edge of personalized digital ecosystems.</p>
+        </section>
+
+        <section id="technical" class="mb-8">
+            <h2>Technical Deep Dive: Under the Hood</h2>
+            <p>Understand the core components and security considerations that power the Spotify integration. This section provides an interactive breakdown of key technical aspects.</p>
+
+            <h3>4.1. <code>fetchWebApi()</code>: The API Gateway</h3>
+            <div class="accordion">
+                <div class="accordion-header">
+                    Function Details <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="accordion-content">
+                    <p>This is the central function for all Spotify API calls. It handles requests, headers (including authorization tokens), and initial error responses.</p>
+                    <h4>Parameters:</h4>
+                    <ul>
+                        <li><code>endpoint</code>: The specific API resource (e.g., <code>v1/me/top/tracks</code>).</li>
+                        <li><code>method</code>: HTTP method (<code>GET</code>, <code>POST</code>).</li>
+                        <li><code>body</code>: Optional JSON payload for <code>POST</code> requests.</li>
+                    </ul>
+                    <p>It includes robust error handling to catch network issues and API-specific errors, providing clear messages to the user.</p>
+                </div>
+            </div>
+
+            <h3>5. Security Considerations: OAuth 2.0 Imperative</h3>
+            <div class="accordion">
+                <div class="accordion-header">
+                    Hardcoded Tokens: The Risk <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="accordion-content">
+                    <p><strong>Critical Warning:</strong> The current demo uses a hardcoded Spotify access token directly in the client-side code. This is **highly insecure** and suitable only for demonstrations.</p>
+                    <p><strong>Risks:</strong> Exposure to malicious actors, unauthorized data access, rapid expiration, and violation of user privacy and Spotify policies.</p>
+                </div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">
+                    OAuth 2.0 Authorization Code Flow: The Secure Solution <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="accordion-content">
+                    <p>For production, a secure <strong>OAuth 2.0 Authorization Code Flow</strong> must be implemented. This requires a backend server to handle sensitive token exchange.</p>
+                    <h4>High-Level Steps:</h4>
+                    <ol>
+                        <li>User initiates authorization (client-side redirects to Spotify).</li>
+                        <li>User grants permission (Spotify redirects back with `authorization_code`).</li>
+                        <li>Backend server exchanges `authorization_code` for `access_token` and `refresh_token` (using Client ID/Secret securely).</li>
+                        <li>Backend securely manages and provides `access_token` to client for API calls.</li>
+                    </ol>
+                    <p>A backend is indispensable because the Client Secret must never be exposed publicly.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fruitful.Music™ Launch Concept Application Section (Embedded) -->
+        <section id="fruitful-music-app-section" class="mb-8">
+            <h2 class="text-center text-3xl font-extrabold text-blue-600 mb-6">Fruitful.Music™ Launch Concept Design</h2>
+            <p class="text-center text-gray-700 mb-8 max-w-2xl mx-auto">This interactive application showcases the core functionalities and design principles of the Fruitful.Music™ platform. Explore trending songs, browse categories, manage playlists, and discover FAA Family Brands integrated with music and aura concepts.</p>
+            <div class="fruitful-music-app-container">
+                <div id="fruitful-music-app-root"></div> <!-- React app will mount here -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Overall Document Footer -->
+    <footer>
+        <p>Fruitful.America™ Sovereign Scrolls · VaultMesh · TreatyMesh Validated</p>
+        <p>&copy; 2025 Seedwave™. All rights reserved. A proud partner of <a href="https://faa.zone/" target="_blank">FAA.Zone™ Treaty System™</a></p>
+    </footer>
+
+    <script type="text/babel">
+        // --- React App Code (Fruitful.Music™ Launch Concept Design) ---
+        const { useState, useEffect } = React;
+
+        // Main App component
+        function App() {
+            const [searchTerm, setSearchTerm] = useState('');
+            const [activeTab, setActiveTab] = useState('browse'); // 'browse', 'search', 'playlists', 'faa-brands'
+            // New states for player controls
+            const [isPlaying, setIsPlaying] = useState(false);
+            const [isShuffleOn, setIsShuffleOn] = useState(false);
+            const [repeatMode, setRepeatMode] = useState('off'); // 'off', 'one', 'all'
+            // State for Aura Music Suggestion feature
+            const [auraSuggestionOutput, setAuraSuggestionOutput] = useState('');
+            const [isGeneratingAuraSuggestion, setIsGeneratingAuraSuggestion] = useState(false);
+
+
+            // Placeholder data for demonstration
+            const trendingSongs = [
+                { id: '1', title: 'Mountain Sound', artist: 'Of Monsters and Men', embedId: '3SPVZJzf1Hs30rB6yXVf2y' },
+                { id: '2', title: 'Starlight', artist: 'Muse', embedId: '3skZ3pB2rK8F8F8j8f8f8f' }, // Placeholder embed ID
+                { id: '3', title: 'Blinding Lights', artist: 'The Weeknd', embedId: '3SPVZJzf1Hs30rB6yXVf2y' }, // Placeholder embed ID
+                { id: '4', title: 'Levitating', artist: 'Dua Lipa', embedId: '3SPVZJzf1Hs30rB6yXVf2y' }, // Placeholder embed ID
+            ];
+
+            const categories = [
+                { name: 'Pop', icon: '🎵' },
+                { name: 'Rock', icon: '🎸' },
+                { name: 'Electronic', icon: '🎧' },
+                { name: 'Hip Hop', icon: '🎤' },
+                { name: 'Chill', icon: '🍃' },
+                { name: 'Workout', icon: '💪' },
+            ];
+
+            const playlists = [
+                { name: 'Daily Mix 1', description: 'Your daily dose of amazing music.', count: '50 songs' },
+                { name: 'Discover Weekly', description: 'New music every Monday.', count: '30 songs' },
+                { name: 'Chill Vibes', description: 'Relaxing tunes for your evening.', count: '70 songs' },
+            ];
+
+            // NEW: FAA Family Brands data
+            const faaFamilyBrands = [
+                { id: 'faa-1', name: 'HarmonyHearth™', icon: '👨‍👩‍👧‍👦', description: 'Facilitates family gatherings centered around music, fostering unity and shared experiences.', auraBenefit: 'Unity Aura' },
+                { id: 'faa-2', name: 'MelodyMosaic™', icon: '🎶', description: 'Offers customizable music experiences tailored to individual and familial preferences, enhancing the collective aura.', auraBenefit: 'Personalized Aura Flow' },
+                { id: 'faa-3', name: 'AuraAcoustics™', icon: '🔊', description: 'Specializes in soundscapes designed to elevate the ambient energy of living spaces, promoting well-being.', auraBenefit: 'Ambient Aura Elevation' },
+                { id: 'faa-4', name: 'RhythmRoots™', icon: '🥁', description: 'Connects families to ancestral musical traditions, strengthening cultural ties and personal identity.', auraBenefit: 'Cultural Aura Strengthening' },
+                { id: 'faa-5', name: 'SerenadeSphere™', icon: '🧘‍♀️', description: 'Provides immersive musical environments aimed at relaxation and aura cleansing.', auraBenefit: 'Relaxation & Aura Cleansing' },
+            ];
+
+
+            const [currentPlayingTrack, setCurrentPlayingTrack] = useState(trendingSongs[0]); // Make current track dynamic
+            const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+
+            // Effect to update embedId when currentPlayingTrack changes
+            useEffect(() => {
+                // In a real app, this would trigger loading of a new track based on ID
+                console.log('Now playing:', currentPlayingTrack.title);
+            }, [currentPlayingTrack]);
+
+            // Handler for Play/Pause button
+            const handlePlayPause = () => {
+                setIsPlaying(!isPlaying);
+                // In a real app, this would control the Spotify embed's playback
+                console.log(isPlaying ? 'Pausing playback' : 'Starting playback');
+            };
+
+            // Handler for Previous track button
+            const handlePreviousTrack = () => {
+                const newIndex = (currentTrackIndex - 1 + trendingSongs.length) % trendingSongs.length;
+                setCurrentTrackIndex(newIndex);
+                setCurrentPlayingTrack(trendingSongs[newIndex]);
+                setIsPlaying(true); // Auto-play new track
+                console.log('Playing previous track');
+            };
+
+            // Handler for Next track button
+            const handleNextTrack = () => {
+                const newIndex = (currentTrackIndex + 1) % trendingSongs.length;
+                setCurrentTrackIndex(newIndex);
+                setCurrentPlayingTrack(trendingSongs[newIndex]);
+                setIsPlaying(true); // Auto-play new track
+                console.log('Playing next track');
+            };
+
+            // Handler for Shuffle button
+            const handleShuffle = () => {
+                setIsShuffleOn(!isShuffleOn);
+                console.log('Shuffle toggled:', !isShuffleOn);
+            };
+
+            // Handler for Repeat button
+            const handleRepeat = () => {
+                if (repeatMode === 'off') {
+                    setRepeatMode('all');
+                    console.log('Repeat all tracks');
+                } else if (repeatMode === 'all') {
+                    setRepeatMode('one');
+                    console.log('Repeat current track');
+                } else {
+                    setRepeatMode('off');
+                    console.log('Repeat off');
+                }
+            };
+
+            // Handler for Like button (simulated)
+            const handleLike = () => {
+                console.log('Liked current track!');
+                // In a real app, this would update user's liked songs
+            };
+
+            // Handler for Queue button (simulated)
+            const handleQueue = () => {
+                console.log('Opening queue!');
+                // In a real app, this would open the queue view
+            };
+
+            // Handler for FAA Family Brand interaction
+            const handleFAABrandClick = (brandName, auraBenefit) => {
+                console.log(`Interacting with FAA Family Brand: ${brandName}. Aura Benefit: ${auraBenefit}.`);
+                // For now, we'll just log the interaction.
+            };
+
+            // NEW: LLM Call for Aura-Based Music Suggestion
+            const generateAuraMusicSuggestion = async (auraBenefit) => {
+                setIsGeneratingAuraSuggestion(true);
+                setAuraSuggestionOutput('✨ Generating music suggestions...');
+
+                const prompt = `Based on the aura benefit "${auraBenefit}", suggest 3-5 distinct music genres, instruments, or sound characteristics that would enhance this aura. Be concise and creative.`;
+
+                try {
+                    let chatHistory = [];
+                    chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                    const payload = { contents: chatHistory };
+                    const apiKey = ""; // Canvas will automatically provide this during runtime
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const result = await response.json();
+
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        setAuraSuggestionOutput(text);
+                    } else {
+                        setAuraSuggestionOutput('Failed to generate suggestions. Please try again.');
+                        console.error("Gemini API response was unexpected or missing content:", result);
+                    }
+                } catch (error) {
+                    setAuraSuggestionOutput('Error connecting to AI. Please check your network.');
+                    console.error("Error calling Gemini API for aura suggestion:", error);
+                } finally {
+                    setIsGeneratingAuraSuggestion(false);
+                }
+            };
+
+
+            return (
+                <div className="min-h-screen bg-gray-900 text-white font-inter flex flex-col antialiased">
+                    {/* Header */}
+                    <header className="bg-gray-800 p-4 shadow-lg sticky top-0 z-50 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <span className="text-3xl font-extrabold text-green-500">Fruitful.Music™</span>
+                            <span className="text-xl font-medium text-gray-400">Launch Concept</span>
+                        </div>
+                        <div className="relative w-1/3 max-w-sm">
+                            <input
+                                type="text"
+                                placeholder="Search for artists, songs, podcasts..."
+                                className="w-full p-2 pl-10 rounded-full bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                            <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        {/* User/Auth section would go here in a real app */}
+                    </header>
+
+                    {/* Main Content Area */}
+                    <div className="flex flex-grow">
+                        {/* Sidebar Navigation */}
+                        <nav className="w-64 bg-gray-800 p-4 border-r border-gray-700 flex flex-col justify-between">
+                            <div>
+                                <ul className="space-y-4">
+                                    <li>
+                                        <button
+                                            onClick={() => setActiveTab('browse')}
+                                            className={`flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 ${
+                                                activeTab === 'browse' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-white'
+                                            }`}
+                                        >
+                                            <i className="fas fa-home"></i> Home
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button
+                                            onClick={() => setActiveTab('search')}
+                                            className={`flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 ${
+                                                activeTab === 'search' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-white'
+                                            }`}
+                                        >
+                                            <i className="fas fa-search"></i> Search
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button
+                                            onClick={() => setActiveTab('playlists')}
+                                            className={`flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 ${
+                                                activeTab === 'playlists' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-white'
+                                            }`}
+                                        >
+                                            <i className="fas fa-bookmark"></i> Your Library
+                                        </button>
+                                    </li>
+                                    {/* NEW: FAA Family Brands tab */}
+                                    <li>
+                                        <button
+                                            onClick={() => setActiveTab('faa-brands')}
+                                            className={`flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 ${
+                                                activeTab === 'faa-brands' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-white'
+                                            }`}
+                                        >
+                                            <i className="fas fa-gem"></i> FAA Brands
+                                        </button>
+                                    </li>
+                                </ul>
+
+                                <div className="mt-8 pt-4 border-t border-gray-700">
+                                    <h3 className="text-gray-400 text-sm uppercase mb-3 px-3">Playlists</h3>
+                                    <ul className="space-y-2">
+                                        {playlists.map(playlist => (
+                                            <li key={playlist.name}>
+                                                <a href="#" className="flex flex-col text-gray-400 hover:text-white p-2 rounded-md transition duration-200">
+                                                    <span className="font-medium">{playlist.name}</span>
+                                                    <span className="text-xs text-gray-500">{playlist.description}</span>
+                                                </a>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                            {/* Add a "Create Playlist" or "Install App" button here if desired */}
+                        </nav>
+
+                        {/* Dynamic Content Area */}
+                        <main className="flex-grow p-6 bg-gray-900 overflow-y-auto">
+                            {activeTab === 'browse' && (
+                                <section>
+                                    <h2 className="text-3xl font-bold mb-6 text-green-400">Trending Now</h2>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                                        {trendingSongs.map(song => (
+                                            <div key={song.id} className="bg-gray-800 p-4 rounded-lg shadow-md hover:bg-gray-700 transition duration-300 transform hover:scale-105 cursor-pointer">
+                                                <img
+                                                    src={`https://placehold.co/150x150/22c55e/ffffff?text=${song.title.split(' ')[0]}`}
+                                                    alt={song.title}
+                                                    className="w-full h-auto rounded-md mb-3"
+                                                    onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/150x150/4b5563/d1d5db?text=No+Image"; }}
+                                                />
+                                                <h3 className="text-lg font-semibold truncate">{song.title}</h3>
+                                                <p className="text-gray-400 text-sm">{song.artist}</p>
+                                                <button className="mt-3 bg-green-600 hover:bg-green-700 text-white text-sm py-1 px-3 rounded-full" onClick={() => { setCurrentPlayingTrack(song); setIsPlaying(true); }}>Play</button>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <h2 className="text-3xl font-bold mb-6 mt-12 text-blue-400">Browse Categories</h2>
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                                        {categories.map(category => (
+                                            <div key={category.name} className="bg-gray-800 p-4 rounded-lg shadow-md hover:bg-gray-700 transition duration-300 transform hover:scale-105 cursor-pointer">
+                                                <span className="text-4xl block mb-2">{category.icon}</span>
+                                                <h3 className="text-lg font-semibold">{category.name}</h3>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </section>
+                            )}
+
+                            {activeTab === 'search' && (
+                                <section>
+                                    <h2 className="text-3xl font-bold mb-6 text-yellow-400">Search Results</h2>
+                                    <p className="text-gray-400">
+                                        Type in the search bar above to simulate searching.
+                                        A full Spotify integration would fetch live results here.
+                                    </p>
+                                    {searchTerm && (
+                                        <div className="mt-8">
+                                            <h3 className="text-xl font-semibold mb-4">Simulated Results for "{searchTerm}"</h3>
+                                            <ul className="space-y-3">
+                                                <li className="bg-gray-800 p-3 rounded-lg flex items-center justify-between">
+                                                    <span>Song: "{searchTerm} Rock Mix"</span>
+                                                    <button className="bg-green-600 hover:bg-green-700 text-white text-sm py-1 px-3 rounded-full">Play</button>
+                                                </li>
+                                                <li className="bg-gray-800 p-3 rounded-lg flex items-center justify-between">
+                                                    <span>Artist: "{searchTerm} Band"</span>
+                                                    <button className="bg-green-600 hover:bg-green-700 text-white text-sm py-1 px-3 rounded-full">Follow</button>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    )}
+                                </section>
+                            )}
+
+                            {activeTab === 'playlists' && (
+                                <section>
+                                    <h2 className="text-3xl font-bold mb-6 text-purple-400">Your Playlists</h2>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                                        {playlists.map(playlist => (
+                                            <div key={playlist.name} className="bg-gray-800 p-5 rounded-lg shadow-md hover:bg-gray-700 transition duration-300 transform hover:scale-105 cursor-pointer">
+                                                <h3 className="text-xl font-semibold mb-2">{playlist.name}</h3>
+                                                <p className="text-gray-400 text-sm">{playlist.description}</p>
+                                                <p className="text-gray-500 text-xs mt-2">{playlist.count}</p>
+                                                <button className="mt-4 bg-green-600 hover:bg-green-700 text-white text-sm py-2 px-4 rounded-full">View Playlist</button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </section>
+                            )}
+
+                            {activeTab === 'faa-brands' && (
+                                <section>
+                                    <h2 className="text-3xl font-bold mb-6 text-indigo-400">🎵 FAA Family Brands — Music & Aura Integration</h2>
+                                    <p className="text-gray-400 mb-8 max-w-3xl mx-auto">
+                                        Within the FAA's Sovereign Brand Architecture, several family-centric brands intertwine music and aura enhancement. These brands exemplify the FAA's commitment to integrating music into family life to enhance the collective aura and well-being.
+                                    </p>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                                        {faaFamilyBrands.map(brand => (
+                                            <div
+                                                key={brand.id}
+                                                className="bg-gray-800 p-5 rounded-lg shadow-md hover:bg-gray-700 transition duration-300 transform hover:scale-105"
+                                            >
+                                                <span className="text-4xl block mb-2">{brand.icon}</span>
+                                                <h3 className="text-xl font-semibold mb-2">{brand.name}</h3>
+                                                <p className="text-gray-400 text-sm">{brand.description}</p>
+                                                <p className="text-gray-500 text-xs mt-2">Aura Benefit: {brand.auraBenefit}</p>
+                                                <button
+                                                    onClick={() => generateAuraMusicSuggestion(brand.auraBenefit)}
+                                                    className="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white text-sm py-2 px-4 rounded-full w-full"
+                                                    disabled={isGeneratingAuraSuggestion}
+                                                >
+                                                    {isGeneratingAuraSuggestion ? (
+                                                        <i className="fas fa-spinner fa-spin mr-2"></i>
+                                                    ) : (
+                                                        '✨ Suggest Aura Music'
+                                                    )}
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="mt-8 p-6 bg-gray-800 rounded-lg shadow-md text-left">
+                                        <h3 className="text-xl font-bold text-teal-400 mb-4">Generated Aura Music Insights:</h3>
+                                        <div id="auraSuggestionOutput" className="text-gray-300 whitespace-pre-wrap min-h-[50px] flex items-center">
+                                            {auraSuggestionOutput || 'Click "Suggest Aura Music" to generate insights.'}
+                                        </div>
+                                    </div>
+                                </section>
+                            )}
+                        </main>
+                    </div>
+
+                    {/* Now Playing Bar (fixed at bottom) */}
+                    <footer className="bg-gray-800 p-4 border-t border-gray-700 flex items-center justify-between sticky bottom-0 z-50 flex-wrap sm:flex-nowrap gap-2 sm:gap-4">
+                        {/* Track Info (always visible) */}
+                        <div className="flex items-center gap-4 flex-grow-0 flex-shrink-0 min-w-[150px] sm:min-w-[200px]">
+                            {currentPlayingTrack && (
+                                <>
+                                    <img
+                                        src={`https://placehold.co/60x60/22c55e/ffffff?text=${currentPlayingTrack.title.split(' ')[0]}`}
+                                        alt="Album Art"
+                                        className="w-16 h-16 rounded-md"
+                                        onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/60x60/4b5563/d1d5db?text=Art"; }}
+                                    />
+                                    <div className="truncate">
+                                        <p className="text-lg font-semibold truncate">{currentPlayingTrack.title}</p>
+                                        <p className="text-gray-400 text-sm truncate">{currentPlayingTrack.artist}</p>
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                        
+                        {/* Playback Controls (centered) */}
+                        <div className="flex items-center justify-center gap-4 flex-grow order-last sm:order-none w-full sm:w-auto mt-2 sm:mt-0">
+                            <button onClick={handleShuffle} className={`p-2 rounded-full transition duration-200 ${isShuffleOn ? 'text-green-500' : 'text-gray-400 hover:text-white'}`}>
+                                <i className={`fas fa-random text-xl ${isShuffleOn ? 'text-green-500' : ''}`}></i>
+                            </button>
+                            <button onClick={handlePreviousTrack} className="p-2 rounded-full text-gray-400 hover:text-white transition duration-200">
+                                <i className="fas fa-step-backward text-xl"></i>
+                            </button>
+                            <button onClick={handlePlayPause} className="p-3 rounded-full bg-white text-gray-900 hover:scale-105 transition duration-200 shadow-md">
+                                <i className={`fas ${isPlaying ? 'fa-pause' : 'fa-play'} text-2xl`}></i>
+                            </button>
+                            <button onClick={handleNextTrack} className="p-2 rounded-full text-gray-400 hover:text-white transition duration-200">
+                                <i className="fas fa-step-forward text-xl"></i>
+                            </button>
+                            <button onClick={handleRepeat} className={`p-2 rounded-full transition duration-200 ${repeatMode !== 'off' ? 'text-green-500' : 'text-gray-400 hover:text-white'}`}>
+                                {repeatMode === 'one' ? <i className="fas fa-redo-alt text-xl"></i> : <i className="fas fa-redo text-xl"></i>}
+                            </button>
+                        </div>
+
+                        {/* Spotify Embed Player (flex-grow to take available space) */}
+                        <div className="flex-grow mx-4 max-w-xl hidden sm:block"> {/* Hide on small mobile, show on sm and up */}
+                            <iframe
+                                src={`https://open.spotify.com/embed/track/${currentPlayingTrack.embedId}?utm_source=generator&theme=0`}
+                                width="100%"
+                                height="80" /* Adjusted height for a more compact player in the footer */
+                                frameBorder="0"
+                                allowFullScreen=""
+                                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                                loading="lazy"
+                                style={{ borderRadius: '8px' }}
+                            ></iframe>
+                        </div>
+
+                        {/* Volume & Additional Controls (flex-grow-0 flex-shrink-0 to keep content compact) */}
+                        <div className="flex items-center gap-4 flex-grow-0 flex-shrink-0 text-gray-400 ml-auto mr-0 sm:mr-4">
+                            <button onClick={handleLike} className="p-2 rounded-full hover:text-red-500 transition duration-200">
+                                <i className="fas fa-heart text-xl"></i>
+                            </button>
+                            <button onClick={handleQueue} className="p-2 rounded-full hover:text-white transition duration-200">
+                                <i className="fas fa-list-ul text-xl"></i>
+                            </button>
+                            <i className="fas fa-volume-up text-xl cursor-pointer hover:text-white"></i>
+                            <input type="range" className="w-24 accent-green-500" defaultValue="70" />
+                        </div>
+                    </footer>
+                </div>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('fruitful-music-app-root')).render(<App />);
+
+
+        // --- Core Application Logic (from the Spotify Manual) ---
+
+        // Helper function to show/hide elements and update messages for the MANUAL's demo
+        function displayDemoMessage(message, type = 'info') {
+            const msgBox = document.getElementById('demo-message');
+            // Ensure elements exist before trying to update them
+            if (!msgBox) {
+                console.warn("displayDemoMessage called but #demo-message element not found.");
+                return;
+            }
+            msgBox.textContent = message;
+            msgBox.className = 'text-center text-sm mb-4'; // Reset classes
+            if (type === 'success') {
+                msgBox.classList.add('text-green-600', 'font-semibold');
+            } else if (type === 'error') {
+                msgBox.classList.add('text-red-600', 'font-semibold');
+            } else if (type === 'warning') {
+                msgBox.classList.add('text-yellow-600', 'font-semibold');
+            } else { // info
+                msgBox.classList.add('text-gray-600');
+            }
+        }
+
+        let globalTopTracks = []; // Stores fetched tracks for manual demo
+        let currentUserId = null; // Stores Spotify user ID for manual demo
+
+        // IMPORTANT: In a real app, never hardcode your Spotify token like this.
+        // Implement an OAuth 2.0 flow to securely obtain and refresh tokens.
+        const SPOTIFY_ACCESS_TOKEN = 'BQBDSZ232IQmSLV1BROkxqdwNMoGhtitKOJBjDzE-Lu9YKsSK1RKVwXNfYfncP2wf6Fj6xcYlnGD75baEqOmd3XtxhUhB-X6koPd92H9S0rQBqZ0HSKpsb04HiAme_FtqVLket7_s07gH9y1nxuPhbRyxp0r59oXtovV-uw0lCt2B7Mh5OmN3untEAGhfg6a6AZsaWLsv02dh6zKOQ_6DXHvCHZWxcYVmoggu4eLA2NrqAf8rFRSNOw6HQpaN-VZkJWblznWQ0pT7ynzjpKOPlM_70N7vOLIZF8XnRmN1Oe784V-XfYNV-j1x1kdXGEpzlx1'; // Replace with a valid token for actual testing
+
+
+        async function fetchSpotifyWebApi(endpoint, method, body = null) {
+            try {
+                const response = await fetch(`https://api.spotify.com/${endpoint}`, {
+                    method: method,
+                    headers: {
+                        'Authorization': `Bearer ${SPOTIFY_ACCESS_TOKEN}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: body ? JSON.stringify(body) : null
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error ? errorData.error.message : 'Spotify API Error');
+                }
+                return await response.json();
+            } catch (error) {
+                console.error("Spotify API call failed:", error);
+                displayDemoMessage(`API Error: ${error.message}. Please check token validity.`, 'error');
+                return null;
+            }
+        }
+
+        async function getUserSpotifyProfile() {
+            if (currentUserId) return { id: currentUserId }; // Avoid refetching
+            const profile = await fetchSpotifyWebApi('v1/me', 'GET');
+            if (profile && profile.id) {
+                currentUserId = profile.id;
+                return profile;
+            }
+            return null;
+        }
+
+        // --- Demo Functions (for the Manual section) ---
+        async function getTopTracksDemo() {
+            displayDemoMessage('Fetching your top 5 tracks...', 'info');
+            const topTracksListElem = document.querySelector('#top-tracks-list ul');
+            const topTracksContainer = document.getElementById('top-tracks-list');
+            const audioPlayersContainer = document.getElementById('audio-players');
+
+            if (!topTracksListElem || !topTracksContainer || !audioPlayersContainer) {
+                console.error("Manual demo elements not found. Cannot run getTopTracksDemo.");
+                displayDemoMessage("Demo elements not found. Please ensure they exist.", "error");
+                return;
+            }
+
+            topTracksListElem.innerHTML = '';
+            audioPlayersContainer.innerHTML = '';
+            topTracksContainer.classList.add('hidden');
+
+            const data = await fetchSpotifyWebApi('v1/me/top/tracks?time_range=long_term&limit=5', 'GET');
+            if (data && data.items && data.items.length > 0) {
+                globalTopTracks = data.items;
+                globalTopTracks.forEach(track => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<strong>${track.name}</strong> by ${track.artists.map(a => a.name).join(', ')}`;
+                    topTracksListElem.appendChild(li);
+                });
+                topTracksContainer.classList.remove('hidden');
+                displayDemoMessage('Top 5 tracks loaded!', 'success');
+            } else {
+                displayDemoMessage('No top tracks found or API error. Try a fresh token.', 'warning');
+                globalTopTracks = [];
+            }
+        }
+
+        async function createPlaylistDemo() {
+            if (globalTopTracks.length === 0) {
+                displayDemoMessage('First, get your top tracks!', 'warning');
+                return;
+            }
+            displayDemoMessage('Creating playlist and adding songs...', 'info');
+            const userProfile = await getUserSpotifyProfile();
+
+            if (!userProfile) {
+                displayDemoMessage('Could not get user ID. Token might be invalid.', 'error');
+                return;
+            }
+
+            const playlistName = `Seedwave Playlist - ${new Date().toLocaleDateString()}`;
+            const playlistDescription = "Top tracks from Seedwave™ Spotify Integration Demo.";
+            const createResponse = await fetchSpotifyWebApi(
+                `v1/users/${userProfile.id}/playlists`, 'POST',
+                { name: playlistName, public: false, description: playlistDescription }
+            );
+
+            if (createResponse && createResponse.id) {
+                const trackUris = globalTopTracks.map(track => track.uri);
+                const addResponse = await fetchSpotifyWebApi(
+                    `v1/playlists/${createResponse.id}/tracks`, 'POST', { uris: trackUris }
+                );
+                if (addResponse) {
+                    displayDemoMessage(`Playlist "${playlistName}" created and tracks added!`, 'success');
+                } else {
+                    displayDemoMessage('Playlist created, but failed to add tracks.', 'error');
+                }
+            } else {
+                displayDemoMessage('Failed to create playlist.', 'error');
+            }
+        }
+
+        async function playTracksDemo() {
+            if (globalTopTracks.length === 0) {
+                displayDemoMessage('First, get your top tracks!', 'warning');
+                return;
+            }
+            displayDemoMessage('Loading audio players...', 'info');
+            const audioPlayersContainer = document.getElementById('audio-players');
+
+            if (!audioPlayersContainer) {
+                 console.error("Manual demo audio players container not found. Cannot run playTracksDemo.");
+                 displayDemoMessage("Demo audio players container not found. Please ensure it exists.", "error");
+                 return;
+            }
+
+            audioPlayersContainer.innerHTML = ''; // Clear previous players
+
+            globalTopTracks.forEach(track => {
+                const iframe = document.createElement('iframe');
+                iframe.src = `https://open.spotify.com/embed/track/${track.id}?utm_source=generator&theme=0`;
+                iframe.width = "100%";
+                iframe.height = "80";
+                iframe.setAttribute('frameborder', '0');
+                iframe.setAttribute('allowfullscreen', '');
+                iframe.setAttribute('allow', 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture');
+                audioPlayersContainer.appendChild(iframe);
+            });
+            displayDemoMessage('Audio players loaded!', 'success');
+        }
+
+        // --- Chart.js Initialization for Manual Demo ---
+        let apiCallChartInstance = null;
+        let successRateChartInstance = null;
+
+        function initializeCharts() {
+            const apiCtx = document.getElementById('apiCallChart')?.getContext('2d');
+            const successCtx = document.getElementById('successRateChart')?.getContext('2d');
+
+            if (apiCallChartInstance) apiCallChartInstance.destroy();
+            if (successRateChartInstance) successRateChartInstance.destroy();
+
+            const apiCallData = [
+                { label: 'Mon', value: 120 }, { label: 'Tue', value: 150 }, { label: 'Wed', value: 130 },
+                { label: 'Thu', value: 180 }, { label: 'Fri', value: 200 }, { label: 'Sat', value: 160 },
+                { label: 'Sun', value: 110 }
+            ];
+            const successRateData = [
+                { label: 'Success', value: 92 }, { label: 'Failure', value: 8 }
+            ];
+
+            // Helper to convert CSS variable to rgba for Chart.js
+            function var_to_rgba(varName, alpha) {
+                const color = getComputedStyle(document.documentElement).getPropertyValue(varName);
+                const rgb = color.match(/\d+/g);
+                return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha})`;
+            }
+
+            if (apiCtx) {
+                apiCallChartInstance = new Chart(apiCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: apiCallData.map(d => d.label),
+                        datasets: [{
+                            label: 'API Calls / Day',
+                            data: apiCallData.map(d => d.value),
+                            backgroundColor: var_to_rgba('--primary-blue', 0.8),
+                            borderColor: var_to_rgba('--primary-blue', 1),
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { labels: { color: var_to_rgba('--text-dark', 0.9) } },
+                            tooltip: { callbacks: { label: (context) => `${context.dataset.label}: ${context.raw}` } }
+                        },
+                        scales: {
+                            x: {
+                                ticks: { color: var_to_rgba('--text-dark', 0.8) },
+                                grid: { color: var_to_rgba('--border-light', 0.5) }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                ticks: { color: var_to_rgba('--text-dark', 0.8) },
+                                grid: { color: var_to_rgba('--border-light', 0.5) }
+                            }
+                        }
+                    }
+                });
+            }
+
+            if (successCtx) {
+                successRateChartInstance = new Chart(successCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: successRateData.map(d => d.label),
+                        datasets: [{
+                            data: successRateData.map(d => d.value),
+                            backgroundColor: [var_to_rgba('--success-green', 0.8), var_to_rgba('--warning-yellow', 0.8)],
+                            borderColor: [var_to_rgba('--success-green', 1), var_to_rgba('--warning-yellow', 1)],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom', labels: { color: var_to_rgba('--text-dark', 0.9) } },
+                            tooltip: { callbacks: { label: (context) => `${context.label}: ${context.raw}%` } }
+                        }
+                    }
+                });
+            }
+        }
+
+        // --- Accordion Logic ---
+        function setupAccordions() {
+            document.querySelectorAll('.accordion-header').forEach(header => {
+                header.addEventListener('click', () => {
+                    const content = header.nextElementSibling;
+                    header.classList.toggle('active');
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                        content.style.padding = '0 1rem'; // Collapse padding
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                        content.style.padding = '1rem'; // Expand padding
+                    }
+                });
+            });
+        }
+
+        // --- Navigation Active State ---
+        function setupNavigation() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('main section');
+
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === `#${entry.target.id}`) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, { threshold: 0.5 }); // Trigger when 50% of section is visible
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            // Set initial active link on load
+            const firstSection = document.querySelector('main section');
+            if (firstSection) {
+                const firstNavLink = document.querySelector(`[href="#${firstSection.id}"]`);
+                if (firstNavLink) firstNavLink.classList.add('active');
+            }
+        }
+
+
+        // --- Initialize all scripts after DOM and React App are fully loaded ---
+        window.addEventListener('load', () => {
+            // Manual Demo related initializations
+            document.getElementById('getTopTracksBtn')?.addEventListener('click', getTopTracksDemo);
+            document.getElementById('createPlaylistBtn')?.addEventListener('click', createPlaylistDemo);
+            document.getElementById('playTracksBtn')?.addEventListener('click', playTracksDemo);
+            initializeCharts(); // Initialize Chart.js visualizations
+            setupAccordions(); // Initialize accordion functionality
+            setupNavigation(); // Set up scroll-based navigation highlighting
+
+            // Mount the Fruitful.Music™ React App AFTER the main document's elements are ready
+            // The React App is mounted to its specific root div within the overall HTML.
+            const fruitfulMusicAppRoot = document.getElementById('fruitful-music-app-root');
+            if (fruitfulMusicAppRoot) {
+                ReactDOM.createRoot(fruitfulMusicAppRoot).render(<App />);
+            } else {
+                console.error("Fruitful.Music™ app root element not found. Cannot mount React app.");
+            }
+        });
+    </script>
+</body>
+</html>

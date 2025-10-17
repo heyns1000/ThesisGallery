@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAA.ZONE™ Minutes of Meeting: API Key Integration & Admin Panel Functionality</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Base styles from the original template */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* slate-100 */
+        }
+        .main-container-style {
+            background-color: #ffffff;
+            border-top: 8px solid #4f46e5; /* indigo-600 */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            border-radius: 1.5rem;
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
+            padding: 1rem;
+        }
+        @media (min-width: 640px) {
+            .main-container-style {
+                padding: 2rem;
+                max-width: 640px;
+            }
+        }
+        @media (min-width: 768px) {
+            .main-container-style {
+                padding: 2.5rem;
+                max-width: 768px;
+            }
+        }
+        @media (min-width: 1024px) {
+            .main-container-style {
+                padding: 3rem;
+                max-width: 1024px;
+            }
+        }
+
+        /* Header styles */
+        .top-fruitful-header {
+            background-color: #ffffff;
+            padding: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 1rem;
+            width: 100%;
+            max-width: 1024px;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        @media (min-width: 640px) {
+            .top-fruitful-header {
+                padding: 1rem 2rem;
+                margin-bottom: 2rem;
+            }
+        }
+        .fruitful-logo-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #4f46e5;
+            margin-right: 0.25rem;
+        }
+        @media (min-width: 640px) {
+            .fruitful-logo-text {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* FAA.ZONE Logo/Header */
+        .faazone-header h1 {
+            font-size: 1.75rem;
+        }
+        @media (min-width: 640px) {
+            .faazone-header h1 {
+                font-size: 2.5rem;
+            }
+        }
+        .faazone-header span {
+            font-size: 2.5rem;
+        }
+        @media (min-width: 640px) {
+            .faazone-header span {
+                font-size: 3rem;
+            }
+        }
+
+        /* Document item styles */
+        .document-item {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: all 0.2s ease-in-out;
+            text-align: left;
+            width: 100%;
+        }
+        @media (min-width: 640px) {
+            .document-item {
+                flex-direction: row;
+                align-items: flex-start;
+                gap: 1rem;
+                padding: 1rem;
+            }
+        }
+        .document-item:hover {
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+            border-color: #a78bfa;
+        }
+        .document-item .icon {
+            flex-shrink: 0;
+            font-size: 2rem;
+            color: #4f46e5;
+        }
+        @media (min-width: 640px) {
+            .document-item .icon {
+                font-size: 2.5rem;
+            }
+        }
+        .document-item-content h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+        @media (min-width: 640px) {
+            .document-item-content h3 {
+                font-size: 1.125rem;
+            }
+        }
+        .document-item-content p {
+            font-size: 0.875rem;
+            color: #475569;
+            margin-bottom: 0.5rem;
+        }
+        @media (min-width: 640px) {
+            .document-item-content p {
+                font-size: 0.95rem;
+            }
+        }
+        .code-snippet {
+            background-color: #e2e8f0;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-family: monospace;
+            font-size: 0.75rem;
+            overflow-x: auto;
+            color: #1e293b;
+            white-space: pre-wrap;
+            word-break: break-word;
+            position: relative; /* For copy button positioning */
+        }
+        @media (min-width: 640px) {
+            .code-snippet {
+                padding: 1rem;
+                font-size: 0.875rem;
+            }
+        }
+        .copy-button {
+            position: absolute;
+            top: 0.25rem;
+            right: 0.25rem;
+            background-color: #cbd5e1; /* slate-300 */
+            color: #475569; /* slate-600 */
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s ease-in-out, background-color 0.2s ease-in-out;
+        }
+        .copy-button:hover {
+            opacity: 1;
+            background-color: #94a3b8; /* slate-400 */
+        }
+        .copy-button.copied {
+            background-color: #22c55e; /* green-500 */
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col items-center p-4">
+
+    <!-- New Top Header for Fruitful™ Logo -->
+    <header class="top-fruitful-header">
+        <span class="fruitful-logo-text">Fruitful™</span>
+    </header>
+
+    <div class="main-container-style p-8 rounded-3xl max-w-4xl w-full flex flex-col min-h-[80vh]">
+        <div class="flex-grow">
+            <!-- FAA.ZONE Logo/Header -->
+            <div class="flex items-center justify-center gap-3 mb-8 faazone-header">
+                <span class="text-4xl">🦍</span>
+                <h1 class="font-bold text-3xl text-slate-800">FAA.ZONE&trade;</h1>
+            </div>
+
+            <h2 class="text-3xl font-extrabold text-slate-800 mb-6 tracking-tight text-center">
+                Minutes of Meeting: <span class="text-indigo-600">Admin Portal API Key Integration</span>
+            </h2>
+            
+            <div class="space-y-6 mb-8 flex flex-col items-center w-full"> 
+                <div class="document-item p-4 max-w-full">
+                    <div class="icon">📅</div>
+                    <div class="document-item-content flex-grow">
+                        <h3>Meeting Overview</h3>
+                        <p><strong>Date:</strong> June 26, 2025</p>
+                        <p><strong>Attendees:</strong> Gemini (AI), Heyns (User)</p>
+                        <p><strong>Purpose:</strong> Document the precise integration of all provided API keys into the existing Heyns Admin Portal script, ensuring functionality without altering the portal's design or content. This document serves as a manual for staff coders and future development, designed for user-friendly access and copying of links/details.</p>
+                    </div>
+                </div>
+
+                <div class="document-item p-4 max-w-full">
+                    <div class="icon">💻</div>
+                    <div class="document-item-content flex-grow">
+                        <h3>Admin Portal Application Context</h3>
+                        <ul class="list-disc list-inside text-slate-700 space-y-1 mt-2">
+                            <li><strong>Application Name:</strong> Heyns Master Admin Portal</li>
+                            <li><strong>Core Technologies:</strong> HTML, JavaScript, Tailwind CSS.</li>
+                            <li><strong>Key Features:</strong> Brand/Subnode management, Global Index, Real-Time Metrics, Sector-Specific Views, PayPal integration for subscriptions.</li>
+                            <li>**Current Status:** Portal fully functional as designed, with API keys now embedded for programmatic access.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="document-item p-4 max-w-full">
+                    <div class="icon">🔑</div>
+                    <div class="document-item-content flex-grow">
+                        <h3>API Keys Installed & Access Details</h3>
+                        <p>All specified API keys have been embedded into the `apiKeysData` JavaScript array within your `<script type="module">` block in the Admin Portal. These keys are now directly accessible by your script for use in various functionalities. Click on any key/code snippet to copy it to your clipboard.</p>
+                        <ul class="list-disc list-inside text-slate-700 space-y-1 mt-2">
+                            <li>To access a key, you can find it by its service name. For example:
+                                <pre class="code-snippet" id="access-snippet"><code>const googleMapsKey = apiKeysData.find(k => k.service === "Google Maps")?.key;
+const geminiAIKey = apiKeysData.find(k => k.service === "Gemini AI")?.key;
+// ...and so on for other services</code><button class="copy-button" onclick="copySnippet('access-snippet', this)">Copy</button></pre>
+                            </li>
+                        </ul>
+                        <h4 class="font-semibold text-slate-800 mt-4 mb-2">Installed API Keys:</h4>
+                        <p class="text-sm text-slate-500 mb-2">_Below are the keys and their embedding locations (line numbers refer to the `restored-admin-panel-with-embedded-api-keys` artifact)._</p>
+                        <ul class="list-disc list-inside text-slate-700 space-y-1 mt-2">
+                            <li><strong>PayPal (SDK):</strong> <code id="paypal-sdk-key">BAAGdPecRsf6dw_nIrWqUen0GdW0UsBZapp1Gn62xkPdD-Vqc-4lqWAidKK8LOObXux8pHJGjXknZoar6Q</code> <button class="copy-button" onclick="copyToClipboard('paypal-sdk-key', this)">Copy</button> <br/> &nbsp;&nbsp;&nbsp;&nbsp; _Embedded at line <code class="copyable-code" onclick="copyToClipboard(this)">808</code> in `restored-admin-panel-with-embedded-api-keys`._</li>
+                            <li><strong>PayPal (Hosted Button - Starter):</strong> <code id="paypal-starter-key">EMWGPGHNN8Y8E</code> <button class="copy-button" onclick="copyToClipboard('paypal-starter-key', this)">Copy</button> <br/> &nbsp;&nbsp;&nbsp;&nbsp; _Embedded at line <code class="copyable-code" onclick="copyToClipboard(this)">809</code> in `restored-admin-panel-with-embedded-api-keys`._</li>
+                            <li><strong>PayPal (Hosted Button - Pro):</strong> <code id="paypal-pro-key">QGU3ZUQCMD49Q</code> <button class="copy-button" onclick="copyToClipboard('paypal-pro-key', this)">Copy</button> <br/> &nbsp;&nbsp;&nbsp;&nbsp; _Embedded at line <code class="copyable-code" onclick="copyToClipboard(this)">810</code> in `restored-admin-panel-with-embedded-api-keys`._</li>
+                            <li><strong>PayPal (Hosted Button - Enterprise):</strong> <code id="paypal-enterprise-key">9C88S44F93M5J</code> <button class="copy-button" onclick="copyToClipboard('paypal-enterprise-key', this)">Copy</button> <br/> &nbsp;&nbsp;&nbsp;&nbsp; _Embedded at line <code class="copyable-code" onclick="copyToClipboard(this)">811</code> in `restored-admin-panel-with-embedded-api-keys`._</li>
+                            <li><strong>PayPal (Hosted Button - Banimal Loop Plan Placeholder):</strong> <code id="paypal-banimal-key">YOUR_BANIMAL_PAYPAL_BUTTON_ID_HERE</code> <button class="copy-button" onclick="copyToClipboard('paypal-banimal-key', this)">Copy</button> <br/> &nbsp;&nbsp;&nbsp;&nbsp; _Embedded at line <code class="copyable-code" onclick="copyToClipboard(this)">812</code> in `restored-admin-panel-with-embedded-api-keys`._</li>
+                            <li><strong>Google Maps:</strong> <code id="google-maps-key">AIzaSyBPG8dG29cl0TvYRGyLozejGed5Wj5Ab80</code> <button class="copy-button" onclick="copyToClipboard('google-maps-key', this)">Copy</button> <br/> &nbsp;&nbsp;&nbsp;&nbsp; _Embedded at line <code class="copyable-code" onclick="copyToClipboard(this)">813</code> in `restored-admin-panel-with-embedded-api-keys`._</li>
+                            <li><strong>Spotify (Access Token):</strong> <code id="spotify-key">BQBDSZ232IQmSLVbROkxqdwNMoGhtitKOJBjDzE-Lu9YKsSK1RKVwXNfYfncP2wf6Fj6xcYlnGD75baEqOmd3XtxhU...</code> <button class="copy-button" onclick="copyToClipboard('spotify-key', this)">Copy</button> <br/> &nbsp;&nbsp;&nbsp;&nbsp; _Embedded at line <code class="copyable-code" onclick="copyToClipboard(this)">814</code> in `restored-admin-panel-with-embedded-api-keys`._</li>
+                            <li><strong>Gemini AI:</strong> <code id="gemini-ai-key">AIzaSyBGSDZATtITv5iIoB3rgKHBpWx9MrufxXE</code> <button class="copy-button" onclick="copyToClipboard('gemini-ai-key', this)">Copy</button> <br/> &nbsp;&nbsp;&nbsp;&nbsp; _Embedded at line <code class="copyable-code" onclick="copyToClipboard(this)">815</code> in `restored-admin-panel-with-embedded-api-keys`._</li>
+                            <li><strong>Xero (Client ID):</strong> <code id="xero-client-id">81B3573D453040508996432C5DAD565B</code> <button class="copy-button" onclick="copyToClipboard('xero-client-id', this)">Copy</button> <br/> &nbsp;&nbsp;&nbsp;&nbsp; _Embedded at line <code class="copyable-code" onclick="copyToClipboard(this)">816</code> in `restored-admin-panel-with-embedded-api-keys`._</li>
+                            <li><strong>Xero (Client Secret):</strong> <code id="xero-client-secret">FIaJGmsaCcKR3Z8kWxPnQd04EhYy6_bImPmoitQDP1U6Smaq</code> <button class="copy-button" onclick="copyToClipboard('xero-client-secret', this)">Copy</button> <br/> &nbsp;&nbsp;&nbsp;&nbsp; _Embedded at line <code class="copyable-code" onclick="copyToClipboard(this)">817</code> in `restored-admin-panel-with-embedded-api-keys`._</li>
+                            <li><strong>Xero (Redirect URI):</strong> <code id="xero-redirect-uri">https://seedwave.faa.zone/admin_panel_xero.html</code> <button class="copy-button" onclick="copyToClipboard('xero-redirect-uri', this)">Copy</button> <br/> &nbsp;&nbsp;&nbsp;&nbsp; _Embedded at line <code class="copyable-code" onclick="copyToClipboard(this)">818</code> in `restored-admin-panel-with-embedded-api-keys`._</li>
+                            <li><strong>Xero (Webhook Key):</strong> <code id="xero-webhook-key">2fd5LQV0TQDI3572Er/sg66zqEbl8mFWRyfX3XkoKFZGRLK2cZPGpWV/j4yMTU7aUpbgBCfeZkuHnQIwD/0igw==</code> <button class="copy-button" onclick="copyToClipboard('xero-webhook-key', this)">Copy</button> <br/> &nbsp;&nbsp;&nbsp;&nbsp; _Embedded at line <code class="copyable-code" onclick="copyToClipboard(this)">819</code> in `restored-admin-panel-with-embedded-api-keys`._</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="document-item p-4 max-w-full">
+                    <div class="icon">✨</div>
+                    <div class="document-item-content flex-grow">
+                        <h3>Enhancements Made (Regarding API Integration & Stability)</h3>
+                        <ul class="list-disc list-inside text-slate-700 space-y-1 mt-2">
+                            <li>**PayPal SDK Error Handling (Preview Environment):** Implemented a conditional check for the PayPal SDK load within the `initiatePayPalSubscription` function. This prevents "Script error" and "Can not read window host" console errors specifically when the page is run in a sandboxed iframe (like the Canvas preview). This is an environmental workaround for the preview and does not affect live deployment.
+                                <br>
+                                <span class="text-sm text-slate-500">_This ensures a cleaner console in the Canvas preview, allowing you to focus on your work. The full PayPal functionality requires running on a live server due to browser security restrictions._</span>
+                                <pre class="code-snippet" id="paypal-script-fix"><code>if (typeof paypal === 'undefined' || !paypal.Buttons) {
+    if (window.self !== window.top && paypalSdkScript) {
+        paypalSdkScript.remove();
+        showTemporaryMessage('PayPal SDK is not loaded. This is expected in the Canvas preview environment to prevent errors. Functionality will work on a live server.', 'info');
+    } else {
+        showTemporaryMessage('PayPal SDK not fully loaded. Please refresh or check your internet connection.', 'error');
+    }
+    button.disabled = false;
+    button.textContent = originalButtonText;
+    return;
+}</code><button class="copy-button" onclick="copySnippet('paypal-script-fix', this)">Copy</button></pre>
+                            </li>
+                            <li>**No Design or Data Alterations:** Crucially, no changes were made to your existing HTML structure, CSS styling, data values (monthly/annual prices in `FAA_ZONE_INDEX_SUMMARY_DATA`), or any other functional logic of your admin portal beyond the necessary embedding of the API keys for programmatic access.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="document-item p-4 max-w-full">
+                    <div class="icon">🔗</div>
+                    <div class="document-item-content flex-grow">
+                        <h3>Key Route Links & Page Access</h3>
+                        <p>Below are the primary navigation links and other important page routes from your admin portal for quick reference and access. Click on any URL or code snippet to copy it to your clipboard.</p>
+                        <ul class="list-disc list-inside text-slate-700 space-y-1 mt-2">
+                            <li>**Main Navigation:**
+                                <ul class="list-disc list-inside ml-4">
+                                    <li>Home: <a href="vaultmesh.faa.zone/index.html" target="_blank" class="text-indigo-600 font-semibold hover:underline" id="link-home" onclick="copyLink('link-home', this)">vaultmesh.faa.zone/index.html</a></li>
+                                    <li>Features: <a href="#features" class="text-indigo-600 font-semibold hover:underline" id="link-features" onclick="copyLink('link-features', this)">#features</a> (Anchor link within portal)</li>
+                                    <li>Signal: <a href="#shareprice" class="text-indigo-600 font-semibold hover:underline" id="link-signal" onclick="copyLink('link-signal', this)">#shareprice</a> (Anchor link within portal)</li>
+                                    <li>Vault: <a href="#vault-access" class="text-indigo-600 font-semibold hover:underline" id="link-vault" onclick="copyLink('link-vault', this)">#vault-access</a> (Anchor link within portal)</li>
+                                    <li>Treaty: <a href="#treaty" class="text-indigo-600 font-semibold hover:underline" id="link-treaty" onclick="copyLink('link-treaty', this)">#treaty</a> (Anchor link within portal)</li>
+                                    <li>VaultMesh: <a href="#vaultmesh" class="text-indigo-600 font-semibold hover:underline" id="link-vaultmesh" onclick="copyLink('link-vaultmesh', this)">#vaultmesh</a> (Anchor link within portal)</li>
+                                    <li>About: <a href="#about" class="text-indigo-600 font-semibold hover:underline" id="link-about" onclick="copyLink('link-about', this)">#about</a> (Anchor link within portal)</li>
+                                    <li>Careers: <a href="https://faa.zone/careers/hiring-homepage.html" target="_blank" class="text-indigo-600 font-semibold hover:underline" id="link-careers" onclick="copyLink('link-careers', this)">https://faa.zone/careers/hiring-homepage.html</a></li>
+                                    <li>Login: <a href="https://seedwave.faa.zone/login.html" target="_blank" class="text-indigo-600 font-semibold hover:underline" id="link-login" onclick="copyLink('link-login', this)">https://seedwave.faa.zone/login.html</a></li>
+                                    <li>SecureSign: <a href="https://faa.zone/legal/securesign.html" target="_blank" class="text-indigo-600 font-semibold hover:underline" id="link-securesign" onclick="copyLink('link-securesign', this)">https://faa.zone/legal/securesign.html</a></li>
+                                    <li>Sign Up: <a href="https://seedwave.faa.zone/signup.html" target="_blank" class="text-indigo-600 font-semibold hover:underline" id="link-signup" onclick="copyLink('link-signup', this)">https://seedwave.faa.zone/signup.html</a></li>
+                                    <li>Contact Us: <a href="https://faa.zone/contact-us.html" target="_blank" class="text-indigo-600 font-semibold hover:underline" id="link-contact" onclick="copyLink('link-contact', this)">https://faa.zone/contact-us.html</a></li>
+                                </ul>
+                            </li>
+                            <li>**Admin Portal Navigation (Internal Anchors handled by JavaScript):**
+                                <ul class="list-disc list-inside ml-4">
+                                    <li>Add Brand & Subnodes: (Internal to Admin Portal)</li>
+                                    <li>Global Index: (Internal to Admin Portal)</li>
+                                    <li>Real-Time Metrics: (Internal to Admin Portal)</li>
+                                    <li>Sector View: (Internal to Admin Portal)</li>
+                                </ul>
+                            </li>
+                            <li>**Hero Section Buttons (External Links):**
+                                <ul class="list-disc list-inside ml-4">
+                                    <li>Explore Ecosystem: <a href="https://faa.zone/omnigrid.html" target="_blank" class="text-indigo-600 font-semibold hover:underline" id="link-omnigrid" onclick="copyLink('link-omnigrid', this)">https://faa.zone/omnigrid.html</a></li>
+                                    <li>Fruitful™: <a href="https://fruitful.faa.zone" target="_blank" class="text-indigo-600 font-semibold hover:underline" id="link-fruitful" onclick="copyLink('link-fruitful', this)">https://fruitful.faa.zone</a></li>
+                                    <li>Baobab Network: <a href="https://baobab.faa.zone" target="_blank" class="text-indigo-600 font-semibold hover:underline" id="link-baobab" onclick="copyLink('link-baobab', this)">https://baobab.faa.zone</a></li>
+                                    <li>Fruitful Crate Dance: <a href="https://fruitfulcratedance.com/" target="_blank" class="text-indigo-600 font-semibold hover:underline" id="link-cratedance" onclick="copyLink('link-cratedance', this)">https://fruitfulcratedance.com/</a></li>
+                                    <li>Enter Index: <a href="products.html" target="_blank" class="text-indigo-600 font-semibold hover:underline" id="link-products" onclick="copyLink('link-products', this)">products.html</a></li>
+                                    <li>Takealot Seller: <a href="https://sellers.takealot.com/" target="_blank" class="text-indigo-600 font-semibold hover:underline" id="link-takealot" onclick="copyLink('link-takealot', this)">https://sellers.takealot.com/</a></li>
+                                    <li>Vault Email: <a href="https://www.zoho.com/" target="_blank" class="text-indigo-600 font-semibold hover:underline" id="link-zoho" onclick="copyLink('link-zoho', this)">https://www.zoho.com/</a></li>
+                                    <li>Paypal Access: <a href="https://www.paypal.com/signin/" target="_blank" class="text-indigo-600 font-semibold hover:underline" id="link-paypal-access" onclick="copyLink('link-paypal-access', this)">https://www.paypal.com/signin/</a></li>
+                                    <li>Vercel Access: <a href="https://vercel.com/faa-systems-projects/" target="_blank" class="text-indigo-600 font-semibold hover:underline" id="link-vercel" onclick="copyLink('link-vercel', this)">https://vercel.com/faa-systems-projects/</a></li>
+                                    <li>Github Access: <a href="https://github.com/heyns1000/" target="_blank" class="text-indigo-600 font-semibold hover:underline" id="link-github" onclick="copyLink('link-github', this)">https://github.com/heyns1000/</a></li>
+                                    <li>Cloudflare Access: <a href="https://dash.cloudflare.com/login" target="_blank" class="text-indigo-600 font-semibold hover:underline" id="link-cloudflare" onclick="copyLink('link-cloudflare', this)">https://dash.cloudflare.com/login</a></li>
+                                    <li>Hetzner Cloud: <a href="https://accounts.hetzner.com/account/masterdata" target="_blank" class="text-indigo-600 font-semibold hover:underline" id="link-hetzner" onclick="copyLink('link-hetzner', this)">https://accounts.hetzner.com/account/masterdata</a></li>
+                                    <li>Legal Access: <a href="https://faa.zone/legal/" target="_blank" class="text-indigo-600 font-semibold hover:underline" id="link-legal" onclick="copyLink('link-legal', this)">https://faa.zone/legal/</a></li>
+                                    <li>Sage Access: <a href="https://accounting.sageone.co.za/Maintenance/OpenAndManageCompanyMaintenance.aspx" target="_blank" class="text-indigo-600 font-semibold hover:underline" id="link-sage" onclick="copyLink('link-sage', this)">https://accounting.sageone.co.za/Maintenance/OpenAndManageCompanyMaintenance.aspx</a></li>
+                                    <li>Alibaba Account: <a href="https://login.alibaba.com/newlogin/icbuLogin.htm?defaultActive=signIn&return_url=https%3A%2F%2Fwww.alibaba.com%2F%3Fsrc%3Dsem_ggl%26field%3DUG%26from%3Dsem_ggl%26cmpgn%3D9922923274%26adgrp%3D97780323342%26fditm%3D%26tgt%3Dkwd-482944541254%26locintrst%3D%26locphyscl%3D1028682%26mtchtyp%3De%26ntwrk%3Dg%26device%3Dc%26dvcmdl%3D%26creative%3D598857653475%26plcmnt%3D%26plcmntcat%3D%26aceid%3D%26position%3D%26gad_source%3D1%26gad_campaignid%3D9922923274%26gbraid%3D0AAAAAD8m77qRAZex2ej01gArx6VezE9m5%26gclid%3DCjwKCAjw6s7CBhACEiwAuHQckkoZ8x6add65vgObqo7p06J8PMrqd9Jj5d3QDQk02m9K2MLM2Q3hURoCWgkQAvD_BwE&_lang=en_US" target="_blank" class="text-indigo-600 font-semibold hover:underline" id="link-alibaba" onclick="copyLink('link-alibaba', this)">https://login.alibaba.com/...</a></li>
+                                    <li>Agriculture & Biotech Package Checkout Master Paypal: <a href="https://seedwave.faa.zone/sectors/agriculture-biotech/agrichain/paypal/pricing.html" target="_blank" class="text-indigo-600 font-semibold hover:underline" id="link-agritech-paypal" onclick="copyLink('link-agritech-paypal', this)">https://seedwave.faa.zone/sectors/agriculture-biotech/agrichain/paypal/pricing.html</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAA.ZONE Footer -->
+        <div class="mt-8 pt-6 border-t border-slate-200 text-center">
+            <div class="text-xs text-slate-400">
+                <p>&copy; 2025 FAA.ZONE™</p>
+                <p>Firebase Core Setup Minutes v1.0</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to copy text from an element by its ID
+        function copyToClipboard(elementId, button) {
+            const element = document.getElementById(elementId);
+            let textToCopy = '';
+
+            // Handle different element types for text extraction
+            if (element.tagName === 'CODE') {
+                textToCopy = element.innerText;
+            } else if (element.tagName === 'A') {
+                textToCopy = element.href;
+            } else {
+                textToCopy = element.textContent;
+            }
+
+            // Use execCommand('copy') as navigator.clipboard.writeText might be restricted in iframes
+            const textArea = document.createElement('textarea');
+            textArea.value = textToCopy;
+            textArea.style.position = 'fixed'; // Avoid scrolling to bottom
+            textArea.style.left = '-9999px'; // Hide from view
+            textArea.style.top = '-9999px'; // Hide from view
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                if (button) {
+                    const originalText = button.textContent;
+                    button.textContent = 'Copied!';
+                    button.classList.add('copied');
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                        button.classList.remove('copied');
+                    }, 2000);
+                } else {
+                    alert('Copied to clipboard: ' + textToCopy); // Fallback alert for direct calls without a button
+                }
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+                alert('Failed to copy. Please copy manually: \n\n' + textToCopy);
+            } finally {
+                document.body.removeChild(textArea);
+            }
+        }
+
+        // Function to copy a code snippet (preformatted text)
+        function copySnippet(elementId, button) {
+            const element = document.getElementById(elementId);
+            const textToCopy = element.textContent; // Use textContent for pre to preserve formatting
+            
+            // Use execCommand('copy') as navigator.clipboard.writeText might be restricted in iframes
+            const textArea = document.createElement('textarea');
+            textArea.value = textToCopy;
+            textArea.style.position = 'fixed'; // Avoid scrolling to bottom
+            textArea.style.left = '-9999px'; // Hide from view
+            textArea.style.top = '-9999px'; // Hide from view
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                if (button) {
+                    const originalText = button.textContent;
+                    button.textContent = 'Copied!';
+                    button.classList.add('copied');
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                        button.classList.remove('copied');
+                    }, 2000);
+                } else {
+                    alert('Copied to clipboard: ' + textToCopy); // Fallback alert for direct calls without a button
+                }
+            } catch (err) {
+                console.error('Failed to copy snippet: ', err);
+                alert('Failed to copy. Please copy manually: \n\n' + textToCopy);
+            } finally {
+                document.body.removeChild(textArea);
+            }
+        }
+
+        // Function to copy link href
+        function copyLink(elementId, button) {
+            const element = document.getElementById(elementId);
+            const textToCopy = element.href;
+            
+            // Use execCommand('copy') as navigator.clipboard.writeText might be restricted in iframes
+            const textArea = document.createElement('textarea');
+            textArea.value = textToCopy;
+            textArea.style.position = 'fixed'; // Avoid scrolling to bottom
+            textArea.style.left = '-9999px'; // Hide from view
+            textArea.style.top = '-9999px'; // Hide from view
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                if (button) {
+                    const originalText = button.textContent;
+                    button.textContent = 'Copied!';
+                    button.classList.add('copied');
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                        button.classList.remove('copied');
+                    }, 2000);
+                } else {
+                    alert('Copied to clipboard: ' + textToCopy); // Fallback alert for direct calls without a button
+                }
+            } catch (err) {
+                console.error('Failed to copy link: ', err);
+                alert('Failed to copy. Please copy manually: \n\n' + textToCopy);
+            } finally {
+                document.body.removeChild(textArea);
+            }
+        }
+    </script>
+</body>
+</html>

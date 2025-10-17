@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAA.ZONE™ Minutes of Meeting: Xero Integration</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Existing CSS from the homepage */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* slate-100 from provided style */
+        }
+        .featured-button {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: none;
+        }
+
+        .featured-button:hover {
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4);
+        }
+
+        .featured-button:active {
+            transform: scale(0.98);
+        }
+
+        .featured-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300%;
+            height: 300%;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            transition: all 0.7s ease-out;
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+        }
+
+        .featured-button:hover::before {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s, color 0.2s;
+            font-weight: 500;
+            color: #475569; /* slate-600 */
+            text-decoration: none;
+            justify-content: flex-start; /* Align text to the left within the link block */
+        }
+        .nav-link:hover {
+            background-color: #e2e8f0; /* slate-200 */
+            color: #1e293b; /* slate-900 */
+        }
+        /* Custom styles to match the provided homepage's aesthetic */
+        .main-container-style {
+            background-color: #ffffff; /* white */
+            border-top: 8px solid #4f46e5; /* indigo-600 */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); /* shadow-2xl */
+            border-radius: 1.5rem; /* rounded-3xl */
+        }
+        /* New CSS for the top Fruitful header */
+        .top-fruitful-header {
+            background-color: #ffffff; /* White background for the header */
+            padding: 1rem 2rem; /* Padding top/bottom and left/right */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); /* Subtle shadow */
+            margin-bottom: 2rem; /* Space between header and main content */
+            width: 100%;
+            max-width: 1200px; /* Constrain width like container */
+            border-radius: 0.75rem; /* Rounded corners */
+            display: flex;
+            align-items: center;
+            justify-content: flex-start; /* Align Fruitful to the left */
+        }
+        .fruitful-logo-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 2.5rem; /* Large font size for the logo */
+            font-weight: 800; /* Extra bold */
+            color: #4f46e5; /* Indigo-700 or a strong brand color */
+            margin-right: 0.5rem; /* Space between text and TM symbol */
+        }
+
+        .document-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            background-color: #f8fafc; /* slate-50 */
+            border: 1px solid #e2e8f0; /* slate-200 */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: all 0.2s ease-in-out;
+            text-align: left; /* Ensure text aligns left within item */
+        }
+        .document-item:hover {
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+            border-color: #a78bfa; /* purple-400 */
+        }
+        .document-item .icon {
+            flex-shrink: 0;
+            font-size: 2.5rem;
+            color: #4f46e5; /* indigo-600 */
+        }
+        .document-item-content h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b; /* slate-900 */
+            margin-bottom: 0.25rem;
+        }
+        .document-item-content p {
+            font-size: 0.95rem;
+            color: #475569; /* slate-600 */
+            margin-bottom: 0.5rem;
+        }
+        .document-item-content a {
+            color: #4f46e5; /* indigo-600 */
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+        .document-item-content a:hover {
+            text-decoration: underline;
+        }
+        .document-item-content a svg {
+            margin-left: 0.25rem;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col items-center p-4">
+
+    <!-- New Top Header for Fruitful™ Logo -->
+    <header class="top-fruitful-header">
+        <span class="fruitful-logo-text">Fruitful™</span>
+    </header>
+
+    <div class="main-container-style p-8 rounded-3xl max-w-4xl w-full flex flex-col min-h-[80vh]">
+        <div class="flex-grow">
+            <!-- FAA.ZONE Logo/Header -->
+            <div class="flex items-center justify-center gap-3 mb-8">
+                <span class="text-4xl">🦍</span>
+                <h1 class="font-bold text-3xl text-slate-800">FAA.ZONE&trade;</h1>
+            </div>
+
+            <h2 class="text-3xl font-extrabold text-slate-800 mb-6 tracking-tight text-center">
+                Minutes of Meeting: <span class="text-indigo-600">Xero Integration Setup</span>
+            </h2>
+            
+            <div class="space-y-6 mb-8">
+                <div class="document-item p-4">
+                    <div class="icon">📅</div>
+                    <div class="document-item-content">
+                        <h3>Meeting Overview</h3>
+                        <p><strong>Date:</strong> June 22, 2025</p>
+                        <p><strong>Attendees:</strong> Gemini (AI), Heyns (User)</p>
+                        <p><strong>Purpose:</strong> Establish and troubleshoot Xero accounting integration for the Seedwave Admin Panel.</p>
+                    </div>
+                </div>
+
+                <div class="document-item p-4">
+                    <div class="icon">✅</div>
+                    <div class="document-item-content">
+                        <h3>Key Setup & Decisions</h3>
+                        <ul class="list-disc list-inside text-slate-700">
+                            <li>Xero Developer Account and "FAA Vault Connector" app configured.</li>
+                            <li>Seedwave Admin Panel deployed to Git Pages: <a href="https://seedwave.faa.zone/admin_panel_xero.html" target="_blank" class="text-indigo-600 font-semibold hover:underline">https://seedwave.faa.zone/admin_panel_xero.html</a></li>
+                            <li>Firebase Project "FAA Nexus" created and configured for authentication and Firestore.</li>
+                            <li>Firebase Anonymous Authentication enabled.</li>
+                            <li>Cloud Firestore database provisioned with security rules for user-specific Xero token storage.</li>
+                            <li>Google Analytics 4 configured with Measurement ID `G-S4ZB8QV782`.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="document-item p-4">
+                    <div class="icon">🔑</div>
+                    <div class="document-item-content">
+                        <h3>Credentials & Important URLs</h3>
+                        <ul class="list-disc list-inside text-slate-700 space-y-1">
+                            <li><strong>Xero Developer Portal:</strong> <a href="https://developer.xero.com/" target="_blank" class="text-indigo-600 hover:underline">https://developer.xero.com/</a></li>
+                            <li><strong>Firebase Console (FAA Nexus):</strong> <a href="https://console.firebase.google.com/project/faa-nexus/overview" target="_blank" class="text-indigo-600 hover:underline">https://console.firebase.google.com/project/faa-nexus/overview</a></li>
+                            <li><strong>Xero Central (Support):</strong> <a href="https://central.xero.com/" target="_blank" class="text-indigo-600 hover:underline">https://central.xero.com/</a></li>
+                            <li><strong>Xero Client ID:</strong> `81B3573D453040508996432C5DAD565B`</li>
+                            <li><strong>Xero Client Secret:</strong> `FIaJGmsaCcKR3Z8kWxPnQd04EhYy6_bImPmoitQDP1U6Smaq`</li>
+                            <li><strong>Xero Redirect URI (and App URL in Xero Dev Portal):</strong> `https://seedwave.faa.zone/admin_panel_xero.html`</li>
+                            <li><strong>Firebase `firebaseConfig` (from console):</strong>
+                                <pre class="bg-slate-100 p-2 rounded-md text-sm overflow-x-auto my-2"><code>{
+    "apiKey": "AIzaSyCR3mbgoiiCkRyaAm5BSWBWBFwut0MDCW8",
+    "authDomain": "faa-nexus.firebaseapp.com",
+    "projectId": "faa-nexus",
+    "storageBucket": "faa-nexus.firebasestorage.app",
+    "messagingSenderId": "459816542686",
+    "appId": "1:459816542686:web:7fc0596fb70e2e6b753d4f",
+    "measurementId": "G-S4ZB8QV782"
+}</code></pre>
+                            </li>
+                            <li><strong>Google Analytics 4 Measurement ID:</strong> `G-S4ZB8QV782`</li>
+                            <li><strong>Xero Organization for testing:</strong> Fruitful Shops (Pty) Ltd</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="document-item p-4">
+                    <div class="icon">⚠️</div>
+                    <div class="document-item-content">
+                        <h3>Issues Encountered & Troubleshooting</h3>
+                        <ul class="list-disc list-inside text-slate-700 space-y-1">
+                            <li>**Initial Javascript Execution Issues:** `Uncaught ReferenceError: loadContent is not defined` resolved by ensuring `window.` prefixes and complete code deployment.</li>
+                            <li>**Firebase Authentication Errors:** `auth/invalid-api-key`, `auth/network-request-failed`, `auth/configuration-not-found` resolved by:
+                                <ul class="list-disc list-inside ml-4">
+                                    <li>Adding correct Firebase `firebaseConfig` to HTML.</li>
+                                    <li>Enabling Anonymous Authentication in Firebase Console.</li>
+                                    <li>Extensively updating Content Security Policy (CSP) for `script-src`, `connect-src`, and `frame-src` to allow all necessary Firebase/Google/Xero domains.</li>
+                                    <li>Ensuring Firebase SDK versions (`11.9.1`) match the console snippets.</li>
+                                </ul>
+                            </li>
+                            <li>**Firestore Connection/Permission Errors:** `400 (Bad Request)`, `Client is offline`, `Could not reach backend` resolved by:
+                                <ul class="list-disc list-inside ml-4">
+                                    <li>Creating Cloud Firestore database in Firebase Console.</li>
+                                    <li>Configuring Firestore Security Rules to allow authenticated users read/write to their specific `xeroTokens` path.</li>
+                                </ul>
+                            </li>
+                            <li>**Persistent Xero OAuth Rejection:** `Sorry, something went wrong` and `iconLoader.js:2 Uncaught TypeError: Cannot read properties of null (reading '1')` errors.
+                                <ul class="list-disc list-inside ml-4">
+                                    <li>Extensive verification confirms **live code (Client ID, Secret, Redirect URI) is 100% correct.**</li>
+                                    <li>Problem points to **Xero's internal system/registration for "FAA Vault Connector" app.**</li>
+                                    <li>**Case raised with Xero Support:** CX0016588829 (heynsschoeman@gmail.com).</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="document-item p-4">
+                    <div class="icon">➡️</div>
+                    <div class="document-item-content">
+                        <h3>Next Steps</h3>
+                        <p>Await response and guidance from Xero Support regarding case **CX0016588829** to resolve the OAuth authorization rejection.</p>
+                        <p class="text-sm text-slate-600 mt-2"><strong>Note on Webhooks:</strong> Webhook integration requires a backend server to receive and process payloads; this will be a future step once the primary OAuth connection is stable.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAA.ZONE Footer -->
+        <div class="mt-8 pt-6 border-t border-slate-200 text-center">
+            <div class="text-xs text-slate-400">
+                <p>&copy; 2025 FAA.ZONE™</p>
+                <p>Xero Integration Setup Document v1.0</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

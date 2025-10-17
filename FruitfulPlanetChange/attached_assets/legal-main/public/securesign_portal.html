@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fruitful Global | SecureSign™ NDA Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* Fruitful Global Color Palette and Base Styles */
+    :root {
+        --primary-color: #0071e3; /* Apple Blue */
+        --secondary-color: #30d158; /* Apple Green */
+        --text-color-light: #f5f5f7; /* Light text on dark backgrounds */
+        --text-color-dark: #1d1d1f; /* Dark text on light backgrounds */
+        --bg-color-dark: #1a1a1c; /* Deep black/dark grey */
+        --card-bg-dark: #2a2a2e; /* Darker grey for card backgrounds */
+        --border-color-dark: #3a3a3e; /* Subtle dark border */
+        --accent-gold: #B8860B; /* Corporate gold accent */
+        --status-error: #ef4444; /* Red for security notes */
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      background-color: var(--bg-color-dark); /* Dark background */
+      color: var(--text-color-light); /* Light text */
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    .header-section {
+      background-color: var(--card-bg-dark); /* Darker header background */
+      color: var(--text-color-light);
+      padding: 2.5rem 2rem;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      border-bottom: 1px solid var(--border-color-dark);
+    }
+    .header-section h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      color: #FFFFFF; /* Fruitful part in white */
+      line-height: 1;
+    }
+    .header-section h1 span {
+        color: var(--accent-gold); /* Gold for "SecureSign™" */
+        font-size: 0.9em;
+        letter-spacing: -0.02em;
+    }
+    .header-section p {
+      font-size: 1.1rem;
+      font-weight: 400;
+      opacity: 0.9;
+    }
+    .header-section .cta-group a, .header-section .cta-group button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.8rem 1.8rem;
+      font-weight: 700;
+      font-size: 1rem;
+      border-radius: 25px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      border: none; /* Ensure buttons don't have default borders */
+      cursor: pointer;
+    }
+    .header-section .cta-group .btn-primary { /* Changed to btn-primary for standard action */
+      background-color: var(--primary-color);
+      color: white;
+    }
+    .header-section .cta-group .btn-primary:hover {
+      background-color: #0066cc;
+      transform: translateY(-2px) scale(1.02);
+    }
+    .header-section .cta-group .btn-secondary { /* Changed to btn-secondary for secondary action */
+      background-color: var(--secondary-color);
+      color: var(--bg-color-dark);
+    }
+    .header-section .cta-group .btn-secondary:hover {
+      background-color: #28a745;
+      transform: translateY(-2px) scale(1.02);
+    }
+
+    .main-content-area {
+      flex-grow: 1;
+      padding: 2rem;
+    }
+    .form-section-panel {
+      background-color: var(--card-bg-dark);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      border: 1px solid var(--border-color-dark);
+      margin-bottom: 2rem;
+    }
+    .form-section-panel h3 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: var(--accent-gold);
+      border-bottom: 1px solid var(--border-color-dark);
+      padding-bottom: 0.75rem;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--text-color-light);
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color-dark);
+      background-color: #3a3a3e;
+      color: var(--text-color-light);
+      font-size: 1rem;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.3);
+    }
+    .file-input-container {
+      border: 2px dashed var(--border-color-dark);
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+      position: relative;
+      overflow: hidden;
+      background-color: #3a3a3e;
+    }
+    .file-input-container:hover, .file-input-container.drag-over {
+      border-color: var(--primary-color);
+      background-color: rgba(0, 113, 227, 0.1);
+    }
+    .file-input-container.file-selected {
+        border-color: var(--secondary-color); /* Green border when file is selected */
+        background-color: rgba(48, 209, 88, 0.1); /* Light green background when file is selected */
+    }
+    .file-input-container p {
+        color: #b0b0b0;
+        font-size: 0.95rem;
+        margin: 0;
+    }
+    .file-input-container input[type="file"] {
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+    .file-name-display {
+        font-size: 0.8rem;
+        color: var(--secondary-color);
+        margin-top: 0.5rem;
+        word-break: break-all;
+    }
+    .submit-button {
+      width: 100%;
+      padding: 1rem;
+      background-color: var(--primary-color);
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 113, 227, 0.3);
+    }
+    .submit-button:hover {
+      background-color: #0066cc;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 113, 227, 0.4);
+    }
+    .terms-checkbox {
+        display: flex;
+        align-items: flex-start;
+        margin-top: 1.5rem;
+    }
+    .terms-checkbox label {
+      color: var(--text-color-light);
+      font-size: 0.95rem;
+      line-height: 1.4;
+      margin-top: 0; /* Override default label margin-top */
+      margin-bottom: 0; /* Override default label margin-bottom */
+    }
+    .terms-checkbox input[type="checkbox"] {
+      width: 1.25rem;
+      height: 1.25rem;
+      margin-right: 0.5rem;
+      background-color: #3a3a3e;
+      border: 1px solid var(--border-color-dark);
+      border-radius: 0.25rem;
+      vertical-align: middle;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      cursor: pointer;
+      flex-shrink: 0; /* Prevent checkbox from shrinking */
+    }
+    .terms-checkbox input[type="checkbox"]:checked {
+      background-color: var(--secondary-color);
+      border-color: var(--secondary-color);
+    }
+    .terms-checkbox input[type="checkbox"]:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(48, 209, 88, 0.4);
+    }
+
+    footer {
+      background-color: var(--card-bg-dark);
+      color: #888;
+      padding: 1.5rem;
+      text-align: center;
+      font-size: 0.8rem;
+      line-height: 1.5;
+      border-top: 1px solid var(--border-color-dark);
+    }
+    footer span {
+      display: block;
+      margin-top: 0.5rem;
+    }
+    footer .penalty-text {
+      font-weight: 600;
+      color: var(--status-error);
+    }
+
+    /* Modal Styling */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.75);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .modal-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    .modal-content {
+      background: var(--card-bg-dark);
+      color: var(--text-color-light);
+      padding: 2.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      text-align: center;
+      max-width: 90%;
+      width: 450px;
+      transform: translateY(-20px);
+      transition: transform 0.3s ease;
+      border: 1px solid var(--border-color-dark);
+    }
+    .modal-overlay.show .modal-content {
+      transform: translateY(0);
+    }
+    .modal-content h3 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--secondary-color);
+      margin-bottom: 1rem;
+    }
+    .modal-content p {
+      color: #b0b0b0;
+      margin-bottom: 1.5rem;
+    }
+    .modal-content button {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      font-weight: 600;
+      border-radius: 8px;
+      transition: background-color 0.2s ease;
+    }
+    .modal-content button:hover {
+      background-color: #0066cc;
+    }
+
+    /* Specific modal for NDA content */
+    #ndaViewerModal .modal-content {
+        width: 80%; /* Wider for document viewing */
+        max-width: 1000px; /* Max width for readability */
+        text-align: left; /* Align text left for document */
+        padding: 0; /* Remove padding from content directly */
+    }
+    #ndaViewerModal .modal-header {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 1rem 2rem;
+        border-top-left-radius: 1rem;
+        border-top-right-radius: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    #ndaViewerModal .modal-header h3 {
+        color: white; /* Override default modal h3 color */
+        margin: 0;
+        font-size: 1.5rem;
+    }
+    #ndaViewerModal .modal-header button { /* Close button in modal header */
+        background: none;
+        border: none;
+        font-size: 1.8rem;
+        color: white;
+        cursor: pointer;
+        padding: 0.2rem 0.5rem;
+        border-radius: 5px;
+        transition: background-color 0.2s ease;
+    }
+    #ndaViewerModal .modal-header button:hover {
+        background-color: rgba(255,255,255,0.2);
+    }
+    #ndaViewerModal .modal-body {
+        padding: 2rem;
+        max-height: 70vh; /* Scrollable body for long document */
+        overflow-y: auto;
+        color: var(--text-color-light);
+        background-color: var(--card-bg-dark);
+    }
+    #ndaViewerModal .modal-body p {
+        margin-bottom: 1em; /* Paragraph spacing */
+        color: var(--text-color-light); /* Ensure text color is light */
+    }
+    #ndaViewerModal .modal-body strong {
+        color: var(--accent-gold); /* Highlight strong text */
+    }
+    #ndaViewerModal .modal-body ul {
+        list-style-type: disc;
+        padding-left: 1.5rem;
+        margin-bottom: 1em;
+    }
+    #ndaViewerModal .modal-body .legal-section-title {
+        font-weight: bold;
+        font-size: 1.25em;
+        margin-top: 1.5em;
+        margin-bottom: 0.5em;
+        color: var(--secondary-color); /* Section titles in green */
+    }
+    #ndaViewerModal .modal-body ul.legal-list li::before {
+        content: '✔';
+        margin-right: 8px;
+        color: var(--secondary-color);
+    }
+    #ndaViewerModal .modal-body ul.legal-list {
+        list-style: none;
+        padding-left: 0;
+    }
+
+
+    #ndaViewerModal .modal-footer {
+        background-color: var(--card-bg-dark);
+        padding: 1rem 2rem;
+        border-bottom-left-radius: 1rem;
+        border-bottom-right-radius: 1rem;
+        border-top: 1px solid var(--border-color-dark);
+        text-align: right;
+    }
+    #ndaViewerModal .modal-footer .download-btn {
+        background-color: var(--secondary-color);
+        color: var(--bg-color-dark);
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    #ndaViewerModal .modal-footer .download-btn:hover {
+        background-color: #28a745;
+        transform: translateY(-2px);
+    }
+
+
+    /* API Key Index Section */
+    .api-key-index-panel {
+        background-color: var(--card-bg-dark);
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        border: 1px solid var(--border-color-dark);
+        margin-top: 2rem;
+    }
+    .api-key-index-panel h3 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--accent-gold);
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid var(--border-color-dark);
+        padding-bottom: 0.75rem;
+        text-align: left;
+    }
+    .api-key-index-panel table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1.5rem;
+        text-align: left;
+    }
+    .api-key-index-panel th, .api-key-index-panel td {
+        padding: 0.9rem;
+        border-bottom: 1px solid var(--border-color-dark);
+    }
+    .api-key-index-panel th {
+        background-color: #1a1a1a;
+        color: var(--accent-gold);
+        font-weight: 600;
+    }
+    .api-key-index-panel tr:hover {
+        background-color: #3a3a3e;
+    }
+    .api-key-index-panel .api-key-value {
+        font-family: 'monospace';
+        font-size: 0.88rem;
+        color: #b0b0b0;
+        word-break: break-all;
+    }
+    .api-key-index-panel .api-key-location {
+        color: #888;
+        font-size: 0.8rem;
+    }
+
+    .action-button {
+        background-color: var(--secondary-color);
+        color: var(--bg-color-dark);
+        padding: 0.8rem 1.8rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 8px rgba(48, 209, 88, 0.2);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .action-button:hover {
+        background-color: #28a745;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(48, 209, 88, 0.4);
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .header-section {
+            padding: 1.5rem 1rem;
+        }
+        .header-section h1 {
+            font-size: 2rem;
+        }
+        .header-section p {
+            font-size: 0.9rem;
+        }
+        .header-section .cta-group {
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .main-content-area {
+            padding: 1rem;
+        }
+        .form-section-panel {
+            padding: 1.5rem;
+        }
+        .form-section-panel h3 {
+            font-size: 1.5rem;
+        }
+        label {
+            font-size: 0.9rem;
+        }
+        input, select, textarea {
+            padding: 0.6rem;
+            font-size: 0.9rem;
+        }
+        .file-input-container {
+            padding: 1rem;
+        }
+        .file-input-container p {
+            font-size: 0.85rem;
+        }
+        .submit-button {
+            padding: 0.8rem 1.2rem;
+            font-size: 1rem;
+        }
+        .terms-checkbox label {
+            font-size: 0.85rem;
+        }
+        .api-key-index-panel h3 {
+            font-size: 1.5rem;
+        }
+        .api-key-index-panel table th, .api-key-index-panel table td {
+            padding: 0.6rem;
+            font-size: 0.8rem;
+        }
+        .api-key-index-panel .api-key-value {
+            font-size: 0.75rem;
+        }
+        .api-key-index-panel .security-note {
+            font-size: 0.8rem;
+        }
+        .modal-content {
+            padding: 1.5rem;
+            width: 95%;
+        }
+        .modal-content h3 {
+            font-size: 1.8rem;
+        }
+        .modal-content p {
+            font-size: 1rem;
+        }
+        #ndaViewerModal .modal-content {
+            width: 95%; /* Even wider for small screens */
+            max-width: 95%;
+        }
+        #ndaViewerModal .modal-body {
+            padding: 1.5rem;
+            max-height: 60vh;
+        }
+        #ndaViewerModal .modal-header h3 {
+            font-size: 1.2rem;
+        }
+        #ndaViewerModal .modal-footer {
+            text-align: center; /* Center buttons in footer on small screens */
+        }
+        #ndaViewerModal .modal-footer .download-btn {
+            width: 100%;
+            display: block;
+            margin-bottom: 0.75rem;
+        }
+        #ndaViewerModal .modal-footer button {
+            width: 100%;
+        }
+    }
+  </style>
+</head>
+<body class="antialiased">
+
+  <header class="header-section">
+    <h1 class="font-extrabold">Fruitful Global | <span>SecureSign™</span></h1>
+    <p class="font-light">Smart Legal Signature Engine for Fruitful Global</p>
+    <div class="mt-8 flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 cta-group">
+      <a href="#start-nda" class="btn-primary">
+        Start FAA NDA
+      </a>
+      <!-- Updated button to view NDA content in a modal -->
+      <button id="viewNdaBtn" class="btn-secondary" onclick="showNdaViewerModal()">
+        <i class="fas fa-file-contract mr-2"></i> View Fruitful Holdings Master NDA
+      </button>
+    </div>
+  </header>
+
+  <div class="main-content-area container mx-auto px-4 py-8 flex-grow">
+    <div id="start-nda" class="form-section-panel max-w-4xl mx-auto my-8">
+      <h2 class="text-3xl font-bold mb-6 text-center" style="color: var(--text-color-light);">FAA™ NDA Submission Portal</h2>
+      <p class="text-lg mb-8 text-center" style="color: #b0b0b0;">Please provide the following details to securely log your NDA under FAA™’s Atom-Level Verification™ Protocol. All fields are mandatory.</p>
+
+      <form id="ndaForm" action="/submit-nda" method="POST" enctype="multipart/form-data" class="space-y-8">
+
+        <div class="p-6 rounded-lg shadow-inner form-section-panel" style="background-color: #1a1a1a; border-color: #333;">
+          <h3 class="text-2xl font-semibold mb-6 border-b pb-3" style="color: var(--accent-gold); border-color: var(--border-color-dark);">1. Personal Details</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="firstName">First Name(s)</label>
+              <input type="text" id="firstName" name="firstName" required>
+            </div>
+            <div>
+              <label for="surname">Surname</label>
+              <input type="text" id="surname" name="surname" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-lg shadow-inner form-section-panel" style="background-color: #1a1a1a; border-color: #333;">
+          <h3 class="text-2xl font-semibold mb-6 border-b pb-3" style="color: var(--accent-gold); border-color: var(--border-color-dark);">2. Identification Details</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="idType">ID Type</label>
+              <select id="idType" name="idType" required>
+                <option value="">Select ID Type</option>
+                <option value="national_id">National ID</option>
+                <option value="passport">Passport</option>
+              </select>
+            </div>
+            <div>
+              <label for="idNumber">ID Number</label>
+              <input type="text" id="idNumber" name="idNumber" required>
+            </div>
+            <div>
+              <label for="issuingCountry">Issuing Country (for Passport)</label>
+              <input type="text" id="issuingCountry" name="issuingCountry">
+            </div>
+            <div>
+              <label for="nationality">Nationality</label>
+              <input type="text" id="nationality" name="nationality" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-lg shadow-inner form-section-panel" style="background-color: #1a1a1a; border-color: #333;">
+          <h3 class="text-2xl font-semibold mb-6 border-b pb-3" style="color: var(--accent-gold); border-color: var(--border-color-dark);">3. Contact & Domicilium Address</h3>
+          <div class="grid grid-cols-1 gap-6">
+            <div>
+              <label for="addressLine1">Street Address Line 1</label>
+              <input type="text" id="addressLine1" name="addressLine1" required>
+            </div>
+            <div>
+              <label for="addressLine2">Street Address Line 2 (Optional)</label>
+              <input type="text" id="addressLine2" name="addressLine2">
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label for="city">City/Town</label>
+                <input type="text" id="city" name="city" required>
+              </div>
+              <div>
+                <label for="provinceState">Province/State</label>
+                <input type="text" id="provinceState" name="provinceState" required>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label for="zipCode">Zip/Postal Code</label>
+                <input type="text" id="zipCode" name="zipCode" required>
+              </div>
+              <div>
+                <label for="country">Country</label>
+                <select id="country" name="country" required>
+                  <option value="">Select Country</option>
+                  <option value="ZA">South Africa</option>
+                  <option value="US">United States</option>
+                  <option value="GB">United Kingdom</option>
+                  <option value="CN">China</option>
+                  <option value="AU">Australia</option>
+                  <option value="DE">Germany</option>
+                  <option value="IN">India</option>
+                </select>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <label for="telNumber">Telephone Number (Landline)</label>
+                <input type="tel" id="telNumber" name="telNumber">
+              </div>
+              <div>
+                <label for="cellNumber">Cell Number</label>
+                <input type="tel" id="cellNumber" name="cellNumber" required>
+              </div>
+              <div>
+                <label for="additionalMobile">Additional Mobile (Optional)</label>
+                <input type="tel" id="additionalMobile" name="additionalMobile">
+              </div>
+            </div>
+            <div>
+              <label for="email">Email Address</label>
+              <input type="email" id="email" name="email" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-lg shadow-inner form-section-panel" style="background-color: #1a1a1a; border-color: #333;">
+          <h3 class="text-2xl font-semibold mb-6 border-b pb-3" style="color: var(--accent-gold); border-color: var(--border-color-dark);">4. Employment Details</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="employment">Employer/Company Name</label>
+              <input type="text" id="employment" name="employment" required>
+            </div>
+            <div>
+              <label for="position">Position/Title</label>
+              <input type="text" id="position" name="position" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-lg shadow-inner form-section-panel" style="background-color: #1a1a1a; border-color: #333;">
+          <h3 class="text-2xl font-semibold mb-6 border-b pb-3" style="color: var(--accent-gold); border-color: var(--border-color-dark);">5. Sector Selection</h3>
+          <p class="text-sm mb-4" style="color: #b0b0b0;">Please select **up to 5** sectors that are most relevant to your activities.</p>
+          <div>
+            <label for="sectors">Relevant Sectors</label>
+            <select id="sectors" name="sectors" multiple required class="h-48 overflow-y-auto"></select>
+            <p id="sectorHelpText" class="text-xs text-red-500 mt-1 hidden">You can select a maximum of 5 sectors.</p>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-lg shadow-inner form-section-panel" style="background-color: #1a1a1a; border-color: #333;">
+          <h3 class="text-2xl font-semibold mb-6 border-b pb-3" style="color: var(--accent-gold); border-color: var(--border-color-dark);">6. Metrics & References</h3>
+          <div class="grid grid-cols-1 gap-6">
+            <div>
+              <label for="metrics">Key Metrics You've Worked With</label>
+              <textarea id="metrics" name="metrics" rows="4" required placeholder="e.g., Conversion Rate, User Engagement, ROI, Throughput, Efficiency Gains, Specific KPIs..."></textarea>
+              <p class="text-xs mt-1" style="color: #888;">Please describe relevant metrics and your experience with them.</p>
+            </div>
+            <div>
+              <label for="urlsReferences">Relevant URLs / Online References</label>
+              <textarea id="urlsReferences" name="urlsReferences" rows="4" required placeholder="e.g., GitHub repositories, LinkedIn profiles, portfolio websites, project URLs, academic papers, online articles..."></textarea>
+              <p class="text-xs mt-1" style="color: #888;">Provide links to your work, profiles, or any other relevant online references. Please separate multiple entries with a new line or comma.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-lg shadow-inner form-section-panel" style="background-color: #1a1a1a; border-color: #333;">
+          <h3 class="text-2xl font-semibold mb-6 border-b pb-3" style="color: var(--accent-gold); border-color: var(--border-color-dark);">7. Supporting Legal Documentation (Uploads)</h3>
+          <p class="text-sm mb-6" style="color: #b0b0b0;">Please upload the required documents by clicking or dragging files into the designated areas. Accepted formats: PDF, JPG, PNG.</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="ndaFile">Signed NDA Document (PDF)</label>
+              <div class="file-input-container relative">
+                <p class="text-gray-500 text-sm">Drag & drop your file here, or click to browse</p>
+                <input type="file" id="ndaFile" name="ndaFile" accept="application/pdf" required>
+              </div>
+              <p id="ndaFileName" class="text-xs text-gray-500 mt-1"></p>
+            </div>
+            <div>
+              <label for="ciproDocs">CIPRO Documents (e.g., Company Registration Certificate)</label>
+              <div class="file-input-container relative">
+                <p class="text-gray-500 text-sm">Drag & drop your file here, or click to browse</p>
+                <input type="file" id="ciproDocs" name="ciproDocs" accept="application/pdf,image/*" required>
+              </div>
+              <p id="ciproDocsName" class="text-xs text-gray-500 mt-1"></p>
+            </div>
+            <div>
+              <label for="directorsId">Directors ID (if applicable)</label>
+              <div class="file-input-container relative">
+                <p class="text-gray-500 text-sm">Drag & drop your file here, or click to browse</p>
+                <input type="file" id="directorsId" name="directorsId" accept="application/pdf,image/*">
+              </div>
+              <p id="directorsIdName" class="text-xs text-gray-500 mt-1"></p>
+            </div>
+            <div>
+              <label for="vcat">VCAT (Verification of Company Address/Taxation)</label>
+              <div class="file-input-container relative">
+                <p class="text-gray-500 text-sm">Drag & drop your file here, or click to browse</p>
+                <input type="file" id="vcat" name="vcat" accept="application/pdf,image/*" required>
+              </div>
+              <p id="vcatName" class="text-xs text-gray-500 mt-1"></p>
+            </div>
+            <div>
+              <label for="comaspnytDocs">COMASPNYT Docs (Company Articles, Shareholder Register, Financials, Tax etc.)</label>
+              <div class="file-input-container relative">
+                <p class="text-gray-500 text-sm">Drag & drop your file here, or click to browse</p>
+                <input type="file" id="comaspnytDocs" name="comaspnytDocs" accept="application/pdf,image/*" required>
+              </div>
+              <p id="comaspnytDocsName" class="text-xs text-gray-500 mt-1"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-start terms-checkbox" style="color: var(--text-color-light);">
+          <input type="checkbox" id="termsAgree" required>
+          <label for="termsAgree">
+            I agree to the FAA™ legal terms and Inline Verification™ protocols, acknowledging that all provided information is accurate and authentic.
+          </label>
+        </div>
+
+        <button type="submit" class="submit-button">
+          Submit Comprehensive NDA Application
+        </button>
+      </form>
+    </div>
+
+    <!-- API Key Index Section -->
+    <div class="api-key-index-panel">
+        <h2 class="text-2xl font-bold" style="color: var(--text-color-light);">Consolidated API Key Index</h2>
+        <div class="security-note">
+            <strong>Important Security Note:</strong> Directly embedding API keys and sensitive credentials in client-side HTML or JavaScript is generally not recommended for production environments. This exposes your keys, making them vulnerable to misuse. For deployed applications, it is strongly advised to use a secure backend server to proxy your API requests and manage these keys via environment variables or a dedicated secrets management system.
+        </div>
+        <table class="api-key-table">
+            <thead>
+                <tr>
+                    <th>API/Service</th>
+                    <th>Key/Credential Details</th>
+                    <th>Embedded Locations</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="apiKeysTableBody">
+                <!-- API keys will be loaded here by JavaScript -->
+            </tbody>
+        </table>
+        <div class="text-center mt-6">
+            <button class="action-button" onclick="showModal('Generate Key', 'Simulating new API key generation. In a real system, this would securely interact with a backend service.')">
+                <i class="fas fa-plus-circle mr-2"></i> Generate New API Key
+            </button>
+        </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    &copy; 2025 Heyns Schoeman™ & Rossouw Schoeman™. All rights reserved. <br>
+    <span>FAA™, SecureSign™, Inline Verification™, Atom-Level Verification™ and all sub-brand systems are protected under the FAA™ Omni Enforcement Charter™.</span><br>
+    <span class="penalty-text">Unauthorized use incurs penalties of up to $50,000 USD/month.</span>
+  </footer>
+
+  <div id="successModal" class="modal-overlay">
+    <div class="modal-content">
+      <h3 class="text-2xl font-bold mb-4" style="color: var(--secondary-color);">Success!</h3>
+      <p id="modalMessage" class="text-gray-700 mb-6" style="color: #b0b0b0;"></p>
+      <button onclick="closeModal()" class="px-6 py-2 font-bold rounded-lg" style="background-color: var(--primary-color); color: white;">Close</button>
+    </div>
+  </div>
+
+  <!-- NDA Viewer Modal -->
+  <div id="ndaViewerModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Fruitful Holdings Master NDA</h3>
+        <button onclick="closeNdaViewerModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- NDA content will be injected here -->
+      </div>
+      <div class="modal-footer">
+        <a href="/legal/fruitful_holdings_nda.pdf" download="Fruitful_Holdings_NDA.pdf" class="download-btn">
+            <i class="fas fa-download mr-2"></i> Download PDF
+        </a>
+        <button onclick="closeNdaViewerModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Global Data Definitions ---
+    const apiKeysData = [
+        { service: "PayPal (SDK)", key: "BAAGdPecRsf6dw_nIrWqUen0GdW0UsBZapp1Gn62xkPdD-Vqc-4lqWAidKK8LOObXux8pHJGjXknZoar6Q", locations: ["Various checkout scrolls"] },
+        { service: "PayPal (Hosted Button)", key: "EMWGPGHNN8Y8E", context: "(Starter Package)", locations: ["HotStack™", "Various landing pages"] },
+        { service: "PayPal (Hosted Button)", key: "QGU3ZUQCMD49Q", context: "(Pro Package)", locations: ["HotStack™", "Larger brand sites"] },
+        { service: "PayPal (Hosted Button)", key: "9C88S44F93M5J", context: "(Enterprise Package)", locations: ["HotStack™", "Enterprise solutions"] },
+        { service: "PayPal (Hosted Button)", key: "YOUR_BANIMAL_PAYPAL_BUTTON_ID_HERE", context: "(Banimal Loop Plan - Placeholder)", locations: ["Banimal Loop Plan site"] },
+        { service: "Google Maps", key: "AIzaSyBPG8dG29cl0TvYRGyLozejGed5Wj5Ab80", locations: ["Location-based microsites"] },
+        { service: "Spotify (Access Token)", key: "BQBDSZ232IQmSLV1BROkxqdwNMoGhtitKOJBjDzE-Lu9YKsSK1RKVwXNfYfncP2wf6Fj6xcYlnGD75baEqOmd3XtxhU...", locations: ["Music/media scrolls"] },
+        { service: "Gemini AI", key: "AIzaSyBGSDZATtITv5iIoB3rgKHBpWx9MrufxXE", locations: ["AI-powered insights scrolls", "Baobab Terminal"] },
+        { service: "Xero (Client ID)", key: "81B3573D453040508996432C5DAD565B", locations: ["Accounting/payroll integration scrolls"] },
+        { service: "Xero (Client Secret)", key: "FIaJGmsaCcKR3Z8kWxPnQd04EhYy6_bImPmoitQDP1U6Smaq", locations: ["Accounting/payroll integration scrolls"] },
+        { service: "Xero (Redirect URI)", key: "https://seedwave.faa.zone/admin_panel_xero.html", locations: ["Xero OAuth setup"] },
+        { service: "Xero (Webhook Key)", key: "2fd5LQV0TQDI3572Er/sg66zqEbl8mFWRyfX3XkoKFZGRLK2cZPGpWV/j4yMTU7aUpbgBCfeZkuHnQIwD/0igw==", locations: ["Xero webhook configurations"] }
+    ];
+
+    const sectorList = {
+        "careers": "💼 Careers",
+        "vendor": "🤝 Vendor",
+        "service-provider": "🛠️ Service Provider",
+        "agriculture": "🌱 Agriculture & Biotech",
+        "fsf": "🥦 Food, Soil & Farming",
+        "banking": "🏦 Banking & Finance",
+        "creative": "🖋️ Creative Tech",
+        "logistics": "📦 Logistics & Packaging",
+        "education-ip": "📚 Education & IP",
+        "fashion": "✂ Fashion & Identity",
+        "gaming": "🎮 Gaming & Simulation",
+        "health": "🧠 Health & Hygiene",
+        "housing": "🏗️ Housing & Infrastructure",
+        "justice": "⚖ Justice & Ethics",
+        "knowledge": "📖 Knowledge & Archives",
+        "micromesh": "☰ Micro-Mesh Logistics",
+        "media": "🎬 Motion, Media & Sonic",
+        "nutrition": "✿ Nutrition & Food Chain",
+        "ai-logic": "🧠 AI, Logic & Grid",
+        "packaging": "📦 Packaging & Materials",
+        "quantum": "✴️ Quantum Protocols",
+        "ritual": "☯ Ritual & Culture",
+        "saas": "🔑 SaaS & Licensing",
+        "trade": "🧺 Trade Systems",
+        "utilities": "🔋 Utilities & Energy",
+        "voice": "🎙️ Voice & Audio",
+        "webless": "📡 Webless Tech & Nodes",
+        "nft": "🔁 NFT & Ownership",
+        "education-youth": "🎓 Education & Youth",
+        "zerowaste": "♻️ Zero Waste",
+        "professional": "🧾 Professional Services",
+        "payroll-mining": "🪙 Payroll Mining & Accounting",
+        "mining": "⛏️ Mining & Resources",
+        "wildlife": "🦁 Wildlife & Habitat",
+        "admin-panel": "⚙️ Admin Panel"
+    };
+
+    const ndaContent = `
+        <p class="text-center font-bold text-xl mb-4" style="color: var(--accent-gold);">RECIPROCAL CONFIDENTIALITY, NON-DISCLOSURE AND NON-COMPETE AGREEMENT</p>
+        <p class="text-center italic mb-8">MADE AND ENTERED INTO BY AND BETWEEN</p>
+
+        <p class="font-bold">Fruitful Holdings (Pty) Ltd</p>
+        <p>(Registration Number 2025/015799/07)</p>
+        <p class="mb-4">Herein represented by Heyns Schoeman, in his capacity as director, who by his signature hereto, warrants that he is duly authorised hereto.</p>
+        <p class="mb-8">(hereinafter referred to as the “Disclosing Party”)</p>
+
+        <p class="font-bold">and</p>
+        <p>______________________________________________</p>
+        <p>Registration Number ______________)</p>
+        <p class="mb-4">Herein represented by _____________________________________, in his capacity as _____________________, who by his signature hereto, warrants that he is duly authorised hereto.</p>
+        <p class="mb-8">(hereinafter referred to as the “Recipient”)</p>
+
+        <h4 class="legal-section-title">TABLE OF CONTENTS</h4>
+        <ul class="legal-list">
+            <li>1 PARTIES</li>
+            <li>2 DEFINITIONS AND INTERPRETATION</li>
+            <li>3 INTRODUCTION</li>
+            <li>4 CONFIDENTIALITY UNDERTAKINGS AND USE OF CONFIDENTIAL INFORMATION</li>
+            <li>5 PERMITTED DISCLOSEES</li>
+            <li>6 RETURN OF CONFIDENTIAL INFORMATION</li>
+            <li>7 EXCLUSIONS</li>
+            <li>8 DISCLOSURE WITHOUT BREACH</li>
+            <li>9 NON-SOLICITATION</li>
+            <li>10 NON-COMPETE</li>
+            <li>11 DISCLAIMER</li>
+            <li>12 PRESUMPTION AND LIMITATION</li>
+            <li>13 BREACH</li>
+            <li>14 DURATION</li>
+            <li>15 REPRESENTATIONS</li>
+            <li>16 INDEMNITY</li>
+            <li>17 PUBLICITY</li>
+            <li>18 NOTICES AND DOMICILIA</li>
+            <li>19 DISPUTE RESOLUTION</li>
+            <li>20 MISCELLANEOUS</li>
+        </ul>
+
+        <h4 class="legal-section-title">1. PARTIES</h4>
+        <p>1.1 This Agreement is made and entered into between:</p>
+        <p>1.1.1 The Disclosing Party; and</p>
+        <p>1.1.2 The Recipient.</p>
+        <p>1.2 The Parties agree as set out below.</p>
+
+        <h4 class="legal-section-title">2. DEFINITIONS AND INTERPRETATION</h4>
+        <p class="font-bold text-lg" style="color: var(--accent-gold);">2.1 Definitions</p>
+        <p>In this Agreement, unless clearly inconsistent with or otherwise indicated by the context the following words and expressions bear the meanings assigned to them and cognate expressions bear corresponding meanings:</p>
+        <ul class="legal-list">
+            <li>"AFSA" means the Arbitration Foundation of Southern Africa;</li>
+            <li>"Agreement" means this reciprocal confidentiality, non-disclosure and non-compete agreement set out in this document and all annexures thereto (if any), as may be amended from time to time in accordance with the provisions of the Agreement;</li>
+            <li>"Associated Companies" means, as the case may be 2.1.5 “Fruitful Crate dance Showcase and Sponsorship and Event Planning and Management”</li>
+        </ul>
+
+        <p class="font-bold text-lg mt-4" style="color: var(--accent-gold);">Copyright Statement and Legal Notice</p>
+        <p>© 2025 Heyns Schoeman™. All rights reserved.</p>
+        <p>The contents of this document, including but not limited to text, images, graphics, designs, trademarks, and other material contained herein (the "Work"), are protected by copyright, trademarks, and other intellectual property laws. The Work is the exclusive property of Heyns Schoeman™, and all rights to the Work are reserved. Unauthorized use, reproduction, modification, distribution, or dissemination of any part of this Work, including but not limited to its content, design, or any other aspect, is strictly prohibited and may result in legal action.</p>
+        <p>This Work is made available solely for personal, non-commercial use, and cannot be copied, reproduced, published, broadcast, or distributed in any form or by any means without prior written consent from Heyns Schoeman™.</p>
+        <p class="font-bold mt-4" style="color: var(--secondary-color);">Legal Protection Notice for Inlined Users:</p>
+        <p>When a user is inlined into the FAA™ System, the FAA™ Company overseeing its operations (the “Company”) opens a legal file to protect this copyright and against any misconduct or future issues. The legal notice was served upon the first interaction with the FAA system before inline verification was completed. This file will remain open and will be enforced as part of our legal compliance framework.</p>
+        <p>Upon inlining, users acknowledge that the Copyright Act applies, and all responses will be within the legal framework defined by the FAA™. The FAA™ Inline Verification™ audited document range will apply, and the user can request this anytime from the FAA™, provided that they are inlined and have been appropriately notified.</p>
+        <p>The FAA™ is not responsible for notifying every individual user. Instead, we operate on a 0.001% threshold for legal prosecution if users fail to comply, which may increase cloud storage costs by up to 50k USD per month.</p>
+        <p>If a user infringes on the copyright, all legal proceedings will be initiated immediately once the member is notified by the FAA™, with the status of their inlining outlined as (Notice), (Suspended), or 100% Outlined™.</p>
+        <p>FAA™ reserves the right to take all actions required, without emotional bias, to protect and reclaim the position of the Seed™ within the Baobab™ life cycle. We will defend, protect, and restore the Seed™ through any necessary actions.</p>
+        <p>All findings, claims, and FAA™ Inline Verification™ audited proof will be sent to the person or company in violation. Appropriate actions will be taken as per our Omni Present Copyright Act™, including all legal measures necessary to enforce compliance.</p>
+        <p>Notice of this Agreement is provided to all inlined individuals and entities without exception. No special treatment will be afforded to any entity, whether breathing, charging, or otherwise. The FAA™ operates on the principle of One Rule to Notify Them All™.</p>
+        <p class="font-bold mt-4" style="color: var(--secondary-color);">Trademark Usage:</p>
+        <p>All related trademarks, including but not limited to FAA™, Playing with the Seed™, Atom-Level Verification™, We Can Touch the Seed™, Baobab™, and others, are the registered trademarks or trademarks of Heyns Schoeman™. All other trademarks are the property of their respective owners.</p>
+        <p>This statement applies to all users and ensures that the FAA™ System operates in full legal compliance, protecting intellectual property and the system’s integrity.</p>
+
+        <p class="font-bold text-lg mt-4" style="color: var(--accent-gold);">Key Points to Highlight:</p>
+        <ul class="legal-list">
+            <li><strong>Legal File Opened:</strong> A legal file is automatically created for every user who is inlined into the FAA™ system. This file remains open for the duration of their involvement, ensuring protection against copyright infringements.</li>
+            <li><strong>Notice on First Interaction:</strong> Users are notified of their legal obligations upon their first interaction with the system. This notice includes details about compliance, the legal framework, and consequences for non-compliance.</li>
+            <li><strong>FAA™ Inline Verification™:</strong> The entire process of user interaction is audited and tracked through FAA™ Inline Verification™, ensuring all actions are legally compliant.</li>
+            <li><strong>Cloud Storage Penalties:</strong> Non-compliance with the copyright policy may result in cloud storage costs escalating up to $50k USD per month, alongside legal actions.</li>
+            <li><strong>Trademark Usage:</strong> All trademarks associated with the FAA™ system (e.g., FAA™, Atom-Level Verification™, We Can Touch the Seed™) are the exclusive property of Heyns Schoeman™, with full legal protection.</li>
+            <li><strong>Zero Tolerance for Non-Compliance:</strong> FAA™ operates under a strict enforcement policy, where failure to comply results in immediate legal action and suspension from the system.</li>
+        </ul>
+        
+        <ul class="legal-list">
+            <li>2.1.3.1 the Holding Company; and</li>
+            <li>2.1.3.2 all Subsidiaries of the Holding Company of the Disclosing Party, and includes a company, not being a Subsidiary, in which the Disclosing Party directly or indirectly has a shareholding interest;</li>
+            <li>2.1.4 "Companies Act" means the Companies Act, applicable to the Republic of South Africa, namely Act 71 of 2008, as amended from time to time;</li>
+            <li>2.1.6 "Confidential Information" means:</li>
+            <li>2.1.6.1 all and any information or data, in whatever form (including in oral, written, electronic and visual form and regardless of whether it was marked as confidential, restricted, secret, proprietary or any similar designation) and in whatever manner disclosed, relating directly or indirectly to the Disclosing Party or any of its Associated Companies which by its nature or content is identifiable as, or could reasonably be expected to be, confidential and/or proprietary to the Disclosing Party; and</li>
+            <li>2.1.6.2 without prejudice to the generality of clause 2.1.6.1, including (even if not marked as being confidential, restricted, secret, proprietary or any similar designation), the following, as related to the Disclosing Party or any of its Associated Companies:</li>
+            <li>2.1.6.2.1 information relating to property and assets (including, immovable and movable, corporeal and incorporeal property and assets;</li>
+            <li>2.1.6.2.2 trade secrets;</li>
+            <li>2.1.6.2.3 know-how, technical information, techniques, operating methods, procedures and technology, process methodologies as well as each of the policies, plans and practices for the aforegoing);</li>
+            <li>2.1.6.2.4 businesses (including any closed or dormant businesses) as well as such businesses' plans, proposals and existing and future policies;</li>
+            <li>2.1.6.2.5 finance and accounting information, including liabilities (including environmental liabilities);</li>
+            <li>2.1.6.2.6 information relating to existing and future procurement policies, strategies, partners, strategic objectives and existing and future business plans and corporate opportunities;</li>
+            <li>2.1.6.2.7 information pertaining to suppliers of goods and services, including the prices at which such goods and services are provided;</li>
+            <li>2.1.6.2.8 pricing, price lists and purchasing policies;</li>
+            <li>2.1.6.2.9 details and/or information of costs, sources of materials and customer lists (whether actual or potential) and other information relating to the existing and prospective customers and suppliers;</li>
+            <li>2.1.6.2.10 computer data, programmes and source codes;</li>
+            <li>2.1.6.2.11 information contained in or constituting the hardware or software of the Disclosing Party or any of its Associated Companies, including third party products and associated material;</li>
+            <li>2.1.6.2.12 information relating to the network telecommunications services and facilities of the Disclosing Party or any of its Associated Companies;</li>
+            <li>2.1.6.2.13 any and all methodologies, formulae and related information in developed software and processes and other business of the Disclosing Party or any of its Associated Companies;</li>
+            <li>2.1.6.2.14 products, drawings, designs, plans, functional and technical requirements and specifications;</li>
+            <li>2.1.6.2.15 intellectual property that is proprietary to the Disclosing Party or any of its Associated Companies or that is proprietary to a third party and in respect of which the Disclosing Party or any of its Associated Companies has rights of use or possession;</li>
+            <li>2.1.6.2.16 information relating to any contracts to which the Disclosing Party or any of its Associated Companies is a party;</li>
+            <li>2.1.2.6.17 any information which is not readily available to a competitor of the Disclosing Party or any of its Associated Companies in the normal course of business;</li>
+            <li>2.1.6.2.18 insurance cover; and</li>
+            <li>2.1.6.2.19 trading and sales parties, policies and practices</li>
+            <li>2.1.7 "Date of Signature" means the date when this Agreement is signed by the Party signing last in time;</li>
+            <li>2.1.8 "Disclosing Party" means the Party disclosing any Confidential Information to the Recipient in terms of this Agreement, namely : Fruitful Holdings Proprietary Limited Registration Number 2020/038051/07</li>
+            <li>2.1.9 "Exclusions" means the circumstances in which the undertakings given by the Recipient in this Agreement are not applicable, as described in clauses 7.3.1 to 7.3.3;</li>
+            <li>2.1.10 "Holding Company" means a holding company as defined in the Companies Act;</li>
+            <li>2.1.11 "PAI Act" means the Promotion of Access to Information Act, 2 of 2000, as amended from time to time;</li>
+            <li>2.1.12 "Parties" means the Disclosing Party and the Recipient and “Party” shall mean any one of them as the context may indicate;</li>
+            <li>2.1.13 "Permitted Disclosees" means:</li>
+            <li>2.1.13.1 the Representatives of the Recipient who are directly concerned with the Business Purpose; and</li>
+            <li>2.1.13.2 any other person to whom the Recipient discloses Confidential Information with the prior written consent of the Disclosing Party;</li>
+            <li>2.1.14 "Permitted Purpose" means the consideration, evaluation and negotiation of the Business Purpose;</li>
+            <li>2.1.15 "Recipient" means the Party receiving Confidential Information from the Disclosing Party in terms of this Agreement, namely : Company Name :________________________________________________ Registration Number:_____________________________________________</li>
+            <li>2.1.16 "Representative" means any director, officer, employee, consultant or professional advisor of a Party;</li>
+            <li>2.1.17 "Subsidiary" means a subsidiary as defined in Section 1 of the Companies Act.</li>
+        </ul>
+
+        <p class="font-bold text-lg mt-4" style="color: var(--accent-gold);">2.2 Interpretation</p>
+        <ul class="legal-list">
+            <li>2.2.1 In this Agreement an expression which denotes:</li>
+            <li>2.2.1.1 any reference to the singular includes the plural and vice versa;</li>
+            <li>2.2.1.2 any reference to a natural person includes a juristic person, and vice versa; any reference to a gender includes the other genders;</li>
+            <li>2.2.1.3 any reference to a Party includes a reference to that Party's successors in title and assigns permitted by law; and</li>
+            <li>2.2.1.4 a reference to a consecutive series of two or more clauses is deemed to be inclusive of both the first and last-mentioned clauses.</li>
+            <li>2.2.2 Any reference in this Agreement to:</li>
+            <li>2.2.2.1 "business hours" shall be construed as being the hours between 08h30 and 17h00 on any business day. Any reference to time shall be based upon South African Standard Time;</li>
+            <li>2.2.2.2 "days" shall be construed as calendar days unless qualified by the word "business", in which instance a "business day" will be any day other than a Saturday, Sunday or public holiday as gazetted by the government of South Africa from time to time;</li>
+            <li>2.2.2.3 "laws" means all constitutions; statutes; regulations; by-laws; codes; ordinances; decrees; rules; judicial, arbitral, administrative, ministerial, departmental or regulatory judgements, orders, decisions, rulings, or awards; policies; voluntary restraints; guidelines; directives; compliance notices; abatement notices; agreements with, requirements of, or instructions by any governmental body applicable to the Republic of South Africa and the common law and "law" shall have a similar meaning; and</li>
+            <li>2.2.2.4 "person" means any person, company, close corporation, trust, partnership or other entity whether or not having separate legal personality.</li>
+            <li>2.2.3 The words "include" and "including" mean "include without limitation" and "including without limitation". The use of the words "include" and "including" followed by a specific example or examples shall not be construed as limiting the meaning of the general wording preceding it.</li>
+            <li>2.2.4 Any substantive provision, conferring rights or imposing obligations on a Party and appearing in any of the definitions in clause 2.1 or elsewhere in this Agreement, shall be given effect to as if it were a substantive provision in the body of the Agreement.</li>
+            <li>2.2.5 The clause headings in and the heading of this Agreement have been inserted for convenience only and shall not be taken into account in its interpretation.</li>
+            <li>2.2.6 Where any term is defined within the context of any particular clause, the term so defined shall, unless it is specifically limited to that clause, bear the meaning ascribed to it throughout this Agreement.</li>
+            <li>2.3 A reference to any statutory enactment shall be construed as a reference to that enactment as at the Date of Signature and as amended or substituted from time to time.</li>
+            <li>2.4 Unless specifically otherwise provided, any number of days prescribed shall be determined by excluding the first and including the last day or, where the last day falls on a day that is not a business day, the next succeeding business day.</li>
+            <li>2.5 Where figures are referred to in numerals and in words, and there is any conflict between the two, the words shall prevail, unless the context indicates a contrary intention.</li>
+            <li>2.6 The rule of construction that this Agreement shall be interpreted against the Party responsible for the drafting of this Agreement, shall not apply.</li>
+            <li>2.7 No provision of this Agreement shall (unless otherwise stipulated) constitute a stipulation for the benefit of any person (stipulatio alteri) who is not a Party to this Agreement.</li>
+            <li>2.8 The use of any expression in this Agreement covering a process available under South African law, such as winding-up, business rescue, liquidation or interdict, shall, if either of the Parties to this Agreement is subject to the law of any other jurisdiction, be construed as including any equivalent or analogous proceedings under the law of such other jurisdiction.</li>
+            <li>2.9 Any reference in this Agreement to "this Agreement" or any other agreement or document shall be construed as a reference to this Agreement or, as the case may be, such other agreement or document, as amended, varied, novated or supplemented from time to time.</li>
+            <li>2.10 In this Agreement the words "clause" or "clauses" and "annexure" or "annexures" refer to clauses of and annexures to this Agreement.</li>
+        </ul>
+
+        <h4 class="legal-section-title">3. INTRODUCTION</h4>
+        <ul class="legal-list">
+            <li>3.1 It is the intention of the Parties to enter into negotiations relating to the Business Purpose.</li>
+            <li>3.2 In the course of such negotiations, the subsequent implementation of any agreement or arrangement which may arise out of such negotiations and in any future interactions between the Parties, the Parties will disclose certain Confidential Information to each other and each will gain knowledge of the Confidential Information of the other.</li>
+            <li>3.3 The Parties are willing to provide each other with an undertaking to maintain the confidentiality of the Confidential Information, on the terms and conditions set out in this Agreement.</li>
+        </ul>
+
+        <h4 class="legal-section-title">4. CONFIDENTIALITY UNDERTAKINGS AND USE OF CONFIDENTIAL INFORMATION</h4>
+        <ul class="legal-list">
+            <li>4.1 Each of the Parties undertakes to disclose to the other such Confidential Information as may be in the possession of the Disclosing Party and as will, in the sole and absolute discretion of the Disclosing Party, be necessary for the Recipient to conduct the negotiations relating to the Business Purpose, as contemplated in clause 3.1.</li>
+            <li>4.2 The Parties acknowledge that:</li>
+            <li>4.2.1 the Confidential Information is a valuable, special and unique asset of the Disclosing Party and/or its Associated Companies; and</li>
+            <li>4.2.2 the Disclosing Party and/or its Associated Companies may suffer irreparable harm or substantial economic and other loss in the event of such Confidential Information being disclosed or used otherwise than in accordance with this Agreement.</li>
+            <li>4.3 All Confidential Information disclosed by the Disclosing Party to the Recipient or which otherwise comes to the knowledge of the Recipient, is acknowledged by the Recipient:</li>
+            <li>4.3.1 to be proprietary to the Disclosing Party and/or one or more of its Associated Companies; and</li>
+            <li>4.3.2 not to confer any rights of whatsoever nature in such Confidential Information on the Recipient.</li>
+            <li>4.4 The Recipient irrevocably and unconditionally agrees and undertakes:</li>
+            <li>4.4.1 to treat, safeguard and keep all the Confidential Information as private, secret and confidential;</li>
+            <li>4.4.2 disclose any Confidential Information other than as permitted by this Agreement;</li>
+            <li>4.4.3 not to use or permit the use of the Confidential Information for any purpose other than the use any Confidential Information other than for the Permitted Purpose and, in particular, not to use or permit the use of the Confidential Information, whether directly or indirectly, to obtain a commercial, trading, investment, financial or other advantage over the Disclosing Party and/or its Associated Companies or otherwise use it to the detriment of the Disclosing Party and/or its Associated Companies;</li>
+            <li>4.4.4 not to use any Confidential Information for its own benefit or that of a third party, other than pursuant to the Business Purpose;</li>
+            <li>4.4.5 not to copy, reproduce or reduce to writing any parts or all of the Confidential Information except with the prior written consent of the Disclosing Party, it being recorded that any copies, reproductions or reductions to writing so made, such copies shall remain the property of the Disclosing Party;</li>
+            <li>4.4.6 not to decompile, disassemble or reverse engineer or otherwise modify, adapt, alter or vary the whole or any part of the Confidential Information;</li>
+            <li>4.4.7 disclose any Confidential Information to any party other than a party who requires such confidential information for the Permitted Purpose;</li>
+            <li>4.4.8 except as permitted by this Agreement, not to disclose or divulge, directly or indirectly, the Confidential Information in any manner to any third party for any reason or purpose whatsoever without the prior written consent of the Disclosing Party, which consent may be granted or withheld in the sole and absolute discretion of the Disclosing Party; and</li>
+            <li>4.4.9 to keep all Confidential Information safely and securely and to take all such steps as may be reasonably necessary to protect it against theft, damage, loss, unauthorised access (including access by electronic means) and to prevent Confidential Information from falling into the hands of unauthorised third parties.</li>
+            <li>4.5 The Recipient shall not disclose to any person, other than as expressly permitted in this Agreement:</li>
+            <li>4.5.1 that the Confidential Information has been made available to it;</li>
+            <li>4.5.2 that this Agreement has been entered into; and/or</li>
+            <li>4.5.3 any of the terms and conditions or other facts with respect to any of the matters listed in this clause.</li>
+        </ul>
+
+        <h4 class="legal-section-title">5. PERMITTED DISCLOSEES</h4>
+        <ul class="legal-list">
+            <li>5.1 The Recipient shall be entitled to disclose the Confidential Information only to Permitted Disclosees, and then only to the extent that such disclosure is necessary for the Permitted Purpose and on a "need to know" basis.</li>
+            <li>5.2 The Recipient shall, both before and after the disclosure of any Confidential Information to a Permitted Disclosee, inform such Permitted Disclosee of, and take all practical steps to impress upon him or it, the secret and confidential nature of the Confidential Information and the Recipient's obligations under this Agreement.</li>
+            <li>5.3 The Recipient shall be responsible for procuring that the Permitted Disclosees abide by the provisions of this Agreement and agree to be bound by the confidentiality undertakings given to the Disclosing Party by the Recipient in this Agreement. The Recipient shall be responsible for any breach of the terms of this Agreement by any Permitted Disclosee.</li>
+            <li>5.4 The Recipient shall (if requested to do so by the Disclosing Party) procure that the Permitted Disclosees give a written undertaking in favour of the Disclosing Party in regard to the Confidential Information on substantially the same terms and conditions contained in this Agreement.</li>
+            <li>5.5 The Recipient's failure to obtain receipt of the written undertaking referred to in clause 5.4 shall in no way detract from the Recipient's obligations in terms of this Agreement.</li>
+            <li>5.6 The Recipient shall keep a written record showing:</li>
+            <li>5.6.1 as far as reasonably practicable, the location of each item or copy of Confidential Information which is in documentary or other tangible form; and</li>
+            <li>5.6.2 the names and addresses of all Permitted Disclosees to whom Confidential Information has been disclosed and shall furnish such written record to the Disclosing Party, upon request.</li>
+        </ul>
+
+        <h4 class="legal-section-title">6. RETURN OF CONFIDENTIAL INFORMATION</h4>
+        <ul class="legal-list">
+            <li>6.1 Subject to clause 6.2, the Recipient shall, at its own expense, within 5 business days of termination of discussions concerning the Business Purpose, and in any event within 5 business days of written demand from the Disclosing Party:</li>
+            <li>6.1.1 return or destroy (as stipulated by the Disclosing Party), and procure the return or destruction of all Confidential Information and all copies of it (whether in paper, electronic or other format) held by the Recipient or by a Permitted Disclosee without keeping any copies or partial copies thereof;</li>
+            <li>6.1.2 destroy, and procure the destruction of all analyses, compilations, notes, studies, memoranda or other documents prepared by the Recipient or by any Permitted Disclosee which contain or otherwise reflect or are generated from the Confidential Information;</li>
+            <li>6.1.3 delete or procure the deletion of all Confidential Information from any computer, word processor or other device in the possession or control of the Recipient or any Permitted Disclosee;</li>
+            <li>6.1.4 confirm in writing to the Disclosing Party, that the Recipient and all Permitted Disclosees have complied with the provisions of clauses 6.1.1 to 6.1.3; and</li>
+            <li>6.1.5 notwithstanding its compliance with this clause 6, continue to be bound by the undertakings set out in this Agreement.</li>
+            <li>6.2 The Recipient shall not be required to return, destroy or delete Confidential Information to the extent that it is required to retain such Confidential Information by law or to satisfy the rules and regulations of a regulatory body to which the Recipient or any Permitted Disclosee is subject. For the avoidance of doubt, the obligations of confidentiality contained in this Agreement will continue to apply to such retained Confidential Information.</li>
+        </ul>
+
+        <h4 class="legal-section-title">7. EXCLUSIONS</h4>
+        <ul class="legal-list">
+            <li>7.1 The determination of whether information is Confidential Information shall not be affected by whether or not such information is subject to, or protected by, common law or statute related to copyright, patent, trademarks or otherwise.</li>
+            <li>7.2 If the Recipient is uncertain as to whether any information is Confidential Information, the Recipient shall treat such information as confidential until the contrary is agreed by the Disclosing Party in writing.</li>
+            <li>7.3 The undertakings given by the Recipient in this Agreement shall not apply to any information which:</li>
+            <li>7.3 is or becomes generally available to the public otherwise than as a consequence of the negligence or default of the Recipient and/or any Permitted Disclosee, or by the breach of this Agreement by any of them;</li>
+            <li>7.3.2 the Disclosing Party confirms in writing is disclosed on a non-confidential basis; or</li>
+            <li>7.3.3 has lawfully become known by or come into the possession of the Recipient on a non-confidential basis from a source other than the Disclosing Party or any of its Associated Companies having the legal right to disclose same (including to the extent independently developed or acquired in a manner not in contravention of this Agreement), provided that such knowledge or possession is evidenced by the written records of the Recipient existing at the Date of Signature, provided that:</li>
+            <li>7.3.3.1 the onus shall at all times rest on the Recipient to establish that such information falls within the Exclusions;</li>
+            <li>7.3.3.2 information will not be deemed to be within the Exclusions merely because such information is embraced by more general information in the public domain or in the Recipient's possession; and</li>
+            <li>7.3.3.3 any combination of features will not be deemed to be within the Exclusions merely because individual features are in the public domain or in the Recipient's possession, but only if the combination itself and its principle of operation are in the public domain or in the Recipient's possession.</li>
+        </ul>
+
+        <h4 class="legal-section-title">8. DISCLOSURE WITHOUT BREACH</h4>
+        <p>In the event that the Recipient is required to disclose all or any part of any Confidential Information pursuant to a requirement or request by operation of law, regulation, court (with competent jurisdiction), a judicial or administrative agency or a regulatory body, such disclosure shall not constitute a breach of this Agreement, provided that the Recipient:</p>
+        <ul class="legal-list">
+            <li>8.1.1 promptly notifies the Disclosing Party of the existence, terms and circumstances surrounding such request and, in any event, notifies the Disclosing Party prior to disclosure, if permitted by law;</li>
+            <li>8.1.2 take such steps to limit the disclosure to the minimum extent required to satisfy such requirement and to the extent that it lawfully and reasonably can;</li>
+            <li>8.1.3 in the case of any disclosure required in terms of the PAI Act, apply the principles of chapter 4 of the PAI Act in order to avoid and/or limit the extent of any such disclosure;</li>
+            <li>8.1.4 afford the Disclosing Party a reasonably opportunity, if possible, to intervene in the proceedings;</li>
+            <li>8.1.5 comply with the Disclosing Party's reasonable requests as to the manner and terms of any such disclosure; and</li>
+            <li>8.1.6 notify the Disclosing Party of the recipient of, and the form and extent of, any such disclosure or announcement immediately after it is made.</li>
+        </ul>
+
+        <h4 class="legal-section-title">9. NON-SOLICITATION</h4>
+        <ul class="legal-list">
+            <li>9.1 The Recipient irrevocably and unconditionally agrees and undertakes that for a period of 12 (twelve) months from the Date of Signature, neither the Recipient nor any of its Representatives or Associated Companies will, directly or indirectly, unless otherwise agreed in writing –</li>
+            <li>9.1.1 persuade, induce, encourage, procure, solicit or entice away or endeavour to persuade, induce, encourage, procure, solicit or entice any person who is employed by or provides his services to the Disclosing Party or any of its Associated Companies;</li>
+            <li>9.1.2 entice or solicited or endeavour to solicit or entice any person to furnish any information or advice to any unauthorised person of the Recipient or any of its Associated Companies;</li>
+            <li>9.1.3 directly or indirectly solicit, interfere with or entice away or attempt to solicit, interfere with or entice away any customer, business associate, supplier, distributor or agent from the Disclosing Party or any of its Associated Companies;</li>
+            <li>9.1.4 encourage, procure or assist any distributor, agent, customer, supplier or business associate of the Disclosing Party to restrict, vary or cease that relationship.</li>
+            <li>9.2 The Recipient agrees and acknowledges that the restrictions contained in this clause 9 are fair and reasonable and necessary to assure to the Disclosing Party the protection, full value and benefit of the Confidential Information.</li>
+        </ul>
+
+        <h4 class="legal-section-title">10. NON-COMPETE</h4>
+        <p>The Recipient will not, without the prior written consent of the Disclosing Party first being had and obtained, directly or indirectly, whether individually or through any entity controlled by the Recipient, during the term of the Agreement and for a period of 3 (three) years, from the termination of this Agreement, for any reason, directly or indirectly, on its own behalf or in the service or on behalf of others, whether for compensation or not, engage in any business activity which is competitive with the existing business of the Disclosing Party.</p>
+
+        <h4 class="legal-section-title">11. DISCLAIMER</h4>
+        <ul class="legal-list">
+            <li>11.1 The Disclosing Party reserve all rights in its Confidential Information and no rights or obligations other than those expressly stated herein, are granted or to be implied from this Agreement. In particular, and notwithstanding the generality of the aforesaid, no licence is hereby granted, directly or indirectly, to the Recipient in terms of the Confidential Information.</li>
+            <li>11.2 No agency, partnership, joint venture or other joint relationship will be created between the parties by this Agreement.</li>
+            <li>11.3 Nothing in this Agreement shall obligate either party to enter into any type of business relationship with the other party.</li>
+        </ul>
+
+        <h4 class="legal-section-title">12. PRESUMPTION AND LIMITATION</h4>
+        <p>All information disclosed by the Disclosing Party to the Recipient shall be presumed to be Confidential Information, unless the same is expressly marked or it is otherwise in writing indicated as not being subject to the restrictions imposed under this Agreement.</p>
+
+        <h4 class="legal-section-title">13. BREACH</h4>
+        <ul class="legal-list">
+            <li>13.1 Without prejudice to the other rights of the Disclosing Party, in the event of any unauthorised disclosure or use of the Confidential Information which is or is reasonably likely to constitute breach of any of the provisions of this Agreement, the Recipient shall, at its costs and expenses:</li>
+            <li>13.1.1 immediately notify the Disclosing Party in writing and take such steps as the Disclosing Party may reasonably require in order to remedy or mitigate the effects of such actual or threatened breach;</li>
+            <li>13.1.2 use all reasonable commercial endeavours to assist the Disclosing Party in recovering and preventing the use, dissemination, sale or other disposal of such Confidential Information;</li>
+            <li>13.2 The Parties acknowledge and agree that:</li>
+            <li>13.2.1 cancellation is not an appropriate remedy for breach of this Agreement and this Agreement may not be cancelled or terminated save by written agreement between the Parties; and</li>
+            <li>13.2.2 damages alone may not be an adequate remedy for any breach of the obligations set out in this Agreement and that the remedies of interdict, specific performance and any other equitable relief are appropriate for any threatened or actual breach of this Agreement. The Disclosing Party will be entitled to apply for such remedy, in addition to any other remedy to which it may be entitled in law (other than the remedy of cancellation).</li>
+        </ul>
+
+        <h4 class="legal-section-title">14. DURATION</h4>
+        <p>The obligations of the Recipient with respect to each item of Confidential Information shall commence on the date on which such information is disclosed or otherwise received (whether before or after the Date of Signature) and shall continue in full force and effect for an indefinite period. For the avoidance of doubt, the obligations contained in this Agreement shall endure notwithstanding any termination of the negotiations referred to in clause 3.1 or any subsequent agreement entered into between the Parties.</p>
+
+        <h4 class="legal-section-title">15. REPRESENTATIONS</h4>
+        <ul class="legal-list">
+            <li>15.1 Unless otherwise specifically stated in writing, the Disclosing Party:</li>
+            <li>15.1.1 does not make any representation, warranty or undertaking, express or implied, as to the accuracy, completeness or reasonableness of the Confidential Information or other information received by the Recipient or its Permitted Disclosees or as to the reasonableness of any assumptions on which any of the same is based;</li>
+            <li>15.1.2 does not accept any responsibility or liability for the use of the Confidential Information by by the Recipient or its Permitted Disclosees. Accordingly, neither the Disclosing Party, nor any of their Associated Companies or Representatives shall be liable for any loss or damage whatsoever suffered by the Recipient as a result of relying on the Confidential Information; and</li>
+            <li>15.1.3 is under no obligation to update or correct any inaccuracies which may become apparent in any of the Confidential Information.</li>
+            <li>15.2 No Confidential Information or other information, communication or document made available to or supplied to the Recipient by the Disclosing Party or any of its Associated Companies shall constitute an offer or invitation to the Recipient, nor will any such information, communication or document form the basis of any contract.</li>
+        </ul>
+
+        <h4 class="legal-section-title">16. INDEMNITY</h4>
+        <ul class="legal-list">
+            <li>16.1 Without prejudice to clause 13.2, the Recipient accepts full liability for the maintenance of the confidentiality of the Confidential Information and hereby unconditionally and irrevocably indemnifies and holds the Disclosing Party and each of its Associated Company harmless against any and all costs and expenses (including, but not limited to, reasonable legal expenses) loss, action, expense, claim, harm or damages of whatsoever nature suffered or sustained by the Disclosing Party pursuant to:</li>
+            <li>16.1.1 a breach or threatened breach by the Recipient of the provisions of this Agreement; and</li>
+            <li>16.1.2 any Permitted Disclosee failing to keep the Confidential Information confidential.</li>
+            <li>16.2 For the avoidance of doubt, to the extent that the Disclosing Party or any of its Associated Companies incurs liability to third parties, arising from a confidentiality obligation in favour of such third parties, as a result of the Recipients breach of this Agreement, any losses or damages flowing from such liability shall be, and to the extent necessary shall be deemed to be, direct losses or damages.</li>
+        </ul>
+
+        <h4 class="legal-section-title">17. PUBLICITY</h4>
+        <ul class="legal-list">
+            <li>17.1 Subject to clause 17.3, each Party undertakes to keep confidential and not to disclose to any third party, save as may be required in law (including by the rules of any recognised securities exchange, where applicable) or permitted in terms of this Agreement, the nature, content or existence of this Agreement and any and all information given by one Party to the other pursuant to this Agreement.</li>
+            <li>17.2 No announcements of any nature whatsoever will be made by or on behalf of a Party relating to this Agreement without the prior written consent of the other Party, save for any announcement or other statement required to be made in terms of the provisions of any law or by the rules of any recognised securities exchange, in which event the Party obliged to make such statement will first consult with the other Party in order to enable the Parties in good faith to attempt to agree the content of such announcement, which (unless agreed) must go no further than is required in terms of such law or rules. This will not apply to a Party wishing to respond to the other Party which has made an announcement of some nature in breach of this clause 17.</li>
+            <li>17.3 This clause 17 shall not apply to any disclosure made by a Party to its professional advisors or consultants, provided that they have agreed to the same confidentiality undertakings, or to any judicial or arbitral tribunal or officer, in connection with any matter relating to this Agreement or arising out of it.</li>
+        </ul>
+
+        <h4 class="legal-section-title">18. NOTICES AND DOMICILIA</h4>
+        <ul class="legal-list">
+            <li>18.1 Each Party chooses its domicilium citandi et executandi the physical addresses set out in this clause 18 and for all of giving or sending any notice in connection with this Agreement the said physical address as well as the facsimile number and email address set out in this clause 18.</li>
+            <li>18.2 For the purposes of this Agreement, the Parties respective addresses shall be:</li>
+            <li>18.2.1 as regards The Disclosing Party:
+                <p>Physical address: 302 Dykor Street, Silverton, Pretoria,</p>
+                <p>Facsimile number: N/A</p>
+                <p>E-mail: </p>
+            </li>
+            <li>18.2.2 as regards to the Recipient:
+                <p>Physical address: ______________________________________________________________</p>
+                <p>______________________________________________________________</p>
+                <p>Facsimile number: _______________________________________________</p>
+                <p>E-mail: ________________________________________________________</p>
+            </li>
+            <li>provided that a Party may change its domicilium citandi et executandi to another physical address (provided that such physical address is not a post office box or poste restante) or may change its address for the purposes of notices to any other physical address, email address or facsimile number by notifying the other in writing.</li>
+            <li>18.3 Any notice given in terms of this Agreement shall be in writing and shall:</li>
+            <li>18.3.1 if delivered by hand during business hours, be deemed to have been duly received by the addressee on the date of delivery. Any notice delivered after business hours or on a day which is not a business day will be presumed to have been received on the following business day;</li>
+            <li>18.3.2 if delivered by recognised international courier service be deemed to have been received by the addressee on the 1st (first) business day following the date of such delivery by the courier service concerned; and</li>
+            <li>18.3.3 if transmitted by facsimile or emailed during business hours, be deemed to have been received on the date of successful transmission of the facsimile or of the email. Any notice delivered after business hours or on a day which is not a business day will be presumed to have been received on the following business day.</li>
+            <li>18.4 Notwithstanding anything to the contrary contained in this Agreement, a written notice or communication actually received by one of the Parties from another, shall be adequate written notice or communication to such Party.</li>
+        </ul>
+
+        <h4 class="legal-section-title">19. DISPUTE RESOLUTION</h4>
+        <ul class="legal-list">
+            <li>19.1 In the event of there being any dispute or difference between the Parties arising out of this Agreement (including any dispute or difference as to the validity or otherwise of this Agreement, or as to the enforceability of this Agreement), the said dispute or difference shall on written demand by either Party be submitted to arbitration in Pretoria, South Africa, in accordance with the AFSA rules, which arbitration shall be administered by AFSA.</li>
+            <li>19.2 Should AFSA, as an institution, not be operating at that time or not be accepting requests for arbitration for any reason, or should AFSA refuse to accept the particular request for arbitration for whatever reason, then the arbitration shall be conducted in accordance with the AFSA rules for commercial arbitration (as last applied by AFSA) before an arbitrator appointed by agreement between the parties to the dispute or failing agreement within 10 business days of the demand for arbitration, then any party to the dispute shall be entitled to forthwith call upon the chairperson of the Legal Practice Council to nominate the arbitrator, provided that the person so nominated shall be a legal practitioner of not less than 10 years standing as such. The person so nominated shall be the duly appointed arbitrator in respect of the dispute. In the event of the attorneys of the parties to the dispute failing to agree on any matter relating to the administration of the arbitration, such matter shall be referred to and decided by the arbitrator whose decision shall be final and binding on the parties to the dispute.</li>
+            <li>19.3 Any party to the arbitration may appeal the decision of the arbitrator or arbitrators in terms of the AFSA rules for commercial arbitration.</li>
+            <li>19.4 Nothing herein contained shall be deemed to prevent or prohibit a party to the arbitration from applying to the appropriate court for urgent relief or for judgment in relation to a liquidated claim.</li>
+            <li>19.5 Any arbitration in terms of this clause 19 (including any appeal proceedings) shall be conducted in camera and the Parties shall treat as confidential details of the dispute submitted to arbitration, the conduct of the arbitration proceedings and the outcome of the arbitration.</li>
+            <li>19.6 This clause 19 will continue to be binding on the Parties notwithstanding any termination or cancellation of the Agreement.</li>
+            <li>19.7 The Parties declare that it is their intention that this clause 19 will regulate the manner in which they will resolve any dispute or difference regarding the validity or otherwise of this Agreement, regardless of the fact that one of the parties may dispute the validity or enforceability of the Agreement.</li>
+            <li>19.8 The Parties agree that the written demand by a party to the dispute in terms of clause 19.1 that the dispute or difference be submitted to arbitration, is to be deemed to be a legal process for the purpose of interrupting extinctive prescription in terms of the Prescription Act, 1969.</li>
+        </ul>
+
+        <h4 class="legal-section-title">20. MISCELLANEOUS</h4>
+        <p class="font-bold text-lg" style="color: var(--accent-gold);">20.1 Applicable law and jurisdiction</p>
+        <ul class="legal-list">
+            <li>20.1.1 This Agreement will in all respects be governed by, adjudicated upon and construed under the laws of South Africa.</li>
+            <li>20.1.2 Subject to clause 19, the Parties hereby consent and submit to the non-exclusive jurisdiction of the High Court of South Africa, Gauteng Division, (Pretoria) in any dispute arising from or in connection with this Agreement.</li>
+        </ul>
+        <p class="font-bold text-lg" style="color: var(--accent-gold);">20.2 Severability</p>
+        <p>The provisions of this Agreement shall be severable in the event that any provision becomes unenforceable in any jurisdiction, whether due to voidness, invalidity, illegality, unlawfulness or for any other reason whatever and the remaining provisions shall remain enforceable to the fullest extent permitted by law. The Parties declare that it is their intention that this Agreement would be executed without such unenforceable provision if they were aware of such unenforceability at the time of execution hereof.</p>
+        <p class="font-bold text-lg" style="color: var(--accent-gold);">20.3 Warranty of Authority</p>
+        <p>Each Party warrants to the other Party that it has power, authority and legal right to sign and perform this Agreement and that this Agreement has been duly authorised by all necessary actions of its directors or representatives and constitutes valid and binding obligations on it in accordance with the terms of this Agreement.</p>
+        <p class="font-bold text-lg" style="color: var(--accent-gold);">20.4 Whole Agreement</p>
+        <p>This Agreement constitutes the whole agreement between the Parties as to the subject-matter hereof and save to the extent otherwise provided herein no agreement, representations, undertaking, warranties, term or condition relating to the subject matter of this Agreement not incorporated into this Agreement shall be binding on either of the Parties.</p>
+        <p class="font-bold text-lg" style="color: var(--accent-gold);">20.5 Variation</p>
+        <p>No addition to, alteration or variation, deletion of, agreed cancellation or novation of all or any clauses or provisions of this Agreement shall be of any force or effect unless reduced to writing and signed by all the Parties.</p>
+        <p class="font-bold text-lg" style="color: var(--accent-gold);">20.6 No Waiver or Suspension of Rights</p>
+        <p>No waiver, suspension or postponement by either Party of any right arising out of or in connection with this Agreement shall be of any force or effect unless in writing and signed by that Party. Any such waiver, suspension or postponement will be effective only in the specific instance and for the purpose given.</p>
+        <p class="font-bold text-lg" style="color: var(--accent-gold);">20.7 Continuing Effectiveness of Certain Provisions</p>
+        <p>The expiration or termination of this Agreement shall not affect such of the provisions of this Agreement as expressly provide that they will operate after any such expiration or termination or which of necessity must continue to have effect after such expiration or termination, notwithstanding that the clauses themselves do not expressly provide for this.</p>
+        <p class="font-bold text-lg" style="color: var(--accent-gold);">20.8 Relaxation</p>
+        <p>No latitude, extension of time or other indulgence which may be given or allowed by any Party to any other Party in respect of the performance of any obligation hereunder or enforcement of any right arising from this Agreement and no single or partial exercise of any right by any Party shall in any circumstances be construed to be an implied consent or election by such Party or operate as a waiver or a novation of or otherwise affect any of that Party’s rights in terms of or arising from this Agreement or estop or preclude it from enforcing, at any time and without notice, strict and punctual compliance with each and every provision or term hereof. Failure or delay on the part of either Party in exercising any right, power or privilege under this Agreement will not constitute or be deemed to be a waiver thereof, nor will any single or partial exercise of any right, power or privilege preclude any other or further exercise thereof or the exercise of any other right, power or privilege.</p>
+        <p class="font-bold text-lg" style="color: var(--accent-gold);">20.9 Assignment</p>
+        <p>Neither Party may assign, or otherwise cede or delegate any rights, benefits or obligations pursuant to this Agreement without the prior written consent of the other Party, provided that the Disclosing Party shall be entitled to assign or otherwise cede or delegate any rights, benefits or obligations pursuant to this Agreement to any of its Associated Companies without requiring the prior written consent of the Recipient.</p>
+        <p class="font-bold text-lg" style="color: var(--accent-gold);">20.10 Stipulatio Alteri</p>
+        <ul class="legal-list">
+            <li>20.10.1 The undertakings, confirmations, indemnities and acknowledgements referred to in this Agreement are given by the Recipient in favour of the Disclosing Party, any of its Associated Companies, any current or future shareholder of the Disclosing Party and any successors-in-title (each, with the exclusion of the Disclosing Party being an "Interested Party"). Accordingly, to the extent applicable, the provisions of this Agreement constitute a stipulatio alteri or a contract for the benefit of each Interested Party and any such benefit to an Interested Party shall be capable of express or implied acceptance at any time by any or all such Interested Parties, who may then enforce any terms of this Agreement as though they were parties to it. Except to the extent stated expressly to the contrary, this Agreement does not create any rights in any other persons or entities. The fact that any undertaking may not be enforceable by one of them will not affect its enforceability by any other party.</li>
+            <li>20.10.2 For the purposes of clause 20.10, the term "successors-in-title" shall include any third party which acquires:</li>
+            <li>20.10.2.1 the business of the Disclosing Party or any part thereof; or</li>
+            <li>20.10.2.2 pursuant to any cession, the right to enforce the undertakings embodied in this Agreement.</li>
+        </ul>
+        <p class="font-bold text-lg" style="color: var(--accent-gold);">20.11 Costs</p>
+        <ul class="legal-list">
+            <li>20.11.1 Except as otherwise specifically provided herein, each Party will bear and pay its own legal costs and expenses of and incidental to the negotiation, drafting, preparation and implementation of this Agreement.</li>
+            <li>20.11.2 The Recipient agrees and undertakes to reimburse the Disclosing Party on demand with any and all costs and expenses (including legal costs on the scale as between attorney-and-own client) which the Disclosing Party may at any time incur in or about the exercise of any of the Disclosing Party's rights in terms of this Agreement, including collection commission, tracing fees and other expenses in connection therewith.</li>
+        </ul>
+        <p class="font-bold text-lg" style="color: var(--accent-gold);">20.12 Signature and counterparts</p>
+        <ul class="legal-list">
+            <li>20.12.1 This Agreement is signed by the Parties on the dates and at the places indicated below.</li>
+            <li>20.12.2 This Agreement may be executed in counterparts and by both Parties in a separate counterpart, each of which so executed shall be an original, and all of which together shall constitute one and the same Agreement as at the date of signature of the Party last signing one of the counterparts.</li>
+            <li>20.12.3 The persons signing this Agreement in a representative capacity warrant their authority to do so.</li>
+            <li>20.12.4 The Parties record that it is not required for this Agreement to be valid and enforceable that a Party shall initial the pages of this Agreement and/or have its signature of this Agreement verified by a witness.</li>
+        </ul>
+        <p class="mt-8">Signed at………………………on this the………………day of…….…………………….202……</p>
+        <p class="mt-8">_________________________________________________</p>
+        <p>FRUITFUL HOLDINGS PROPRIETARY LIMITED</p>
+        <p class="mt-4">Duly Authorised</p>
+        <p>Name:……………………………………….</p>
+        <p>Designation:………………………………..</p>
+        <p class="mt-8">Signed at………………………on this the………………day of…….…………………….202……</p>
+        <p class="mt-8">_________________________________________________</p>
+        <p class="mt-4">Duly Authorised</p>
+        <p>Name:……………………………………….</p>
+        <p>Designation:………………………………..</p>
+    `;
+
+
+    // JavaScript for Modal/Popup functionality
+    const successModal = document.getElementById('successModal');
+    const modalMessage = document.getElementById('modalMessage');
+
+    function showModal(message) {
+      modalMessage.textContent = message;
+      successModal.classList.add('show');
+    }
+
+    function closeModal() {
+      successModal.classList.remove('show');
+    }
+
+    // NDA Viewer Modal functions
+    const ndaViewerModal = document.getElementById('ndaViewerModal');
+    const ndaModalBody = ndaViewerModal.querySelector('.modal-body');
+
+    function showNdaViewerModal() {
+        ndaModalBody.innerHTML = ndaContent; // Inject the full NDA content
+        ndaViewerModal.classList.add('show');
+    }
+
+    function closeNdaViewerModal() {
+        ndaViewerModal.classList.remove('show');
+    }
+
+    // Populate Sectors Dropdown and enforce selection limit
+    const sectorsSelect = document.getElementById('sectors');
+    const sectorHelpText = document.getElementById('sectorHelpText');
+    const maxSectors = 5;
+
+    // Add initial options for Career, Vendor, Service Provider
+    const initialSectors = {
+        "careers": "💼 Careers",
+        "vendor": "🤝 Vendor",
+        "service-provider": "🛠️ Service Provider"
+    };
+
+    // Populate initial options
+    for (const key in initialSectors) {
+        const option = document.createElement('option');
+        option.value = key;
+        option.textContent = initialSectors[key];
+        sectorsSelect.appendChild(option);
+    }
+
+    // Populate other sectors
+    for (const key in sectorList) {
+        // Skip initial sectors to avoid duplication if they are also in sectorList
+        if (!initialSectors[key]) {
+            const option = document.createElement('option');
+            option.value = key;
+            option.textContent = sectorList[key];
+            sectorsSelect.appendChild(option);
+        }
+    }
+
+
+    sectorsSelect.addEventListener('change', function() {
+      if (this.selectedOptions.length > maxSectors) {
+        sectorHelpText.classList.remove('hidden');
+        // Deselect the last selected option to enforce the limit
+        const lastSelected = this.selectedOptions[this.selectedOptions.length - 1];
+        lastSelected.selected = false;
+      } else {
+        sectorHelpText.classList.add('hidden');
+      }
+    });
+
+    // Handle File Input display name and visual feedback
+    document.querySelectorAll('.file-input-container input[type="file"]').forEach(input => {
+      const fileNameDisplay = document.getElementById(input.id + 'Name');
+      input.addEventListener('change', function() {
+        if (this.files.length > 0) {
+          fileNameDisplay.textContent = `Selected: ${this.files[0].name}`;
+          input.closest('.file-input-container').classList.add('file-selected'); /* Add class for visual feedback */
+        } else {
+          fileNameDisplay.textContent = '';
+          input.closest('.file-input-container').classList.remove('file-selected');
+        }
+      });
+      // Basic drag-and-drop visual feedback (does not handle actual file drop here)
+      const container = input.closest('.file-input-container');
+      container.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        container.classList.add('drag-over');
+      });
+      container.addEventListener('dragleave', () => {
+        if (input.files.length === 0) { // Only revert if no file is selected
+          container.classList.remove('drag-over');
+        }
+      });
+      container.addEventListener('drop', (e) => {
+        e.preventDefault();
+        container.classList.remove('drag-over');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+          input.files = files; // Assign the dropped files to the input
+          const event = new Event('change'); // Trigger change event
+          input.dispatchEvent(event);
+        }
+      });
+    });
+
+
+    // Handle Form Submission success
+    document.getElementById('ndaForm').addEventListener('submit', async function(event) {
+      event.preventDefault(); // Prevent default form submission
+
+      // Validate sector selection before submission
+      if (sectorsSelect.selectedOptions.length === 0) {
+        showModal('Please select at least one sector.');
+        sectorsSelect.focus();
+        return; // Stop submission
+      }
+      if (sectorsSelect.selectedOptions.length > maxSectors) {
+          showModal(`You can select a maximum of ${maxSectors} sectors. Please adjust your selection.`);
+          sectorsSelect.focus();
+          return;
+      }
+
+
+      const form = event.target;
+      const formData = new FormData(form);
+
+      // Append all selected sectors to formData as an array
+      const selectedSectors = Array.from(sectorsSelect.selectedOptions).map(option => option.value);
+      formData.append('sectors', JSON.stringify(selectedSectors)); // Send as JSON string
+
+
+      try {
+        const response = await fetch(form.action, {
+          method: form.method,
+          body: formData
+        });
+
+        if (response.ok) {
+          showModal('Your comprehensive NDA application has been successfully received!');
+          form.reset(); // Clear the form after successful submission
+          // Reset file input displays
+          document.querySelectorAll('.file-input-container input[type="file"]').forEach(input => {
+            document.getElementById(input.id + 'Name').textContent = '';
+            input.closest('.file-input-container').classList.remove('file-selected');
+          });
+          sectorHelpText.classList.add('hidden'); // Hide sector error if form reset
+        } else {
+          // Handle server-side errors
+          const errorText = await response.text();
+          showModal(`Submission failed: ${errorText || 'Please try again.'}`);
+        }
+      } catch (error) {
+        // Handle network errors
+        showModal(`Network error: ${error.message || 'Please check your internet connection.'}`);
+      }
+    });
+
+    // Render API Keys Table
+    function renderApiKeysTable() {
+        const tableBody = document.getElementById('apiKeysTableBody');
+        if (!tableBody) return;
+
+        tableBody.innerHTML = ''; // Clear existing rows
+
+        apiKeysData.forEach(key => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>
+                    <strong class="text-gray-100">${key.service}</strong><br>
+                    ${key.context ? `<span class="text-xs text-gray-400">(${key.context})</span>` : ''}
+                </td>
+                <td class="api-key-value">${key.key}</td>
+                <td class="api-key-location">${key.locations.join(', ')}</td>
+                <td>
+                    <button class="action-button text-sm px-3 py-1"
+                            onclick="showModal('Action', 'Simulating revoke/regenerate for ${key.service}. In a real system, this would interact with the API provider.')">
+                        <i class="fas fa-redo-alt mr-1"></i> Manage
+                    </button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        renderApiKeysTable();
+    });
+  </script>
+
+</body>
+</html>

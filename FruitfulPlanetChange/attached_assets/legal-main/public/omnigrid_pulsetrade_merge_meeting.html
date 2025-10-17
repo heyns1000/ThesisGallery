@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAA.ZONE™ Minutes of Meeting: Collaborative Development Summary</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Base styles from the original template */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* slate-100 */
+            color: #333333; /* Default text color for body */
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .main-container-style {
+            background-color: #ffffff;
+            border-top: 8px solid #4f46e5; /* indigo-600 */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            border-radius: 1.5rem;
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
+            padding: 1rem;
+            flex-grow: 1; /* Allow to take available space */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: calc(100vh - 32px); /* Adjust for body padding */
+        }
+        @media (min-width: 640px) {
+            .main-container-style {
+                padding: 2rem;
+                max-width: 640px;
+            }
+        }
+        @media (min-width: 768px) {
+            .main-container-style {
+                padding: 2.5rem;
+                max-width: 768px;
+            }
+        }
+        @media (min-width: 1024px) {
+            .main-container-style {
+                padding: 3rem;
+                max-width: 1024px;
+            }
+        }
+
+        /* Top Header for Fruitful™ Logo */
+        .top-fruitful-header {
+            background-color: #ffffff;
+            padding: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 1rem;
+            width: 100%;
+            max-width: 1024px; /* Matches main container width for alignment */
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        @media (min-width: 640px) {
+            .top-fruitful-header {
+                padding: 1rem 2rem;
+                margin-bottom: 2rem;
+            }
+        }
+        .fruitful-logo-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #4f46e5; /* Indigo-600 */
+            margin-right: 0.25rem;
+        }
+        @media (min-width: 640px) {
+            .fruitful-logo-text {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* FAA.ZONE Logo/Header within the main container */
+        .faazone-header h1 {
+            font-size: 1.75rem;
+        }
+        @media (min-width: 640px) {
+            .faazone-header h1 {
+                font-size: 2.5rem;
+            }
+        }
+        .faazone-header span {
+            font-size: 2.5rem;
+        }
+        @media (min-width: 640px) {
+            .faazone-header span {
+                font-size: 3rem;
+            }
+        }
+
+        /* Document item styles (for MoM content structure) */
+        .document-item {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            background-color: #f8fafc; /* slate-50 */
+            border: 1px solid #e2e8f0; /* slate-200 */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: all 0.2s ease-in-out;
+            text-align: left;
+            width: 100%;
+            margin-bottom: 1rem; /* Spacing between items */
+        }
+        @media (min-width: 640px) {
+            .document-item {
+                flex-direction: row;
+                align-items: flex-start;
+                gap: 1rem;
+                padding: 1rem;
+            }
+        }
+        .document-item:hover {
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+            border-color: #a78bfa; /* violet-400 */
+        }
+        .document-item .icon {
+            flex-shrink: 0;
+            font-size: 2rem;
+            color: #4f46e5; /* indigo-600 */
+        }
+        @media (min-width: 640px) {
+            .document-item .icon {
+                font-size: 2.5rem;
+            }
+        }
+        .document-item-content h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b; /* slate-900 */
+            margin-bottom: 0.25rem;
+        }
+        @media (min-width: 640px) {
+            .document-item-content h3 {
+                font-size: 1.125rem;
+            }
+        }
+        .document-item-content p {
+            font-size: 0.875rem;
+            color: #475569; /* slate-600 */
+            margin-bottom: 0.5rem;
+        }
+        @media (min-width: 640px) {
+            .document-item-content p {
+                font-size: 0.95rem;
+            }
+        }
+        .code-snippet {
+            background-color: #e2e8f0; /* slate-200 */
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-family: monospace;
+            font-size: 0.75rem;
+            overflow-x: auto;
+            color: #1e293b; /* slate-900 */
+            white-space: pre-wrap;
+            word-break: break-word;
+            margin-top: 1rem;
+        }
+        @media (min-width: 640px) {
+            .code-snippet {
+                padding: 1rem;
+                font-size: 0.875rem;
+            }
+        }
+
+        /* General Meeting Section Styling */
+        .meeting-section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 0.5rem;
+            text-align: left;
+        }
+        .meeting-sub-section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #475569;
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+            text-align: left;
+        }
+        .meeting-content-paragraph {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+        .meeting-content-list {
+            list-style-type: disc;
+            margin-left: 25px;
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+        .meeting-content-list.ordered {
+            list-style-type: decimal;
+        }
+        .info-block {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            text-align: left;
+        }
+        .info-block strong {
+            color: #1a202c;
+        }
+        .signature-block {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .signature-line {
+            border-bottom: 1px solid #999999;
+            width: 70%;
+            margin-top: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .signature-name {
+            font-size: 0.9rem;
+            color: #555555;
+        }
+        .emoji {
+            font-size: 1.2em; /* Make emojis slightly larger */
+            vertical-align: middle;
+        }
+
+        /* --- Individual Canvas Rendering for MoM --- */
+        .canvas-render-wrapper {
+            border: 2px solid #a78bfa; /* Violet border to highlight rendered canvas */
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 1.5rem auto;
+            width: 100%;
+            max-width: 700px; /* Constrain size for document flow */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            background-color: #f0f4f8; /* A light background for the wrapper */
+            position: relative; /* For nested canvas positioning */
+            min-height: 200px; /* Ensure some height for screenshot containers */
+        }
+        .canvas-render-wrapper h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #4f46e5;
+            padding: 0.5rem 1rem;
+            background-color: #e2e8f0;
+            border-bottom: 1px solid #cbd5e0;
+            text-align: left;
+        }
+
+        /* Direct Canvas Embedding for Screenshots */
+        .embedded-screenshot-content {
+            width: 100%;
+            height: auto; /* Auto height for images */
+            display: block;
+            background-color: #000; /* Dark background for screenshots */
+            position: relative;
+            z-index: 1;
+            padding: 10px; /* Padding for the screenshot */
+        }
+        .embedded-screenshot-content img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: contain;
+        }
+
+        /* Message box for notifications */
+        .message-box {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            pointer-events: none;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            color: #FFFFFF;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        .message-box.show { opacity: 1; pointer-events: auto; }
+
+        /* Hidden UI elements to prevent console errors in this static document */
+        .hidden-ui-element {
+            display: none !important;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col items-center p-4">
+
+    <!-- Top Header for Fruitful™ Logo -->
+    <header class="top-fruitful-header">
+        <span class="fruitful-logo-text">Fruitful™</span>
+    </header>
+
+    <div id="minutes-of-meeting-main" class="main-container-style p-8 rounded-3xl max-w-4xl w-full flex flex-col">
+        <div class="flex-grow">
+            <!-- FAA.ZONE Logo/Header -->
+            <div class="flex items-center justify-center gap-3 mb-8 faazone-header">
+                <span class="text-4xl">🦍</span>
+                <h1 class="font-bold text-3xl text-slate-800">FAA.ZONE&trade;</h1>
+            </div>
+
+            <h2 class="text-3xl font-extrabold text-slate-800 mb-6 tracking-tight text-center">
+                Minutes of Meeting: <span class="text-indigo-600">FAA.ZONE™ Collaborative Development Summary</span>
+            </h2>
+            <p class="text-center text-sm text-gray-500 mb-6">Comprehensive Summary for Training & Reference</p>
+            <p class="text-center text-sm text-gray-500 mb-6">
+                **Current Document URL:** <a href="/fruitful/minutes_of_meeting.html" class="text-indigo-600 hover:underline">`/fruitful/minutes_of_meeting.html`</a>
+            </p>
+
+            <div class="space-y-6 mb-8 flex flex-col items-center w-full">
+                <!-- Meeting Info -->
+                <div class="document-item p-4 max-w-full">
+                    <div class="icon">ℹ️</div>
+                    <div class="document-item-content flex-grow">
+                        <h3>Meeting Information</h3>
+                        <div class="info-block">
+                            <strong>Date:</strong> <span>June 24, 2025</span>
+                            <strong>Time:</strong> <span>Ongoing Collaborative Sessions</span>
+                            <strong>Location:</strong> <span>Virtual Collaboration Platform (Canvas Environment)</span>
+                            <strong>Attendees:</strong>
+                            <span>
+                                Heyns Schoeman (Lead Visionary, Fruitful™) <br>
+                                Gemini (AI Core Developer & Collaborator)
+                            </span>
+                            <strong>Chair:</strong> <span>Heyns Schoeman</span>
+                            <strong>Secretary:</strong> <span>Gemini</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 1: Core Canvas Management -->
+                <div class="document-item p-4 max-w-full">
+                    <div class="icon">🖼️</div>
+                    <div class="document-item-content flex-grow">
+                        <h3 class="meeting-sub-section-title">1. Core Canvas Management</h3>
+                        <p class="meeting-content-paragraph">
+                            Initial foundational canvases were established to begin development.
+                        </p>
+                        <ul class="meeting-content-list">
+                            <li>**`omnigrid.html`**: Created as a new HTML document for OmniGrid's public interface.
+                                <br>Route: `/fruitful/omnigrid.html`</li>
+                            <li>**`pulstrade.html`**: Created as a new HTML document for the PulseTrade system.
+                                <br>Route: `/fruitful/pulstrade.html`</li>
+                            <li>**`api_keys.html`**: Created to securely display API keys.
+                                <br>Route: `/fruitful/api_keys.html`</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Section 2: OmniGrid™ - The Public Interface Integration -->
+                <div class="document-item p-4 max-w-full">
+                    <div class="icon">🌐</div>
+                    <div class="document-item-content flex-grow">
+                        <h3 class="meeting-sub-section-title">2. OmniGrid™: The Unified Public Interface Integration</h3>
+                        <p class="meeting-content-paragraph">
+                            OmniGrid™ was established as the central public interface, consolidating functionalities from `omnigrid.html` and `pulstrade.html`. A distinct flow for exploring OmniGrid details was implemented.
+                        </p>
+                        <ul class="meeting-content-list ordered">
+                            <li>**Main Public Landing Page (`omnigrid.html` updated):**
+                                <br>Purpose: Initial entry point, integrating key PulseTrade sections directly onto this page (`#pulsetrade` section).
+                                <br>Route: `/fruitful/omnigrid.html`
+                            </li>
+                            <li>**Dedicated OmniGrid Overview Page (`omnigrid-overview.html` created):**
+                                <br>Purpose: In-depth exploration of OmniGrid's features and capabilities.
+                                <br>Route: `/fruitful/omnigrid-overview.html` (Linked from "Explore Omni Grid™" CTA on `omnigrid.html` and main navigation).
+                            </li>
+                        </ul>
+                        <div class="canvas-render-wrapper">
+                            <h4>Screenshot: OmniGrid™ Main Landing Page</h4>
+                            <div class="embedded-screenshot-content">
+                                <img src="/uploaded:Screenshot 2025-06-24 at 16.43.02.jpg-486b206f-ee1c-45be-9831-c13a896de2ec" alt="OmniGrid Main Landing Page">
+                            </div>
+                            <p class="text-xs text-gray-500 text-center mt-2">Visual reference of the OmniGrid™ main landing page structure.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: PulseTrade™ Terminals & Deep Dive Pages -->
+                <div class="document-item p-4 max-w-full">
+                    <div class="icon">📈</div>
+                    <div class="document-item-content flex-grow">
+                        <h3 class="meeting-sub-section-title">3. PulseTrade™ Terminals & Deep Dive Pages</h3>
+                        <p class="meeting-content-paragraph">
+                            Dedicated pages were created for each of the core PulseTrade™ components (MONSTER OMNI™, Core Abilities, Deployment Modes), providing comprehensive information and detailed metadata understanding.
+                        </p>
+                        <ul class="meeting-content-list ordered">
+                            <li>**Terminal Index Page (`terminal-index.html`):**
+                                <br>Purpose: Central routing hub listing all available terminals for user navigation.
+                                <br>Route: `/fruitful/terminal-index.html`
+                            </li>
+                            <li>**MONSTER OMNI™ Deep Dive (`monster-omni.html`):**
+                                <br>Purpose: Details God-Level Crypto Node, Post-blockchain Logic, OmniProof™ Consensus, VaultGenesis™ Clan Engine, GhostGrid™ Routing Layer.
+                                <br>Theme: Dark with **Indigo Accents**.
+                                <br>Route: `/fruitful/monster-omni.html`
+                            </li>
+                            <li>**Core Abilities Deep Dive (`core-abilities.html`):**
+                                <br>Purpose: Explains the 20 Atom-Level Engines (Corethink™, TruthWeight™, EchoSynth™, etc.).
+                                <br>Theme: Dark with **Yellow Accents**.
+                                <br>Route: `/fruitful/core-abilities.html`
+                            </li>
+                            <li>**Deployment Modes Deep Dive (`deployment-modes.html`):**
+                                <br>Purpose: Covers Offline, Planetary-Licensable, Harmony-Coded modes.
+                                <br>Theme: Dark with **Green Accents**.
+                                <br>Route: `/fruitful/deployment-modes.html`
+                            </li>
+                        </ul>
+                        <div class="canvas-render-wrapper">
+                            <h4>Screenshot: PulseTrade™ Section from OmniGrid</h4>
+                            <div class="embedded-screenshot-content">
+                                <img src="/uploaded:Screenshot 2025-06-24 at 15.32.58.jpg-a4fbfe97-a0d4-4481-ad30-eb32e473e9be" alt="PulseTrade Section">
+                            </div>
+                            <p class="text-xs text-gray-500 text-center mt-2">Visual reference of the PulseTrade™ System Override Grid, showing button styles.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 4: Atom-Level Result-Driven Sales Demo Dashboard (Interactive) -->
+                <div class="document-item p-4 max-w-full">
+                    <div class="icon">⚡</div>
+                    <div class="document-item-content flex-grow">
+                        <h3 class="meeting-sub-section-title">4. Atom-Level Result-Driven Sales Demo Dashboard (Interactive Live Demo)</h3>
+                        <p class="meeting-content-paragraph">
+                            A highly interactive and visually dynamic demo dashboard was developed to showcase the live impact of the Atom-Level Engines, functioning as a simulated enterprise trial.
+                        </p>
+                        <ul class="meeting-content-list ordered">
+                            <li><strong>Demo Dashboard URL:</strong> <a href="/fruitful/atom-level-sales-demo.html" class="text-indigo-600 hover:underline">`/fruitful/atom-level-sales-demo.html`</a></li>
+                            <li>**Core Functionality (What the Nodes Do - Live Demonstration):**
+                                <ul class="meeting-content-list">
+                                    <li>**Interactive Configuration:** Users configure industry, data volume, network, and security. They can also **emphasize specific Core Abilities**, which dynamically alters simulated results.</li>
+                                    <li>**Live Operations Console:** Streams real-time, business-oriented messages detailing *what each node is doing* (e.g., "Corethink™ initiating real-time cognitive analysis on incoming data...", "TruthWeight™ commencing data veracity validation...").</li>
+                                    <li>**Dynamic Node Cards:** Each engine's card provides visual feedback: a **filling progress bar**, **active highlighting/glow**, and real-time updates to its **simulated metrics** (e.g., Latency Reduced, Decisions/Sec, Veracity Score) and **status** (e.g., "Processing..." -> "Optimal").</li>
+                                    <li>**Simulated KPIs & Charts:** Overall performance and security charts, alongside financial impact (Revenue Growth, Cost Reduction) and data governance (Audit Trail Events, Security Events) charts, dynamically update to reflect the simulation's progress and combined impact.</li>
+                                    <li>**Contextual Operations Logs:** Dedicated logs within the "Financial Impact" and "Data Governance" tabs provide granular, business-specific event narratives during the simulation.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Demo Completion Page:</strong> <a href="/fruitful/demo-success.html" class="text-indigo-600 hover:underline">`/fruitful/demo-success.html`</a>
+                                <br>Purpose: Confirms successful demo completion and guides users to next steps.
+                            </li>
+                        </ul>
+                        <div class="canvas-render-wrapper">
+                            <h4>Screenshot: Atom-Level Sales Demo Dashboard</h4>
+                            <div class="embedded-screenshot-content">
+                                <img src="/uploaded:Screenshot 2025-06-24 at 16.00.54.jpg-2d93a983-a6ee-46b5-9ee8-81d2c493fc48" alt="Atom-Level Sales Demo">
+                            </div>
+                            <p class="text-xs text-gray-500 text-center mt-2">Visual reference of the Atom-Level Sales Demo dashboard interface.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 5: Research Directive: Atom-Level UI Index for Enterprise Software -->
+                <div class="document-item p-4 max-w-full">
+                    <div class="icon">🔎</div>
+                    <div class="document-item-content flex-grow">
+                        <h3 class="meeting-sub-section-title">5. Research Directive: Atom-Level UI Index for Enterprise Software (SAP/Sage/Deel)</h3>
+                        <p class="meeting-content-paragraph">
+                            A key research directive from this meeting was to conceptually model the "atom-level" UI elements within leading cloud enterprise software solutions (e.g., SAP, Sage, Deel). This is to understand the complexity and scale of user interactions in a 360-degree product lifecycle.
+                        </p>
+                        <p class="text-xs text-gray-500 italic">
+                            *Note: As an AI, direct, live, proprietary research into external platforms for such detailed quantification is beyond my capabilities. The following is a **conceptual framework and example estimation** of how such an "atom-level index" would be organized, based on general knowledge of enterprise software lifecycles.*
+                        </p>
+
+                        <h4 class="font-semibold text-slate-800 mt-4 mb-2">Conceptual Atom-Level UI Index Structure (Simulated Findings):</h4>
+                        <ul class="meeting-content-list ordered">
+                            <li>**Objective:** To conceptually estimate the number of buttons, pages, and URLs encountered in a complete 360-degree use cycle (from trial/demo, daily use, to troubleshooting and renewal) of typical enterprise software.</li>
+                            <li>**Estimated Totals Across Full Suite Lifecycle:**
+                                <ul class="meeting-content-list">
+                                    <li>**Unique Buttons:** Estimated 7,000 - 15,000+</li>
+                                    <li>**Unique Pages/Screens:** Estimated 4,000 - 10,000+ unique views</li>
+                                    <li>**Unique URLs:** Estimated 2,000 - 5,000+ distinct routable paths</li>
+                                </ul>
+                            </li>
+                            <li>**Breakdown by Simulated Journey Phases:**
+                                <ul class="meeting-content-list">
+                                    <li>**Discovery & Trial Phase:** (~50-150 buttons, ~20-50 pages, ~10-30 URLs) - Focus on sign-up, demo configuration, basic overview.</li>
+                                    <li>**Onboarding & Initial Setup Phase:** (~100-300 buttons, ~50-150 pages, ~30-80 URLs) - Focus on user/data setup, initial configuration.</li>
+                                    <li>**Daily Operational Use Phase:** (~500-1000 buttons per module, ~200-500 pages per module) - Deep navigation, transaction processing, reporting.</li>
+                                    <li>**Support, Troubleshooting & Renewal Phase:** (~50-100 buttons, ~20-40 pages, ~10-20 URLs) - Accessing help, managing subscriptions.</li>
+                                </ul>
+                            </li>
+                            <li>**Key UI Element Categories (Conceptual):** Action Buttons (Create, Edit, Submit), Navigation Elements (Tabs, Menus), Data Display Elements (Tables, Charts), Interactive Controls (Dropdowns, Checkboxes), Feedback Elements (Notifications), Workflow Elements (Approval States).</li>
+                            <li>**Routing Patterns (Conceptual):** Clean/Semantic URLs, Deep Linking, SSO Integration, Dynamic Path Generation.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Section 6: Final Deliverables & Next Steps -->
+                <div class="document-item p-4 max-w-full">
+                    <div class="icon">✅</div>
+                    <div class="document-item-content flex-grow">
+                        <h3 class="meeting-sub-section-title">6. Final Deliverables & Next Steps</h3>
+                        <p class="meeting-content-paragraph">
+                            All requested pages and functionalities developed within this collaborative chat are now finalized and delivered according to specifications, incorporating dynamic elements and a comprehensive user experience.
+                        </p>
+                        <ul class="meeting-content-list">
+                            <li>All new HTML pages and updated existing pages are ready for deployment within the `fruitful/` directory structure.</li>
+                            <li>The Atom-Level Sales Demo Dashboard (`atom-level-sales-demo.html`) is fully interactive and provides a dynamic visualization of engine capabilities.</li>
+                            <li>The API key (`AIzaSyBGSDZATtITv5iIoB3rgKHBpWx9MrufxXE`) is integrated into all relevant pages for AI logic.</li>
+                            <li>This document serves as the comprehensive training and reference manual for these deliverables.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-8 pt-6 border-t border-slate-200">
+            <div class="text-xs text-slate-400 text-center">
+                <p>&copy; 2025 FAA.ZONE™</p>
+                <p>Firebase Scalable Admin Panel (7000 Sites) v1.0 - Comprehensive MoM</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Message box for alerts/notifications (hidden, only appears via JS) -->
+    <div id="loadingMessage" class="message-box">
+        <p class="text-lg"></p>
+    </div>
+
+    <!-- Hidden UI elements from your polishing script to prevent console errors -->
+    <div class="hidden-ui-element">
+        <div id="announcement-bar"></div>
+        <div id="main-header"></div>
+        <div class="theme-switcher">
+            <button id="theme-day-btn"></button>
+            <button id="theme-night-btn"></button>
+            <button id="theme-hyper-btn"></button>
+        </div>
+        <select id="languageSwitcher"></select>
+        <span id="planet-text"></span>
+        <input type="text" id="promptInput">
+        <button id="generateTextBtn"></button>
+        <div id="loadingIndicator"></div>
+        <p id="generatedTextOutput"></p>
+        <iframe id="vault-frame"></iframe>
+        <button class="terminal-btn"></button>
+    </div>
+
+    <script>
+        // Message box function (common utility for pop-up messages)
+        function showMessageBox(message, duration = 3000) {
+            const messageBox = document.getElementById('loadingMessage');
+            if (!messageBox) {
+                // If it doesn't exist, create it and retry showing the message
+                const div = document.createElement('div');
+                div.id = 'loadingMessage';
+                div.classList.add('message-box');
+                div.innerHTML = '<p class="text-lg"></p>';
+                document.body.appendChild(div);
+                setTimeout(() => showMessageBox(message, duration), 50);
+                return;
+            }
+            messageBox.querySelector('p').textContent = message;
+            messageBox.classList.add('show');
+            setTimeout(() => {
+                messageBox.classList.remove('show');
+            }, duration);
+        }
+
+        // --- All specific animation/utility scripts for MoM embedded canvases ---
+        // These are only for the *display* within this MoM document itself.
+        // They are self-contained and do not affect the functionality of the actual linked pages.
+
+        // Ant Route Animation Logic
+        class AntSegment {
+            constructor(x, y, alpha, color) { this.x = x; this.y = y; this.alpha = alpha; this.color = color; }
+            update(decayRate) { this.alpha -= decayRate; return this.alpha > 0; }
+            draw(ctx) { ctx.globalAlpha = this.alpha; ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, 1.5, 0, Math.PI * 2); ctx.fill(); }
+        }
+        const antRouteCanvasObj = {
+            canvas: null, ctx: null, time: 0, animationId: null, segments: [],
+            antHead: { x: 0, y: 0, dx: 1, dy: 0 }, maxSegments: 500, decayRate: 0.005, speed: 1.5,
+            turnTendency: 0.05, initialAlpha: 0.86, lineColor: 'rgba(0, 0, 0, 0.86)', glowColor: 'rgba(0, 0, 0, 0.4)'
+        };
+        function drawAntRoute() {
+            const { canvas, ctx, segments, antHead, maxSegments, decayRate, speed, turnTendency, initialAlpha, lineColor, glowColor } = antRouteCanvasObj;
+            if (!ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = `rgba(255, 255, 255, 0.02)`; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            segments.push(new AntSegment(antHead.x, antHead.y, initialAlpha, lineColor));
+            antHead.x += antHead.dx * speed; antHead.y += antHead.dy * speed;
+            if (antHead.x < 0 || antHead.x > canvas.width) { antHead.dx *= -1; antHead.x = antHead.x < 0 ? 0 : canvas.width; }
+            if (antHead.y < 0 || antHead.y > canvas.height) { antHead.dy *= -1; antHead.y = antHead.y < 0 ? 0 : canvas.height; }
+            if (Math.random() < turnTendency) {
+                const angleChange = (Math.random() - 0.5) * Math.PI / 4; const currentAngle = Math.atan2(antHead.dy, antHead.dx);
+                const newAngle = currentAngle + angleChange; antHead.dx = Math.cos(newAngle); antHead.dy = Math.sin(newAngle);
+            }
+            ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.shadowBlur = 5; ctx.shadowColor = glowColor;
+            if (segments.length > 1) {
+                ctx.beginPath(); ctx.moveTo(segments[0].x, segments[0].y);
+                for (let i = 1; i < segments.length; i++) { ctx.lineTo(segments[i].x, segments[i].y); }
+                ctx.strokeStyle = lineColor; ctx.lineWidth = 2; ctx.globalAlpha = 0.5; ctx.stroke();
+            }
+            for (let i = segments.length - 1; i >= 0; i--) {
+                const segment = segments[i]; if (segment.update(decayRate)) { segment.draw(ctx); } else { segments.splice(i, 1); }
+            }
+            ctx.shadowBlur = 0; antRouteCanvasObj.animationId = requestAnimationFrame(drawAntRoute);
+        }
+        function initAntRoute() {
+            antRouteCanvasObj.canvas = document.getElementById('ant-route-canvas-mom');
+            if (antRouteCanvasObj.canvas) {
+                antRouteCanvasObj.ctx = antRouteCanvasObj.canvas.getContext('2d');
+                antRouteCanvasObj.canvas.width = antRouteCanvasObj.canvas.offsetWidth;
+                antRouteCanvasObj.canvas.height = antRouteCanvasObj.canvas.offsetHeight;
+                antRouteCanvasObj.antHead.x = Math.random() * antRouteCanvasObj.canvas.width;
+                antRouteCanvasObj.antHead.y = Math.random() * antRouteCanvasObj.canvas.height;
+                const initialAngle = Math.random() * Math.PI * 2; antRouteCanvasObj.antHead.dx = Math.cos(initialAngle); antRouteCanvasObj.antHead.dy = Math.sin(initialAngle);
+                drawAntRoute();
+            }
+        }
+
+        // Chess Board Animation Logic
+        function drawChessBoard(targetId = 'chessboard-display-mom') {
+            const chessboardDisplay = document.getElementById(targetId);
+            if (!chessboardDisplay) return;
+            const gridSize = 8; chessboardDisplay.innerHTML = '';
+            for (let row = 0; row < gridSize; row++) {
+                for (let col = 0; col < gridSize; col++) {
+                    const cell = document.createElement('div'); cell.classList.add('chess-cell');
+                    if ((row + col) % 2 === 0) { cell.style.backgroundColor = '#E0E0E0'; cell.style.color = '#333333'; } else { cell.style.backgroundColor = '#424242'; cell.style.color = '#F5F5F5'; }
+                    chessboardDisplay.appendChild(cell);
+                }
+            }
+        }
+
+        // Noodle Drops on Canvases Logic
+        class NoodleDrop {
+            constructor(canvas) {
+                this.canvas = canvas; this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
+                this.radius = Math.random() * 2 + 1; this.alpha = 1; this.decay = 0.01;
+                this.pathPoints = []; this.pathLength = Math.floor(Math.random() * 50) + 20;
+                this.currentPathX = this.x; this.currentPathY = this.y;
+                this.dx = (Math.random() - 0.5) * 2; this.dy = (Math.random() - 0.5) * 2;
+                this.pathColor = 'rgba(0,0,0,0.8)';
+            }
+            update() {
+                this.alpha -= this.decay;
+                if (this.alpha < 0) {
+                    this.x = Math.random() * this.canvas.width; this.y = Math.random() * this.canvas.height;
+                    this.alpha = 1; this.pathPoints = []; this.currentPathX = this.x; this.currentPathY = this.y;
+                    this.dx = (Math.random() - 0.5) * 2; this.dy = (Math.random() - 0.5) * 2;
+                }
+                if (this.pathPoints.length < this.pathLength) {
+                    this.currentPathX += this.dx; this.currentPathY += this.dy;
+                    this.pathPoints.push({ x: this.currentPathX, y: this.currentPathY });
+                    if (this.currentPathX < 0 || this.currentPathX > this.canvas.width) this.dx *= -1;
+                    if (this.currentPathY < 0 || this.currentPathY > this.canvas.height) this.dy *= -1;
+                } else { this.pathPoints.shift(); }
+                return true;
+            }
+            draw(ctx) {
+                ctx.save(); ctx.globalAlpha = this.alpha; ctx.strokeStyle = this.pathColor; ctx.lineWidth = 2;
+                ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.shadowBlur = 5; ctx.shadowColor = 'rgba(255, 255, 255, 0.4)';
+                if (this.pathPoints.length > 1) {
+                    ctx.beginPath(); ctx.moveTo(this.pathPoints[0].x, this.pathPoints[0].y);
+                    for (let i = 1; i < this.pathPoints.length; i++) { ctx.lineTo(this.pathPoints[i].x, this.pathPoints[i].y); }
+                    ctx.stroke();
+                }
+                ctx.restore();
+            }
+        }
+        const noodleDrops = [];
+        let noodleDropsAnimationId = null;
+        function initNoodleDropsOnCanvas(canvasId) {
+            const section = document.getElementById(canvasId);
+            if (!section) return;
+
+            const overlayCanvas = document.createElement('canvas');
+            overlayCanvas.classList.add('embedded-noodle-drops-svg');
+            section.appendChild(overlayCanvas);
+
+            const ctx = overlayCanvas.getContext('2d');
+            overlayCanvas.width = section.offsetWidth;
+            overlayCanvas.height = section.offsetHeight;
+
+            const dropsForThisCanvas = [];
+            for (let i = 0; i < 5; i++) { dropsForThisCanvas.push(new NoodleDrop(overlayCanvas)); }
+            noodleDrops.push({ id: canvasId, canvas: overlayCanvas, ctx: ctx, drops: dropsForThisCanvas });
+
+            if (!noodleDropsAnimationId) { drawNoodleDrops(); }
+        }
+        function drawNoodleDrops() {
+            noodleDrops.forEach(canvasObj => {
+                const { canvas, ctx, drops } = canvasObj; if (!ctx) return;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drops.forEach(drop => { drop.update(); drop.draw(ctx); });
+            });
+            noodleDropsAnimationId = requestAnimationFrame(drawNoodleDrops);
+        }
+
+        // Live Fox Peeper Logic (for embedded view)
+        const foxPeeperCanvasObj = {
+            canvas: null, ctx: null, time: 0, animationId: null,
+            foxX: 50, foxY: 50, foxSize: 50, foxOpacity: 0.9,
+            sniffingDirection: 1, sniffAmount: 5, currentSniff: 0,
+            sniffSpeed: 0.1, peepSpeed: 0.05,
+            foxColor: '#FF8C00',
+            foxGlowColor: 'rgba(255, 165, 0, 0.8)'
+        };
+        function drawFoxPeeper() {
+            const { canvas, ctx, foxX, foxY, foxSize, foxOpacity, currentSniff, foxColor, foxGlowColor } = foxPeeperCanvasObj;
+            if (!ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.save();
+            ctx.shadowBlur = 10; ctx.shadowColor = foxGlowColor; ctx.fillStyle = foxColor;
+            const adjustedFoxX = foxX + currentSniff;
+            ctx.font = `${foxSize}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.globalAlpha = foxOpacity;
+            ctx.fillText('🦊', adjustedFoxX, foxY);
+            ctx.restore();
+            foxPeeperCanvasObj.currentSniff += foxPeeperCanvasObj.sniffingDirection * foxPeeperCanvasObj.sniffSpeed;
+            if (Math.abs(foxPeeperCanvasObj.currentSniff) > foxPeeperCanvasObj.sniffAmount) { foxPeeperCanvasObj.sniffingDirection *= -1; }
+            foxPeeperCanvasObj.animationId = requestAnimationFrame(drawFoxPeeper);
+        }
+        function initFoxPeeper(canvasId) {
+            foxPeeperCanvasObj.canvas = document.getElementById(canvasId);
+            if (foxPeeperCanvasObj.canvas) {
+                foxPeeperCanvasObj.ctx = foxPeeperCanvasObj.canvas.getContext('2d');
+                foxPeeperCanvasObj.canvas.width = foxPeeperCanvasObj.canvas.offsetWidth;
+                foxPeeperCanvasObj.canvas.height = foxPeeperCanvasObj.canvas.offsetHeight;
+                foxPeeperCanvasObj.foxX = foxPeeperCanvasObj.canvas.width / 2;
+                foxPeeperCanvasObj.foxY = foxPeeperCanvasObj.canvas.height / 2;
+                drawFoxPeeper();
+            }
+        }
+
+        // Live Gorilla Animated Icon Logic
+        const gorillaIconObj = {
+            element: null, time: 0, animationId: null,
+            floatAmount: 5, floatSpeed: 0.05
+        };
+        function animateGorillaIcon() {
+            if (!gorillaIconObj.element) return;
+            gorillaIconObj.time += gorillaIconObj.floatSpeed;
+            const offsetY = Math.sin(gorillaIconObj.time) * gorillaIconObj.floatAmount;
+            gorillaIconObj.element.style.transform = `translateY(${offsetY}px)`;
+            gorillaIconObj.animationId = requestAnimationFrame(animateGorillaIcon);
+        }
+        function initGorillaIcon(elementId) {
+            gorillaIconObj.element = document.getElementById(elementId);
+            if (gorillaIconObj.element) { animateGorillaIcon(); }
+        }
+
+        // Currency Converter Logic for MoM document (Simplified)
+        let currencySelectMom = document.getElementById('currency-select-mom');
+        let priceDisplaysMom = document.querySelectorAll('#minutes-of-meeting-main .price-display');
+        let exchangeRatesMom = {};
+        const API_KEY_MOM = "40015d117bc7fff9495dcf28"; // Placeholder API key
+        const BASE_CURRENCY_MOM = 'ZAR';
+
+        async function fetchExchangeRatesMom() {
+            // In a real deployed scenario, this would use a valid API key.
+            // For this self-contained MoM, we'll use mock rates if no valid key is provided.
+            if (API_KEY_MOM === "YOUR_EXCHANGE_RATE_API_KEY_HERE" || API_KEY_MOM === "") {
+                exchangeRatesMom = { "USD": 0.05, "EUR": 0.04, "GBP": 0.03, "ZAR": 1.0 }; // Mock rates
+                console.warn("Currency converter on MoM: Using mock exchange rates as API_KEY is missing/placeholder.");
+                if (currencySelectMom) currencySelectMom.disabled = true;
+                updatePricesMom();
+                return;
+            }
+            try {
+                const response = await fetch(`https://v6.exchangerate-api.com/v6/${API_KEY_MOM}/latest/${BASE_CURRENCY_MOM}`);
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`HTTP error! Status: ${response.status}. API Error: ${errorData['error-type'] || 'Unknown error.'}`);
+                }
+                const data = await response.json();
+                if (data && data.conversion_rates) {
+                    exchangeRatesMom = data.conversion_rates;
+                    updatePricesMom();
+                } else {
+                    console.error('Failed to fetch conversion rates for MoM: Unexpected API response structure.', data);
+                    if (currencySelectMom) currencySelectMom.disabled = true;
+                }
+            } catch (error) {
+                console.error('Error fetching exchange rates for MoM:', error.message || error);
+                if (currencySelectMom) currencySelectMom.disabled = true;
+            }
+        }
+
+        function getCurrencySymbolMom(currencyCode) {
+            switch (currencyCode) {
+                case 'USD': return '$';
+                case 'EUR': return '€';
+                case 'GBP': return '£';
+                case 'ZAR': return 'R';
+                default: return currencyCode;
+            }
+        }
+
+        function updatePricesMom() {
+            if (!currencySelectMom || Object.keys(exchangeRatesMom).length === 0) return;
+            const selectedCurrency = currencySelectMom.value;
+            const selectedSymbol = getCurrencySymbolMom(selectedCurrency);
+            priceDisplaysMom.forEach(priceSpan => {
+                const originalPriceValue = parseFloat(priceSpan.dataset.originalPrice);
+                let convertedPrice = originalPriceValue;
+                if (selectedCurrency !== BASE_CURRENCY_MOM && exchangeRatesMom[selectedCurrency]) {
+                    convertedPrice = originalPriceValue * exchangeRatesMom[selectedCurrency];
+                }
+                priceSpan.innerHTML = `${selectedSymbol}${convertedPrice.toFixed(2)} <span class="text-slate-500 text-base font-normal">/ month</span>`;
+                priceSpan.dataset.currencyCode = selectedCurrency;
+            });
+        }
+
+
+        // DOMContentLoaded ensures all HTML is loaded before scripts run
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize embedded canvas animations
+            initAntRoute();
+            initFoxPeeper('fox-peeper-canvas-mom');
+            initGorillaIcon('gorilla-icon-mom');
+            drawChessBoard('chessboard-display-mom');
+            initNoodleDropsOnCanvas('noodle-drops-example-canvas');
+            initNoodleDropsOnCanvas('noodle-drops-black-bg-mom');
+            initNoodleDropsOnCanvas('noodle-drops-super-pearl-white-bg-mom');
+
+            // Initialize Stacked Color Canvases (no JS drawing needed, just element creation)
+            const redBlackStackMom = document.getElementById('stacked-red-black-mom');
+            if (redBlackStackMom) {
+                const numberOfStripes = 20;
+                const stripeHeightPercentage = 100 / numberOfStripes;
+                for (let i = 0; i < numberOfStripes; i++) {
+                    const stripe = document.createElement('div');
+                    stripe.classList.add('color-stripe');
+                    stripe.style.height = `${stripeHeightPercentage}%`;
+                    if (i % 2 === 0) stripe.style.backgroundColor = '#FF0000'; // Red
+                    else stripe.style.backgroundColor = '#000000'; // Black
+                    redBlackStackMom.appendChild(stripe);
+                }
+            }
+            const multiColorStackMom = document.getElementById('stacked-multi-color-mom');
+            if (multiColorStackMom) {
+                const colors = ['#000000', '#FFFF00', '#FF0000', '#008000']; // Black, Yellow, Red, Green
+                const numberOfStripes = colors.length;
+                const stripeHeightPercentage = 100 / numberOfStripes;
+                colors.forEach(colorHex => {
+                    const stripe = document.createElement('div');
+                    stripe.classList.add('color-stripe');
+                    stripe.style.height = `${stripeHeightPercentage}%`;
+                    stripe.style.backgroundColor = colorHex;
+                    multiColorStackMom.appendChild(stripe);
+                });
+            }
+
+            // Fetch exchange rates and update prices for MoM currency converter
+            if (currencySelectMom) { // Ensure the element exists before trying to use it
+                 currencySelectMom.addEventListener('change', updatePricesMom);
+                 fetchExchangeRatesMom();
+            }
+
+            // Mock PayPal button click for MoM
+            document.querySelectorAll('#minutes-of-meeting-main .buy-now-button').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    showMessageBox(`Simulating purchase of ${event.target.textContent.trim()}! (PayPal integration is not active in this demo)`, 4000);
+                    console.log(`Simulating PayPal subscription for: ${event.target.textContent.trim()}`);
+                });
+            });
+
+            // Handle window resize for dynamic canvases in MoM
+            window.addEventListener('resize', () => {
+                if (antRouteCanvasObj.canvas) {
+                    antRouteCanvasObj.canvas.width = antRouteCanvasObj.canvas.offsetWidth;
+                    antRouteCanvasObj.canvas.height = antRouteCanvasObj.canvas.offsetHeight;
+                }
+                if (foxPeeperCanvasObj.canvas) {
+                    foxPeeperCanvasObj.canvas.width = foxPeeperCanvasObj.canvas.offsetWidth;
+                    foxPeeperCanvasObj.canvas.height = foxPeeperCanvasObj.canvas.offsetHeight;
+                    foxPeeperCanvasObj.foxX = foxPeeperCanvasObj.canvas.width / 2;
+                    foxPeeperCanvasObj.foxY = foxPeeperCanvasObj.canvas.height / 2;
+                }
+                drawChessBoard('chessboard-display-mom'); // Redraw chessboard on resize
+
+                // Resize noodle drop overlays
+                noodleDrops.forEach(obj => {
+                    const parent = document.getElementById(obj.id);
+                    if (parent && obj.canvas) {
+                        obj.canvas.width = parent.offsetWidth;
+                        obj.canvas.height = parent.offsetHeight;
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

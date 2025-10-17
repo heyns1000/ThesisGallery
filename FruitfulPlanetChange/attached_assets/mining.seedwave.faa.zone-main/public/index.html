@@ -1,0 +1,2881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-i18n="page_title">Fruitful™ | About Us: Thabo Ntlatleng</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts - Inter for a professional look (Apple-inspired) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* Base Styles - Apple inspired cleanliness with Fruitful colors */
+    :root {
+        /* Dark Mode Defaults */
+        --primary-color: #0071e3; /* Apple Blue */
+        --secondary-color: #B8860B; /* Corporate Gold for Mining accent */
+        --about-accent-color: #0071e3; /* Primary Blue for About Us accent */
+        --text-color-light: #f5f5f7; /* Light text on dark backgrounds */
+        --text-color-dark: #1d1d1f; /* Dark text on light backgrounds - used for some components that flip colors */
+        --bg-color-dark: #1a1a1c; /* Deep black/dark grey */
+        --card-bg-dark: #2a2a2e; /* Darker grey for dark cards */
+        --border-color-dark: #3a3a3e; /* Subtle dark border */
+        --status-active: #30d158; /* Green for active */
+        --status-pending: #f59e0b; /* Amber for pending */
+        --status-error: #ef4444; /* Red for error */
+
+        /* Light Mode Variables (will override dark mode) */
+        --light-primary-color: #0071e3; /* Apple Blue */
+        --light-secondary-color: #B8860B; /* Corporate Gold */
+        --light-about-accent-color: #0077ed; /* Slightly lighter blue for contrast */
+        --light-text-color-light: #1d1d1f; /* Dark text for light mode body */
+        --light-text-color-dark: #1d1d1f; /* Dark text for light mode body content */
+        --light-bg-color-dark: #f5f5f7; /* Very light gray, almost white */
+        --light-card-bg-dark: #ffffff; /* White for light cards */
+        --light-border-color-dark: #e8e8ed; /* Subtle light border */
+
+        /* Hyper Mode Variables */
+        --hyper-primary-color: #ff00ff; /* Neon Magenta */
+        --hyper-secondary-color: #00ffff; /* Aqua */
+        --hyper-about-accent-color: #ff00ff;
+        --hyper-text-color-light: #f0f0f0; /* Near white */
+        --hyper-text-color-dark: #101010; /* Near black */
+        --hyper-bg-color-dark: #0a0a0a; /* Very dark background */
+        --hyper-card-bg-dark: #1c001c; /* Dark purple for cards */
+        --hyper-border-color-dark: #500050; /* Purple border */
+        --hyper-status-active: #39ff14; /* Neon Green */
+        --hyper-status-pending: #ffff00; /* Neon Yellow */
+        --hyper-status-error: #ff206e; /* Neon Pink */
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: var(--bg-color-dark); /* Default to dark background */
+        color: var(--text-color-light); /* Default to light text */
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased; /* Smoother font rendering */
+        -moz-osx-font-smoothing: grayscale;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        scroll-behavior: smooth; /* Smooth scrolling for anchor links */
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* Light Mode specific overrides */
+    body.theme-light {
+        background-color: var(--light-bg-color-dark);
+        color: var(--light-text-color-light);
+
+        .header-style {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-bottom-color: var(--light-border-color-dark);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            color: var(--light-text-color-dark);
+        }
+        .header-style .logo-text { color: var(--light-text-color-dark); }
+        .header-style .logo-text span { color: var(--light-secondary-color); }
+        .header-style nav a { color: #424245; }
+        .header-style nav a:hover { color: var(--light-primary-color); }
+        .header-style nav a.cta-btn-header {
+            background-color: var(--light-primary-color);
+            color: white;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+        }
+        .header-style nav a.cta-btn-header:hover { background-color: #0066cc; }
+
+        .hamburger-icon svg { color: var(--light-text-color-dark); }
+        /* Mobile toggles in light mode */
+        .header-mobile-toggles .language-select {
+            background-color: var(--light-card-bg-dark);
+            color: var(--light-text-color-dark);
+            border: 1px solid var(--light-border-color-dark);
+        }
+        .header-mobile-toggles .theme-toggle-btn {
+            color: var(--light-text-color-dark);
+            background-color: var(--light-card-bg-dark);
+            border: 1px solid var(--light-border-color-dark);
+        }
+
+        .mobile-menu-overlay {
+            background-color: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+        }
+        .mobile-menu-overlay .close-icon svg { color: var(--light-text-color-dark); }
+        .mobile-menu-overlay nav a { color: var(--light-text-color-dark); }
+
+
+        .hero-page-section {
+            background: linear-gradient(to bottom right, #e0f2fe, #bfdbfe); /* Lighter blue gradient */
+            color: var(--light-text-color-dark);
+        }
+        .hero-page-section h1 { color: var(--light-text-color-dark); }
+        .hero-page-section h1 .accent-blue { color: var(--light-about-accent-color); }
+        .hero-page-section p { color: #6e6e73; }
+
+        section {
+            background-color: var(--light-card-bg-dark);
+            border-color: var(--light-border-color-dark);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        }
+        section h2 { color: var(--light-text-color-dark); }
+        section p { color: #424245; }
+
+        .content-block h3 { color: var(--light-text-color-dark); border-bottom-color: var(--light-about-accent-color); }
+        .content-block p { color: #424245; }
+        .content-block ul { color: #424245; }
+        .content-block strong { color: var(--light-text-color-dark); }
+        .content-block .accent-blue { color: var(--light-about-accent-color); }
+        .content-block code { background-color: #e8e8ed; color: var(--light-text-color-dark); }
+
+        .achievement-card {
+            background-color: var(--light-card-bg-dark);
+            border-color: var(--light-border-color-dark);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+        .achievement-card .icon { color: var(--light-about-accent-color); }
+        .achievement-card h3 { color: var(--light-text-color-dark); }
+        .achievement-card p { color: #6e6e73; }
+
+        .metrics-grid {
+            background-color: #fcfcfc;
+            border-color: var(--light-border-color-dark);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+        }
+        .metrics-grid p { color: #424245; }
+        .metrics-grid .value { color: var(--light-about-accent-color); }
+        .metrics-grid .text-blue-700 { color: var(--light-about-accent-color); }
+        .metrics-grid .text-red-500 { color: var(--status-error); }
+        .metrics-grid .text-green-600 { color: var(--status-active); }
+
+        .conclusion-section {
+            background-color: #e0f2fe; /* Light pastel blue background for conclusion */
+            color: var(--light-text-color-dark);
+        }
+        .conclusion-section h2 { color: var(--light-text-color-dark); }
+        .conclusion-section p { color: #424245; }
+        .conclusion-section .final-statement {
+            color: var(--light-about-accent-color);
+        }
+
+        .mining-brands-ecosystem-list a { /* Changed from div to a */
+            background-color: var(--light-card-bg-dark);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-color: var(--light-border-color-dark);
+            color: #424245;
+        }
+        .mining-brands-ecosystem-list a:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            color: var(--light-primary-color);
+        }
+
+        .cta-footer-section {
+            background: linear-gradient(to right, #e0f2fe, #bfdbfe);
+            color: var(--light-text-color-dark);
+        }
+        .cta-footer-section h2 { color: var(--light-text-color-dark); }
+        .cta-footer-section p { color: #424245; }
+        .cta-footer-section button {
+            background-color: var(--light-primary-color);
+            color: white;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+        }
+        .cta-footer-section button:hover { background-color: #0066cc; }
+
+        .footer-style {
+            background-color: var(--light-bg-color-dark);
+            border-top-color: var(--light-border-color-dark);
+            color: #6e6e73;
+        }
+        .footer-style a { color: #6e6e73; }
+        .footer-style a:hover { color: var(--light-text-color-dark); }
+    }
+
+    /* Hyper Mode specific overrides */
+    body.theme-hyper {
+        background-color: var(--hyper-bg-color-dark);
+        color: var(--hyper-text-color-light);
+
+        .header-style {
+            background-color: rgba(10, 0, 10, 0.95); /* Even darker, purplish tint */
+            border-bottom-color: var(--hyper-border-color-dark);
+            box-shadow: 0 2px 10px rgba(255,0,255,0.4);
+            color: var(--hyper-text-color-light);
+        }
+        .header-style .logo-text { color: var(--hyper-text-color-light); }
+        .header-style .logo-text span { color: var(--hyper-secondary-color); }
+        .header-style nav a { color: #a0a0a5; /* Keep some neutrality */ }
+        .header-style nav a:hover { color: var(--hyper-primary-color); }
+        .header-style nav a.cta-btn-header {
+            background-color: var(--hyper-primary-color);
+            color: var(--hyper-text-color-dark);
+            box-shadow: 0 3px 10px rgba(255,0,255,0.3);
+        }
+        .header-style nav a.cta-btn-header:hover { background-color: #cc00cc; }
+
+        .hamburger-icon svg { color: var(--hyper-text-color-light); }
+        /* Mobile toggles in hyper mode */
+        .header-mobile-toggles .language-select {
+            background-color: var(--hyper-card-bg-dark);
+            color: var(--hyper-text-color-light);
+            border: 1px solid var(--hyper-border-color-dark);
+        }
+        .header-mobile-toggles .theme-toggle-btn {
+            color: var(--hyper-text-color-light);
+            background-color: var(--hyper-card-bg-dark);
+            border: 1px solid var(--hyper-border-color-dark);
+        }
+
+
+        .mobile-menu-overlay {
+            background-color: rgba(10, 0, 10, 0.98);
+            backdrop-filter: blur(25px);
+        }
+        .mobile-menu-overlay .close-icon svg { color: var(--hyper-text-color-light); }
+        .mobile-menu-overlay nav a { color: var(--hyper-text-color-light); }
+
+
+        .hero-page-section {
+            background: linear-gradient(to bottom right, #330033, #660066); /* Deep purple gradient */
+            color: var(--hyper-text-color-light);
+            box-shadow: 0 4px 20px rgba(255,0,255,0.5);
+        }
+        .hero-page-section h1 { color: var(--hyper-text-color-light); }
+        .hero-page-section h1 .accent-blue { color: var(--hyper-primary-color); }
+        .hero-page-section p { color: var(--hyper-secondary-color); /* Aqua for contrast */ }
+
+        section {
+            background-color: var(--hyper-card-bg-dark);
+            border-color: var(--hyper-border-color-dark);
+            box-shadow: 0 10px 40px rgba(255,0,255,0.15);
+        }
+        section h2 { color: var(--hyper-primary-color); }
+        section p { color: var(--hyper-text-color-light); }
+
+        .content-block h3 { color: var(--hyper-text-color-light); border-bottom-color: var(--hyper-primary-color); }
+        .content-block p { color: var(--hyper-text-color-light); }
+        .content-block ul { color: var(--hyper-text-color-light); }
+        .content-block strong { color: var(--hyper-secondary-color); }
+        .content-block .accent-blue { color: var(--hyper-primary-color); }
+        .content-block code { background-color: #500050; color: var(--hyper-text-color-light); }
+
+        .achievement-card {
+            background-color: var(--hyper-card-bg-dark);
+            border-color: var(--hyper-border-color-dark);
+            box-shadow: 0 4px 20px rgba(255,0,255,0.1);
+        }
+        .achievement-card .icon { color: var(--hyper-primary-color); }
+        .achievement-card h3 { color: var(--hyper-text-color-light); }
+        .achievement-card p { color: var(--hyper-text-color-light); }
+
+        .metrics-grid {
+            background-color: #100010;
+            border-color: var(--hyper-border-color-dark);
+            box-shadow: 0 8px 30px rgba(255,0,255,0.1);
+        }
+        .metrics-grid p { color: var(--hyper-text-color-light); }
+        .metrics-grid .value { color: var(--hyper-primary-color); }
+        .metrics-grid .text-blue-700 { color: var(--hyper-primary-color); }
+        .metrics-grid .text-red-500 { color: var(--hyper-status-error); }
+        .metrics-grid .text-green-600 { color: var(--hyper-status-active); }
+
+        .conclusion-section {
+            background: linear-gradient(to bottom right, #330033, #1c001c);
+            color: var(--hyper-text-color-light);
+            box-shadow: 0 4px 20px rgba(255,0,255,0.3);
+        }
+        .conclusion-section h2 { color: var(--hyper-text-color-light); }
+        .conclusion-section p { color: var(--hyper-text-color-light); }
+        .conclusion-section .final-statement {
+            color: var(--hyper-primary-color);
+            animation: pulse-hyper 2.5s infinite cubic-bezier(0.4, 0, 0.6, 1);
+        }
+
+        @keyframes pulse-hyper {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+                text-shadow: 0 0 0px rgba(255, 0, 255, 0);
+            }
+            50% {
+                opacity: 0.9;
+                transform: scale(1.02);
+                text-shadow: 0 0 25px rgba(255, 0, 255, 0.8);
+            }
+        }
+
+        .mining-brands-ecosystem-list a {
+            background-color: var(--hyper-card-bg-dark);
+            box-shadow: 0 2px 10px rgba(255,0,255,0.1);
+            border-color: var(--hyper-border-color-dark);
+            color: var(--hyper-text-color-light);
+        }
+        .mining-brands-ecosystem-list a:hover {
+            box-shadow: 0 4px 15px rgba(255,0,255,0.2);
+            background-color: #300030;
+            color: var(--hyper-secondary-color);
+        }
+
+        .cta-footer-section {
+            background: linear-gradient(to right, #330033, #660066);
+            color: var(--hyper-text-color-light);
+        }
+        .cta-footer-section h2 { color: var(--hyper-text-color-light); }
+        .cta-footer-section p { color: var(--hyper-text-color-light); }
+        .cta-footer-section button {
+            background-color: var(--hyper-primary-color);
+            color: var(--hyper-text-color-dark);
+            box-shadow: 0 3px 10px rgba(255,0,255,0.3);
+        }
+        .cta-footer-section button:hover { background-color: #cc00cc; }
+
+        .footer-style {
+            background-color: var(--hyper-bg-color-dark);
+            border-top-color: var(--hyper-border-color-dark);
+            color: #a0a0a5; /* Neutral footer text */
+        }
+        .footer-style a { color: #a0a0a5; }
+        .footer-style a:hover { color: var(--hyper-primary-color); }
+    }
+
+
+    /* Header - Consistent with Fruitful branding */
+    .header-style {
+        background-color: rgba(26, 26, 28, 0.95); /* Darker header */
+        backdrop-filter: blur(15px);
+        border-bottom: 1px solid #3a3a3e;
+        padding: 1rem 1.5rem; /* Reduced padding for more space on top */
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #f5f5f7; /* Light text for dark header */
+    }
+    .header-style .logo-text {
+        font-size: 1.6rem; /* Slightly smaller logo to fit better */
+        font-weight: 800;
+        color: #f5f5f7;
+        letter-spacing: -0.03em;
+        flex-shrink: 0; /* Prevent logo from shrinking */
+        margin-right: 1rem; /* Space between logo and toggles/nav */
+    }
+    .header-style .logo-text span {
+        color: var(--secondary-color);
+    }
+
+    /* Desktop Navigation & Toggles */
+    .header-style nav.desktop-nav { /* Renamed class for clarity */
+        flex-grow: 1; /* Allow nav to take available space */
+        justify-content: flex-end; /* Push content to the right */
+        gap: 1rem; /* Space between main nav items */
+        align-items: center;
+    }
+    .header-style nav a {
+        color: #a0a0a5;
+        font-size: 0.95rem; /* Slightly smaller nav links for tighter fit */
+        font-weight: 500;
+        padding: 0.6rem 0.9rem; /* Adjusted padding */
+        border-radius: 8px; /* Softer rounding */
+        transition: all 0.25s ease-in-out;
+        white-space: nowrap;
+    }
+    .header-style nav a:hover {
+        color: var(--primary-color);
+        background-color: rgba(0, 113, 227, 0.1);
+    }
+    .header-style nav a.cta-btn-header {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 0.7rem 1.4rem; /* Adjusted CTA padding */
+        border-radius: 28px;
+        font-weight: 600;
+        font-size: 1rem;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+        margin-left: 1rem; /* Space from adjacent toggles */
+    }
+    .header-style nav a.cta-btn-header:hover {
+        background-color: #0066cc;
+        transform: translateY(-2px); /* Subtle lift */
+        box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+    }
+
+    /* Language and Theme Select/Toggle styling */
+    .language-select { /* Unified styling for language dropdown */
+        background-color: var(--card-bg-dark);
+        color: var(--text-color-light);
+        border: 1px solid var(--border-color-dark);
+        border-radius: 9999px; /* Fully rounded */
+        padding: 0.4rem 1rem; /* Adequate padding */
+        font-size: 0.85rem;
+        cursor: pointer;
+        appearance: none; /* Remove default dropdown arrow */
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='currentColor'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd' /%3E%3C/svg%3E"); /* Custom arrow */
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 1rem;
+        margin-left: 1rem; /* Space from nav links */
+    }
+    .language-select:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.4);
+    }
+    body.theme-light .language-select {
+        background-color: var(--light-card-bg-dark);
+        color: var(--light-text-color-dark);
+        border-color: var(--light-border-color-dark);
+    }
+    body.theme-hyper .language-select {
+        background-color: var(--hyper-card-bg-dark);
+        color: var(--hyper-text-color-light);
+        border-color: var(--hyper-border-color-dark);
+        box-shadow: 0 0 0 2px rgba(255, 0, 255, 0.4);
+    }
+
+    .theme-toggle-btn { /* Unified styling for theme toggle button */
+        background-color: var(--card-bg-dark);
+        color: var(--text-color-light);
+        padding: 0.5rem;
+        border-radius: 9999px;
+        border: 1px solid var(--border-color-dark);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+        margin-left: 0.5rem; /* Space from language select */
+    }
+    .theme-toggle-btn:hover {
+        background-color: rgba(255,255,255,0.1);
+        color: var(--primary-color);
+        box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+    }
+    body.theme-light .theme-toggle-btn {
+        background-color: var(--light-card-bg-dark);
+        color: var(--light-text-color-dark);
+        border-color: var(--light-border-color-dark);
+    }
+    body.theme-light .theme-toggle-btn:hover {
+        background-color: rgba(0,0,0,0.05);
+        color: var(--light-primary-color);
+    }
+    body.theme-hyper .theme-toggle-btn {
+        background-color: var(--hyper-card-bg-dark);
+        color: var(--hyper-text-color-light);
+        border-color: var(--hyper-border-color-dark);
+        box-shadow: 0 1px 5px rgba(255,0,255,0.3);
+    }
+    body.theme-hyper .theme-toggle-btn:hover {
+        background-color: rgba(255,0,255,0.1);
+        color: var(--hyper-primary-color);
+        box-shadow: 0 1px 8px rgba(255,0,255,0.6);
+    }
+
+    /* Hamburger menu specific visibility on mobile */
+    .hamburger-icon {
+        display: none; /* Hidden by default, shown by media query */
+        flex-shrink: 0;
+        margin-left: auto; /* Push to the right edge */
+        padding: 0.5rem; /* Make it easily tappable */
+        border-radius: 9999px;
+        background-color: var(--card-bg-dark);
+        border: 1px solid var(--border-color-dark);
+        cursor: pointer;
+        line-height: 1;
+        color: var(--text-color-light); /* Icon color */
+    }
+    body.theme-light .hamburger-icon {
+        background-color: var(--light-card-bg-dark);
+        border-color: var(--light-border-color-dark);
+        color: var(--light-text-color-dark);
+    }
+    body.theme-hyper .hamburger-icon {
+        background-color: var(--hyper-card-bg-dark);
+        border-color: var(--hyper-border-color-dark);
+        color: var(--hyper-text-color-light);
+    }
+
+
+    /* Mobile Menu Overlay - for hidden nav items */
+    .mobile-menu-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(26, 26, 28, 0.98);
+        backdrop-filter: blur(20px);
+        z-index: 99;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        transform: translateX(100%); /* Start off-screen to the right */
+        transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    }
+
+    .mobile-menu-overlay.open {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(0); /* Slide in */
+    }
+
+    .mobile-menu-overlay .close-icon {
+        position: absolute;
+        top: 1.5rem; /* Adjust close icon position */
+        right: 1.5rem;
+        cursor: pointer;
+        z-index: 100;
+        font-size: 2rem; /* Larger close icon */
+    }
+    .mobile-menu-overlay .close-icon svg {
+        width: 38px; /* Larger icon size */
+        height: 38px;
+        color: var(--text-color-light);
+    }
+
+    .mobile-menu-overlay nav {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem; /* Spacing between links */
+        text-align: center;
+    }
+    .mobile-menu-overlay nav a {
+        color: var(--text-color-light);
+        font-size: 1.8rem; /* Large links for easy tapping */
+        font-weight: 700;
+        padding: 0.75rem 0;
+        width: fit-content;
+        margin: 0 auto; /* Center links */
+    }
+    .mobile-menu-overlay nav a.cta-btn-header {
+        margin-top: 1.5rem; /* Space above Sign Up button */
+        width: auto;
+    }
+
+
+    /* Main Content Section Styling */
+    section {
+        padding: 4rem 3rem; /* Adjusted padding to be flexible */
+        background-color: var(--card-bg-dark); /* Dark card background */
+        border-bottom: 1px solid var(--border-color-dark); /* Subtle separator */
+        text-align: center;
+        max-width: 1400px; /* Even wider content area */
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 12px; /* Consistent rounding */
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3); /* Consistent shadow */
+        margin-bottom: 2.5rem; /* More space between sections */
+        box-sizing: border-box;
+    }
+    section:first-of-type { /* Adjust margin for first section after hero */
+        margin-top: -4rem; /* Adjusted to overlap with header */
+        position: relative;
+        z-index: 20;
+    }
+    section:last-of-type {
+        border-bottom: none;
+    }
+    section h2 {
+        color: var(--primary-color);
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        margin-bottom: 2.5rem; /* More space below heading */
+        font-size: 2.5rem; /* Larger heading */
+        line-height: 1.2;
+    }
+    section p {
+        color: #a0a0a5;
+        font-size: 1.05rem; /* Larger body text */
+        line-height: 1.7; /* More comfortable line height */
+        max-width: 1000px; /* Constrain width for readability */
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .content-block {
+        text-align: left; /* Default text alignment for content blocks */
+        max-width: 1000px; /* Wider content blocks */
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 2.5rem; /* More space between content blocks */
+    }
+    .content-block h3 {
+        font-size: 1.8rem; /* Larger sub-heading */
+        font-weight: 700;
+        color: var(--text-color-light);
+        margin-bottom: 1rem; /* More space */
+        border-bottom: 3px solid var(--primary-color); /* Thicker Apple blue accent */
+        padding-bottom: 0.5rem; /* More padding */
+    }
+    .content-block p {
+        font-size: 1rem; /* Slightly larger paragraph text in blocks */
+        color: #a0a0a5;
+        line-height: 1.7; /* More comfortable line height */
+        margin-bottom: 1rem; /* More space */
+        max-width: none; /* Override parent p max-width */
+    }
+    .content-block ul {
+        list-style-type: disc;
+        margin-left: 1.5rem; /* More indent */
+        font-size: 1rem; /* Slightly larger list items */
+        color: #a0a0a5;
+        line-height: 1.7; /* More comfortable line height */
+        margin-top: 1rem; /* More space */
+    }
+    .content-block ul li {
+        margin-bottom: 0.5rem; /* More space between list items */
+    }
+    .content-block strong {
+        font-weight: 700;
+        color: var(--text-color-light);
+    }
+    .content-block .accent-blue {
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+    .content-block code {
+        background-color: #3a3a3e;
+        padding: 0.35em 0.7em; /* Larger padding for code blocks */
+        border-radius: 8px; /* Softer rounding */
+        font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+        color: var(--text-color-light);
+        font-size: 1rem; /* Larger code font */
+    }
+
+
+    /* Image Styling for content */
+    .content-image {
+        width: 100%;
+        height: auto;
+        border-radius: 12px; /* More rounded corners */
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2); /* Stronger shadow */
+        margin-top: 2rem; /* More space */
+        margin-bottom: 2rem; /* More space */
+    }
+
+    /* Achievement Cards - Adapted from Fruitful for content sections */
+    .achievement-card {
+        background-color: #1a1a1c; /* Dark background */
+        border-radius: 12px; /* More rounded corners */
+        padding: 2rem; /* More padding */
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2); /* Stronger shadow */
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        border: 1px solid var(--border-color-dark);
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .achievement-card:hover {
+        transform: translateY(-5px); /* More pronounced lift */
+        box-shadow: 0 8px 25px rgba(0,0,0,0.3); /* Stronger shadow on hover */
+    }
+    .achievement-card .icon { /* Icon */
+        font-size: 3rem; /* Larger icons */
+        margin-bottom: 1.5rem; /* More space */
+        color: var(--primary-color); /* Apple blue for icons */
+    }
+    .achievement-card h3 {
+        font-size: 1.4rem; /* Larger feature titles */
+        font-weight: 700; /* Bolder */
+        color: var(--text-color-light);
+        margin-bottom: 0.75rem; /* More space */
+        text-align: left;
+    }
+    .achievement-card p {
+        font-size: 0.95rem; /* Larger feature description text */
+        color: #a0a0a5;
+        line-height: 1.7;
+        max-width: none;
+        margin-left: 0;
+        margin-right: 0;
+        text-align: left;
+    }
+
+    /* Metrics Grid */
+    .metrics-grid {
+        background-color: #1a1a1c;
+        border: 1px solid var(--border-color-dark);
+        border-radius: 12px; /* More rounded corners */
+        padding: 2.5rem; /* Even more padding */
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2); /* Stronger shadow */
+        max-width: 1100px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .metrics-grid p {
+        font-size: 1.2rem; /* Larger text */
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        color: #a0a0a5;
+    }
+    .metrics-grid .value {
+        font-size: 3.5rem; /* Even larger values */
+        font-weight: 800;
+        color: var(--primary-color); /* Apple blue */
+        letter-spacing: -0.05em;
+        line-height: 1;
+    }
+    .metrics-grid .text-green-600 { color: var(--status-active); }
+    .metrics-grid .text-blue-700 { color: var(--primary-color); }
+    .metrics-grid .text-yellow-600 { color: var(--status-pending); }
+
+    /* Conclusion Section */
+    .conclusion-section {
+        background: linear-gradient(to bottom right, #1a1a1c, #2a2a2e);
+        padding: 6rem 3rem; /* More padding */
+        text-align: center;
+        color: var(--text-color-light);
+        border-radius: 12px; /* Rounded corners */
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3); /* Subtle shadow */
+        box-sizing: border-box;
+    }
+    .conclusion-section h2 {
+        font-size: 3.5rem; /* Larger heading */
+        font-weight: 800;
+        color: var(--text-color-light);
+        margin-bottom: 2rem;
+        line-height: 1.1;
+    }
+    .conclusion-section p {
+        font-size: 1.25rem; /* Larger body text */
+        color: #a0a0a5;
+        max-width: 1000px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.7;
+        margin-bottom: 2.5rem;
+    }
+    .conclusion-section .final-statement {
+        font-size: 4rem; /* Even larger final statement */
+        font-weight: 900;
+        color: var(--primary-color); /* Apple blue */
+        letter-spacing: -0.05em;
+        line-height: 1.05;
+        margin-top: 3rem;
+        animation: pulse-blue 2.5s infinite cubic-bezier(0.4, 0, 0.6, 1); /* Enhanced subtle animation */
+    }
+
+    /* Custom Pulse Animation */
+    @keyframes pulse-blue {
+        0%, 100% {
+            opacity: 1;
+            transform: scale(1);
+            text-shadow: 0 0 0px rgba(0, 113, 227, 0);
+        }
+        50% {
+            opacity: 0.9;
+            transform: scale(1.02);
+            text-shadow: 0 0 25px rgba(0, 113, 227, 0.6); /* Stronger glow */
+        }
+    }
+
+    /* Mining Brands Ecosystem Section */
+    .mining-brands-ecosystem-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Adjusted for more columns */
+        gap: 1rem;
+    }
+    .mining-brands-ecosystem-list a { /* Changed from div to a */
+        background-color: #1a1a1c; /* Dark background */
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+        border: 1px solid var(--border-color-dark);
+        text-align: center;
+        color: #a0a0a5;
+        font-weight: 500;
+        font-size: 0.9rem;
+        text-decoration: none; /* Remove underline */
+    }
+    .mining-brands-ecosystem-list a:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        background-color: #2a2a2e; /* Slightly lighter on hover */
+        color: var(--primary-color); /* Blue on hover */
+    }
+
+    /* CTA Section (at very bottom) */
+    .cta-footer-section {
+        background: linear-gradient(to bottom right, #1a1a1c, #2a2a2e);
+        padding: 4rem 3rem;
+        text-align: center;
+        color: var(--text-color-light);
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        margin-top: 2.5rem;
+    }
+    .cta-footer-section h2 {
+        font-size: 2.2rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+    }
+    .cta-footer-section p {
+        font-size: 1.15rem;
+        max-width: 700px;
+        margin: 0 auto 2rem auto;
+    }
+    .cta-footer-section button {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 0.8rem 1.8rem;
+        border-radius: 28px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.2s ease-in-out;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    }
+    .cta-footer-section button:hover {
+        background-color: #0066cc;
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+    }
+
+
+    /* Footer - Minimalist (Copied directly from vs.01 landing page) */
+    .footer-style {
+        background-color: var(--bg-color-dark);
+        color: #6e6e73;
+        padding: 2rem;
+        font-size: 0.85rem;
+        border-top: 1px solid var(--border-color-dark);
+        text-align: center;
+        margin-top: auto; /* Push footer to bottom */
+    }
+    .footer-style a {
+        color: #6e6e73;
+        text-decoration: none;
+        transition: color 0.25s ease;
+    }
+    .footer-style a:hover {
+        color: var(--primary-color);
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    }
+
+    .modal-overlay.open {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .modal-content {
+        background-color: var(--card-bg-dark);
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 113, 227, 0.3);
+        width: 90%;
+        max-width: 600px;
+        text-align: left;
+        position: relative;
+        transform: translateY(-20px);
+        opacity: 0;
+        transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    }
+
+    .modal-overlay.open .modal-content {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    .modal-close-button {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: var(--text-color-light);
+        cursor: pointer;
+        transition: color 0.2s ease;
+    }
+    .modal-close-button:hover {
+        color: var(--primary-color);
+    }
+
+    .modal-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+
+    .modal-body {
+        font-size: 1rem;
+        color: #a0a0a5;
+        line-height: 1.6;
+    }
+
+    .loading-indicator {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+
+    /* Chatbot specific styles */
+    #chatbot-button, #public-chat-button {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 9999px;
+        width: 60px;
+        height: 60px;
+        font-size: 1.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 10px rgba(0, 113, 227, 0.4);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 900; /* Below modal overlay, above page content */
+    }
+    #chatbot-button:hover, #public-chat-button:hover {
+        background-color: #0066cc;
+        transform: translateY(-3px);
+        box-shadow: 0 6px 15px rgba(0, 113, 227, 0.5);
+    }
+
+    #public-chat-button {
+        right: 90px; /* Position next to chatbot button */
+        background-color: var(--secondary-color); /* Different color for public chat */
+        box-shadow: 0 4px 10px rgba(184, 134, 11, 0.4);
+    }
+    #public-chat-button:hover {
+        background-color: #a37209;
+        box-shadow: 0 6px 15px rgba(184, 134, 11, 0.5);
+    }
+
+
+    #chatbot-modal, #public-chat-modal {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        width: 350px; /* Fixed width for chat */
+        height: 450px; /* Fixed height */
+        background-color: var(--card-bg-dark);
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+        display: flex;
+        flex-direction: column;
+        z-index: 950; /* Above chatbot button */
+        transform: scale(0.8);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease-out;
+        transform-origin: bottom right; /* Scale from bottom right */
+    }
+    #chatbot-modal.open, #public-chat-modal.open {
+        transform: scale(1);
+        opacity: 1;
+        visibility: visible;
+    }
+
+    #public-chat-modal {
+        right: 90px; /* Position next to chatbot button when open */
+    }
+
+    #chatbot-header, #public-chat-header {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 0.8rem 1rem;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+    #public-chat-header {
+        background-color: var(--secondary-color);
+    }
+
+    #chatbot-header .close-btn, #public-chat-header .close-btn {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+
+    #chatbot-messages, #public-chat-messages {
+        flex-grow: 1;
+        padding: 1rem;
+        overflow-y: auto;
+        border-bottom: 1px solid var(--border-color-dark);
+    }
+
+    .chat-message {
+        margin-bottom: 0.75rem;
+        display: flex;
+    }
+    .chat-message.user {
+        justify-content: flex-end;
+    }
+    .chat-message.ai { /* Applies to AI chatbot and general AI messages */
+        justify-content: flex-start;
+    }
+    .chat-message.other-user { /* For other users in public chat */
+        justify-content: flex-start;
+    }
+
+    .chat-bubble {
+        max-width: 80%;
+        padding: 0.6rem 0.9rem;
+        border-radius: 15px;
+        line-height: 1.4;
+        font-size: 0.9rem;
+        word-wrap: break-word; /* Ensure long words wrap */
+    }
+    .chat-bubble.user {
+        background-color: var(--primary-color);
+        color: white;
+        border-bottom-right-radius: 4px;
+    }
+    .chat-bubble.ai {
+        background-color: var(--border-color-dark); /* Darker gray for AI */
+        color: var(--text-color-light);
+        border-bottom-left-radius: 4px;
+    }
+    .chat-bubble.other-user {
+        background-color: #3a3a3e; /* Slightly different gray for other users */
+        color: var(--text-color-light);
+        border-bottom-left-radius: 4px;
+    }
+
+    .chat-message-info { /* For displaying user ID in public chat */
+        font-size: 0.75rem;
+        color: #a0a0a5;
+        margin-bottom: 0.2rem;
+        word-break: break-all; /* Ensure long IDs break */
+    }
+
+
+    #chatbot-input-container, #public-chat-input-container {
+        display: flex;
+        padding: 0.8rem;
+        gap: 0.5rem;
+    }
+    #chat-input, #public-chat-input {
+        flex-grow: 1;
+        background-color: var(--bg-color-dark);
+        border: 1px solid var(--border-color-dark);
+        border-radius: 20px;
+        padding: 0.6rem 1rem;
+        color: var(--text-color-light);
+        font-size: 0.9rem;
+    }
+    #chat-input::placeholder, #public-chat-input::placeholder {
+        color: #6e6e73;
+    }
+    #chat-input:focus, #public-chat-input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.2);
+    }
+    #send-chat-btn, #send-public-chat-btn {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 9999px;
+        width: 38px;
+        height: 38px;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+    #send-chat-btn:hover, #send-public-chat-btn:hover {
+        background-color: #0066cc;
+    }
+    #send-public-chat-btn {
+        background-color: var(--secondary-color);
+    }
+    #send-public-chat-btn:hover {
+        background-color: #a37209;
+    }
+
+    /* Theme-specific chatbot styling */
+    body.theme-light #chatbot-button {
+        background-color: var(--light-primary-color);
+        box-shadow: 0 4px 10px rgba(0, 113, 227, 0.2);
+    }
+    body.theme-light #public-chat-button {
+        background-color: var(--light-secondary-color);
+        box-shadow: 0 4px 10px rgba(184, 134, 11, 0.2);
+    }
+
+    body.theme-light #chatbot-modal, body.theme-light #public-chat-modal {
+        background-color: var(--light-card-bg-dark);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    }
+    body.theme-light #chatbot-header {
+        background-color: var(--light-primary-color);
+    }
+    body.theme-light #public-chat-header {
+        background-color: var(--light-secondary-color);
+    }
+
+    body.theme-light .chat-bubble.user {
+        background-color: var(--light-primary-color);
+    }
+    body.theme-light .chat-bubble.ai {
+        background-color: var(--light-border-color-dark);
+        color: var(--light-text-color-dark);
+    }
+    body.theme-light .chat-bubble.other-user {
+        background-color: var(--light-border-color-dark);
+        color: var(--light-text-color-dark);
+    }
+    body.theme-light .chat-message-info {
+        color: #6e6e73;
+    }
+
+    body.theme-light #chat-input, body.theme-light #public-chat-input {
+        background-color: var(--light-bg-color-dark);
+        border-color: var(--light-border-color-dark);
+        color: var(--light-text-color-dark);
+    }
+    body.theme-light #send-chat-btn {
+        background-color: var(--light-primary-color);
+    }
+    body.theme-light #send-public-chat-btn {
+        background-color: var(--light-secondary-color);
+    }
+
+    body.theme-hyper #chatbot-button {
+        background-color: var(--hyper-primary-color);
+        box-shadow: 0 4px 15px rgba(255,0,255,0.6);
+    }
+    body.theme-hyper #public-chat-button {
+        background-color: var(--hyper-secondary-color);
+        box-shadow: 0 4px 15px rgba(0,255,255,0.6);
+    }
+
+    body.theme-hyper #chatbot-modal, body.theme-hyper #public-chat-modal {
+        background-color: var(--hyper-card-bg-dark);
+        box-shadow: 0 5px 25px rgba(255,0,255,0.7);
+    }
+    body.theme-hyper #chatbot-header {
+        background-color: var(--hyper-primary-color);
+        color: var(--hyper-text-color-dark);
+    }
+    body.theme-hyper #public-chat-header {
+        background-color: var(--hyper-secondary-color);
+        color: var(--hyper-text-color-dark);
+    }
+
+    body.theme-hyper #chatbot-header .close-btn, body.theme-hyper #public-chat-header .close-btn {
+        color: var(--hyper-text-color-dark);
+    }
+    body.theme-hyper .chat-bubble.user {
+        background-color: var(--hyper-primary-color);
+        color: var(--hyper-text-color-dark);
+    }
+    body.theme-hyper .chat-bubble.ai {
+        background-color: var(--hyper-border-color-dark);
+        color: var(--hyper-text-color-light);
+    }
+    body.theme-hyper .chat-bubble.other-user {
+        background-color: var(--hyper-border-color-dark);
+        color: var(--hyper-text-color-light);
+    }
+    body.theme-hyper .chat-message-info {
+        color: var(--hyper-text-color-light);
+    }
+
+    body.theme-hyper #chat-input, body.theme-hyper #public-chat-input {
+        background-color: var(--hyper-bg-color-dark);
+        border-color: var(--hyper-border-color-dark);
+        color: var(--hyper-text-color-light);
+    }
+    body.theme-hyper #chat-input:focus, body.theme-hyper #public-chat-input:focus {
+         box-shadow: 0 0 0 2px rgba(255, 0, 255, 0.4); /* Hyper focus shadow */
+    }
+    body.theme-hyper #send-chat-btn {
+        background-color: var(--hyper-primary-color);
+        color: var(--hyper-text-color-dark);
+    }
+    body.theme-hyper #send-public-chat-btn {
+        background-color: var(--hyper-secondary-color);
+        color: var(--hyper-text-color-dark);
+    }
+
+
+    /* Responsive adjustments */
+    @media (max-width: 1024px) { /* Adjust for medium screens (tablets) */
+        .hero-page-section {
+            padding: 5rem 2rem;
+        }
+        .hero-page-section h1 {
+            font-size: 3.8rem;
+        }
+        .hero-page-section p {
+            font-size: 1.5rem;
+        }
+        section {
+            padding: 3rem 2rem;
+        }
+        section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+        }
+        section p {
+            font-size: 1rem;
+        }
+        .content-block h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        .content-block p, .content-block ul li {
+            font-size: 0.9rem;
+        }
+        .achievement-card {
+            padding: 1.5rem;
+        }
+        .achievement-card .icon {
+            font-size: 2.5rem;
+        }
+        .achievement-card h3 {
+            font-size: 1.25rem;
+        }
+        .achievement-card p {
+            font-size: 0.85rem;
+        }
+        .metrics-grid {
+            padding: 1.5rem;
+        }
+        .metrics-grid p {
+            font-size: 1.1rem;
+        }
+        .metrics-grid .value {
+            font-size: 3rem;
+        }
+        .conclusion-section h2 {
+            font-size: 3rem;
+        }
+        .conclusion-section p {
+            font-size: 1.1rem;
+        }
+        .conclusion-section .final-statement {
+            font-size: 3.5rem;
+        }
+        .cta-footer-section h2 { font-size: 2rem; }
+        .cta-footer-section p { font-size: 1rem; }
+        .cta-footer-section button { padding: 0.7rem 1.4rem; font-size: 1rem; }
+
+        /* Chatbot sizing on tablets */
+        #chatbot-modal {
+            width: 320px;
+            height: 400px;
+            bottom: 1.5rem;
+            right: 1.5rem;
+        }
+        #public-chat-modal {
+            bottom: 1.5rem;
+            right: 90px;
+        }
+    }
+
+    @media (max-width: 768px) { /* Adjust for small screens (mobile) */
+        .header-style {
+            flex-direction: row; /* Keep items horizontal */
+            flex-wrap: wrap; /* Allow wrapping of header content */
+            align-items: center;
+            padding: 0.75rem 1rem; /* Smaller padding for very compact header */
+            justify-content: space-between; /* Space out items */
+        }
+        .header-style .logo-text {
+            font-size: 1.3rem; /* Smaller logo on mobile */
+            margin-right: 0.5rem;
+            order: 1; /* First item */
+        }
+        .header-style nav.desktop-nav { /* Hide desktop nav entirely */
+            display: none;
+        }
+
+        /* Mobile specific header elements arrangement */
+        .header-mobile-toggles { /* This is the new flex container for mobile toggles */
+            display: flex; /* Ensure it's a flex container */
+            align-items: center;
+            gap: 0.4rem; /* Small gap between toggles */
+            margin-left: auto; /* Push to the right */
+            order: 2; /* Second item, after logo */
+            flex-wrap: nowrap; /* Prevent these toggles from wrapping */
+        }
+        .language-select { /* Mobile language select sizing */
+            padding: 0.2rem 0.6rem;
+            font-size: 0.75rem;
+            margin-left: 0; /* Remove extra margin */
+        }
+        .theme-toggle-btn { /* Mobile theme toggle sizing */
+            padding: 0.35rem;
+            font-size: 1rem;
+            margin-left: 0.4rem; /* Space from language select */
+        }
+        .hamburger-icon {
+            display: block; /* Always visible */
+            font-size: 1.5rem; /* Normal size for clickability */
+            margin-left: 0.5rem; /* Space from other elements */
+            padding: 0.25rem; /* Add some padding for easier tap */
+            border-radius: 9999px;
+            background-color: var(--card-bg-dark); /* Match toggle backgrounds */
+            border: 1px solid var(--border-color-dark);
+            cursor: pointer;
+            line-height: 1; /* For vertical centering */
+        }
+        /* Mobile hamburger styling in different themes */
+        body.theme-light .hamburger-icon {
+            background-color: var(--light-card-bg-dark);
+            border-color: var(--light-border-color-dark);
+            color: var(--light-text-color-dark);
+        }
+        body.theme-hyper .hamburger-icon {
+            background-color: var(--hyper-card-bg-dark);
+            border-color: var(--hyper-border-color-dark);
+            color: var(--hyper-text-color-light);
+        }
+
+
+        /* Content sections below header */
+        .hero-page-section {
+            padding: 4rem 1rem;
+        }
+        .hero-page-section h1 {
+            font-size: 2.5rem;
+        }
+        .hero-page-section p {
+            font-size: 1.1rem;
+        }
+        section {
+            padding: 2.5rem 1rem;
+            margin-bottom: 1.5rem;
+        }
+        section:first-of-type {
+            margin-top: -3rem; /* Adjusted for mobile to overlap with header */
+        }
+        section h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        section p {
+            font-size: 0.9rem;
+        }
+        .content-block h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .content-block p, .content-block ul li {
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+        .achievement-card {
+            padding: 1rem;
+        }
+        .achievement-card .icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        .achievement-card h3 {
+            font-size: 1.1rem;
+        }
+        .achievement-card p {
+            font-size: 0.8rem;
+        }
+        .metrics-grid {
+            padding: 1rem;
+            gap: 0.5rem;
+        }
+        .metrics-grid p {
+            font-size: 0.9rem;
+        }
+        .metrics-grid .value {
+            font-size: 2rem;
+        }
+        .conclusion-section {
+            padding: 3rem 1rem;
+        }
+        .conclusion-section h2 {
+            font-size: 2.5rem;
+        }
+        .conclusion-section p {
+            font-size: 1rem;
+        }
+        .conclusion-section .final-statement {
+            font-size: 3rem;
+        }
+        footer {
+            padding: 1.5rem;
+            font-size: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Chatbot responsive sizing */
+        #chatbot-modal, #public-chat-modal {
+            width: 90%;
+            height: 80%;
+            bottom: 1rem;
+            right: 1rem;
+            left: 5%; /* Center it roughly */
+            top: unset;
+        }
+        #chatbot-button {
+            width: 50px;
+            height: 50px;
+            font-size: 1.5rem;
+            bottom: 1rem;
+            right: 1rem;
+        }
+        #public-chat-button {
+            width: 50px;
+            height: 50px;
+            font-size: 1.5rem;
+            bottom: 1rem;
+            right: 70px; /* Adjust position for two buttons */
+        }
+    }
+  </style>
+</head>
+<body class="antialiased">
+
+    <header class="header-style">
+        <a href="/sectors/mining/index.html" class="logo-text" data-i18n="logo_main">Fruitful™ | <span data-i18n="logo_sub">MineNest™</span></a>
+        
+        <!-- Desktop Navigation & Toggles -->
+        <nav class="desktop-nav hidden md:flex">
+            <a href="/sectors/mining/thabo-md.html" class="transition-colors duration-200" data-i18n="nav_thabo">Thabo (CEO)</a>
+            <a href="/sectors/mining/index.html#core-pillars" class="transition-colors duration-200" data-i18n="nav_pillars">Pillars</a>
+            <a href="/sectors/mining/index.html#impact-value" class="transition-colors duration-200" data-i18n="nav_impact">Impact</a>
+            <a href="/sectors/mining/index.html#our-approach" class="transition-colors duration-200" data-i18n="nav_approach">Approach</a>
+            <a href="/sectors/mining/index.html#strategic-engagements" class="transition-colors duration-200" data-i18n="nav_engage">Engage</a>
+            <a href="/sectors/mining/index.html#timeline" class="transition-colors duration-200" data-i18n="nav_timeline">Timeline</a>
+            <a href="/sectors/mining/index.html#tangible-impact" class="transition-colors duration-200" data-i18n="nav_metrics">Metrics</a>
+            <a href="/sectors/mining/index.html#pathways-partnership" class="transition-colors duration-200" data-i18n="nav_partnership">Partnership</a>
+            <a href="/sectors/mining/index.html#economic-impact" class="transition-colors duration-200" data-i18n="nav_economics">Economics</a>
+            <a href="/sectors/mining/index.html#mining-brands-ecosystem" class="transition-colors duration-200" data-i18n="nav_brands">Mining Brands</a>
+            <a href="https://faa.zone/careers/hiring-homepage.html" class="transition-colors duration-200" target="_blank" data-i18n="nav_careers">Careers</a>
+            <a href="https://faa.zone/signup.html" class="px-4 py-2 rounded-full font-semibold cta-btn-header" target="_blank" data-i18n="nav_signup">Sign Up</a>
+            
+            <!-- Language Selector (Desktop) -->
+            <select id="language-select-desktop" class="language-select">
+                <option value="en" data-i18n="lang_en_full">English</option>
+                <option value="af" data-i18n="lang_af_full">Afrikaans</option>
+                <option value="st" data-i18n="lang_st_full">Sotho</option>
+                <option value="zu" data-i18n="lang_zu_full">Zulu</option>
+                <option value="tn" data-i18n="lang_tn_full">Tswana</option>
+                <option value="zh" data-i18n="lang_zh_full">Chinese</option>
+                <option value="ar" data-i18n="lang_ar_full">Arabic</option>
+                <option value="nso" data-i18n="lang_nso_full">Sepedi</option>
+                <option value="xh" data-i18n="lang_xh_full">Xhosa</option>
+                <option value="es" data-i18n="lang_es_full">Spanish</option>
+                <option value="fr" data-i18n="lang_fr_full">French</option>
+                <option value="it" data-i18n="lang_it_full">Italian</option>
+                <option value="fat" data-i18n="lang_fat_full">Fanagalo</option>
+                <option value="sw" data-i18n="lang_sw_full">Swahili</option>
+            </select>
+
+            <!-- Day/Night/Hyper Toggle (Desktop) -->
+            <button id="themeToggleDesktop" class="theme-toggle-btn">
+                <i class="fas fa-sun"></i> </button>
+        </nav>
+
+        <!-- Mobile Toggles & Hamburger -->
+        <div class="header-mobile-toggles md:hidden">
+            <!-- Language Selector (Mobile) -->
+            <select id="language-select-mobile" class="language-select">
+                <option value="en" data-i18n="lang_en_full">English</option>
+                <option value="af" data-i18n="lang_af_full">Afrikaans</option>
+                <option value="st" data-i18n="lang_st_full">Sotho</option>
+                <option value="zu" data-i18n="lang_zu_full">Zulu</option>
+                <option value="tn" data-i18n="lang_tn_full">Tswana</option>
+                <option value="zh" data-i18n="lang_zh_full">Chinese</option>
+                <option value="ar" data-i18n="lang_ar_full">Arabic</option>
+                <option value="nso" data-i18n="lang_nso_full">Sepedi</option>
+                <option value="xh" data-i18n="lang_xh_full">Xhosa</option>
+                <option value="es" data-i18n="lang_es_full">Spanish</option>
+                <option value="fr" data-i18n="lang_fr_full">French</option>
+                <option value="it" data-i18n="lang_it_full">Italian</option>
+                <option value="fat" data-i18n="lang_fat_full">Fanagalo</option>
+                <option value="sw" data-i18n="lang_sw_full">Swahili</option>
+            </select>
+
+            <!-- Day/Night/Hyper Toggle (Mobile) -->
+            <button id="themeToggleMobile" class="theme-toggle-btn">
+                <i class="fas fa-sun"></i> </button>
+            
+            <!-- Hamburger Icon for Mobile -->
+            <div id="hamburger-icon" class="hamburger-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu Overlay - ONLY contains navigation links now -->
+    <div id="mobile-menu-overlay" class="mobile-menu-overlay">
+        <div id="close-icon" class="close-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </div>
+        <nav class="flex flex-col items-center">
+            <a href="/sectors/mining/thabo-md.html" class="transition-colors duration-200" data-i18n="nav_thabo">Thabo (CEO)</a>
+            <a href="/sectors/mining/index.html#core-pillars" class="transition-colors duration-200" data-i18n="nav_pillars">Pillars</a>
+            <a href="/sectors/mining/index.html#impact-value" class="transition-colors duration-200" data-i18n="nav_impact">Impact</a>
+            <a href="/sectors/mining/index.html#our-approach" class="transition-colors duration-200" data-i18n="nav_approach">Approach</a>
+            <a href="/sectors/mining/index.html#strategic-engagements" class="transition-colors duration-200" data-i18n="nav_engage">Engage</a>
+            <a href="/sectors/mining/index.html#timeline" class="transition-colors duration-200" data-i18n="nav_timeline">Timeline</a>
+            <a href="/sectors/mining/index.html#tangible-impact" class="transition-colors duration-200" data-i18n="nav_metrics">Metrics</a>
+            <a href="/sectors/mining/index.html#pathways-partnership" class="transition-colors duration-200" data-i18n="nav_partnership">Partnership</a>
+            <a href="/sectors/mining/index.html#economic-impact" class="transition-colors duration-200" data-i18n="nav_economics">Economics</a>
+            <a href="/sectors/mining/index.html#mining-brands-ecosystem" class="transition-colors duration-200" data-i18n="nav_brands">Mining Brands</a>
+            <a href="https://faa.zone/careers/hiring-homepage.html" class="transition-colors duration-200" target="_blank" data-i18n="nav_careers">Careers</a>
+            <a href="https://faa.zone/signup.html" class="px-4 py-2 rounded-full font-semibold cta-btn-header" target="_blank" data-i18n="nav_signup">Sign Up</a>
+        </nav>
+    </div>
+
+    <!-- Hero Section for Fruitful Mining (Pty) Ltd -->
+    <section class="hero-page-section">
+        <div class="max-w-5xl mx-auto">
+            <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight tracking-tight" data-i18n="hero_title">
+                <span class="accent-blue">💎</span> Fruitful Mining (Pty) Ltd <span class="accent-blue">🌍</span>
+            </h1>
+            <p class="text-xl md:text-2xl lg:text-3xl font-medium italic mt-4" data-i18n="hero_subtitle">
+                Pioniering the Future of Sustainable Resource Extraction and Value Creation
+            </p>
+        </div>
+    </section>
+
+    <!-- Section: Thabo Ntlatleng - Managing Director -->
+    <section id="thabo-md">
+        <div class="content-block flex flex-col items-center">
+            <img src="https://placehold.co/200x200/0071e3/FFFFFF?text=Thabo" alt="Thabo Ntlatleng" class="rounded-full w-48 h-48 object-cover shadow-xl mb-8 border-4 border-blue-200">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-center mb-6 leading-tight" data-i18n="thabo_section_title">
+                Thabo Ntlatleng: Driving Innovation as Managing Director
+            </h2>
+            <p class="text-center text-lg md:text-xl text-gray-400 max-w-3xl mb-8" data-i18n="thabo_desc_p1">
+                Under the visionary leadership of **Thabo Ntlatleng**, Fruitful Mining (Pty) Ltd is setting new benchmarks for operational excellence and strategic growth in the global mining sector. Thabo's profound expertise and commitment to pioneering solutions are at the heart of our success, guiding our path towards a more efficient and sustainable future.
+            </p>
+            <p class="text-center text-lg md:text-xl text-gray-400 max-w-3xl" data-i18n="thabo_desc_p2">
+                His leadership exemplifies the core values of innovation, integrity, and impact that define the entire Fruitful™ ecosystem. Thabo is a driving force, transforming industry challenges into opportunities for unprecedented value creation.
+            </p>
+        </div>
+    </section>
+
+    <!-- Section: The Fruitful Mining System: Core Pillars of Excellence -->
+    <section id="core-pillars">
+        <h2 data-i18n="pillars_section_title">The Fruitful™ Mining System: Core Pillars of Excellence</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+            <div class="achievement-card">
+                <div class="icon">📈</div>
+                <h3 data-i18n="pillar_yields_title">Boosting Yields</h3>
+                <p data-i18n="pillar_yields_desc">Improved throughput via real-time optimization of extraction and processing techniques, maximizing resource recovery.</p>
+            </div>
+            <div class="achievement-card">
+                <div class="icon">💰</div>
+                <h3 data-i18n="pillar_costs_title">Reducing Costs</h3>
+                <p data-i18n="pillar_costs_desc">Significant cost savings achieved through automated reporting, predictive maintenance, and streamlined operational processes.</p>
+            </div>
+            <div class="achievement-card">
+                <div class="icon">🌿</div>
+                <h3 data-i18n="pillar_sustainability_title">Promoting Sustainability</h3>
+                <p data-i18n="pillar_sustainability_desc">Advanced tools to monitor environmental metrics, optimize resource utilization, and ensure rigorous regulatory compliance.</p>
+            </div>
+            <div class="achievement-card">
+                <div class="icon">⚙️</div>
+                <h3 data-i18n="pillar_assets_title">Sustaining Mine Assets & Equipment</h3>
+                <p data-i18n="pillar_assets_desc">Comprehensive asset tracking, usage analytics, and proactive servicing for extended equipment life and minimized unplanned downtime.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section: Impact & Value: Driving the Future of Mining Operations -->
+    <section id="impact-value">
+        <h2 data-i18n="impact_section_title">Impact & Value: Driving the Future of Mining Operations</h2>
+        <p class="content-block" data-i18n="impact_intro_p">
+            The Fruitful™ Mining System delivers tangible benefits that redefine operational efficiency and strategic impact. Our solutions empower mining groups to achieve their most ambitious goals:
+        </p>
+        <div class="grid md:grid-cols-2 gap-8 content-block">
+            <div class="achievement-card bg-transparent border-none shadow-none hover:shadow-none hover:transform-none !text-gray-400">
+                <ul class="space-y-4 text-gray-400">
+                    <li class="flex items-start">
+                        <span class="text-blue-500 text-2xl mr-3 leading-none">✓</span>
+                        <span data-i18n="impact_point_1">Monitor and regulate mining activities <strong class="font-semibold text-white">responsibly and effectively</strong>.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-blue-500 text-2xl mr-3 leading-none">✓</span>
+                        <span data-i18n="impact_point_2">Improve <strong class="font-semibold text-white">transparency and real-time insights</strong> in operational performance.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-blue-500 text-2xl mr-3 leading-none">✓</span>
+                        <span data-i18n="impact_point_3">Achieve ambitious <strong class="font-semibold text-white">sustainability targets</strong> and enhance stakeholder confidence.</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="achievement-card bg-transparent border-none shadow-none hover:shadow-none hover:transform-none !text-gray-400">
+                <ul class="space-y-4 text-gray-400">
+                    <li class="flex items-start">
+                        <span class="text-blue-500 text-2xl mr-3 leading-none">✓</span>
+                        <span data-i18n="impact_point_4">Support initiatives aligned with <strong class="font-semibold text-white">ESG</strong> (Environmental, Social, Governance) global standards.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-blue-500 text-2xl mr-3 leading-none">✓</span>
+                        <span data-i18n="impact_point_5">Enable <strong class="font-semibold text-white">cross-departmental efficiencies</strong> across operations, safety, logistics, and maintenance.</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section: Our Approach: Precision, Innovation, and Integrated Growth -->
+    <section id="our-approach">
+        <h2 data-i18n="approach_section_title">Our Approach: Precision, Innovation, and Integrated Growth</h2>
+        <div class="grid md:grid-cols-2 gap-x-12 gap-y-10 content-block">
+            <div class="flex items-start">
+                <div class="bg-blue-900/30 p-4 rounded-full mr-4 flex-shrink-0">
+                    <svg class="w-10 h-10 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.001 12.001 0 002.944 12c.045 4.556 3.821 8.332 8.373 8.761A11.999 11.999 0 0012 21c4.556 0 8.332-3.776 8.761-8.373a11.999 11.999 0 00-3.04-8.618z"></path></svg>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-white mb-2" data-i18n="approach_defect_title">Defect and Variation Reduction</h3>
+                    <p class="text-gray-400" data-i18n="approach_defect_desc">Inspired by Lean and Six Sigma methodologies, we streamline processes to minimize inefficiencies and maximize output consistency.</p>
+                </div>
+            </div>
+            <div class="flex items-start">
+                <div class="bg-blue-900/30 p-4 rounded-full mr-4 flex-shrink-0">
+                    <svg class="w-10 h-10 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-white mb-2" data-i18n="approach_data_title">Data-Driven Decision Making</h3>
+                    <p class="text-gray-400" data-i18n="approach_data_desc">Leveraging sensor-driven insights and AI-backed trend forecasts for precise, proactive operational decisions.</p>
+                </div>
+            </div>
+            <div class="flex items-start">
+                <div class="bg-blue-900/30 p-4 rounded-full mr-4 flex-shrink-0">
+                    <svg class="w-10 h-10 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-white mb-2" data-i18n="approach_dashboards_title">Customizable Dashboards</h3>
+                    <p class="text-gray-400" data-i18n="approach_dashboards_desc">Providing intuitive, visual insights tailored for all levels of management and operational teams.</p>
+                </div>
+            </div>
+            <div class="flex items-start">
+                <div class="bg-blue-900/30 p-4 rounded-full mr-4 flex-shrink-0">
+                    <svg class="w-10 h-10 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-white mb-2" data-i18n="approach_integration_title">Seamless Departmental Integration</h3>
+                    <p class="text-gray-400" data-i18n="approach_integration_desc">Connecting and optimizing processes across drilling, crushing, logistics, safety, maintenance, and compliance.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="strategic-engagements">
+        <h2 data-i18n="engagements_section_title">Strategic Engagements: Demonstrating Real-World Impact</h2>
+        <p class="content-block" data-i18n="engagements_intro_p">
+            To showcase the transformative power of the Fruitful™ Mining System, we strategically engage with partners on focused initiatives, ensuring clear, measurable improvements in specific operational areas.
+        </p>
+
+        <h3 class="text-xl font-bold text-center text-blue-500 mb-8" data-i18n="engagements_focus_areas_title">Engagement Focus Areas</h3>
+        <div class="grid md:grid-cols-2 gap-8 content-block">
+            <div class="achievement-card !bg-gray-800 border-gray-700 shadow-lg hover:shadow-xl hover:transform-none">
+                <h4 class="text-lg font-semibold text-white mb-3 flex items-center" data-i18n="engagement_asset_title">
+                    <span class="bg-blue-900/30 text-blue-500 rounded-full px-3 py-1 mr-3">1</span> Asset & Equipment Management
+                </h4>
+                <ul class="list-disc list-inside text-gray-400 space-y-2 ml-4">
+                    <li data-i18n="engagement_asset_li1">Comprehensive monitoring of uptime, predictive maintenance, and servicing schedules.</li>
+                    <li data-i18n="engagement_asset_li2">Significant reduction in breakdowns and improvement in equipment lifespan.</li>
+                </ul>
+            </div>
+            <div class="achievement-card !bg-gray-800 border-gray-700 shadow-lg hover:shadow-xl hover:transform-none">
+                <h4 class="text-lg font-semibold text-white mb-3 flex items-center" data-i18n="engagement_production_title">
+                    <span class="bg-blue-900/30 text-blue-500 rounded-full px-3 py-1 mr-3">2</span> Production Line Optimization
+                </h4>
+                <ul class="list-disc list-inside text-gray-400 space-y-2 ml-4">
+                    <li data-i18n="engagement_production_li1">Application of real-time analytics to boost throughput and minimize waste.</li>
+                    <li data-i18n="engagement_production_li2">Enhancement of ore recovery rates and reduction of material handling losses.</li>
+                </ul>
+            </div>
+            <div class="achievement-card !bg-gray-800 border-gray-700 shadow-lg hover:shadow-xl hover:transform-none">
+                <h4 class="text-lg font-semibold text-white mb-3 flex items-center" data-i18n="engagement_environmental_title">
+                    <span class="bg-blue-900/30 text-blue-500 rounded-full px-3 py-1 mr-3">3</span> Environmental Stewardship & Reporting
+                </h4>
+                <ul class="list-disc list-inside text-gray-400 space-y-2 ml-4">
+                    <li data-i18n="engagement_environmental_li1">Precise tracking of air, water, and soil quality metrics.</li>
+                    <li data-i18n="engagement_environmental_li2">Automation of ESG reporting tools to meet global sustainability mandates.</li>
+                </ul>
+            </div>
+            <div class="achievement-card !bg-gray-800 border-gray-700 shadow-lg hover:shadow-xl hover:transform-none">
+                <h4 class="text-lg font-semibold text-white mb-3 flex items-center" data-i18n="engagement_safety_title">
+                    <span class="bg-blue-900/30 text-blue-500 rounded-full px-3 py-1 mr-3">4</span> Safety and Incident Intelligence
+                </h4>
+                <ul class="list-disc list-inside text-gray-400 space-y-2 ml-4">
+                    <li data-i18n="engagement_safety_li1">Integration of advanced safety compliance tools and incident trend analysis.</li>
+                    <li data-i18n="engagement_safety_li2">Empowering predictive safety alerts through sophisticated pattern recognition.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="timeline">
+        <h2 data-i18n="timeline_section_title">Strategic Engagement Timeline</h2>
+        <p class="content-block mb-12" data-i18n="timeline_intro_p">
+            A typical engagement unfolds in clear, structured phases, designed for rapid value realization and seamless integration.
+        </p>
+        <div class="relative pl-8 sm:pl-32 max-w-4xl mx-auto">
+            <div class="border-l-4 border-blue-600 absolute h-full left-4 sm:left-1/2 transform -translate-x-1/2 top-0"></div>
+
+            <div class="mb-12 flex flex-col sm:flex-row items-center sm:justify-start relative">
+                <div class="sm:absolute sm:left-0 sm:w-28 sm:text-right pr-4 text-blue-300 font-semibold text-lg mb-2 sm:mb-0" data-i18n="timeline_phase1_label">Phase 1</div>
+                <div class="sm:ml-32 w-full bg-gray-800 rounded-xl shadow-md p-6 relative border border-gray-700">
+                    <div class="absolute -left-6 sm:-left-8 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white rounded-full h-12 w-12 flex items-center justify-center font-bold text-2xl">1</div>
+                    <h3 class="text-xl font-semibold text-white mb-2" data-i18n="timeline_phase1_title">Discovery & Setup</h3>
+                    <p class="text-gray-400 mb-2" data-i18n="timeline_phase1_desc">Collaborative identification of key objectives, system installation, and foundational team training.</p>
+                    <span class="text-blue-300 font-medium text-lg" data-i18n="timeline_phase1_duration">Duration: ~2 weeks</span>
+                </div>
+            </div>
+
+            <div class="mb-12 flex flex-col sm:flex-row items-center sm:justify-start relative">
+                <div class="sm:absolute sm:left-0 sm:w-28 sm:text-right pr-4 text-blue-300 font-semibold text-lg mb-2 sm:mb-0" data-i18n="timeline_phase2_label">Phase 2</div>
+                <div class="sm:ml-32 w-full bg-gray-800 rounded-xl shadow-md p-6 relative border border-gray-700">
+                    <div class="absolute -left-6 sm:-left-8 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white rounded-full h-12 w-12 flex items-center justify-center font-bold text-2xl">2</div>
+                    <h3 class="text-xl font-semibold text-white mb-2" data-i18n="timeline_phase2_title">Live Optimization & Integration</h3>
+                    <p class="text-gray-400 mb-2" data-i18n="timeline_phase2_desc">Activation of real-time monitoring, AI-driven optimization, and initial data integration with existing systems.</p>
+                    <span class="text-blue-300 font-medium text-lg" data-i18n="timeline_phase2_duration">Duration: ~4–6 weeks</span>
+                </div>
+            </div>
+
+            <div class="mb-12 flex flex-col sm:flex-row items-center sm:justify-start relative">
+                <div class="sm:absolute sm:left-0 sm:w-28 sm:text-right pr-4 text-blue-300 font-semibold text-lg mb-2 sm:mb-0" data-i18n="timeline_phase3_label">Phase 3</div>
+                <div class="sm:ml-32 w-full bg-gray-800 rounded-xl shadow-md p-6 relative border border-gray-700">
+                    <div class="absolute -left-6 sm:-left-8 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white rounded-full h-12 w-12 flex items-center justify-center font-bold text-2xl">3</div>
+                    <h3 class="text-xl font-semibold text-white mb-2" data-i18n="timeline_phase3_title">Performance Review & Scaling</h3>
+                    <p class="text-gray-400 mb-2" data-i18n="timeline_phase3_desc">Comprehensive analysis of outcomes, benchmarking against KPIs, and planning for broader enterprise-wide deployment.</p>
+                    <span class="text-blue-300 font-medium text-lg" data-i18n="timeline_phase3_duration">Duration: ~2 weeks</span>
+                </div>
+            </div>
+
+            <div class="sm:ml-32 mt-12 text-center sm:text-left">
+                <p class="text-2xl font-bold text-blue-500" data-i18n="timeline_total_duration">Total Engagement Duration: ~8–10 weeks</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="tangible-impact">
+        <h2 data-i18n="metrics_section_title">Tangible Impact: Unlocking Key Metrics</h2>
+        <p class="content-block mb-12" data-i18n="metrics_intro_p">
+            The Fruitful™ Mining System is engineered to deliver measurable enhancements across critical operational areas, driving superior performance and return on investment.
+        </p>
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+            <div class="achievement-card text-center items-center">
+                <div class="icon">📈</div>
+                <p class="text-3xl md:text-5xl font-extrabold text-blue-500 mb-3" data-i18n="metric_yield_value">10-20%</p>
+                <p class="text-lg font-semibold text-white" data-i18n="metric_yield_label">Increase in yield/output</p>
+            </div>
+            <div class="achievement-card text-center items-center">
+                <div class="icon">⏱️</div>
+                <p class="text-3xl md:text-5xl font-extrabold text-blue-500 mb-3" data-i18n="metric_downtime_value">15-30%</p>
+                <p class="text-lg font-semibold text-white" data-i18n="metric_downtime_label">Reduction in unplanned downtime</p>
+            </div>
+            <div class="achievement-card text-center items-center">
+                <div class="icon">✅</div>
+                <p class="text-3xl md:text-5xl font-extrabold text-blue-500 mb-3" data-i18n="metric_compliance_value">Enhanced</p>
+                <p class="text-lg font-semibold text-white" data-i18n="metric_compliance_label">Compliance & sustainability tracking</p>
+            </div>
+            <div class="achievement-card text-center items-center">
+                <div class="icon">📊</div>
+                <p class="text-3xl md:text-5xl font-extrabold text-blue-500 mb-3" data-i18n="metric_insights_value">Real-time</p>
+                <p class="text-lg font-semibold text-white" data-i18n="metric_insights_label">Actionable Insights for Decision-Making</p>
+            </div>
+        </div>
+        <p class="content-block mt-12" data-i18n="metrics_conclusion_p">
+            These critical metrics are continuously benchmarked and presented in intuitive dashboards, providing leadership and operational teams with comprehensive visibility into performance and impact.
+        </p>
+    </section>
+
+    <section id="pathways-partnership">
+        <h2 data-i18n="partnership_section_title">Pathways to Partnership: Scaling for Success</h2>
+        <p class="content-block mb-10" data-i18n="partnership_intro_p">
+            Following a successful initial engagement, Fruitful™ Mining offers flexible pathways to expand our collaboration, ensuring sustained value and growth.
+        </p>
+        <div class="grid md:grid-cols-3 gap-8 text-center max-w-6xl mx-auto">
+            <div class="achievement-card flex flex-col items-center justify-center">
+                <div class="icon">🌐</div>
+                <h3 data-i18n="partnership_enterprise_title">Enterprise-Wide Deployment</h3>
+                <p data-i18n="partnership_enterprise_desc">Full integration and scaling of the Fruitful™ Mining System across all departments and operational sites.</p>
+            </div>
+            <div class="achievement-card flex flex-col items-center justify-center">
+                <div class="icon">🛠️</div>
+                <h3 data-i18n="partnership_custom_title">Custom Solution Development</h3>
+                <p data-i18n="partnership_custom_desc">Tailored development of specialized functionalities and custom integrations to meet unique operational needs.</p>
+            </div>
+            <div class="achievement-card flex flex-col items-center justify-center">
+                <div class="icon">🤝</div>
+                <h3 data-i18n="partnership_support_title">Sustained Strategic Support</h3>
+                <p data-i18n="partnership_support_desc">Ongoing technical support, continuous system enhancements, and strategic consultation for long-term success.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="economic-impact">
+        <h2 data-i18n="economics_section_title">Driving Economic Impact: Demonstrating Value</h2>
+        <p class="content-block mb-10" data-i18n="economics_intro_p">
+            The integration of the Fruitful™ Mining System is designed to significantly enhance economic performance, as demonstrated by the progressive growth in projected profit margins compared to conventional operations.
+        </p>
+
+        <div class="overflow-x-auto max-w-4xl mx-auto">
+            <table class="min-w-full bg-gray-800 rounded-xl shadow-lg border border-gray-700">
+                <thead>
+                    <tr class="bg-blue-800 text-blue-100">
+                        <th class="px-6 py-4 text-left text-xl font-bold rounded-tl-xl" data-i18n="table_header_phase">Operational Phase</th>
+                        <th class="px-6 py-4 text-center text-xl font-bold" data-i18n="table_header_standard">Standard Operations</th>
+                        <th class="px-6 py-4 text-center text-xl font-bold rounded-tr-xl" data-i18n="table_header_fruitful">With Fruitful™ Mining System</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="border-t border-gray-700">
+                        <td class="px-6 py-4 font-semibold text-lg" data-i18n="table_q1_phase">Q1 (Initial Baseline)</td>
+                        <td class="text-gray-400" data-i18n="table_q1_standard">13%</td>
+                        <td class="text-gray-400" data-i18n="table_q1_fruitful">13%</td>
+                    </tr>
+                    <tr class="border-t border-gray-700">
+                        <td class="px-6 py-4 font-semibold text-lg" data-i18n="table_q2_phase">Q2 (Initial Engagement)</td>
+                        <td class="text-gray-400" data-i18n="table_q2_standard">13%</td>
+                        <td class="text-blue-400 font-semibold" data-i18n="table_q2_fruitful">15%</td>
+                    </tr>
+                    <tr class="border-t border-gray-700">
+                        <td class="px-6 py-4 font-semibold text-lg" data-i18n="table_q3_phase">Q3 (Optimization Phase)</td>
+                        <td class="text-gray-400" data-i18n="table_q3_standard">13%</td>
+                        <td class="text-blue-400 font-semibold" data-i18n="table_q3_fruitful">17%</td>
+                    </tr>
+                    <tr class="border-t border-gray-700">
+                        <td class="px-6 py-4 font-semibold text-lg" data-i18n="table_q4_phase">Q4 (Scaling Impact)</td>
+                        <td class="text-gray-400" data-i18n="table_q4_standard">13%</td>
+                        <td class="text-blue-400 font-semibold" data-i18n="table_q4_fruitful">19%</td>
+                    </tr>
+                    <tr class="border-t border-gray-700">
+                        <td class="px-6 py-4 font-semibold text-lg" data-i18n="table_q5_phase">Q5 (Advanced Optimization)</td>
+                        <td class="text-gray-400" data-i18n="table_q5_standard">13%</td>
+                        <td class="text-blue-400 font-semibold" data-i18n="table_q5_fruitful">21%</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 font-semibold text-lg" data-i18n="table_q6_phase">Q6 (Sustained Excellence)</td>
+                        <td class="text-gray-400" data-i18n="table_q6_standard">13%</td>
+                        <td class="text-blue-400 font-semibold" data-i18n="table_q6_fruitful">24%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-12 content-block">
+            <h3 class="text-xl font-bold text-blue-500 mb-6 text-center" data-i18n="table_insights_title">Key Insights</h3>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="achievement-card !bg-gray-800 border-gray-700 shadow-lg hover:shadow-xl hover:transform-none">
+                    <h4 class="text-lg font-semibold text-white mb-3" data-i18n="table_standard_ops_title">Standard Operations:</h4>
+                    <p class="text-gray-400" data-i18n="table_standard_ops_desc">Profit margins remain consistent, reflecting typical industry efficiencies and challenges.</p>
+                </div>
+                <div class="achievement-card !bg-gray-800 border-gray-700 shadow-lg hover:shadow-xl hover:transform-none">
+                    <h4 class="text-lg font-semibold text-white mb-3" data-i18n="table_fruitful_system_title">With Fruitful™ Mining System:</h4>
+                    <p class="text-gray-400" data-i18n="table_fruitful_system_desc">Demonstrates progressive improvements driven by enhanced operational control, better asset utilization, reduced downtime, and increased output.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="mining-brands-ecosystem" class="text-center">
+        <h2 data-i18n="brands_section_title">Fruitful™ Mining Brands Ecosystem</h2>
+        <p class="content-block text-center mb-12" data-i18n="brands_intro_p">
+            Fruitful™ Mining is proud to collaborate with and power a vast network of innovative brands and specialized subnodes across the global mining supply chain. Discover the breadth of our ecosystem. Click on a brand name to get a ✨ quick insight ✨ into its potential focus!
+        </p>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 max-w-6xl mx-auto mining-brands-ecosystem-list">
+            <a href="#" onclick="showBrandInsight('MineNest™'); return false;">MineNest™</a>
+            <a href="#" onclick="showBrandInsight('NestTrack™'); return false;">NestTrack™</a>
+            <a href="#" onclick="showBrandInsight('VaultShaft™'); return false;">VaultShaft™</a>
+            <a href="#" onclick="showBrandInsight('QRMine™'); return false;">QRMine™</a>
+            <a href="#" onclick="showBrandInsight('ClaimGrid™'); return false;">ClaimGrid™</a>
+            <a href="#" onclick="showBrandInsight('DrillCoreX™'); return false;">DrillCoreX™</a>
+            <a href="#" onclick="showBrandInsight('CoreDrop™'); return false;">CoreDrop™</a>
+            <a href="#" onclick="showBrandInsight('PulsePath™'); return false;">PulsePath™</a>
+            <a href="#" onclick="showBrandInsight('OreTrace™'); return false;">OreTrace™</a>
+            <a href="#" onclick="showBrandInsight('DrillYield™'); return false;">DrillYield™</a>
+            <a href="#" onclick="showBrandInsight('OreSync™'); return false;">OreSync™</a>
+            <a href="#" onclick="showBrandInsight('SyncRock™'); return false;">SyncRock™</a>
+            <a href="#" onclick="showBrandInsight('VaultEcho™'); return false;">VaultEcho™</a>
+            <a href="#" onclick="showBrandInsight('QRDrill™'); return false;">QRDrill™</a>
+            <a href="#" onclick="showBrandInsight('ClaimTag™'); return false;">ClaimTag™</a>
+            <a href="#" onclick="showBrandInsight('VaultRock™'); return false;">VaultRock™</a>
+            <a href="#" onclick="showBrandInsight('RockBeam™'); return false;">RockBeam™</a>
+            <a href="#" onclick="showBrandInsight('MineLoop™'); return false;">MineLoop™</a>
+            <a href="#" onclick="showBrandInsight('SignalTrace™'); return false;">SignalTrace™</a>
+            <a href="#" onclick="showBrandInsight('QRClaim™'); return false;">QRClaim™</a>
+            <a href="#" onclick="showBrandInsight('ClaimMine™'); return false;">ClaimMine™</a>
+            <a href="#" onclick="showBrandInsight('ClaimOre™'); return false;">ClaimOre™</a>
+            <a href="#" onclick="showBrandInsight('VaultPath™'); return false;">VaultPath™</a>
+            <a href="#" onclick="showBrandInsight('OrePing™'); return false;">OrePing™</a>
+            <a href="#" onclick="showBrandInsight('MineSignal™'); return false;">MineSignal™</a>
+            <a href="#" onclick="showBrandInsight('TrackShaft™'); return false;">TrackShaft™</a>
+            <a href="#" onclick="showBrandInsight('ShaftMesh™'); return false;">ShaftMesh™</a>
+            <a href="#" onclick="showBrandInsight('DropMine™'); return false;">DropMine™</a>
+            <a href="#" onclick="showBrandInsight('TrackSeam™'); return false;">TrackSeam™</a>
+            <a href="#" onclick="showBrandInsight('QRTrack™'); return false;">QRTrack™</a>
+            <a href="#" onclick="showBrandInsight('PulseMine™'); return false;">PulseMine™</a>
+            <a href="#" onclick="showBrandInsight('PulseCrate™'); return false;">PulseCrate™</a>
+            <a href="#" onclick="showBrandInsight('MineEcho™'); return false;">MineEcho™</a>
+            <a href="#" onclick="showBrandInsight('YieldDrill™'); return false;">YieldDrill™</a>
+            <a href="#" onclick="showBrandInsight('GridTag™'); return false;">GridTag™</a>
+            <a href="#" onclick="showBrandInsight('CoreBeam™'); return false;">CoreBeam™</a>
+            <a href="#" onclick="showBrandInsight('BeamPath™'); return false;">BeamPath™</a>
+            <a href="#" onclick="showBrandInsight('ClaimRock™'); return false;">ClaimRock™</a>
+            <a href="#" onclick="showBrandInsight('VaultLoop™'); return false;">VaultLoop™</a>
+            <a href="#" onclick="showBrandInsight('SeamDrop™'); return false;">SeamDrop™</a>
+            <a href="#" onclick="showBrandInsight('DigEcho™'); return false;">DigEcho™</a>
+            <a href="#" onclick="showBrandInsight('EchoMine™'); return false;">EchoMine™</a>
+            <a href="#" onclick="showBrandInsight('RockPing™'); return false;">RockPing™</a>
+            <a href="#" onclick="showBrandInsight('VaultTrace™'); return false;">VaultTrace™</a>
+            <a href="#" onclick="showBrandInsight('ClaimBeam™'); return false;">ClaimBeam™</a>
+            <a href="#" onclick="showBrandInsight('RockPath™'); return false;">RockPath™</a>
+            <a href="#" onclick="showBrandInsight('PathDrop™'); return false;">PathDrop™</a>
+            <a href="#" onclick="showBrandInsight('GridMine™'); return false;">GridMine™</a>
+            <a href="#" onclick="showBrandInsight('QRNode™'); return false;">QRNode™</a>
+            <a href="#" onclick="showBrandInsight('YieldOre™'); return false;">YieldOre™</a>
+            <a href="#" onclick="showBrandInsight('YieldDrill™'); return false;">YieldDrill™</a>
+            <a href="#" onclick="showBrandInsight('DrillGrid™'); return false;">DrillGrid™</a>
+            <a href="#" onclick="showBrandInsight('ClaimYield™'); return false;">ClaimYield™</a>
+            <a href="#" onclick="showBrandInsight('SyncTunnel™'); return false;">SyncTunnel™</a>
+            <a href="#" onclick="showBrandInsight('OreEcho™'); return false;">OreEcho™</a>
+            <a href="#" onclick="showBrandInsight('MineProof™'); return false;">MineProof™</a>
+            <a href="#" onclick="showBrandInsight('ProofMine™'); return false;">ProofMine™</a>
+            <a href="#" onclick="showBrandInsight('SeamCast™'); return false;">SeamCast™</a>
+            <a href="#" onclick="showBrandInsight('VaultGrid™'); return false;">VaultGrid™</a>
+            <a href="#" onclick="showBrandInsight('DropCrate™'); return false;">DropCrate™</a>
+            <a href="#" onclick="showBrandInsight('OreLine™'); return false;">OreLine™</a>
+            <a href="#" onclick="showBrandInsight('OreLineX™'); return false;">OreLineX™</a>
+            <a href="#" onclick="showBrandInsight('VaultDrill™'); return false;">VaultDrill™</a>
+            <a href="#" onclick="showBrandInsight('MineForm™'); return false;">MineForm™</a>
+            <a href="#" onclick="showBrandInsight('TagTrace™'); return false;">TagTrace™</a>
+            <a href="#" onclick="showBrandInsight('DrillLink™'); return false;">DrillLink™</a>
+            <a href="#" onclick="showBrandInsight('LinkMine™'); return false;">LinkMine™</a>
+            <a href="#" onclick="showBrandInsight('PulseEcho™'); return false;">PulseEcho™</a>
+            <a href="#" onclick="showBrandInsight('GridSeam™'); return false;">GridSeam™</a>
+            <a href="#" onclick="showBrandInsight('YieldCast™'); return false;">YieldCast™</a>
+            <a href="#" onclick="showBrandInsight('VaultTunnel™'); return false;">VaultTunnel™</a>
+            <a href="#" onclick="showBrandInsight('TunnelSync™'); return false;">TunnelSync™</a>
+            <a href="#" onclick="showBrandInsight('ClaimLoop™'); return false;">ClaimLoop™</a>
+            <a href="#" onclick="showBrandInsight('QRDrillX™'); return false;">QRDrillX™</a>
+            <a href="#" onclick="showBrandInsight('OreBeam™'); return false;">OreBeam™</a>
+            <a href="#" onclick="showBrandInsight('GeoGrid™'); return false;">GeoGrid™</a>
+            <a href="#" onclick="showBrandInsight('GridGeo™'); return false;">GridGeo™</a>
+            <a href="#" onclick="showBrandInsight('VaultMap™'); return false;">VaultMap™</a>
+            <a href="#" onclick="showBrandInsight('RockForm™'); return false;">RockForm™</a>
+            <a href="#" onclick="showBrandInsight('ClaimTunnel™'); return false;">ClaimTunnel™</a>
+            <a href="#" onclick="showBrandInsight('SeamSync™'); return false;">SeamSync™</a>
+            <a href="#" onclick="showBrandInsight('SeamSyncX™'); return false;">SeamSyncX™</a>
+            <a href="#" onclick="showBrandInsight('OreDrop™'); return false;">OreDrop™</a>
+            <a href="#" onclick="showBrandInsight('QRMineX™'); return false;">QRMineX™</a>
+            <a href="#" onclick="showBrandInsight('DrillMark™'); return false;">DrillMark™</a>
+            <a href="#" onclick="showBrandInsight('ClaimOre™'); return false;">ClaimOre™</a>
+            <a href="#" onclick="showBrandInsight('ClaimOreX™'); return false;">ClaimOreX™</a>
+            <a href="#" onclick="showBrandInsight('TrackGrid™'); return false;">TrackGrid™</a>
+            <a href="#" onclick="showBrandInsight('VaultDrop™'); return false;">VaultDrop™</a>
+            <a href="#" onclick="showBrandInsight('PingEcho™'); return false;">PingEcho™</a>
+            <a href="#" onclick="showBrandInsight('PulseBlast™'); return false;">PulseBlast™</a>
+            <a href="#" onclick="showBrandInsight('BlastMine™'); return false;">BlastMine™</a>
+            <a href="#" onclick="showBrandInsight('PulsePing™'); return false;">PulsePing™</a>
+            <a href="#" onclick="showBrandInsight('QRPath™'); return false;">QRPath™</a>
+            <a href="#" onclick="showBrandInsight('SeamMark™'); return false;">SeamMark™</a>
+            <a href="#" onclick="showBrandInsight('OreEcho™'); return false;">OreEcho™</a>
+            <a href="#" onclick="showBrandInsight('EchoRock™'); return false;">EchoRock™</a>
+            <a href="#" onclick="showBrandInsight('YieldTrack™'); return false;">YieldTrack™</a>
+            <a href="#" onclick="showBrandInsight('VaultBeam™'); return false;">VaultBeam™</a>
+            <a href="#" onclick="showBrandInsight('ClaimSync™'); return false;">ClaimSync™</a>
+            <a href="#" onclick="showBrandInsight('DeepCrate™'); return false;">DeepCrate™</a>
+            <a href="#" onclick="showBrandInsight('CrateDrop™'); return false;">CrateDrop™</a>
+            <a href="#" onclick="showBrandInsight('SyncClaim™'); return false;">SyncClaim™</a>
+            <a href="#" onclick="showBrandInsight('DrillForm™'); return false;">DrillForm™</a>
+            <a href="#" onclick="showBrandInsight('TunnelMap™'); return false;">TunnelMap™</a>
+            <a href="#" onclick="showBrandInsight('RockLogic™'); return false;">RockLogic™</a>
+            <a href="#" onclick="RockLogicX('RockLogicX™'); return false;">RockLogicX™</a>
+            <a href="#" onclick="showBrandInsight('VaultOre™'); return false;">VaultOre™</a>
+            <a href="#" onclick="showBrandInsight('YieldLoop™'); return false;">YieldLoop™</a>
+            <a href="#" onclick="showBrandInsight('PingDrill™'); return false;">PingDrill™</a>
+            <a href="#" onclick="showBrandInsight('CoreDrill™'); return false;">CoreDrll™</a>
+            <a href="#" onclick="showBrandInsight('CoreMine™'); return false;">CoreMine™</a>
+            <a href="#" onclick="showBrandInsight('OreTag™'); return false;">OreTag™</a>
+            <a href="#" onclick="showBrandInsight('VaultPing™'); return false;">VaultPing™</a>
+            <a href="#" onclick="showBrandInsight('GridTrack™'); return false;">GridTrack™</a>
+            <a href="#" onclick="showBrandInsight('MineCast™'); return false;">MineCast™</a>
+            <a href="#" onclick="showBrandInsight('MineCastX™'); return false;">MineCastX™</a>
+            <a href="#" onclick="showBrandInsight('ClaimNest™'); return false;">ClaimNest™</a>
+            <a href="#" onclick="showBrandInsight('QRTrace™'); return false;">QRTrace™</a>
+            <a href="#" onclick="showBrandInsight('YieldEcho™'); return false;">YieldEcho™</a>
+            <a href="#" onclick="showBrandInsight('DrillMark™'); return false;">DrillMark™</a>
+            <a href="#" onclick="showBrandInsight('DrillMarkX™'); return false;">DrillMarkX™</a>
+            <a href="#" onclick="showBrandInsight('OreSignal™'); return false;">OreSignal™</a>
+            <a href="#" onclick="showBrandInsight('VaultCrate™'); return false;">VaultCrate™</a>
+            <a href="#" onclick="showBrandInsight('PingTag™'); return false;">PingTag™</a>
+            <a href="#" onclick="showBrandInsight('SignalOre™'); return false;">SignalOre™</a>
+            <a href="#" onclick="showBrandInsight('OreSignalX™'); return false;">OreSignalX™</a>
+            <a href="#" onclick="showBrandInsight('GridEcho™'); return false;">GridEcho™</a>
+            <a href="#" onclick="showBrandInsight('ClaimDrop™'); return false;">ClaimDrop™</a>
+            <a href="#" onclick="showBrandInsight('TrackTunnel™'); return false;">TrackTunnel™</a>
+            <a href="#" onclick="showBrandInsight('YieldTrack™'); return false;">YieldTrack™</a>
+            <a href="#" onclick="showBrandInsight('MineFrame™'); return false;">MineFrame™</a>
+            <a href="#" onclick="showBrandInsight('SignalGrid™'); return false;">SignalGrid™</a>
+            <a href="#" onclick="showBrandInsight('EchoDrill™'); return false;">EchoDrill™</a>
+            <a href="#" onclick="showBrandInsight('VaultSeam™'); return false;">VaultSeam™</a>
+            <a href="#" onclick="showBrandInsight('VaultSeamX™'); return false;">VaultSeamX™</a>
+            <a href="#" onclick="showBrandInsight('QRClaimX™'); return false;">QRClaimX™</a>
+            <a href="#" onclick="showBrandInsight('GridOre™'); return false;">GridOre™</a>
+            <a href="#" onclick="showBrandInsight('TunnelEcho™'); return false;">TunnelEcho™</a>
+            <a href="#" onclick="showBrandInsight('ShaftDrop™'); return false;">ShaftDrop™</a>
+            <a href="#" onclick="showBrandInsight('DropShaft™'); return false;">DropShaft™</a>
+            <a href="#" onclick="showBrandInsight('ClaimTunnelX™'); return false;">ClaimTunnelX™</a>
+            <a href="#" onclick="showBrandInsight('YieldDrillX™'); return false;">YieldDrillX™</a>
+            <a href="#" onclick="showBrandInsight('VaultGrid™'); return false;">VaultGrid™</a>
+            <a href="#" onclick="showBrandInsight('GeoNode™'); return false;">GeoNode™</a>
+            <a href="#" onclick="showBrandInsight('GeoNodeX™'); return false;">GeoNodeX™</a>
+            <a href="#" onclick="showBrandInsight('SignalPing™'); return false;">SignalPing™</a>
+            <a href="#" onclick="showBrandInsight('DropEcho™'); return false;">DropEcho™</a>
+            <a href="#" onclick="showBrandInsight('MineLink™'); return false;">MineLink™</a>
+        </div>
+    </section>
+
+    <section class="cta-footer-section">
+        <h2 data-i18n="cta_section_title">Connect with Fruitful™ Mining (Pty) Ltd</h2>
+        <p class="mb-8" data-i18n="cta_section_p">
+            We are eager to discuss how the Fruitful™ Mining System can propel your operations to new heights of efficiency, profitability, and sustainability. Let's explore a future of shared success.
+        </p>
+        <button class="bg-white text-blue-700 px-10 py-5 rounded-full text-xl font-bold hover:bg-blue-100 transition-colors duration-300 shadow-md" data-i18n="cta_button">
+            Schedule a Discovery Session
+        </button>
+    </section>
+
+    <footer class="footer-style">
+        <p data-i18n="footer_copyright">&copy; 2025 Fruitful™ Mining (Pty) Ltd. All rights reserved. An FAA.ZONE™ Ecosystem Project.</p>
+        <p class="mt-2 text-sm" data-i18n="footer_contact">For inquiries, contact: <a href="mailto:vault@faa.zone" class="text-gray-400 hover:text-blue-500 underline">vault@faa.zone</a> | <a href="mailto:thabo@faa.zone" class="text-gray-400 hover:text-blue-500 underline">thabo@faa.zone</a> | Tel: +27674885800 / +27615432068</p>
+    </footer>
+
+    <!-- Chatbot Button -->
+    <button id="chatbot-button" title="Open AI Chatbot">
+        <i class="fas fa-comment-dots"></i>
+    </button>
+
+    <!-- Public Chat Button -->
+    <button id="public-chat-button" title="Open Public Chat">
+        <i class="fas fa-users"></i>
+    </button>
+
+    <!-- Chatbot Modal -->
+    <div id="chatbot-modal" class="hidden">
+        <div id="chatbot-header">
+            <span data-i18n="chatbot_title">Fruitful AI Assistant</span>
+            <button class="close-btn" id="close-chatbot-btn">&times;</button>
+        </div>
+        <div id="chatbot-messages">
+            <!-- Chat messages will be appended here -->
+        </div>
+        <div id="chatbot-input-container">
+            <input type="text" id="chat-input" placeholder="Ask me anything..." data-i18n-placeholder="chat_input_placeholder">
+            <button id="send-chat-btn"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <!-- Public Chat Modal -->
+    <div id="public-chat-modal" class="hidden">
+        <div id="public-chat-header">
+            <span data-i18n="public_chat_title">Public Mining Chat</span>
+            <button class="close-btn" id="close-public-chat-btn">&times;</button>
+        </div>
+        <div id="public-chat-messages">
+            <!-- Public chat messages will be appended here -->
+        </div>
+        <div id="public-chat-input-container">
+            <p class="text-xs text-gray-400 mb-1" data-i18n="public_chat_user_id_label">Your ID: <span id="public-chat-user-id" class="font-bold text-blue-300 break-all"></span></p>
+            <input type="text" id="public-chat-input" placeholder="Type a public message..." data-i18n-placeholder="public_chat_input_placeholder">
+            <button id="send-public-chat-btn"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+
+    <script type="module">
+        // Firebase imports
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, query, orderBy, limit, addDoc, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Firebase variables
+        let db;
+        let auth;
+        let currentUserId = 'anonymous'; // Default until authenticated
+        let authReady = false;
+
+        // Global variables for theme and language
+        let currentLanguage = 'en'; // Default to English
+        let currentTheme = 'dark'; // Default theme
+
+        // Define a mapping for language codes to their full names (for LLM prompt clarity)
+        const languageNames = {
+            'en': 'English', 'af': 'Afrikaans', 'st': 'Sotho', 'zu': 'Zulu', 'tn': 'Tswana',
+            'zh': 'Chinese (Simplified)', 'ar': 'Arabic', 'nso': 'Sepedi (Northern Sotho)', 'xh': 'Xhosa',
+            'es': 'Spanish', 'fr': 'French', 'it': 'Italian', 'fat': 'Fanagalo', 'sw': 'Swahili'
+        };
+
+        // Translations object (will be populated or fetched)
+        const translations = {}; 
+
+        // AI Chat history for conversational context
+        let aiChatHistory = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // --- Firebase Initialization ---
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+            const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+
+            try {
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        currentUserId = user.uid;
+                        console.log("Authenticated with Firebase UID:", currentUserId);
+                        authReady = true;
+                        // Display user ID in public chat
+                        const publicChatUserIdElement = document.getElementById('public-chat-user-id');
+                        if (publicChatUserIdElement) {
+                            publicChatUserIdElement.textContent = currentUserId;
+                        }
+                        setupPublicChatListener(); // Start listening for public chat messages
+                    } else {
+                        // Sign in anonymously if no user is present
+                        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                            try {
+                                await signInWithCustomToken(auth, __initial_auth_token);
+                            } catch (error) {
+                                console.error("Error signing in with custom token:", error);
+                                await signInAnonymously(auth); // Fallback to anonymous
+                            }
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                        // Update currentUserId after sign-in (onAuthStateChanged will re-trigger)
+                    }
+                });
+
+            } catch (error) {
+                console.error("Firebase initialization or authentication failed:", error);
+                // Fallback for demo or development outside Canvas environment
+                if (window.confirm("Firebase initialization failed. Some features (public chat) may not work. Continue anyway?")) {
+                    authReady = true; // Proceed in limited mode
+                    currentUserId = 'demo-user-' + Math.random().toString(36).substring(2, 9);
+                    const publicChatUserIdElement = document.getElementById('public-chat-user-id');
+                    if (publicChatUserIdElement) {
+                        publicChatUserIdElement.textContent = currentUserId;
+                    }
+                } else {
+                    return; // Stop execution if user doesn't want to proceed
+                }
+            }
+
+
+            // --- Mobile Menu Toggle ---
+            const hamburgerIcon = document.getElementById('hamburger-icon');
+            const closeIcon = document.getElementById('close-icon');
+            const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+            const mobileMenuLinks = mobileMenuOverlay.querySelectorAll('a');
+
+            if (hamburgerIcon && mobileMenuOverlay && closeIcon) {
+                hamburgerIcon.addEventListener('click', () => {
+                    mobileMenuOverlay.classList.add('open');
+                });
+
+                closeIcon.addEventListener('click', () => {
+                    mobileMenuOverlay.classList.remove('open');
+                });
+
+                mobileMenuLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        mobileMenuOverlay.classList.remove('open');
+                    });
+                });
+            }
+
+            // --- Theme Toggle Logic ---
+            const themeToggleDesktopBtn = document.getElementById('themeToggleDesktop');
+            const themeToggleMobileBtn = document.getElementById('themeToggleMobile');
+            const body = document.body;
+
+            function updateThemeClass() {
+                body.classList.remove('theme-light', 'theme-hyper');
+                if (currentTheme === 'light') {
+                    body.classList.add('theme-light');
+                } else if (currentTheme === 'hyper') {
+                    body.classList.add('theme-hyper');
+                }
+                localStorage.setItem('currentTheme', currentTheme);
+            }
+
+            function updateThemeIcons() {
+                let iconClass = '';
+                if (currentTheme === 'dark') {
+                    iconClass = 'fa-sun';
+                } else if (currentTheme === 'light') {
+                    iconClass = 'fa-moon';
+                } else {
+                    iconClass = 'fa-bolt';
+                }
+                
+                if (themeToggleDesktopBtn) {
+                    themeToggleDesktopBtn.innerHTML = `<i class="fas ${iconClass}"></i>`;
+                }
+                if (themeToggleMobileBtn) {
+                    themeToggleMobileBtn.innerHTML = `<i class="fas ${iconClass}"></i>`;
+                }
+            }
+
+            function toggleTheme() {
+                if (currentTheme === 'dark') {
+                    currentTheme = 'light';
+                } else if (currentTheme === 'light') {
+                    currentTheme = 'hyper';
+                } else {
+                    currentTheme = 'dark';
+                }
+                updateThemeClass();
+                updateThemeIcons();
+            }
+
+            if (themeToggleDesktopBtn) {
+                themeToggleDesktopBtn.addEventListener('click', toggleTheme);
+            }
+            if (themeToggleMobileBtn) {
+                themeToggleMobileBtn.addEventListener('click', toggleTheme);
+            }
+
+            // --- Language Selection Logic ---
+            const languageSelectDesktop = document.getElementById('language-select-desktop');
+            const languageSelectMobile = document.getElementById('language-select-mobile');
+
+            function handleLanguageChange(event) {
+                currentLanguage = event.target.value;
+                if (event.target.id === 'language-select-desktop' && languageSelectMobile) {
+                    languageSelectMobile.value = currentLanguage;
+                } else if (event.target.id === 'language-select-mobile' && languageSelectDesktop) {
+                    languageSelectDesktop.value = currentLanguage;
+                }
+                applyTranslations(currentLanguage);
+                localStorage.setItem('currentLanguage', currentLanguage);
+                updateChatbotText(); // Update AI chatbot text on language change
+            }
+
+            if (languageSelectDesktop) {
+                languageSelectDesktop.addEventListener('change', handleLanguageChange);
+            }
+            if (languageSelectMobile) {
+                languageSelectMobile.addEventListener('change', handleLanguageChange);
+            }
+
+            function applyTranslations(lang) {
+                document.querySelectorAll('[data-i18n]').forEach(element => {
+                    const key = element.getAttribute('data-i18n');
+                    if (translations[lang] && translations[lang][key]) {
+                        if (key === "logo_main") {
+                            const textNode = element.childNodes[0];
+                            if (textNode && textNode.nodeType === Node.TEXT_NODE) {
+                                textNode.nodeValue = translations[lang][key] + ' | ';
+                            }
+                        } else if (key === "logo_sub") {
+                            element.textContent = translations[lang][key];
+                        } else if (element.tagName === 'TITLE') {
+                            element.textContent = translations[lang][key];
+                        } else if (element.hasAttribute('data-i18n-placeholder')) {
+                            element.placeholder = translations[lang][key];
+                        } else {
+                            if (element.innerHTML.includes('<strong>') || element.innerHTML.includes('<b>')) {
+                                let translatedHtml = translations[lang][key];
+                                const originalText = translations['en'][key];
+                                if (originalText) {
+                                    const originalStrongMatches = originalText.match(/<\s*strong\s*>(.*?)<\/\s*strong\s*>/g);
+                                    if (originalStrongMatches) {
+                                        originalStrongMatches.forEach(match => {
+                                            const boldedContent = match.replace(/<\s*strong\s*>|<\/\s*strong\s*>/g, '');
+                                            translatedHtml = translatedHtml.replace(new RegExp(boldedContent.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), `<strong>${boldedContent}</strong>`);
+                                        });
+                                    }
+                                }
+                                element.innerHTML = translatedHtml;
+                            } else {
+                                element.textContent = translations[lang][key];
+                            }
+                        }
+                    } else {
+                        console.warn(`Missing translation for key: ${key} in language: ${lang}`);
+                    }
+                });
+            }
+
+            function updateChatbotText() {
+                const chatbotTitleElement = document.querySelector('#chatbot-header [data-i18n="chatbot_title"]');
+                const chatInputPlaceholderElement = document.querySelector('#chat-input[data-i18n-placeholder="chat_input_placeholder"]');
+                const publicChatTitleElement = document.querySelector('#public-chat-header [data-i18n="public_chat_title"]');
+                const publicChatInputPlaceholderElement = document.querySelector('#public-chat-input[data-i18n-placeholder="public_chat_input_placeholder"]');
+                const publicChatUserIdLabelElement = document.querySelector('#public-chat-input-container [data-i18n="public_chat_user_id_label"]');
+
+                if (chatbotTitleElement && translations[currentLanguage] && translations[currentLanguage]["chatbot_title"]) {
+                    chatbotTitleElement.textContent = translations[currentLanguage]["chatbot_title"];
+                }
+                if (chatInputPlaceholderElement && translations[currentLanguage] && translations[currentLanguage]["chat_input_placeholder"]) {
+                    chatInputPlaceholderElement.placeholder = translations[currentLanguage]["chat_input_placeholder"];
+                }
+                if (publicChatTitleElement && translations[currentLanguage] && translations[currentLanguage]["public_chat_title"]) {
+                    publicChatTitleElement.textContent = translations[currentLanguage]["public_chat_title"];
+                }
+                if (publicChatInputPlaceholderElement && translations[currentLanguage] && translations[currentLanguage]["public_chat_input_placeholder"]) {
+                    publicChatInputPlaceholderElement.placeholder = translations[currentLanguage]["public_chat_input_placeholder"];
+                }
+                 if (publicChatUserIdLabelElement && translations[currentLanguage] && translations[currentLanguage]["public_chat_user_id_label"]) {
+                    // Update only the text content, keeping the <span> intact
+                    const originalHtml = publicChatUserIdLabelElement.innerHTML;
+                    const spanContent = publicChatUserIdLabelElement.querySelector('#public-chat-user-id').outerHTML;
+                    const translatedText = translations[currentLanguage]["public_chat_user_id_label"].replace('Your ID:', ''); // Remove English "Your ID:"
+                    publicChatUserIdLabelElement.innerHTML = translatedText + ' ' + spanContent;
+                }
+            }
+
+
+            // Function to fetch static text translations (e.g., from an API or a pre-defined JSON)
+            async function fetchStaticTranslations() {
+                return {
+                    "en": {
+                        "page_title": "Fruitful™ | About Us: Thabo Ntlatleng",
+                        "logo_main": "Fruitful™",
+                        "logo_sub": "MineNest™",
+                        "nav_thabo": "Thabo (CEO)",
+                        "nav_pillars": "Pillars",
+                        "nav_impact": "Impact",
+                        "nav_approach": "Approach",
+                        "nav_engage": "Engage",
+                        "nav_timeline": "Timeline",
+                        "nav_metrics": "Metrics",
+                        "nav_partnership": "Partnership",
+                        "nav_economics": "Economics",
+                        "nav_brands": "Mining Brands",
+                        "nav_careers": "Careers",
+                        "nav_signup": "Sign Up",
+                        "lang_en_full": "English",
+                        "lang_af_full": "Afrikaans",
+                        "lang_st_full": "Sotho",
+                        "lang_zu_full": "Zulu",
+                        "lang_tn_full": "Tswana",
+                        "lang_zh_full": "Chinese",
+                        "lang_ar_full": "Arabic",
+                        "lang_nso_full": "Sepedi",
+                        "lang_xh_full": "Xhosa",
+                        "lang_es_full": "Spanish",
+                        "lang_fr_full": "French",
+                        "lang_it_full": "Italian",
+                        "lang_fat_full": "Fanagalo",
+                        "lang_sw_full": "Swahili",
+                        "hero_title": "💎 Fruitful Mining (Pty) Ltd 🌍",
+                        "hero_subtitle": "Pioniering the Future of Sustainable Resource Extraction and Value Creation",
+                        "thabo_section_title": "Thabo Ntlatleng: Driving Innovation as Managing Director",
+                        "thabo_desc_p1": "Under the visionary leadership of Thabo Ntlatleng, Fruitful Mining (Pty) Ltd is setting new benchmarks for operational excellence and strategic growth in the global mining sector. Thabo's profound expertise and commitment to pioneering solutions are at the heart of our success, guiding our path towards a more efficient and sustainable future.",
+                        "thabo_desc_p2": "His leadership exemplifies the core values of innovation, integrity, and impact that define the entire Fruitful™ ecosystem. Thabo is a driving force, transforming industry challenges into opportunities for unprecedented value creation.",
+                        "pillars_section_title": "The Fruitful™ Mining System: Core Pillars of Excellence",
+                        "pillar_yields_title": "Boosting Yields",
+                        "pillar_yields_desc": "Improved throughput via real-time optimization of extraction and processing techniques, maximizing resource recovery.",
+                        "pillar_costs_title": "Reducing Costs",
+                        "pillar_costs_desc": "Significant cost savings achieved through automated reporting, predictive maintenance, and streamlined operational processes.",
+                        "pillar_sustainability_title": "Promoting Sustainability",
+                        "pillar_sustainability_desc": "Advanced tools to monitor environmental metrics, optimize resource utilization, and ensure rigorous regulatory compliance.",
+                        "pillar_assets_title": "Sustaining Mine Assets & Equipment",
+                        "pillar_assets_desc": "Comprehensive asset tracking, usage analytics, and proactive servicing for extended equipment life and minimized unplanned downtime.",
+                        "impact_section_title": "Impact & Value: Driving the Future of Mining Operations",
+                        "impact_intro_p": "The Fruitful™ Mining System delivers tangible benefits that redefine operational efficiency and strategic impact. Our solutions empower mining groups to achieve their most ambitious goals:",
+                        "impact_point_1": "Monitor and regulate mining activities responsibly and effectively.",
+                        "impact_point_2": "Improve transparency and real-time insights in operational performance.",
+                        "impact_point_3": "Achieve ambitious sustainability targets and enhance stakeholder confidence.",
+                        "impact_point_4": "Support initiatives aligned with ESG (Environmental, Social, Governance) global standards.",
+                        "impact_point_5": "Enable cross-departmental efficiencies across operations, safety, logistics, and maintenance.",
+                        "approach_section_title": "Our Approach: Precision, Innovation, and Integrated Growth",
+                        "approach_defect_title": "Defect and Variation Reduction",
+                        "approach_defect_desc": "Inspired by Lean and Six Sigma methodologies, we streamline processes to minimize inefficiencies and maximize output consistency.",
+                        "approach_data_title": "Data-Driven Decision Making",
+                        "approach_data_desc": "Leveraging sensor-driven insights and AI-backed trend forecasts for precise, proactive operational decisions.",
+                        "approach_dashboards_title": "Customizable Dashboards",
+                        "approach_dashboards_desc": "Providing intuitive, visual insights tailored for all levels of management and operational teams.",
+                        "approach_integration_title": "Seamless Departmental Integration",
+                        "approach_integration_desc": "Connecting and optimizing processes across drilling, crushing, logistics, safety, maintenance, and compliance.",
+                        "engagements_section_title": "Strategic Engagements: Demonstrating Real-World Impact",
+                        "engagements_intro_p": "To showcase the transformative power of the Fruitful™ Mining System, we strategically engage with partners on focused initiatives, ensuring clear, measurable improvements in specific operational areas.",
+                        "engagements_focus_areas_title": "Engagement Focus Areas",
+                        "engagement_asset_title": "Asset & Equipment Management",
+                        "engagement_asset_li1": "Comprehensive monitoring of uptime, predictive maintenance, and servicing schedules.",
+                        "engagement_asset_li2": "Significant reduction in breakdowns and improvement in equipment lifespan.",
+                        "engagement_production_title": "Production Line Optimization",
+                        "engagement_production_li1": "Application of real-time analytics to boost throughput and minimize waste.",
+                        "engagement_production_li2": "Enhancement of ore recovery rates and reduction of material handling losses.",
+                        "engagement_environmental_title": "Environmental Stewardship & Reporting",
+                        "engagement_environmental_li1": "Precise tracking of air, water, and soil quality metrics.",
+                        "engagement_environmental_li2": "Automation of ESG reporting tools to meet global sustainability mandates.",
+                        "engagement_safety_title": "Safety and Incident Intelligence",
+                        "engagement_safety_li1": "Integration of advanced safety compliance tools and incident trend analysis.",
+                        "engagement_safety_li2": "Empowering predictive safety alerts through sophisticated pattern recognition.",
+                        "timeline_section_title": "Strategic Engagement Timeline",
+                        "timeline_intro_p": "A typical engagement unfolds in clear, structured phases, designed for rapid value realization and seamless integration.",
+                        "timeline_phase1_label": "Phase 1",
+                        "timeline_phase1_title": "Discovery & Setup",
+                        "timeline_phase1_desc": "Collaborative identification of key objectives, system installation, and foundational team training.",
+                        "timeline_phase1_duration": "Duration: ~2 weeks",
+                        "timeline_phase2_label": "Phase 2",
+                        "timeline_phase2_title": "Live Optimization & Integration",
+                        "timeline_phase2_desc": "Activation of real-time monitoring, AI-driven optimization, and initial data integration with existing systems.",
+                        "timeline_phase2_duration": "Duration: ~4–6 weeks",
+                        "timeline_phase3_label": "Phase 3",
+                        "timeline_phase3_title": "Performance Review & Scaling",
+                        "timeline_phase3_desc": "Comprehensive analysis of outcomes, benchmarking against KPIs, and planning for broader enterprise-wide deployment.",
+                        "timeline_phase3_duration": "Duration: ~2 weeks",
+                        "timeline_total_duration": "Total Engagement Duration: ~8–10 weeks",
+                        "metrics_section_title": "Tangible Impact: Unlocking Key Metrics",
+                        "metrics_intro_p": "The Fruitful™ Mining System is engineered to deliver measurable enhancements across critical operational areas, driving superior performance and return on investment.",
+                        "metric_yield_value": "10-20%",
+                        "metric_yield_label": "Increase in yield/output",
+                        "metric_downtime_value": "15-30%",
+                        "metric_downtime_label": "Reduction in unplanned downtime",
+                        "metric_compliance_value": "Enhanced",
+                        "metric_compliance_label": "Compliance & sustainability tracking",
+                        "metric_insights_value": "Real-time",
+                        "metric_insights_label": "Actionable Insights for Decision-Making",
+                        "metrics_conclusion_p": "These critical metrics are continuously benchmarked and presented in intuitive dashboards, providing leadership and operational teams with comprehensive visibility into performance and impact.",
+                        "partnership_section_title": "Pathways to Partnership: Scaling for Success",
+                        "partnership_intro_p": "Following a successful initial engagement, Fruitful™ Mining offers flexible pathways to expand our collaboration, ensuring sustained value and growth.",
+                        "partnership_enterprise_title": "Enterprise-Wide Deployment",
+                        "partnership_enterprise_desc": "Full integration and scaling of the Fruitful™ Mining System across all departments and operational sites.",
+                        "partnership_custom_title": "Custom Solution Development",
+                        "partnership_custom_desc": "Tailored development of specialized functionalities and custom integrations to meet unique operational needs.",
+                        "partnership_support_title": "Sustained Strategic Support",
+                        "partnership_support_desc": "Ongoing technical support, continuous system enhancements, and strategic consultation for long-term success.",
+                        "economics_section_title": "Driving Economic Impact: Demonstrating Value",
+                        "economics_intro_p": "The integration of the Fruitful™ Mining System is designed to significantly enhance economic performance, as demonstrated by the progressive growth in projected profit margins compared to conventional operations.",
+                        "table_header_phase": "Operational Phase",
+                        "table_header_standard": "Standard Operations",
+                        "table_header_fruitful": "With Fruitful™ Mining System",
+                        "table_q1_phase": "Q1 (Initial Baseline)",
+                        "table_q1_standard": "13%",
+                        "table_q1_fruitful": "13%",
+                        "table_q2_phase": "Q2 (Initial Engagement)",
+                        "table_q2_standard": "13%",
+                        "table_q2_fruitful": "15%",
+                        "table_q3_phase": "Q3 (Optimization Phase)",
+                        "table_q3_standard": "13%",
+                        "table_q3_fruitful": "17%",
+                        "table_q4_phase": "Q4 (Scaling Impact)",
+                        "table_q4_standard": "13%",
+                        "table_q4_fruitful": "19%",
+                        "table_q5_phase": "Q5 (Advanced Optimization)",
+                        "table_q5_standard": "13%",
+                        "table_q5_fruitful": "21%",
+                        "table_q6_phase": "Q6 (Sustained Excellence)",
+                        "table_q6_standard": "13%",
+                        "table_q6_fruitful": "24%",
+                        "table_insights_title": "Key Insights",
+                        "table_standard_ops_title": "Standard Operations:",
+                        "table_standard_ops_desc": "Profit margins remain consistent, reflecting typical industry efficiencies and challenges.",
+                        "table_fruitful_system_title": "With Fruitful™ Mining System:",
+                        "table_fruitful_system_desc": "Demonstrates progressive improvements driven by enhanced operational control, better asset utilization, reduced downtime, and increased output.",
+                        "brands_section_title": "Fruitful™ Mining Brands Ecosystem",
+                        "brands_intro_p": "Fruitful™ Mining is proud to collaborate with and power a vast network of innovative brands and specialized subnodes across the global mining supply chain. Discover the breadth of our ecosystem. Click on a brand name to get a ✨ quick insight ✨ into its potential focus!",
+                        "cta_section_title": "Connect with Fruitful™ Mining (Pty) Ltd",
+                        "cta_section_p": "We are eager to discuss how the Fruitful™ Mining System can propel your operations to new heights of efficiency, profitability, and sustainability. Let's explore a future of shared success.",
+                        "cta_button": "Schedule a Discovery Session",
+                        "footer_copyright": "© 2025 Fruitful™ Mining (Pty) Ltd. All rights reserved. An FAA.ZONE™ Ecosystem Project.",
+                        "footer_contact": "For inquiries, contact: vault@faa.zone | thabo@faa.zone | Tel: +27674885800 / +27615432068",
+                        "loading_insight": "Generating insight...",
+                        "chatbot_title": "Fruitful AI Assistant",
+                        "chat_input_placeholder": "Ask me anything...",
+                        "chat_welcome_message": "Hello! I'm your Fruitful AI Assistant. How can I help you today regarding mining or Fruitful Mining (Pty) Ltd?",
+                        "chat_error_response": "I'm sorry, I couldn't process that request. Please try again or rephrase your question.",
+                        "chat_user_label": "You",
+                        "chat_ai_label": "AI Assistant",
+                        "public_chat_title": "Public Mining Chat",
+                        "public_chat_input_placeholder": "Type a public message...",
+                        "public_chat_user_id_label": "Your ID:",
+                        "public_chat_system_message": "Welcome to the Public Mining Chat! Please keep conversations respectful."
+                    }
+                    // Other languages will be added here programmatically by the LLM later
+                };
+            }
+
+            // Load translations and apply them initially
+            try {
+                Object.assign(translations, await fetchStaticTranslations());
+                const storedLang = localStorage.getItem('currentLanguage') || 'en';
+                currentLanguage = storedLang;
+                if (languageSelectDesktop) languageSelectDesktop.value = currentLanguage;
+                if (languageSelectMobile) languageSelectMobile.value = currentLanguage;
+                applyTranslations(currentLanguage);
+
+                const storedTheme = localStorage.getItem('currentTheme') || 'dark';
+                currentTheme = storedTheme;
+                updateThemeClass();
+                updateThemeIcons();
+
+                updateChatbotText(); // Initial chatbot text update
+
+            } catch (error) {
+                console.error("Failed to load static translations or initial state:", error);
+            }
+
+            // --- Gemini API Integration for Brand Insights ---
+            const modalOverlay = document.createElement('div');
+            modalOverlay.id = 'brandInsightModalOverlay';
+            modalOverlay.className = 'modal-overlay';
+            modalOverlay.innerHTML = `
+                <div class="modal-content">
+                    <button class="modal-close-button" id="closeModalBtn">&times;</button>
+                    <h3 class="modal-title" id="modalBrandName"></h3>
+                    <div class="modal-body">
+                        <div id="modalInsightContent" class="text-gray-400"></div>
+                        <div id="loadingIndicator" class="loading-indicator hidden">
+                            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            <span data-i18n="loading_insight">Generating insight...</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modalOverlay);
+
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const modalBrandName = document.getElementById('modalBrandName');
+            const modalInsightContent = document.getElementById('modalInsightContent');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+
+            if (closeModalBtn) {
+                closeModalBtn.addEventListener('click', () => {
+                    modalOverlay.classList.remove('open');
+                });
+            }
+            if (modalOverlay) {
+                modalOverlay.addEventListener('click', (e) => {
+                    if (e.target === modalOverlay) {
+                        modalOverlay.classList.remove('open');
+                    }
+                });
+            }
+
+            function getLanguageName(langCode) {
+                return languageNames[langCode] || langCode;
+            }
+
+            async function fetchBrandInsight(brandName, targetLang) {
+                let chatHistoryTemp = [];
+                const prompt = `Given the mining brand name "${brandName}", generate a concise, fictional but plausible insight about what this brand might specialize in within the mining industry. Focus on innovation, sustainability, or efficiency aspects hinted by the name. Write the insight in ${getLanguageName(targetLang)}. Keep it to 1-2 sentences.`;
+                chatHistoryTemp.push({ role: "user", parts: [{ text: prompt }] });
+
+                const payload = { contents: chatHistoryTemp };
+                const apiKey = "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        console.error('API Error:', errorData);
+                        return `Error generating insight for ${brandName}. Please try again.`;
+                    }
+
+                    const result = await response.json();
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        return result.candidates[0].content.parts[0].text;
+                    } else {
+                        return `Could not generate insight for ${brandName}. The model returned an unexpected response.`;
+                    }
+                } catch (error) {
+                    console.error('Network or parsing error:', error);
+                    return `Failed to connect to the insight engine for ${brandName}. Check your network connection.`;
+                }
+            }
+
+            async function showBrandInsight(brandName) {
+                const loadingTextElement = loadingIndicator.querySelector('[data-i18n="loading_insight"]');
+                if (loadingTextElement && translations[currentLanguage] && translations[currentLanguage]["loading_insight"]) {
+                     loadingTextElement.textContent = translations[currentLanguage]["loading_insight"];
+                }
+
+                modalBrandName.textContent = `Insight for ${brandName}`;
+                modalInsightContent.textContent = '';
+                loadingIndicator.classList.remove('hidden');
+                modalOverlay.classList.add('open');
+
+                try {
+                    const insight = await fetchBrandInsight(brandName, currentLanguage);
+                    modalInsightContent.textContent = insight;
+                } catch (error) {
+                    modalInsightContent.textContent = "An error occurred while fetching the insight. Please try again later.";
+                    console.error("Error in showBrandInsight:", error);
+                } finally {
+                    loadingIndicator.classList.add('hidden');
+                }
+            }
+            window.showBrandInsight = showBrandInsight;
+
+            // --- AI Chatbot Functionality ---
+            const chatbotButton = document.getElementById('chatbot-button');
+            const chatbotModal = document.getElementById('chatbot-modal');
+            const closeChatbotBtn = document.getElementById('close-chatbot-btn');
+            const chatbotMessages = document.getElementById('chatbot-messages');
+            const chatInput = document.getElementById('chat-input');
+            const sendChatBtn = document.getElementById('send-chat-btn');
+
+            chatbotButton.addEventListener('click', () => {
+                chatbotModal.classList.toggle('open');
+                if (chatbotModal.classList.contains('open')) {
+                    if (aiChatHistory.length === 0) {
+                        appendAIChatMessage(translations[currentLanguage]["chat_welcome_message"] || "Hello! I'm your Fruitful AI Assistant. How can I help you today regarding mining or Fruitful Mining (Pty) Ltd?", 'ai');
+                    }
+                    chatInput.focus();
+                }
+            });
+
+            closeChatbotBtn.addEventListener('click', () => {
+                chatbotModal.classList.remove('open');
+            });
+
+            sendChatBtn.addEventListener('click', sendAIChatMessage);
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendAIChatMessage();
+                }
+            });
+
+            function appendAIChatMessage(text, sender) {
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('chat-message', sender);
+                const bubble = document.createElement('div');
+                bubble.classList.add('chat-bubble', sender);
+                bubble.textContent = text;
+                messageElement.appendChild(bubble);
+                chatbotMessages.appendChild(messageElement);
+                chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+            }
+
+            async function sendAIChatMessage() {
+                const userMessage = chatInput.value.trim();
+                if (userMessage === '') return;
+
+                appendAIChatMessage(userMessage, 'user');
+                chatInput.value = '';
+
+                aiChatHistory.push({ role: "user", parts: [{ text: userMessage }] });
+
+                const loadingBubble = document.createElement('div');
+                loadingBubble.classList.add('chat-message', 'ai');
+                loadingBubble.innerHTML = `<div class="chat-bubble ai"><i class="fas fa-spinner fa-spin"></i> ${translations[currentLanguage]["loading_insight"] || "Generating insight..."}</div>`;
+                chatbotMessages.appendChild(loadingBubble);
+                chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+
+                const apiKey = "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                try {
+                    const payload = { 
+                        contents: aiChatHistory,
+                        generationConfig: {
+                            temperature: 0.7,
+                            maxOutputTokens: 200,
+                        }
+                    };
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    chatbotMessages.removeChild(loadingBubble);
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        console.error('Gemini API Error:', errorData);
+                        appendAIChatMessage(translations[currentLanguage]["chat_error_response"] || "I'm sorry, I couldn't process that request. Please try again or rephrase your question.", 'ai');
+                        aiChatHistory.push({ role: "model", parts: [{ text: translations[currentLanguage]["chat_error_response"] || "I'm sorry, I couldn't process that request." }] });
+                        return;
+                    }
+
+                    const result = await response.json();
+                    let aiResponse = translations[currentLanguage]["chat_error_response"] || "I'm sorry, I couldn't process that request.";
+
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        aiResponse = result.candidates[0].content.parts[0].text;
+                    }
+
+                    appendAIChatMessage(aiResponse, 'ai');
+                    aiChatHistory.push({ role: "model", parts: [{ text: aiResponse }] });
+
+                } catch (error) {
+                    console.error('AI Chatbot fetch error:', error);
+                    chatbotMessages.removeChild(loadingBubble);
+                    appendAIChatMessage(translations[currentLanguage]["chat_error_response"] || "I'm sorry, I couldn't process that request. Please try again later.", 'ai');
+                    aiChatHistory.push({ role: "model", parts: [{ text: translations[currentLanguage]["chat_error_response"] || "I'm sorry, I couldn't process that request." }] });
+
+                } finally {
+                    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+                }
+            }
+
+            // --- Public Chat Functionality (Firebase) ---
+            const publicChatButton = document.getElementById('public-chat-button');
+            const publicChatModal = document.getElementById('public-chat-modal');
+            const closePublicChatBtn = document.getElementById('close-public-chat-btn');
+            const publicChatMessages = document.getElementById('public-chat-messages');
+            const publicChatInput = document.getElementById('public-chat-input');
+            const sendPublicChatBtn = document.getElementById('send-public-chat-btn');
+
+            publicChatButton.addEventListener('click', () => {
+                if (authReady) {
+                    publicChatModal.classList.toggle('open');
+                    if (publicChatModal.classList.contains('open')) {
+                        publicChatInput.focus();
+                    }
+                } else {
+                    alert("Please wait for Firebase to initialize before using public chat."); // Use a real modal later
+                }
+            });
+
+            closePublicChatBtn.addEventListener('click', () => {
+                publicChatModal.classList.remove('open');
+            });
+
+            sendPublicChatBtn.addEventListener('click', sendPublicChatMessage);
+            publicChatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendPublicChatMessage();
+                }
+            });
+
+            function appendPublicChatMessage(messageData) {
+                const messageElement = document.createElement('div');
+                let senderClass = 'other-user';
+                let senderId = messageData.userId;
+
+                if (messageData.userId === currentUserId) {
+                    senderClass = 'user';
+                    senderId = translations[currentLanguage]["chat_user_label"] || "You"; // "You" label for current user
+                } else {
+                    senderId = (translations[currentLanguage]["chat_ai_label"] || "AI Assistant") + ": " + senderId; // Prefix for others
+                }
+
+                messageElement.classList.add('chat-message', senderClass);
+                
+                const infoSpan = document.createElement('p');
+                infoSpan.classList.add('chat-message-info');
+                infoSpan.textContent = `${senderId} @ ${new Date(messageData.timestamp.toDate()).toLocaleTimeString()}`;
+                messageElement.appendChild(infoSpan);
+
+                const bubble = document.createElement('div');
+                bubble.classList.add('chat-bubble', senderClass);
+                bubble.textContent = messageData.messageText;
+                messageElement.appendChild(bubble);
+                
+                publicChatMessages.appendChild(messageElement);
+                publicChatMessages.scrollTop = publicChatMessages.scrollHeight;
+            }
+
+            async function sendPublicChatMessage() {
+                const messageText = publicChatInput.value.trim();
+                if (messageText === '') return;
+                if (!authReady) {
+                    alert("Authentication not ready. Cannot send message."); // Use a real modal
+                    return;
+                }
+
+                try {
+                    await addDoc(collection(db, `artifacts/${appId}/public/data/mining_chat_messages`), {
+                        userId: currentUserId,
+                        messageText: messageText,
+                        timestamp: serverTimestamp()
+                    });
+                    publicChatInput.value = '';
+                } catch (e) {
+                    console.error("Error adding document: ", e);
+                    alert("Failed to send message: " + e.message); // Use a real modal
+                }
+            }
+
+            function setupPublicChatListener() {
+                if (!authReady || !db) {
+                    console.warn("Firebase not ready for public chat listener.");
+                    return;
+                }
+                
+                const q = query(collection(db, `artifacts/${appId}/public/data/mining_chat_messages`), orderBy("timestamp"), limit(50));
+                onSnapshot(q, (snapshot) => {
+                    snapshot.docChanges().forEach((change) => {
+                        if (change.type === "added") {
+                            // Only add new messages, don't re-add existing ones after initial load
+                            // This might need refinement if order is not guaranteed perfectly by snapshot.docChanges()
+                            // but for simple chat, it often works.
+                            appendPublicChatMessage(change.doc.data());
+                        }
+                    });
+                }, (error) => {
+                    console.error("Error listening to public chat messages:", error);
+                    alert("Failed to load public chat messages: " + error.message); // Use a real modal
+                });
+            }
+        });
+    </script>
+</body>
+</html>
