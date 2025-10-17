@@ -88,6 +88,7 @@ The architecture adopts a modern full-stack approach with end-to-end TypeScript,
 -   **banimal.co.za**: Centralized WordPress platform for payment processing and data synchronization.
 -   **WordPress REST API**: Used for syncing products and users with `banimal.co.za` and other WordPress sites.
 -   **Noodle Juice Flow controller**: Provides Replit UUIDs for integrated applications.
+-   **Cloudflare Workers & R2**: HotStack™ rapid deployment system for serverless functions and object storage.
 
 # Implementation Reference
 
@@ -164,3 +165,61 @@ The architecture adopts a modern full-stack approach with end-to-end TypeScript,
     -   Toast notification with partial success details
     -   Sync log table updates via WebSocket listener
     -   Cache invalidation using queryClient.invalidateQueries()
+
+## HotStack™ Cloudflare Integration
+
+HotStack™ is a rapid deployment system built on Cloudflare Workers and R2 object storage, providing serverless compute and scalable storage for the global ecosystem.
+
+### Data Sources
+-   **Database Schema**: `shared/schema.ts` - hotstackWorkers, hotstackDeployments, hotstackR2Storage, hotstackStations tables
+-   **Cloudflare Service**: `server/cloudflare-service.ts` - API wrapper for Cloudflare Workers and R2
+
+### Backend Implementation
+-   **Cloudflare Service** (`server/cloudflare-service.ts`):
+    -   `getWorkers()` - Fetch all Cloudflare Workers from account
+    -   `getWorkerDetails(scriptName)` - Get specific worker information
+    -   `getWorkerDeployments(scriptName)` - Fetch deployment history
+    -   `getR2Buckets()` - List all R2 storage buckets
+    -   `getR2BucketStats(bucketName)` - Get bucket object count and storage size
+    -   `syncWorkersToDb()` - Sync Cloudflare Workers to database (create/update)
+    -   `syncR2BucketsToDb()` - Sync R2 bucket stats to database
+    -   `trackDeployment()` - Record deployment events
+    -   `testConnection()` - Health check with latency monitoring
+
+-   **API Routes** (8 endpoints in `server/routes.ts`):
+    -   GET /api/hotstack/test-connection - Test Cloudflare API connection
+    -   POST /api/hotstack/sync/workers - Sync Cloudflare Workers to database
+    -   POST /api/hotstack/sync/r2 - Sync R2 buckets to database
+    -   GET /api/hotstack/workers - Get all workers from database
+    -   GET /api/hotstack/deployments - Get deployment history
+    -   GET /api/hotstack/r2-storage - Get R2 storage stats
+    -   GET /api/hotstack/stations - Get HotStack stations
+    -   GET /api/hotstack/stats - Dashboard statistics
+
+### Frontend Implementation
+-   **HotStack Dashboard Tab** in Ecosystem Manager (`client/src/pages/ecosystem-manager.tsx`):
+    -   Real-time stats cards (Workers, Deployments, R2 Buckets, Storage)
+    -   Sync operations (Workers, R2 buckets)
+    -   Workers table with status badges and deployment timestamps
+    -   R2 Storage table with object counts and storage sizes
+    -   Connection test button with latency display
+
+### Cloudflare Configuration
+-   **Environment Variables**:
+    -   `CLOUDFLARE_ACCOUNT_ID`: Cloudflare account ID (ad61cfa1a84b27c62ccc5cc9d90720e)
+    -   `CLOUDFLARE_API_TOKEN`: API token for authentication (required for API access)
+-   **R2 Bucket Configuration**:
+    -   Default bucket: `hotstack-bucket`
+    -   Public URL: `https://pub-7d6d1bb543d348c03027d25831b8f8.r2.dev`
+
+### Real-time Updates
+-   **WebSocket Events**:
+    -   `hotstack_sync_started` - Notification when HotStack sync begins
+    -   `hotstack_sync_completed` - Results with synced count
+    -   `hotstack_sync_error` - Error notifications
+
+### Database Schema
+-   **hotstackWorkers**: Tracks Cloudflare Workers (workerId, name, scriptName, status, routes, deploymentUrl)
+-   **hotstackDeployments**: Deployment history (deploymentId, version, status, buildLogs, duration)
+-   **hotstackR2Storage**: R2 bucket stats (bucketName, objectCount, storageSize, publicUrl)
+-   **hotstackStations**: HotStack deployment stations (stationName, location, region, workersCount)
