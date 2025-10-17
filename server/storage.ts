@@ -2161,10 +2161,20 @@ export class MemStorage implements IStorage {
     ];
 
     for (const asset of visualAssets) {
+      const imageTypes: Record<string, string> = {
+        'roadmap': '4A90E2',
+        'ai-generated': '9B59B6',
+        'architecture': '3498DB',
+        'screenshot': '1ABC9C',
+        'brand-asset': 'E67E22'
+      };
+      const bgColor = imageTypes[asset.type] || '95A5A6';
+      const shortTitle = asset.title.split('-')[0].trim().slice(0, 20);
+      
       await this.createGalleryItem({
         title: asset.title,
         type: asset.type,
-        imageUrl: `/placeholder-images/${asset.type}-${Math.floor(Math.random() * 1000)}.jpg`,
+        imageUrl: `https://placehold.co/800x600/${bgColor}/FFFFFF?text=${encodeURIComponent(shortTitle)}`,
         description: asset.description,
         tags: ["faa", "ecosystem", asset.type],
         createdBy: "FAA™ Design System"
