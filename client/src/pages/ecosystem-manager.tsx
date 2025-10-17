@@ -433,19 +433,19 @@ export default function EcosystemManager() {
       case 'deployed':
       case 'active':
       case 'completed':
-        return <Badge className="bg-green-500"><CheckCircle2 className="w-3 h-3 mr-1" />{status}</Badge>;
+        return <span className="status-badge-green inline-flex items-center"><CheckCircle2 className="w-3 h-3 mr-1" />{status}</span>;
       case 'not deployed':
       case 'inactive':
-        return <Badge variant="outline"><Clock className="w-3 h-3 mr-1" />{status}</Badge>;
+        return <Badge variant="outline" className="border-muted-foreground"><Clock className="w-3 h-3 mr-1" />{status}</Badge>;
       case 'suspended':
       case 'error':
         return <Badge variant="destructive"><XCircle className="w-3 h-3 mr-1" />{status}</Badge>;
       case 'syncing':
       case 'in-progress':
       case 'pending':
-        return <Badge className="bg-blue-500"><Loader2 className="w-3 h-3 mr-1 animate-spin" />{status}</Badge>;
+        return <span className="status-badge-blue inline-flex items-center"><Loader2 className="w-3 h-3 mr-1 animate-spin" />{status}</span>;
       default:
-        return <Badge variant="outline">{status}</Badge>;
+        return <Badge variant="outline" className="border-muted-foreground">{status}</Badge>;
     }
   };
 
@@ -469,70 +469,76 @@ export default function EcosystemManager() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-6">
+    <div className="min-h-screen p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent" data-testid="text-page-title">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-[hsl(203,93%,68%)] via-[hsl(142,76%,36%)] to-[hsl(43,96%,56%)] bg-clip-text text-transparent" data-testid="text-page-title">
               Ecosystem Manager
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-2" data-testid="text-page-description">
+            <p className="text-muted-foreground mt-2" data-testid="text-page-description">
               Global FAA™ Ecosystem Intelligence Hub
             </p>
           </div>
-          <Globe className="w-12 h-12 text-blue-600 dark:text-blue-400" />
+          <Globe className="w-12 h-12 text-[hsl(203,93%,68%)]" />
         </div>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card>
+          <Card className="energetic-card">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Replit Apps</CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">Total Replit Apps</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
-                <div className="text-3xl font-bold" data-testid="text-total-apps">{stats.totalApps}</div>
-                <Package className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                <div className="text-3xl font-bold text-foreground" data-testid="text-total-apps">{stats.totalApps}</div>
+                <div className="p-3 rounded-full bg-[hsl(203,93%,68%)]/20">
+                  <Package className="w-6 h-6 text-[hsl(203,93%,68%)]" />
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="energetic-card">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Connected Systems</CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">Connected Systems</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
-                <div className="text-3xl font-bold" data-testid="text-total-systems">{stats.totalSystems}</div>
-                <Server className="w-8 h-8 text-purple-600 dark:text-purple-400" />
+                <div className="text-3xl font-bold text-foreground" data-testid="text-total-systems">{stats.totalSystems}</div>
+                <div className="p-3 rounded-full bg-[hsl(142,76%,36%)]/20">
+                  <Server className="w-6 h-6 text-[hsl(142,76%,36%)]" />
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="energetic-card">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Recent Syncs</CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">Recent Syncs</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
-                <div className="text-3xl font-bold" data-testid="text-recent-syncs">{stats.recentSyncs}</div>
-                <RefreshCw className="w-8 h-8 text-green-600 dark:text-green-400" />
+                <div className="text-3xl font-bold text-foreground" data-testid="text-recent-syncs">{stats.recentSyncs}</div>
+                <div className="p-3 rounded-full bg-[hsl(43,96%,56%)]/20">
+                  <RefreshCw className="w-6 h-6 text-[hsl(43,96%,56%)]" />
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="energetic-card">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Categories</CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">Categories</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-1" data-testid="text-category-breakdown">
                 {Object.entries(stats.categoryBreakdown).slice(0, 3).map(([category, count]) => (
                   <div key={category} className="flex justify-between text-sm">
-                    <span className="text-gray-600 dark:text-gray-400">{category}</span>
-                    <span className="font-semibold">{count}</span>
+                    <span className="text-muted-foreground">{category}</span>
+                    <span className="font-semibold text-foreground">{count}</span>
                   </div>
                 ))}
               </div>
@@ -541,7 +547,7 @@ export default function EcosystemManager() {
         </div>
 
         {/* Main Tabs */}
-        <Card>
+        <Card className="energetic-card">
           <CardContent className="pt-6">
             <Tabs defaultValue="apps" className="w-full">
               <TabsList className="grid w-full grid-cols-4">
