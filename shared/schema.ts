@@ -2405,6 +2405,52 @@ export const loopPayAiAssistant = pgTable("loop_pay_ai_assistant", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// ===============================
+// ECOSYSTEM INTEGRATION TABLES
+// ===============================
+
+export const ecosystemSystems = pgTable("ecosystem_systems", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  systemType: text("system_type").notNull(), // github-repo, wordpress, replit-app, platform-project
+  name: text("name").notNull(),
+  url: text("url").notNull(),
+  status: text("status").default("inactive"), // active, inactive, syncing
+  category: text("category"),
+  apiEndpoint: text("api_endpoint"),
+  apiKey: text("api_key"),
+  connectionData: json("connection_data"), // for storing connection configs
+  lastSynced: timestamp("last_synced"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+export const ecosystemApps = pgTable("ecosystem_apps", {
+  id: varchar("id").primaryKey(), // will use actual Replit app UUIDs
+  appName: text("app_name").notNull(),
+  category: text("category").notNull(), // real_estate, fruitful_ecosystem, connectivity, ai_intelligence, utilities, business_tools, creative, development
+  status: text("status").default("not deployed"), // deployed, not deployed, suspended
+  lastUpdated: timestamp("last_updated").defaultNow().notNull(),
+  replitUrl: text("replit_url").notNull(),
+  deploymentUrl: text("deployment_url"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+export const ecosystemSyncLogs = pgTable("ecosystem_sync_logs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  syncType: text("sync_type").notNull(), // wordpress-push, product-sync, user-sync, deployment, etc.
+  systemId: varchar("system_id").references(() => ecosystemSystems.id),
+  appId: varchar("app_id").references(() => ecosystemApps.id),
+  status: text("status").default("pending"), // pending, in-progress, completed, error
+  recordsSynced: integer("records_synced").default(0),
+  errorMessage: text("error_message"),
+  startedAt: timestamp("started_at").defaultNow().notNull(),
+  completedAt: timestamp("completed_at"),
+  metadata: json("metadata"),
+});
+
 // Insert schemas for LoopPay system
 export const insertLoopPayLicenseSchema = createInsertSchema(loopPayLicenses).pick({
   licenseType: true,
@@ -2494,6 +2540,43 @@ export const insertLoopPayAiAssistantSchema = createInsertSchema(loopPayAiAssist
   metadata: true,
 });
 
+// Insert schemas for Ecosystem Integration
+export const insertEcosystemSystemSchema = createInsertSchema(ecosystemSystems).pick({
+  systemType: true,
+  name: true,
+  url: true,
+  status: true,
+  category: true,
+  apiEndpoint: true,
+  apiKey: true,
+  connectionData: true,
+  lastSynced: true,
+  metadata: true,
+});
+
+export const insertEcosystemAppSchema = createInsertSchema(ecosystemApps).pick({
+  id: true,
+  appName: true,
+  category: true,
+  status: true,
+  lastUpdated: true,
+  replitUrl: true,
+  deploymentUrl: true,
+  metadata: true,
+});
+
+export const insertEcosystemSyncLogSchema = createInsertSchema(ecosystemSyncLogs).pick({
+  syncType: true,
+  systemId: true,
+  appId: true,
+  status: true,
+  recordsSynced: true,
+  errorMessage: true,
+  startedAt: true,
+  completedAt: true,
+  metadata: true,
+});
+
 // Auth Type exports (Required for Replit Auth)
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
@@ -2513,3 +2596,13 @@ export type InsertLoopPayVendor = z.infer<typeof insertLoopPayVendorSchema>;
 export type InsertLoopPayCurrencyRate = z.infer<typeof insertLoopPayCurrencyRateSchema>;
 export type InsertLoopPayPayoutMesh = z.infer<typeof insertLoopPayPayoutMeshSchema>;
 export type InsertLoopPayAiAssistant = z.infer<typeof insertLoopPayAiAssistantSchema>;
+
+// Ecosystem Integration Type exports
+export type EcosystemSystem = typeof ecosystemSystems.$inferSelect;
+export type EcosystemApp = typeof ecosystemApps.$inferSelect;
+export type EcosystemSyncLog = typeof ecosystemSyncLogs.$inferSelect;
+
+// Ecosystem Integration Insert types
+export type InsertEcosystemSystem = z.infer<typeof insertEcosystemSystemSchema>;
+export type InsertEcosystemApp = z.infer<typeof insertEcosystemAppSchema>;
+export type InsertEcosystemSyncLog = z.infer<typeof insertEcosystemSyncLogSchema>;
