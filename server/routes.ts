@@ -5154,5 +5154,320 @@ May this wisdom serve your journey well! 🌳✨`
     }
   });
 
+  // ===============================
+  // R2 FILE OPERATIONS
+  // ===============================
+
+  // POST /api/hotstack/r2/upload - Upload file to R2
+  app.post("/api/hotstack/r2/upload", isAuthenticated, upload.single('file'), async (req, res) => {
+    try {
+      const { bucketName, objectKey, contentType } = req.body;
+      
+      if (!req.file) {
+        return res.status(400).json({ 
+          success: false,
+          error: 'No file uploaded' 
+        });
+      }
+
+      if (!bucketName || !objectKey) {
+        return res.status(400).json({ 
+          success: false,
+          error: 'bucketName and objectKey are required' 
+        });
+      }
+
+      const { CloudflareService } = await import('./cloudflare-service');
+      const cloudflareService = new CloudflareService();
+
+      const fileContent = fs.readFileSync(req.file.path);
+      
+      broadcast({ 
+        type: 'r2_upload_started', 
+        data: { 
+          bucket: bucketName, 
+          key: objectKey,
+          size: req.file.size 
+        } 
+      });
+
+      const result = await cloudflareService.uploadFileToR2(
+        bucketName, 
+        objectKey, 
+        fileContent,
+        contentType || req.file.mimetype
+      );
+
+      fs.unlinkSync(req.file.path);
+
+      if (result.success) {
+        broadcast({ 
+          type: 'r2_upload_completed', 
+          data: { 
+            bucket: bucketName, 
+            key: objectKey,
+            url: result.url 
+          } 
+        });
+
+        res.json({
+          success: true,
+          message: 'File uploaded successfully',
+          url: result.url
+        });
+      } else {
+        broadcast({ 
+          type: 'r2_upload_error', 
+          data: { 
+            bucket: bucketName, 
+            key: objectKey,
+            error: result.error 
+          } 
+        });
+
+        res.status(500).json(result);
+      }
+    } catch (error) {
+      console.error('Error uploading to R2:', error);
+      res.status(500).json({ 
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // GET /api/hotstack/r2/download/:bucket/:key - Download file from R2
+  app.get("/api/hotstack/r2/download/:bucket/:key(*)", isAuthenticated, async (req, res) => {
+    try {
+      const bucketName = req.params.bucket;
+      const objectKey = req.params.key;
+
+      if (!bucketName || !objectKey) {
+        return res.status(400).json({ 
+          success: false,
+          error: 'bucket and key are required' 
+        });
+      }
+
+      const { CloudflareService } = await import('./cloudflare-service');
+      const cloudflareService = new CloudflareService();
+
+      broadcast({ 
+        type: 'r2_download_started', 
+        data: { 
+          bucket: bucketName, 
+          key: objectKey 
+        } 
+      });
+
+      const result = await cloudflareService.downloadFileFromR2(bucketName, objectKey);
+
+      if (result.success && result.data) {
+        broadcast({ 
+          type: 'r2_download_completed', 
+          data: { 
+            bucket: bucketName, 
+            key: objectKey,
+            size: result.data.length 
+          } 
+        });
+
+        const metadata = await cloudflareService.getFileMetadata(bucketName, objectKey);
+        const contentType = metadata.metadata?.contentType || 'application/octet-stream';
+
+        res.setHeader('Content-Type', contentType);
+        res.setHeader('Content-Disposition', `attachment; filename="${path.basename(objectKey)}"`);
+        res.send(result.data);
+      } else {
+        broadcast({ 
+          type: 'r2_download_error', 
+          data: { 
+            bucket: bucketName, 
+            key: objectKey,
+            error: result.error 
+          } 
+        });
+
+        res.status(404).json(result);
+      }
+    } catch (error) {
+      console.error('Error downloading from R2:', error);
+      res.status(500).json({ 
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // GET /api/hotstack/r2/list/:bucket - List files in R2 bucket
+  app.get("/api/hotstack/r2/list/:bucket", isAuthenticated, async (req, res) => {
+    try {
+      const bucketName = req.params.bucket;
+      const prefix = req.query.prefix as string | undefined;
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : undefined;
+
+      if (!bucketName) {
+        return res.status(400).json({ 
+          success: false,
+          error: 'bucket is required' 
+        });
+      }
+
+      const { CloudflareService } = await import('./cloudflare-service');
+      const cloudflareService = new CloudflareService();
+
+      broadcast({ 
+        type: 'r2_list_started', 
+        data: { 
+          bucket: bucketName, 
+          prefix,
+          limit 
+        } 
+      });
+
+      const result = await cloudflareService.listR2Files(bucketName, prefix, limit);
+
+      if (result.success) {
+        broadcast({ 
+          type: 'r2_list_completed', 
+          data: { 
+            bucket: bucketName, 
+            fileCount: result.files?.length || 0 
+          } 
+        });
+
+        res.json({
+          success: true,
+          bucket: bucketName,
+          prefix: prefix || '',
+          files: result.files || []
+        });
+      } else {
+        broadcast({ 
+          type: 'r2_list_error', 
+          data: { 
+            bucket: bucketName, 
+            error: result.error 
+          } 
+        });
+
+        res.status(500).json(result);
+      }
+    } catch (error) {
+      console.error('Error listing R2 files:', error);
+      res.status(500).json({ 
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // DELETE /api/hotstack/r2/:bucket/:key - Delete file from R2
+  app.delete("/api/hotstack/r2/:bucket/:key(*)", isAuthenticated, async (req, res) => {
+    try {
+      const bucketName = req.params.bucket;
+      const objectKey = req.params.key;
+
+      if (!bucketName || !objectKey) {
+        return res.status(400).json({ 
+          success: false,
+          error: 'bucket and key are required' 
+        });
+      }
+
+      const { CloudflareService } = await import('./cloudflare-service');
+      const cloudflareService = new CloudflareService();
+
+      broadcast({ 
+        type: 'r2_delete_started', 
+        data: { 
+          bucket: bucketName, 
+          key: objectKey 
+        } 
+      });
+
+      const result = await cloudflareService.deleteFileFromR2(bucketName, objectKey);
+
+      if (result.success) {
+        broadcast({ 
+          type: 'r2_delete_completed', 
+          data: { 
+            bucket: bucketName, 
+            key: objectKey 
+          } 
+        });
+
+        res.json({
+          success: true,
+          message: 'File deleted successfully',
+          bucket: bucketName,
+          key: objectKey
+        });
+      } else {
+        broadcast({ 
+          type: 'r2_delete_error', 
+          data: { 
+            bucket: bucketName, 
+            key: objectKey,
+            error: result.error 
+          } 
+        });
+
+        res.status(500).json(result);
+      }
+    } catch (error) {
+      console.error('Error deleting from R2:', error);
+      res.status(500).json({ 
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // GET /api/hotstack/r2/metadata/:bucket/:key - Get file metadata
+  app.get("/api/hotstack/r2/metadata/:bucket/:key(*)", isAuthenticated, async (req, res) => {
+    try {
+      const bucketName = req.params.bucket;
+      const objectKey = req.params.key;
+
+      if (!bucketName || !objectKey) {
+        return res.status(400).json({ 
+          success: false,
+          error: 'bucket and key are required' 
+        });
+      }
+
+      const { CloudflareService } = await import('./cloudflare-service');
+      const cloudflareService = new CloudflareService();
+
+      broadcast({ 
+        type: 'r2_metadata_requested', 
+        data: { 
+          bucket: bucketName, 
+          key: objectKey 
+        } 
+      });
+
+      const result = await cloudflareService.getFileMetadata(bucketName, objectKey);
+
+      if (result.success) {
+        res.json({
+          success: true,
+          bucket: bucketName,
+          key: objectKey,
+          metadata: result.metadata
+        });
+      } else {
+        res.status(404).json(result);
+      }
+    } catch (error) {
+      console.error('Error getting R2 metadata:', error);
+      res.status(500).json({ 
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
   return httpServer;
 }
