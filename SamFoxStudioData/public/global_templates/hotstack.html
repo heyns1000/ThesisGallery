@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fruitful | HotStack™ – Omnidrop Your Digital Presence</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* Define Fruitful Global Color Palette */
+    :root {
+        --primary-color: #0071e3; /* Apple Blue */
+        --secondary-color: #30d158; /* Apple Green */
+        --text-color-light: #f5f5f7; /* Light text on dark backgrounds */
+        --bg-color-dark: #1a1a1c; /* Deep black/dark grey */
+        --card-bg-dark: #2a2a2e; /* Darker grey for card backgrounds */
+        --border-color-dark: #3a3a3e; /* Subtle dark border */
+        --accent-gold: #B8860B; /* Corporate gold accent */
+        --hotstack-yellow: #ffcc00; /* Original HotStack yellow */
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-color-dark);
+      color: var(--text-color-light);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center; /* Center content vertically */
+      min-height: 100vh; /* Full viewport height */
+      padding: 1rem; /* Responsive padding */
+      /* Removed overflow: hidden; to allow scrolling */
+      position: relative; /* For canvas positioning */
+    }
+
+    /* Canvas for Omnidrop animation */
+    #omnidropCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0; /* Behind content */
+      background-color: transparent;
+    }
+
+    /* Content container to float above canvas */
+    .content-container {
+      position: relative;
+      z-index: 1; /* Above canvas */
+      background-color: rgba(14, 14, 14, 0.85); /* Slightly transparent dark background */
+      border-radius: 12px;
+      padding: 2.5rem;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5); /* Stronger shadow for depth */
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+      border: 1px solid rgba(255, 204, 0, 0.3); /* Subtle gold border */
+      backdrop-filter: blur(4px); /* Frosted glass effect */
+    }
+
+    /* Header Styling */
+    header {
+      margin-bottom: 2rem;
+    }
+    .main-logo {
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: var(--text-color-light); /* Fruitful part in white */
+        line-height: 1;
+    }
+    .main-logo span {
+        color: var(--hotstack-yellow); /* HotStack part in yellow */
+        font-size: 0.9em; /* Adjust size relative to "Fruitful" */
+        letter-spacing: -0.02em; /* Tighter spacing for "HotStack" */
+    }
+    .subtitle {
+      font-size: 1.25rem;
+      font-weight: 400;
+      color: #b0b0b0; /* Lighter grey for subtitle */
+      margin-top: 0.5rem;
+    }
+
+    /* Countdown Timer */
+    .countdown {
+      font-size: 3.5rem;
+      font-weight: 800; /* Bolder */
+      margin: 1.5rem 0;
+      color: var(--hotstack-yellow); /* HotStack yellow for countdown */
+      letter-spacing: 0.05em; /* Add some spacing for digital clock feel */
+    }
+
+    /* Features List */
+    .features {
+      max-width: 450px;
+      text-align: left;
+      margin: 0 auto 2rem auto;
+      color: var(--text-color-light);
+    }
+    .features ul {
+      padding-left: 1.5rem;
+      list-style-type: none; /* Remove default bullet */
+    }
+    .features li {
+      margin-bottom: 0.75rem;
+      position: relative; /* For custom bullet positioning */
+      padding-left: 1.5rem; /* Space for custom bullet */
+    }
+    .features li::before {
+      content: '⚡'; /* Custom bullet point - lightning bolt */
+      position: absolute;
+      left: 0;
+      color: var(--hotstack-yellow);
+      font-size: 1.1em;
+      line-height: 1;
+    }
+
+    /* CTA Button */
+    .cta-button {
+      background-color: var(--hotstack-yellow);
+      color: var(--bg-color-dark); /* Dark text on yellow */
+      padding: 1.2rem 2.5rem;
+      border: none;
+      font-weight: 800;
+      font-size: 1.1rem;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+      box-shadow: 0 4px 15px rgba(255, 204, 0, 0.4); /* Yellow glow shadow */
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none; /* Ensure it looks like a button, not a link with underline */
+    }
+    .cta-button:hover {
+      background-color: #ffe066; /* Lighter yellow on hover */
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 6px 20px rgba(255, 204, 0, 0.6); /* More intense glow */
+    }
+    .cta-button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        box-shadow: none;
+        transform: none;
+    }
+
+
+    /* Footer */
+    footer {
+      margin-top: 3rem;
+      font-size: 0.9rem;
+      color: #888;
+    }
+
+    /* Custom Modal for Alerts (copied from CodeNest for consistency) */
+    .custom-modal-overlay {
+        position: fixed;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.75);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .custom-modal-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+    .custom-modal-content {
+        background-color: var(--card-bg-dark);
+        color: var(--text-color-light);
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        text-align: center;
+        max-width: 400px;
+        width: 100%;
+        border: 1px solid var(--border-color-dark);
+        transform: translateY(-20px);
+        opacity: 0;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .custom-modal-overlay.active .custom-modal-content {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    .custom-modal-content p {
+        margin-bottom: 1.5rem;
+        font-size: 1.1rem;
+    }
+
+    /* Drag and Drop Zone */
+    .drop-zone {
+        border: 2px dashed var(--hotstack-yellow);
+        border-radius: 8px;
+        padding: 2rem;
+        margin-top: 2rem;
+        color: #b0b0b0;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        text-align: center;
+        cursor: pointer;
+        background-color: rgba(255, 204, 0, 0.05); /* Light yellow tint */
+    }
+    .drop-zone.highlight {
+        background-color: rgba(255, 204, 0, 0.15);
+        border-color: #ffcc00;
+        box-shadow: 0 0 15px rgba(255, 204, 0, 0.6);
+        transform: scale(1.02);
+    }
+    .drop-zone p {
+        margin: 0;
+        line-height: 1.4;
+    }
+
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .content-container {
+        padding: 1.5rem;
+      }
+      .main-logo {
+        font-size: 2rem;
+      }
+      .subtitle {
+        font-size: 1rem;
+      }
+      .countdown {
+        font-size: 3rem;
+      }
+      .features {
+        font-size: 0.9rem;
+        max-width: 100%;
+      }
+      .cta-button {
+        padding: 1rem 2rem;
+        font-size: 1rem;
+      }
+      .features li {
+        padding-left: 1.2rem;
+      }
+      .features li::before {
+        font-size: 1em;
+      }
+      .drop-zone {
+        padding: 1.5rem;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="omnidropCanvas"></canvas>
+
+  <div class="content-container">
+    <header>
+      <h1 class="main-logo">Fruitful | <span>HotStack™</span></h1>
+      <h2 class="subtitle">Omnidrop Your Digital Presence. Live in Minutes. Branded Forever.</h2>
+    </header>
+
+    <p class="countdown" id="timer">03:00</p>
+
+    <div class="features">
+      <h3>What Your Omnidrop Activates:</h3>
+      <ul>
+        <li>🚀 **Rapid Deployment:** Your Scroll goes Live in under 180 seconds via Omnidrop Signal.</li>
+        <li>📦 **Integrated Ecosystem:** Auto DNS Hook + Curated Template Packs for seamless launch.</li>
+        <li>🧠 **Intelligent Foundation:** Powered by ScrollStack™, VaultDNS™, and MeshNest™ protocols.</li>
+        <li>💰 **Treaty-Linked Economy:** Includes a Royalty-Linked License from Fruitful Global's Treaty Grid.</li>
+        <li>🔒 **ClaimRoot™ Verified:** Secure, traceable site ownership for every deployed scroll.</li>
+      </ul>
+    </div>
+
+    <a id="claimButton" href="codenest_desktop_dashboard.html#new-project" class="cta-button">
+      <i class="fas fa-arrow-right mr-2"></i> Enter Fruitful | CodeNest™
+    </a>
+
+    <div id="dropZone" class="drop-zone">
+        <p><i class="fas fa-cloud-upload-alt mr-2"></i> Drag & Drop HTML/PDF here or Click to Upload</p>
+        <p class="text-sm mt-1 text-gray-500">(Adheres to the 3-minute rule for rapid ingestion)</p>
+        <!-- Hidden file input for click-to-upload functionality -->
+        <input type="file" id="fileInput" class="hidden" accept=".html,.pdf">
+    </div>
+
+    <footer>
+      Powered by Fruitful Global | ScrollSynced | Vault-Verified
+    </footer>
+  </div>
+
+  <!-- Custom Modal for Alerts -->
+  <div id="customModal" class="custom-modal-overlay">
+    <div class="custom-modal-content">
+      <p id="customModalMessage"></p>
+    </div>
+  </div>
+
+  <script>
+    // Custom Modal functions
+    function showCustomModal(title, message, autoDismiss = true) {
+      const modal = document.getElementById('customModal');
+      const modalMessage = document.getElementById('customModalMessage');
+      if (modal && modalMessage) {
+        modalMessage.innerHTML = `<strong>${title}</strong><br>${message}`;
+        modal.classList.add('active'); 
+
+        if (autoDismiss) {
+          setTimeout(() => {
+            hideCustomModal();
+          }, 3000); // Auto-dismiss after 3 seconds
+        }
+      }
+    }
+
+    function hideCustomModal() {
+      const modal = document.getElementById('customModal');
+      if (modal) {
+        modal.classList.remove('active');
+      }
+    }
+
+    // Countdown Timer
+    let time = 180;
+    const timerElement = document.getElementById("timer");
+    const claimButton = document.getElementById("claimButton");
+    
+    const interval = setInterval(() => {
+      const minutes = String(Math.floor(time / 60)).padStart(2, "0");
+      const seconds = String(time % 60).padStart(2, "0");
+      timerElement.textContent = `${minutes}:${seconds}`;
+      if (time <= 0) {
+        clearInterval(interval);
+        timerElement.textContent = "00:00";
+        showCustomModal("Time's Up!", "The instant Omnidrop window has closed. Please refresh to activate a new claim timer.");
+        claimButton.classList.add('opacity-60', 'cursor-not-allowed'); // Visually disable
+        claimButton.style.pointerEvents = 'none'; // Truly disable interaction
+      }
+      time--;
+    }, 1000);
+
+    // Omnidrop Canvas Animation
+    const canvas = document.getElementById('omnidropCanvas');
+    const ctx = canvas.getContext('2d');
+    let animationFrameId;
+    let particles = [];
+    const particleCount = 100; // Number of "dropping" particles
+    const particleSize = 3;
+    const particleSpeed = 2; // Speed of fall
+
+    class Particle {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.size = particleSize;
+        this.speed = particleSpeed + Math.random() * 1.5; // Slightly varied speed
+        this.opacity = Math.random() * 0.5 + 0.5; // Varied opacity
+        this.color = `rgba(255, 204, 0, ${this.opacity})`; /* Gold color with opacity */
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+      }
+
+      update() {
+        this.y += this.speed;
+        if (this.y > canvas.height) {
+          this.y = -this.size; // Reset to top
+          this.x = Math.random() * canvas.width; // New random x
+          this.opacity = Math.random() * 0.5 + 0.5; // New random opacity
+          this.color = `rgba(255, 204, 0, ${this.opacity})`;
+        }
+        this.draw();
+      }
+    }
+
+    function initParticles() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      particles = [];
+      for (let i = 0; i < particleCount; i++) {
+        particles.push(new Particle(Math.random() * canvas.width, Math.random() * canvas.height));
+      }
+    }
+
+    function animateCanvas() {
+      animationFrameId = requestAnimationFrame(animateCanvas);
+      ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear entire canvas
+
+      for (let i = 0; i < particles.length; i++) {
+        particles[i].update();
+      }
+    }
+
+    // Event listeners for responsive canvas
+    window.addEventListener('resize', initParticles);
+    window.addEventListener('load', () => {
+      initParticles();
+      animateCanvas();
+    });
+
+    // Drag and Drop Logic for Omnidrop Ingestion
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+
+    // Function to handle file processing
+    function handleFiles(files) {
+      if (time <= 0) {
+        showCustomModal("Omnidrop Window Closed!", "The 3-minute Omnidrop window has expired. Please refresh the page to start a new ingestion timer.", true);
+        return;
+      }
+
+      if (files.length > 0) {
+        const file = files[0];
+        // Simulate file ingestion based on file type
+        if (file.type === 'text/html' || file.type === 'application/pdf') {
+          showCustomModal("Omnidrop Initiated!", `"${file.name}" is being omnidropped into CodeNest™! (Simulated rapid ingestion adhering to 3-minute rule)`, false); // Don't auto-dismiss immediately
+
+          // Simulate processing time
+          setTimeout(() => {
+            const simulatedProjectName = file.name.replace(/\.(html|pdf)$/i, ''); // Use filename as project name
+            const simulatedProjectId = `OMNI-${Math.random().toString(36).substring(2, 8).toUpperCase()}`; // Generate a random ID
+
+            // Redirect to the post-omnidrop confirmation page with parameters
+            window.location.href = `hotstack_post_omnidrop.html?projectName=${encodeURIComponent(simulatedProjectName)}&projectId=${encodeURIComponent(simulatedProjectId)}`;
+          }, 2000); // Simulate 2-second processing
+          
+        } else {
+          showCustomModal("Invalid File Type", "Only HTML or PDF files can be omnidropped.", true);
+        }
+      }
+    }
+
+    // Drag and Drop Event Listeners
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault(); // Prevent default to allow drop
+      dropZone.classList.add('highlight');
+    });
+
+    dropZone.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('highlight');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('highlight');
+      handleFiles(e.dataTransfer.files);
+    });
+
+    // Click to Upload Event Listeners
+    dropZone.addEventListener('click', () => {
+        fileInput.click(); // Trigger the hidden file input click
+    });
+
+    fileInput.addEventListener('change', (e) => {
+        handleFiles(e.target.files);
+    });
+
+  </script>
+</body>
+</html>
+

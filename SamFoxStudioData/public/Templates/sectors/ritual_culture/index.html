@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>☯ FAA.ZONE™ Ritual & Culture Sector Index</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Light off-white background */
+            color: #334155; /* Dark slate gray for primary text */
+        }
+        .header-bg {
+            background-color: #5d4037; /* Earthy brown, complementary to ritual theme */
+        }
+        .brand-text {
+            color: #5d4037; /* Deep brown for brand name */
+        }
+        .gradient-heading {
+            background: linear-gradient(to right, #795548, #a1887f); /* Brownish gradient for main headings */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+        }
+        .card-shadow {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .feature-icon {
+            color: #8d6e63; /* A lighter brown for icons */
+        }
+        .footer-bg {
+            background-color: #3e2723; /* Darker brown for footer */
+            color: #d7ccc8;
+        }
+        .primary-btn {
+            background-color: #8d6e63; /* Medium brown */
+            color: white;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+        .primary-btn:hover {
+            background-color: #6d4c41; /* Darker brown on hover */
+            transform: translateY(-1px);
+        }
+        /* Hero section specific styles for the canvas background */
+        .hero-section-with-canvas {
+            position: relative;
+            overflow: hidden; /* Ensure particles don't spill */
+            background-color: #f0f0f0; /* Default if canvas fails to load */
+        }
+        .hero-canvas-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1; /* Below content */
+            pointer-events: none; /* Allow clicks to pass through to elements below */
+        }
+        .hero-content-z-2 {
+            position: relative;
+            z-index: 2; /* Above canvas */
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+
+    <header class="header-bg text-white py-6 shadow-lg">
+        <div class="container mx-auto px-6 text-center">
+            <h1 class="text-4xl font-extrabold">
+                ☯ FAA.ZONE™ Ritual & Culture Sector
+            </h1>
+            <p class="text-lg opacity-90 mt-2">Connecting Heritage, Belief, and Digital Protocols</p>
+            <nav class="mt-4">
+                <a href="../../admin-portal.html" class="text-white hover:text-amber-200 transition-colors mx-3 text-lg">&larr; Back to Admin Portal</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="bg-gray-100 py-16 md:py-24 text-center hero-section-with-canvas">
+        <canvas id="ritual-pulse-ant-canvas" class="hero-canvas-overlay"></canvas>
+
+        <div class="max-w-4xl mx-auto px-4 hero-content-z-2">
+            <h2 class="text-5xl md:text-6xl font-extrabold mb-6 gradient-heading leading-tight">
+                Preserving & Advancing Global Rituals
+            </h2>
+            <p class="text-xl md:text-2xl text-gray-700 mb-8 max-w-2xl mx-auto">
+                The Ritual & Culture sector within FAA.ZONE™ is dedicated to digitally preserving, managing, and facilitating cultural heritage, traditions, and belief systems through secure and ethical protocols.
+            </p>
+            <a href="ritual.seedwave.faa.zone/dashboard.html" class="inline-block px-10 py-4 primary-btn font-bold rounded-full text-lg shadow-xl hover:shadow-2xl">
+                Dashboard
+            </a>
+            <a href="subnodes/index.html" class="inline-block px-10 py-4 bg-amber-700 hover:bg-amber-800 text-white font-bold rounded-full text-lg shadow-xl hover:shadow-2xl ml-4">
+                Explore Sub-Nodes <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+    </section>
+
+    <section class="py-12 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <h3 class="text-3xl font-bold text-center mb-8 text-gray-800">Sector Overview Metadata</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+                <div class="bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-200">
+                    <p class="text-sm text-gray-500">Monthly Fee</p>
+                    <p class="text-2xl font-bold text-amber-700">$68</p>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-200">
+                    <p class="text-sm text-gray-500">Annual Fee</p>
+                    <p class="text-2xl font-bold text-amber-700">$725</p>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-200">
+                    <p class="text-sm text-gray-500">Security Rating</p>
+                    <p class="text-2xl font-bold text-green-600">FAA-SEC B+</p>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-200">
+                    <p class="text-sm text-gray-500">Deployment Zone</p>
+                    <p class="text-xl font-bold text-gray-800">Zone R.5</p>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-200">
+                    <p class="text-sm text-gray-500">VaultID</p>
+                    <p class="text-xl font-bold text-gray-800">RITL-VAULT-2345</p>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-200">
+                    <p class="text-sm text-gray-500">Signal Layer</p>
+                    <p class="text-xl font-bold text-gray-800">SpiritGrid v2.6</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="sector-brands" class="py-16 md:py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <h3 class="text-4xl md:text-5xl font-extrabold text-center mb-12 gradient-heading">Core Brands & Sub-Nodes</h3>
+            <p class="text-center text-lg text-gray-700 mb-10 max-w-3xl mx-auto">
+                Each sub-node of the CrateJudge™ Core Protocol offers specialized functionality to empower your professional services.
+            </p>
+            <div id="ritual-culture-brands-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                </div>
+        </div>
+    </section>
+
+    <footer class="footer-bg text-center py-8 mt-12">
+        <div class="container mx-auto px-6">
+            <p class="text-sm">© 2025 FAA.ZONE™. All rights reserved.</p>
+            <p class="text-xs opacity-70 mt-2">ScrollGrid · PulseTrade Certified · TreatyMesh Validated</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- Ritual Pulse Ant Animation Logic ---
+        class RitualParticle {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d');
+                this.reset();
+                this.baseSize = Math.random() * 1.5 + 0.5; // Small grains/rice particles
+                this.pulseSpeed = Math.random() * 0.05 + 0.02;
+                this.colorIndex = Math.floor(Math.random() * 4); // For picking colors
+                // Colors derived from the ritual theme: earthy browns, amber, purple-brown
+                this.colors = ['#8d6e63', '#a1887f', '#795548', '#5d4037']; 
+            }
+
+            reset() {
+                this.x = Math.random() * this.canvas.width;
+                this.y = Math.random() * this.canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5; // Slow, ant-like movement
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.alpha = 0; // Start invisible
+                this.targetAlpha = Math.random() * 0.6 + 0.3; // Fade in to target opacity
+                this.fadeInSpeed = 0.01;
+                this.lifespan = Math.random() * 300 + 200; // Longer lifespan
+                this.age = 0;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.age++;
+
+                // Fade in
+                if (this.alpha < this.targetAlpha) {
+                    this.alpha += this.fadeInSpeed;
+                } else {
+                    // Fade out after reaching peak or after some time
+                    if (this.age > this.lifespan * 0.7) { // Start fading out in last 30% of life
+                        this.alpha -= 0.005;
+                    }
+                }
+
+                // Keep within bounds (bounce)
+                if (this.x < 0 || this.x > this.canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > this.canvas.height) this.vy *= -1;
+
+                // Apply pulse effect to size
+                const currentPulseSize = this.baseSize * (1 + Math.sin(this.age * this.pulseSpeed) * 0.5);
+
+                // Respawn if completely faded
+                if (this.alpha <= 0 || this.age > this.lifespan) {
+                    this.reset();
+                }
+
+                return currentPulseSize; // Return current size for drawing
+            }
+
+            draw(currentSize) {
+                this.ctx.save();
+                this.ctx.globalAlpha = this.alpha;
+                this.ctx.fillStyle = this.colors[this.colorIndex];
+                this.ctx.beginPath();
+                this.ctx.arc(this.x, this.y, currentSize, 0, Math.PI * 2);
+                this.ctx.fill();
+                this.ctx.restore();
+            }
+        }
+
+        const ritualPulseCanvas = {
+            canvas: null,
+            ctx: null,
+            particles: [],
+            animationFrameId: null,
+            numParticles: 150 // Adjust density as needed
+        };
+
+        function initRitualPulseAnt(canvasId) {
+            ritualPulseCanvas.canvas = document.getElementById(canvasId);
+            if (ritualPulseCanvas.canvas) {
+                ritualPulseCanvas.ctx = ritualPulseCanvas.canvas.getContext('2d');
+                // Set canvas dimensions to fill parent
+                ritualPulseCanvas.canvas.width = ritualPulseCanvas.canvas.offsetWidth;
+                ritualPulseCanvas.canvas.height = ritualPulseCanvas.canvas.offsetHeight;
+
+                // Populate particles
+                for (let i = 0; i < ritualPulseCanvas.numParticles; i++) {
+                    ritualPulseCanvas.particles.push(new RitualParticle(ritualPulseCanvas.canvas));
+                }
+
+                startRitualPulseAnimation();
+            }
+        }
+
+        function startRitualPulseAnimation() {
+            if (!ritualPulseCanvas.ctx) return;
+            ritualPulseCanvas.ctx.clearRect(0, 0, ritualPulseCanvas.canvas.width, ritualPulseCanvas.canvas.height);
+
+            for (let i = 0; i < ritualPulseCanvas.particles.length; i++) {
+                const particle = ritualPulseCanvas.particles[i];
+                const currentSize = particle.update();
+                particle.draw(currentSize);
+            }
+
+            ritualPulseCanvas.animationFrameId = requestAnimationFrame(startRitualPulseAnimation);
+        }
+
+        // Add resize listener to redraw canvas on window resize
+        window.addEventListener('resize', () => {
+            if (ritualPulseCanvas.canvas) {
+                ritualPulseCanvas.canvas.width = ritualPulseCanvas.canvas.offsetWidth;
+                ritualPulseCanvas.canvas.height = ritualPulseCanvas.canvas.offsetHeight;
+                // Re-initialize particles to distribute them evenly in new size
+                ritualPulseCanvas.particles = [];
+                for (let i = 0; i < ritualPulseCanvas.numParticles; i++) {
+                    ritualPulseCanvas.particles.push(new RitualParticle(ritualPulseCanvas.canvas));
+                }
+            }
+        });
+
+
+        // Data for Ritual & Culture (from Admin Portal's ALL_SECTOR_DATA_STATIC)
+        const ritualCultureBrands = ['RiteNest™', 'PulseSpirit™', 'ClanScroll™', 'CultureGrid™', 'MythLoop™','AuraDrop™', 'CeremPath™', 'EchoGlyph™', 'TradVault™', 'LineageClaim™','SymbolMap™', 'AncestorSync™', 'SoulPanel™', 'ClanRoot™', 'EchoRitual™','TotemCast™', 'RiteClaim™', 'GlyphVault™', 'CultureNest™', 'SpiritBeam™'];
+        const ritualCultureSubNodes = [['TotemTrack', 'VaultSpirit', 'GlyphTag', 'ScrollLoop'],['ClanPath', 'EchoTotem', 'PulseMyth', 'ScrollClaim'],['CultureCast', 'VaultClaim', 'RiteMark', 'TradEcho'],['LoopTotem', 'ClaimClan', 'VaultGlyph', 'SymbolTrack'],['MythDrop', 'EchoPath', 'ScrollProof', 'RitualGrid'],['AuraTrack', 'VaultCast', 'TotemPanel', 'GlyphEcho'],['CeremSync', 'ClaimRite', 'ScrollVault', 'TotemBeam'],['GlyphSync', 'SpiritClaim', 'VaultMyth', 'EchoClan'],['TradPanel', 'LoopClaim', 'MythTrack', 'VaultCulture'],['LineagePath', 'VaultTag', 'EchoGlyph', 'ScrollCast'],['SymbolClaim', 'VaultScroll', 'TotemMap', 'ClanNest'],['AncestorTag', 'VaultLoop', 'ClaimTotem', 'SpiritRoot'],['EchoRitualX', 'ClaimPanel', 'VaultTotem', 'CultureSync'],['TotemEcho', 'LoopGlyph', 'VaultClaimX', 'SymbolProof'],['ClaimCulture', 'VaultTrad', 'SpiritSync', 'EchoCast'],['GlyphVaultX', 'ScrollTag', 'CultureDrop', 'TotemRoot'],['NestSpirit', 'PulseClaim', 'VaultEchoX', 'MythPath'],['BeamLoop', 'VaultSymbol', 'ScrollRite', 'ClanBeam']];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('ritual-culture-brands-container');
+
+            if (container) { // Ensure container exists before trying to modify it
+                if (ritualCultureBrands.length === 0) {
+                    container.innerHTML = '<p class="text-center text-gray-500 col-span-full">No brands currently listed for this sector.</p>';
+                } else {
+                    // Ensure subNode arrays are correctly mapped to brands
+                    const minLength = Math.min(ritualCultureBrands.length, ritualCultureSubNodes.length);
+
+                    for (let i = 0; i < minLength; i++) {
+                        const brandName = ritualCultureBrands[i];
+                        const subNodes = ritualCultureSubNodes[i] || []; // Ensure it's an array, even if empty
+
+                        const card = document.createElement('div');
+                        card.className = 'bg-white p-6 rounded-lg card-shadow hover:shadow-xl transition-shadow flex flex-col justify-between';
+                        
+                        let subNodesHtml = '';
+                        if (subNodes.length > 0) {
+                            subNodesHtml = `
+                                <ul class="list-disc list-inside ml-4 text-sm text-gray-600 space-y-1 mt-4">
+                                    ${subNodes.map(node => `<li>${node}</li>`).join('')}
+                                </ul>
+                            `;
+                        } else {
+                            subNodesHtml = '<p class="text-sm text-gray-500 mt-4">No specific sub-nodes listed.</p>';
+                        }
+
+                        card.innerHTML = `
+                            <div>
+                                <h4 class="text-2xl font-bold text-gray-900 mb-3">${brandName}</h4>
+                                <p class="text-gray-700">
+                                    A core protocol enabling secure digital interfaces for traditional practices within the Ritual & Culture sector.
+                                </p>
+                                ${subNodesHtml}
+                            </div>
+                            <button class="mt-6 self-start px-6 py-2 primary-btn font-semibold rounded-full text-base">
+                                Discover More
+                            </button>
+                        `;
+                        container.appendChild(card);
+                    }
+                }
+            }
+
+            // Initialize the Ritual Pulse Ant canvas
+            initRitualPulseAnt('ritual-pulse-ant-canvas');
+        });
+    </script>
+</body>
+</html>

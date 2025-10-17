@@ -1,0 +1,187 @@
+{
+  "repository": "heyns1000/samfox",
+  "downloadedAt": "2025-10-17T17:14:36.176Z",
+  "totalFiles": 36,
+  "structure": [
+    {
+      "path": "LICENSE",
+      "size": 11357,
+      "sha": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64"
+    },
+    {
+      "path": "Madiba_mock.png",
+      "size": 547226,
+      "sha": "fcc0a32397e99af14308aeb48ebaf7a99f78d26f"
+    },
+    {
+      "path": "README.md",
+      "size": 32,
+      "sha": "e2bc11ab9705e950ca39a45ce39e9adf048fe477"
+    },
+    {
+      "path": "assets",
+      "size": 1,
+      "sha": "8b137891791fe96927ad78e64b0aad7bded08bdc"
+    },
+    {
+      "path": "foxed_got_mobiles.html",
+      "size": 116128,
+      "sha": "2123ba4b78a6e3dd7e770eb30fb5d931b40e663b"
+    },
+    {
+      "path": "project/paypal/sectors/agriculture-biotech/agrichain/paypal/pricing.html",
+      "size": 38947,
+      "sha": "bf8057362f7986de3498454db19631a2566b1752"
+    },
+    {
+      "path": "public/Templates/Fruitful_payment.html",
+      "size": 102925,
+      "sha": "6622152fa27a542d52746419e17d00d775aaa6f8"
+    },
+    {
+      "path": "public/Templates/ancestortag_heritage_portal.html",
+      "size": 211661,
+      "sha": "236b4343d45bc794c6bf2f7c3dab4c8c7d9a980e"
+    },
+    {
+      "path": "public/Templates/dashboardv3.0.html",
+      "size": 61600,
+      "sha": "3031aa4f507d8fe818d568914822beb877e3eec6"
+    },
+    {
+      "path": "public/Templates/global_checkout_form.html",
+      "size": 78724,
+      "sha": "11ded543bfe5131a379188066390ea1452acafaf"
+    },
+    {
+      "path": "public/Templates/global_footer.html",
+      "size": 5141,
+      "sha": "c142bf9cf036b3b6294882aa506ec793d99a88fd"
+    },
+    {
+      "path": "public/Templates/global_header_body_toggles_footer.html",
+      "size": 167114,
+      "sha": "e2002f3549cefcef1d6e7ad2b169177da6a1161b"
+    },
+    {
+      "path": "public/Templates/global_payment_paypal_product_page.html",
+      "size": 104826,
+      "sha": "5b81c614ae608ce67eba36d9b10d919276b3d5d4"
+    },
+    {
+      "path": "public/Templates/global_payment_paypal_product_pages.html",
+      "size": 168525,
+      "sha": "93b97f5f25934b48e91d97e368c8dfb15df57d9e"
+    },
+    {
+      "path": "public/Templates/monster_omni_core_engines_nodes_demo.html",
+      "size": 98014,
+      "sha": "2be0e9dbf7d1a09815766506621ddb13d7d8fb67"
+    },
+    {
+      "path": "public/Templates/omni.html",
+      "size": 76020,
+      "sha": "e8c98a8b59655c9ccaaf88140d20e311a47db329"
+    },
+    {
+      "path": "public/Templates/sectors/housing/index.html",
+      "size": 134787,
+      "sha": "729fed756561704fbabd3bf39a071c7480fea1ff"
+    },
+    {
+      "path": "public/Templates/sectors/ritual_culture/index.html",
+      "size": 16605,
+      "sha": "6bcbf4f244f6e2dfca007bebad6b160e0b5f4304"
+    },
+    {
+      "path": "public/Templates/sectors/template/index_master.html",
+      "size": 216828,
+      "sha": "4eaf69dec2913fc7b4459709ccf35f743137f5b8"
+    },
+    {
+      "path": "public/final_public_pitch.html",
+      "size": 19840,
+      "sha": "1e55c28357afb1c927cad351707779a12c3e1850"
+    },
+    {
+      "path": "public/foxed_got_mobiles.html",
+      "size": 88509,
+      "sha": "d349d566d188d7158f05d854e192eab67b4f2d6f"
+    },
+    {
+      "path": "public/global_sector_index.html",
+      "size": 228578,
+      "sha": "c0e33d7e87269d02507cda14b76f58e68b049961"
+    },
+    {
+      "path": "public/global_templates/Fruitful_crate_dance_pricing.html",
+      "size": 82869,
+      "sha": "8f43c6d013d1ebaedeb5f85347df4bc1cd770d20"
+    },
+    {
+      "path": "public/global_templates/Fruitful_media_motion_sonic_dashboard.html",
+      "size": 235455,
+      "sha": "312023d3ce349612987cf1fbcbedf666a695b24f"
+    },
+    {
+      "path": "public/global_templates/codenest_desktop_dashboard.html",
+      "size": 227854,
+      "sha": "5a422b8cded20d31a8fd24f2432496bdb2989d7c"
+    },
+    {
+      "path": "public/global_templates/global_footer_banimal.html",
+      "size": 41461,
+      "sha": "ca6b43cdc2dcc2fcb35c961194482a96c23c8669"
+    },
+    {
+      "path": "public/global_templates/hotstack.html",
+      "size": 15442,
+      "sha": "06f36eb8fde65c540054dd5b69a9100bc73b29fa"
+    },
+    {
+      "path": "public/global_templates/loop_pay.html",
+      "size": 27064,
+      "sha": "0bbc64518bd0f900913af411c606d5c9921669a6"
+    },
+    {
+      "path": "public/global_templates/securesign_api.html",
+      "size": 38265,
+      "sha": "b183f641f0f27fdd370bccab71739a98b49cc5d6"
+    },
+    {
+      "path": "public/global_templates/south_african_brands.html",
+      "size": 91377,
+      "sha": "072ae0514fd3efa8857d1b2615322cce3b08e601"
+    },
+    {
+      "path": "public/global_templates/spa_dashboard.html",
+      "size": 60762,
+      "sha": "9cd29cd74e0208c4f97f18e3eda204db5af370ee"
+    },
+    {
+      "path": "public/index.html",
+      "size": 140263,
+      "sha": "17af928d0d9a80848a9da641f2149b0eaf89025c"
+    },
+    {
+      "path": "public/master_license_pricing.html",
+      "size": 166636,
+      "sha": "b34d05550f379efc61899c61e74bdd6a4c6de48f"
+    },
+    {
+      "path": "public/merge_logic.html",
+      "size": 170366,
+      "sha": "9eec3a8548198fb6324423dc946aeeb0dedbcb58"
+    },
+    {
+      "path": "public/sector_index.html",
+      "size": 198896,
+      "sha": "8b365b37610de96d4c346c1603c7ddb21f1e0235"
+    },
+    {
+      "path": "public/university.html",
+      "size": 16480,
+      "sha": "fb2c7b23a0a4b1e71d18b12dc09041a20edede65"
+    }
+  ]
+}
