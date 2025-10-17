@@ -64,6 +64,8 @@ import DailySummaryExtractor from "@/pages/daily-summary-extractor";
 import NotificationSettings from "@/pages/notification-settings";
 import AdMobDashboard from "@/pages/admob-dashboard";
 import SamFoxStudioPlatform from "@/pages/samfox-studio-platform";
+import SamFoxCreativeStudio from "@/pages/samfox-creative-studio";
+import SamFoxPortfolioPage from "@/pages/samfox-portfolio";
 import LoopPayGallery from "@/pages/looppay-gallery";
 import ValuationAIModule from "@/pages/ai-module-valuation";
 import MortgageRiskModule from "@/pages/ai-module-mortgage-risk";
@@ -71,11 +73,37 @@ import MarketForecastModule from "@/pages/ai-module-market-forecast";
 import AgentInsightsModule from "@/pages/ai-module-agent-insights";
 import EcosystemManager from "@/pages/ecosystem-manager";
 import AdminSettings from "@/pages/admin-settings";
+import Settings from "@/pages/settings";
 import DeploymentDashboard from "@/pages/deployment-dashboard";
 import ScrollBinderOne from "@/pages/scrollbinder-one";
 import HsomniIntegration from "@/pages/hsomni-integration";
+import PortalHome from "@/pages/portal-home";
 import Landing from "@/pages/landing";
 import NotFound from "@/pages/not-found";
+import SectorDashboard from "@/pages/sector-dashboard";
+import SectorIndividual from "@/pages/sector-individual";
+import SectorList from "@/pages/sector-list";
+import SectorMapping from "@/pages/sector-mapping";
+import Sectors from "@/pages/sectors";
+import OmnilevelInterstellar from "@/pages/omnilevel-interstellar";
+import Omnilevel from "@/pages/omnilevel";
+import OmniGridFAAZonePage from "@/pages/omnigrid-faa-zone";
+import BanimalIntegration from "@/pages/banimal-integration";
+import VaultMesh from "@/pages/vaultmesh";
+import PaymentPortal from "@/pages/payment-portal";
+import Analytics from "@/pages/analytics";
+import ChatGPTIntegration from "@/pages/chatgpt-integration";
+import FAAIntakeChecklist from "@/pages/faa-intake-checklist";
+import FAAQuantumNexus from "@/pages/faa-quantum-nexus";
+import ClaimRootCheckout from "@/pages/claimroot-checkout";
+import FruitfulBusinessPlan from "@/pages/fruitful-business-plan";
+import FruitfulCrateDance from "@/pages/fruitful-crate-dance";
+import FruitfulMarketplaceMarketing from "@/pages/fruitful-marketplace-marketing";
+import ButtonRepairDashboard from "@/pages/button-repair-dashboard";
+import OmniuniversalButtonValidator from "@/pages/omniuniversal-button-validator";
+import PlanetChange from "@/pages/planet-change";
+import EcosystemCoordinator from "@/pages/ecosystem-coordinator";
+import MotionMediaSonic from "@/pages/motion-media-sonic";
 
 function Router() {
   return (
@@ -119,6 +147,7 @@ function Router() {
       <Route path="/admin-portal" component={AdminPortal} />
       <Route path="/admin-access-portal" component={AdminAccessPortal} />
       <Route path="/admin-settings" component={AdminSettings} />
+      <Route path="/settings" component={Settings} />
       <Route path="/pulse-grid-dashboard" component={PulseGridDashboard} />
       <Route path="/crate-dance-smart-grid" component={CrateDanceSmartGrid} />
       <Route path="/crate-dance-africa" component={CrateDanceAfrica} />
@@ -138,6 +167,8 @@ function Router() {
       <Route path="/notifications/settings" component={NotificationSettings} />
       <Route path="/admob-dashboard" component={AdMobDashboard} />
       <Route path="/samfox-studio-platform" component={SamFoxStudioPlatform} />
+      <Route path="/samfox-studio" component={SamFoxCreativeStudio} />
+      <Route path="/samfox-portfolio" component={SamFoxPortfolioPage} />
       <Route path="/looppay-gallery" component={LoopPayGallery} />
       <Route path="/ai-module/valuation-ai" component={ValuationAIModule} />
       <Route path="/ai-module/mortgage-risk" component={MortgageRiskModule} />
@@ -147,6 +178,31 @@ function Router() {
         <Route path="/deployment-dashboard" component={DeploymentDashboard} />
         <Route path="/scrollbinder-one" component={ScrollBinderOne} />
         <Route path="/hsomni-integration" component={HsomniIntegration} />
+        <Route path="/portal" component={PortalHome} />
+        <Route path="/sector-dashboard" component={SectorDashboard} />
+        <Route path="/sector/:id" component={SectorIndividual} />
+        <Route path="/sector-list" component={SectorList} />
+        <Route path="/sector-mapping" component={SectorMapping} />
+        <Route path="/sectors" component={Sectors} />
+        <Route path="/omnilevel-interstellar" component={OmnilevelInterstellar} />
+        <Route path="/omnilevel" component={Omnilevel} />
+        <Route path="/omnigrid-faa-zone" component={OmniGridFAAZonePage} />
+        <Route path="/banimal-integration" component={BanimalIntegration} />
+        <Route path="/vaultmesh" component={VaultMesh} />
+        <Route path="/payment-portal" component={PaymentPortal} />
+        <Route path="/analytics" component={Analytics} />
+        <Route path="/chatgpt-integration" component={ChatGPTIntegration} />
+        <Route path="/faa-intake-checklist" component={FAAIntakeChecklist} />
+        <Route path="/faa-quantum-nexus" component={FAAQuantumNexus} />
+        <Route path="/claimroot-checkout" component={ClaimRootCheckout} />
+        <Route path="/fruitful-business-plan" component={FruitfulBusinessPlan} />
+        <Route path="/fruitful-crate-dance" component={FruitfulCrateDance} />
+        <Route path="/fruitful-marketplace-marketing" component={FruitfulMarketplaceMarketing} />
+        <Route path="/button-repair-dashboard" component={ButtonRepairDashboard} />
+        <Route path="/omniuniversal-button-validator" component={OmniuniversalButtonValidator} />
+        <Route path="/planet-change" component={PlanetChange} />
+        <Route path="/ecosystem-coordinator-page" component={EcosystemCoordinator} />
+        <Route path="/motion-media-sonic" component={MotionMediaSonic} />
         <Route component={NotFound} />
       </Switch>
     </ErrorBoundary>

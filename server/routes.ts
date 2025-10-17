@@ -717,6 +717,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Legal documents routes
+  app.get("/api/legal-documents", async (req, res) => {
+    try {
+      const documents = await storage.getLegalDocuments();
+      res.json(documents);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch legal documents" });
+    }
+  });
+
+  // Repository routes
+  app.get("/api/repositories", async (req, res) => {
+    try {
+      const { search, category } = req.query;
+      let repositories;
+      
+      if (search && typeof search === 'string') {
+        repositories = await storage.getRepositoriesBySearch(search);
+      } else if (category && typeof category === 'string') {
+        repositories = await storage.getRepositoriesByCategory(category);
+      } else {
+        repositories = await storage.getRepositories();
+      }
+      
+      res.json(repositories);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch repositories" });
+    }
+  });
+
+  // FPC Payments routes
+  app.get("/api/payments", async (req, res) => {
+    try {
+      const payments = await db.select().from(fpcPayments);
+      res.json(payments);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch payments" });
+    }
+  });
+
   // Compliance routes
   app.get("/api/compliance/logs", async (req, res) => {
     try {
