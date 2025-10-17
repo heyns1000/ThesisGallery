@@ -54,6 +54,7 @@ const navItems = [
   { href: "/contact-management", label: "📧 Contact Management", icon: "fas fa-address-book", id: "contact-management" },
   { href: "/banimal-platform", label: "🐾 Banimal™ FAA Platform", icon: "fas fa-shopping-cart", id: "banimal-platform" },
   { href: "/banimal-connector", label: "🔌 Banimal Connector", icon: "fas fa-plug", id: "banimal-connector" },
+  { href: "/ecosystem-manager", label: "🌐 Ecosystem Manager", icon: "fas fa-network-wired", id: "ecosystem-manager" },
   { href: "/looppay-gallery", label: "💳 LoopPay™ Sovereign Portal", icon: "fas fa-credit-card", id: "looppay-gallery" },
 ];
 

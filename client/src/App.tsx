@@ -69,6 +69,7 @@ import ValuationAIModule from "@/pages/ai-module-valuation";
 import MortgageRiskModule from "@/pages/ai-module-mortgage-risk";
 import MarketForecastModule from "@/pages/ai-module-market-forecast";
 import AgentInsightsModule from "@/pages/ai-module-agent-insights";
+import EcosystemManager from "@/pages/ecosystem-manager";
 import Landing from "@/pages/landing";
 import NotFound from "@/pages/not-found";
 
@@ -137,6 +138,7 @@ function Router() {
       <Route path="/ai-module/mortgage-risk" component={MortgageRiskModule} />
       <Route path="/ai-module/market-forecast" component={MarketForecastModule} />
         <Route path="/ai-module/agent-insights" component={AgentInsightsModule} />
+        <Route path="/ecosystem-manager" component={EcosystemManager} />
         <Route component={NotFound} />
       </Switch>
     </ErrorBoundary>
