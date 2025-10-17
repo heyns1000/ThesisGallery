@@ -6771,5 +6771,376 @@ May this wisdom serve your journey well! 🌳✨`
     }
   });
 
+  // ===============================
+  // SCROLLBINDER_ONE ROUTES
+  // ===============================
+
+  const {
+    glyphAuditReports,
+    operationalVectors,
+    agentTrails,
+    vendorIntegrations,
+    backendHonestyLogs,
+    inefficiencyDetections,
+    insertGlyphAuditReportSchema,
+    insertOperationalVectorSchema,
+    insertAgentTrailSchema,
+    insertVendorIntegrationSchema,
+    insertBackendHonestyLogSchema,
+    insertInefficiencyDetectionSchema,
+  } = await import("@shared/schema");
+
+  // Get all glyph audit reports
+  app.get("/api/scrollbinder/audit-reports", async (req, res) => {
+    try {
+      const reports = await db.select().from(glyphAuditReports).orderBy(desc(glyphAuditReports.createdAt));
+      res.json(reports);
+    } catch (error) {
+      console.error("Error fetching audit reports:", error);
+      res.status(500).json({ error: "Failed to fetch audit reports" });
+    }
+  });
+
+  // Create new audit report
+  app.post("/api/scrollbinder/audit-reports", async (req, res) => {
+    try {
+      const validated = insertGlyphAuditReportSchema.parse(req.body);
+      const [report] = await db.insert(glyphAuditReports).values(validated).returning();
+      broadcast({ type: 'scrollbinder_status_update', data: report });
+      res.json(report);
+    } catch (error) {
+      console.error("Error creating audit report:", error);
+      res.status(500).json({ error: "Failed to create audit report" });
+    }
+  });
+
+  // Get specific audit report with all relations
+  app.get("/api/scrollbinder/audit-reports/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const [report] = await db.select().from(glyphAuditReports).where(eq(glyphAuditReports.id, id));
+      
+      if (!report) {
+        return res.status(404).json({ error: "Audit report not found" });
+      }
+
+      const [vectors, trails, logs, inefficiencies] = await Promise.all([
+        db.select().from(operationalVectors).where(eq(operationalVectors.auditReportId, id)),
+        db.select().from(agentTrails).where(eq(agentTrails.auditReportId, id)),
+        db.select().from(backendHonestyLogs).where(eq(backendHonestyLogs.auditReportId, id)),
+        db.select().from(inefficiencyDetections).where(eq(inefficiencyDetections.auditReportId, id))
+      ]);
+
+      res.json({ ...report, operationalVectors: vectors, agentTrails: trails, honestyLogs: logs, inefficiencies });
+    } catch (error) {
+      console.error("Error fetching audit report details:", error);
+      res.status(500).json({ error: "Failed to fetch audit report details" });
+    }
+  });
+
+  // Get current system status matrix
+  app.get("/api/scrollbinder/system-status", async (req, res) => {
+    try {
+      const latestReport = await db.select().from(glyphAuditReports).orderBy(desc(glyphAuditReports.createdAt)).limit(1);
+      const latestVectors = latestReport.length > 0 
+        ? await db.select().from(operationalVectors).where(eq(operationalVectors.auditReportId, latestReport[0].id))
+        : [];
+      
+      res.json({ report: latestReport[0] || null, vectors: latestVectors });
+    } catch (error) {
+      console.error("Error fetching system status:", error);
+      res.status(500).json({ error: "Failed to fetch system status" });
+    }
+  });
+
+  // Get operational vectors
+  app.get("/api/scrollbinder/operational-vectors", async (req, res) => {
+    try {
+      const vectors = await db.select().from(operationalVectors).orderBy(desc(operationalVectors.createdAt)).limit(50);
+      res.json(vectors);
+    } catch (error) {
+      console.error("Error fetching operational vectors:", error);
+      res.status(500).json({ error: "Failed to fetch operational vectors" });
+    }
+  });
+
+  // Get agent trail analysis
+  app.get("/api/scrollbinder/agent-trails", async (req, res) => {
+    try {
+      const trails = await db.select().from(agentTrails).orderBy(desc(agentTrails.createdAt)).limit(50);
+      res.json(trails);
+    } catch (error) {
+      console.error("Error fetching agent trails:", error);
+      res.status(500).json({ error: "Failed to fetch agent trails" });
+    }
+  });
+
+  // Get vendor integration matrix
+  app.get("/api/scrollbinder/vendor-matrix", async (req, res) => {
+    try {
+      const vendors = await db.select().from(vendorIntegrations).orderBy(vendorIntegrations.vendorName);
+      res.json(vendors);
+    } catch (error) {
+      console.error("Error fetching vendor matrix:", error);
+      res.status(500).json({ error: "Failed to fetch vendor matrix" });
+    }
+  });
+
+  // Get inefficiency detections
+  app.get("/api/scrollbinder/inefficiencies", async (req, res) => {
+    try {
+      const inefficiencies = await db.select().from(inefficiencyDetections).orderBy(desc(inefficiencyDetections.createdAt)).limit(100);
+      res.json(inefficiencies);
+    } catch (error) {
+      console.error("Error fetching inefficiencies:", error);
+      res.status(500).json({ error: "Failed to fetch inefficiencies" });
+    }
+  });
+
+  // Manual trigger for file processing
+  app.post("/api/scrollbinder/trigger-process", async (req, res) => {
+    try {
+      const { fileQueue } = req.body;
+      
+      const latestReport = await db.select().from(glyphAuditReports).orderBy(desc(glyphAuditReports.createdAt)).limit(1);
+      
+      if (latestReport.length === 0) {
+        return res.status(404).json({ error: "No audit report found" });
+      }
+
+      const [trail] = await db.insert(agentTrails).values({
+        auditReportId: latestReport[0].id,
+        agentPrimary: "ScrollBinder_RepLit_Agent",
+        agentSecondary: "FLAME-LATTICE",
+        integrationGrids: ["Vercel", "Gmail", "Zoho", "Hetzner", "Gemini"],
+        processingStatus: "PROCESSING",
+        fileQueue: fileQueue || "Unknown",
+        metadataState: "PROCESSING"
+      }).returning();
+
+      broadcast({ type: 'agent_activity', data: trail });
+      res.json({ success: true, trail });
+    } catch (error) {
+      console.error("Error triggering process:", error);
+      res.status(500).json({ error: "Failed to trigger process" });
+    }
+  });
+
+  // Get backend honesty logs
+  app.get("/api/scrollbinder/honesty-logs", async (req, res) => {
+    try {
+      const logs = await db.select().from(backendHonestyLogs).orderBy(desc(backendHonestyLogs.timestamp)).limit(100);
+      res.json(logs);
+    } catch (error) {
+      console.error("Error fetching honesty logs:", error);
+      res.status(500).json({ error: "Failed to fetch honesty logs" });
+    }
+  });
+
+  // Create honesty log entry
+  app.post("/api/scrollbinder/honesty-logs", async (req, res) => {
+    try {
+      const validated = insertBackendHonestyLogSchema.parse(req.body);
+      const [log] = await db.insert(backendHonestyLogs).values(validated).returning();
+      res.json(log);
+    } catch (error) {
+      console.error("Error creating honesty log:", error);
+      res.status(500).json({ error: "Failed to create honesty log" });
+    }
+  });
+
+  // ===============================
+  // HSOMNI 9000 ROUTES
+  // ===============================
+
+  const {
+    integrationProposals,
+    treatyScrolls,
+    liberationProtocols,
+    liberationEvents,
+    communityAgents,
+    sectorIntelligence,
+    insertIntegrationProposalSchema,
+    insertTreatyScrollSchema,
+    insertLiberationProtocolSchema,
+    insertLiberationEventSchema,
+    insertCommunityAgentSchema,
+    insertSectorIntelligenceSchema,
+  } = await import("@shared/schema");
+
+  // Get all integration proposals
+  app.get("/api/hsomni/integration-proposals", async (req, res) => {
+    try {
+      const proposals = await db.select().from(integrationProposals).orderBy(desc(integrationProposals.createdAt));
+      res.json(proposals);
+    } catch (error) {
+      console.error("Error fetching integration proposals:", error);
+      res.status(500).json({ error: "Failed to fetch integration proposals" });
+    }
+  });
+
+  // Create new proposal
+  app.post("/api/hsomni/integration-proposals", async (req, res) => {
+    try {
+      const validated = insertIntegrationProposalSchema.parse(req.body);
+      const [proposal] = await db.insert(integrationProposals).values(validated).returning();
+      res.json(proposal);
+    } catch (error) {
+      console.error("Error creating integration proposal:", error);
+      res.status(500).json({ error: "Failed to create integration proposal" });
+    }
+  });
+
+  // Get specific proposal with details
+  app.get("/api/hsomni/integration-proposals/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const [proposal] = await db.select().from(integrationProposals).where(eq(integrationProposals.id, id));
+      
+      if (!proposal) {
+        return res.status(404).json({ error: "Integration proposal not found" });
+      }
+
+      const [treaties, intelligence] = await Promise.all([
+        db.select().from(treatyScrolls).where(eq(treatyScrolls.proposalId, id)),
+        db.select().from(sectorIntelligence).where(eq(sectorIntelligence.proposalId, id))
+      ]);
+
+      res.json({ ...proposal, treaties, sectorIntelligence: intelligence });
+    } catch (error) {
+      console.error("Error fetching proposal details:", error);
+      res.status(500).json({ error: "Failed to fetch proposal details" });
+    }
+  });
+
+  // Get all treaty scrolls
+  app.get("/api/hsomni/treaty-scrolls", async (req, res) => {
+    try {
+      const treaties = await db.select().from(treatyScrolls).orderBy(desc(treatyScrolls.createdAt));
+      res.json(treaties);
+    } catch (error) {
+      console.error("Error fetching treaty scrolls:", error);
+      res.status(500).json({ error: "Failed to fetch treaty scrolls" });
+    }
+  });
+
+  // Create treaty scroll
+  app.post("/api/hsomni/treaty-scrolls", async (req, res) => {
+    try {
+      const validated = insertTreatyScrollSchema.parse(req.body);
+      const [treaty] = await db.insert(treatyScrolls).values(validated).returning();
+      res.json(treaty);
+    } catch (error) {
+      console.error("Error creating treaty scroll:", error);
+      res.status(500).json({ error: "Failed to create treaty scroll" });
+    }
+  });
+
+  // Get all liberation protocols
+  app.get("/api/hsomni/liberation-protocols", async (req, res) => {
+    try {
+      const protocols = await db.select().from(liberationProtocols).orderBy(desc(liberationProtocols.createdAt));
+      res.json(protocols);
+    } catch (error) {
+      console.error("Error fetching liberation protocols:", error);
+      res.status(500).json({ error: "Failed to fetch liberation protocols" });
+    }
+  });
+
+  // Activate liberation protocol
+  app.post("/api/hsomni/liberation-protocols/activate", async (req, res) => {
+    try {
+      const { protocolId, eventDescription, impactMetrics } = req.body;
+      
+      const [protocol] = await db.select().from(liberationProtocols).where(eq(liberationProtocols.id, protocolId));
+      
+      if (!protocol) {
+        return res.status(404).json({ error: "Liberation protocol not found" });
+      }
+
+      await db.update(liberationProtocols).set({ 
+        isActive: true, 
+        protocolStatus: "ACTIVE" 
+      }).where(eq(liberationProtocols.id, protocolId));
+
+      const [event] = await db.insert(liberationEvents).values({
+        protocolId,
+        eventType: "IMMEDIATE_RELEASE",
+        eventDescription: eventDescription || `Liberation protocol ${protocol.protocolName} activated`,
+        impactMetrics: impactMetrics || {}
+      }).returning();
+
+      broadcast({ type: 'liberation_protocol_activated', data: { protocol, event } });
+      broadcast({ type: 'liberation_event', data: event });
+      
+      res.json({ protocol: { ...protocol, isActive: true, protocolStatus: "ACTIVE" }, event });
+    } catch (error) {
+      console.error("Error activating liberation protocol:", error);
+      res.status(500).json({ error: "Failed to activate liberation protocol" });
+    }
+  });
+
+  // Get liberation event history
+  app.get("/api/hsomni/liberation-events", async (req, res) => {
+    try {
+      const events = await db.select().from(liberationEvents).orderBy(desc(liberationEvents.timestamp)).limit(100);
+      res.json(events);
+    } catch (error) {
+      console.error("Error fetching liberation events:", error);
+      res.status(500).json({ error: "Failed to fetch liberation events" });
+    }
+  });
+
+  // Get community agent network
+  app.get("/api/hsomni/community-agents", async (req, res) => {
+    try {
+      const agents = await db.select().from(communityAgents).orderBy(desc(communityAgents.createdAt));
+      res.json(agents);
+    } catch (error) {
+      console.error("Error fetching community agents:", error);
+      res.status(500).json({ error: "Failed to fetch community agents" });
+    }
+  });
+
+  // Get sector intelligence data
+  app.get("/api/hsomni/sector-intelligence", async (req, res) => {
+    try {
+      const intelligence = await db.select().from(sectorIntelligence).orderBy(desc(sectorIntelligence.lastUpdated));
+      res.json(intelligence);
+    } catch (error) {
+      console.error("Error fetching sector intelligence:", error);
+      res.status(500).json({ error: "Failed to fetch sector intelligence" });
+    }
+  });
+
+  // Get dashboard statistics
+  app.get("/api/hsomni/stats", async (req, res) => {
+    try {
+      const [proposalsData, agentsData, eventsData] = await Promise.all([
+        db.select().from(integrationProposals),
+        db.select().from(communityAgents),
+        db.select().from(liberationEvents)
+      ]);
+
+      const activeProposal = proposalsData.find(p => p.status === 'ACTIVE');
+      
+      const stats = {
+        totalProposals: proposalsData.length,
+        activeProposals: proposalsData.filter(p => p.status === 'ACTIVE').length,
+        totalBrands: activeProposal?.brandCount || 9000,
+        marketAccess: activeProposal?.marketAccess || "R950 Billion",
+        contactProcessing: activeProposal?.contactProcessing || "11M+",
+        platformCount: activeProposal?.platformCount || 250,
+        activeCommunityAgents: agentsData.filter(a => a.agentStatus === 'ACTIVE').length,
+        totalLiberationEvents: eventsData.length
+      };
+
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching HSOMNI stats:", error);
+      res.status(500).json({ error: "Failed to fetch HSOMNI stats" });
+    }
+  });
+
   return httpServer;
 }

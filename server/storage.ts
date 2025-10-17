@@ -110,7 +110,32 @@ import {
   type SamFoxSyncStat,
   type InsertSamFoxSyncStat,
   type SamFoxBrandProfile,
-  type InsertSamFoxBrandProfile
+  type InsertSamFoxBrandProfile,
+  // ScrollBinder_One & HSOMNI 9000 Types
+  type GlyphAuditReport,
+  type InsertGlyphAuditReport,
+  type OperationalVector,
+  type InsertOperationalVector,
+  type AgentTrail,
+  type InsertAgentTrail,
+  type VendorIntegration,
+  type InsertVendorIntegration,
+  type BackendHonestyLog,
+  type InsertBackendHonestyLog,
+  type InefficiencyDetection,
+  type InsertInefficiencyDetection,
+  type IntegrationProposal,
+  type InsertIntegrationProposal,
+  type TreatyScroll,
+  type InsertTreatyScroll,
+  type LiberationProtocol,
+  type InsertLiberationProtocol,
+  type LiberationEvent,
+  type InsertLiberationEvent,
+  type CommunityAgent,
+  type InsertCommunityAgent,
+  type SectorIntelligence,
+  type InsertSectorIntelligence
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -465,6 +490,95 @@ export interface IStorage {
       treatySync: string;
       assetBackup: string;
     };
+  }>;
+
+  // ===============================
+  // SCROLLBINDER_ONE METHODS
+  // ===============================
+
+  // Glyph Audit Reports methods
+  getGlyphAuditReports(): Promise<GlyphAuditReport[]>;
+  getGlyphAuditReport(id: string): Promise<GlyphAuditReport | undefined>;
+  createGlyphAuditReport(report: InsertGlyphAuditReport): Promise<GlyphAuditReport>;
+  updateGlyphAuditReport(id: string, updates: Partial<GlyphAuditReport>): Promise<GlyphAuditReport | undefined>;
+
+  // Operational Vectors methods
+  getOperationalVectors(): Promise<OperationalVector[]>;
+  getOperationalVectorsByAuditReport(auditReportId: string): Promise<OperationalVector[]>;
+  createOperationalVector(vector: InsertOperationalVector): Promise<OperationalVector>;
+
+  // Agent Trails methods
+  getAgentTrails(): Promise<AgentTrail[]>;
+  getAgentTrailsByAuditReport(auditReportId: string): Promise<AgentTrail[]>;
+  createAgentTrail(trail: InsertAgentTrail): Promise<AgentTrail>;
+
+  // Vendor Integrations methods
+  getVendorIntegrations(): Promise<VendorIntegration[]>;
+  getVendorIntegration(id: string): Promise<VendorIntegration | undefined>;
+  createVendorIntegration(integration: InsertVendorIntegration): Promise<VendorIntegration>;
+  updateVendorIntegration(id: string, updates: Partial<VendorIntegration>): Promise<VendorIntegration | undefined>;
+
+  // Backend Honesty Logs methods
+  getBackendHonestyLogs(): Promise<BackendHonestyLog[]>;
+  getBackendHonestyLogsByAuditReport(auditReportId: string): Promise<BackendHonestyLog[]>;
+  createBackendHonestyLog(log: InsertBackendHonestyLog): Promise<BackendHonestyLog>;
+
+  // Inefficiency Detections methods
+  getInefficiencyDetections(): Promise<InefficiencyDetection[]>;
+  getInefficiencyDetectionsByAuditReport(auditReportId: string): Promise<InefficiencyDetection[]>;
+  createInefficiencyDetection(detection: InsertInefficiencyDetection): Promise<InefficiencyDetection>;
+  updateInefficiencyDetection(id: string, updates: Partial<InefficiencyDetection>): Promise<InefficiencyDetection | undefined>;
+
+  // ===============================
+  // HSOMNI 9000 METHODS
+  // ===============================
+
+  // Integration Proposals methods
+  getIntegrationProposals(): Promise<IntegrationProposal[]>;
+  getIntegrationProposal(id: string): Promise<IntegrationProposal | undefined>;
+  createIntegrationProposal(proposal: InsertIntegrationProposal): Promise<IntegrationProposal>;
+  updateIntegrationProposal(id: string, updates: Partial<IntegrationProposal>): Promise<IntegrationProposal | undefined>;
+
+  // Treaty Scrolls methods
+  getTreatyScrolls(): Promise<TreatyScroll[]>;
+  getTreatyScrollsByProposal(proposalId: string): Promise<TreatyScroll[]>;
+  createTreatyScroll(scroll: InsertTreatyScroll): Promise<TreatyScroll>;
+  updateTreatyScroll(id: string, updates: Partial<TreatyScroll>): Promise<TreatyScroll | undefined>;
+
+  // Liberation Protocols methods
+  getLiberationProtocols(): Promise<LiberationProtocol[]>;
+  getLiberationProtocol(id: string): Promise<LiberationProtocol | undefined>;
+  createLiberationProtocol(protocol: InsertLiberationProtocol): Promise<LiberationProtocol>;
+  updateLiberationProtocol(id: string, updates: Partial<LiberationProtocol>): Promise<LiberationProtocol | undefined>;
+  activateLiberationProtocol(id: string): Promise<LiberationProtocol | undefined>;
+
+  // Liberation Events methods
+  getLiberationEvents(): Promise<LiberationEvent[]>;
+  getLiberationEventsByProtocol(protocolId: string): Promise<LiberationEvent[]>;
+  createLiberationEvent(event: InsertLiberationEvent): Promise<LiberationEvent>;
+
+  // Community Agents methods
+  getCommunityAgents(): Promise<CommunityAgent[]>;
+  getCommunityAgent(id: string): Promise<CommunityAgent | undefined>;
+  createCommunityAgent(agent: InsertCommunityAgent): Promise<CommunityAgent>;
+  updateCommunityAgent(id: string, updates: Partial<CommunityAgent>): Promise<CommunityAgent | undefined>;
+
+  // Sector Intelligence methods
+  getSectorIntelligence(): Promise<SectorIntelligence[]>;
+  getSectorIntelligenceByProposal(proposalId: string): Promise<SectorIntelligence[]>;
+  getSectorIntelligenceBySector(sectorId: string): Promise<SectorIntelligence[]>;
+  createSectorIntelligence(intelligence: InsertSectorIntelligence): Promise<SectorIntelligence>;
+
+  // HSOMNI Dashboard Stats
+  getHsomniStats(): Promise<{
+    totalProposals: number;
+    activeProposals: number;
+    totalBrands: number;
+    marketAccess: string;
+    contactProcessing: string;
+    platformCount: number;
+    activeCommunityAgents: number;
+    totalLiberationEvents: number;
   }>;
 }
 

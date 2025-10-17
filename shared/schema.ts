@@ -1339,6 +1339,139 @@ export const crateDanceAuditions = pgTable("crate_dance_auditions", {
   metadata: json("metadata"),
 });
 
+// ===============================
+// SCROLLBINDER_ONE GLYPH AUDIT SYSTEM
+// ===============================
+
+export const glyphAuditReports = pgTable("glyph_audit_reports", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  emissionProtocol: varchar("emission_protocol").notNull(),
+  flameLattice: varchar("flame_lattice").notNull(),
+  authUser: varchar("auth_user").notNull(),
+  systemStatus: jsonb("system_status"),
+  inefficiencyData: jsonb("inefficiency_data"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const operationalVectors = pgTable("operational_vectors", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  auditReportId: varchar("audit_report_id").references(() => glyphAuditReports.id),
+  coreEngine: varchar("core_engine").notNull(),
+  engineStatus: varchar("engine_status").notNull(),
+  zeroClickIngestion: varchar("zero_click_ingestion").notNull(),
+  vaultMeshProtocol: varchar("vault_mesh_protocol").notNull(),
+  bridgeSequence: varchar("bridge_sequence").notNull(),
+  fileProcessing: varchar("file_processing").notNull(),
+  aiInsightsLayer: varchar("ai_insights_layer").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const agentTrails = pgTable("agent_trails", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  auditReportId: varchar("audit_report_id").references(() => glyphAuditReports.id),
+  agentPrimary: varchar("agent_primary").notNull(),
+  agentSecondary: varchar("agent_secondary").notNull(),
+  integrationGrids: text("integration_grids").array().notNull(),
+  processingStatus: varchar("processing_status").notNull(),
+  fileQueue: varchar("file_queue"),
+  metadataState: varchar("metadata_state").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const vendorIntegrations = pgTable("vendor_integrations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  vendorName: varchar("vendor_name").notNull(),
+  connectionStatus: varchar("connection_status").notNull(),
+  integrationPath: varchar("integration_path").notNull(),
+  lastSyncAt: timestamp("last_sync_at"),
+  isActive: boolean("is_active").default(true),
+  metadata: jsonb("metadata"),
+});
+
+export const backendHonestyLogs = pgTable("backend_honesty_logs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  auditReportId: varchar("audit_report_id").references(() => glyphAuditReports.id),
+  currentReality: text("current_reality").notNull(),
+  timestamp: timestamp("timestamp").defaultNow().notNull(),
+  logLevel: varchar("log_level").notNull(),
+});
+
+export const inefficiencyDetections = pgTable("inefficiency_detections", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  auditReportId: varchar("audit_report_id").references(() => glyphAuditReports.id),
+  detectionType: varchar("detection_type").notNull(),
+  description: text("description").notNull(),
+  severity: varchar("severity").notNull(),
+  isResolved: boolean("is_resolved").default(false),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// ===============================
+// HSOMNI 9000 INTEGRATION PLATFORM
+// ===============================
+
+export const integrationProposals = pgTable("integration_proposals", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: varchar("title").notNull(),
+  executiveSummary: text("executive_summary").notNull(),
+  brandCount: integer("brand_count").notNull(),
+  marketAccess: varchar("market_access").notNull(),
+  contactProcessing: varchar("contact_processing").notNull(),
+  platformCount: integer("platform_count").notNull(),
+  status: varchar("status").default("DRAFT"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const treatyScrolls = pgTable("treaty_scrolls", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  proposalId: varchar("proposal_id").references(() => integrationProposals.id),
+  scrollName: varchar("scroll_name").notNull(),
+  treatyType: varchar("treaty_type").notNull(),
+  complianceStatus: varchar("compliance_status").notNull(),
+  automationEnabled: boolean("automation_enabled").default(false),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const liberationProtocols = pgTable("liberation_protocols", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  protocolName: varchar("protocol_name").notNull(),
+  protocolStatus: varchar("protocol_status").notNull(),
+  description: text("description").notNull(),
+  isActive: boolean("is_active").default(false),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const liberationEvents = pgTable("liberation_events", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  protocolId: varchar("protocol_id").references(() => liberationProtocols.id),
+  eventType: varchar("event_type").notNull(),
+  eventDescription: text("event_description").notNull(),
+  impactMetrics: jsonb("impact_metrics"),
+  timestamp: timestamp("timestamp").defaultNow().notNull(),
+});
+
+export const communityAgents = pgTable("community_agents", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  agentName: varchar("agent_name").notNull(),
+  agentStatus: varchar("agent_status").notNull(),
+  earningsMin: decimal("earnings_min", { precision: 10, scale: 2 }).notNull(),
+  earningsMax: decimal("earnings_max", { precision: 10, scale: 2 }).notNull(),
+  currency: varchar("currency").default("ZAR"),
+  townshipEconomy: boolean("township_economy").default(true),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const sectorIntelligence = pgTable("sector_intelligence", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  proposalId: varchar("proposal_id").references(() => integrationProposals.id),
+  sectorId: varchar("sector_id").references(() => sectors.id),
+  relationshipType: varchar("relationship_type").notNull(),
+  intelligenceData: jsonb("intelligence_data"),
+  lastUpdated: timestamp("last_updated").defaultNow().notNull(),
+});
+
 // Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -3043,3 +3176,102 @@ export const insertSamFoxBrandProfileSchema = createInsertSchema(samFoxBrandProf
 
 export type SamFoxBrandProfile = typeof samFoxBrandProfiles.$inferSelect;
 export type InsertSamFoxBrandProfile = z.infer<typeof insertSamFoxBrandProfileSchema>;
+
+// ===============================
+// SCROLLBINDER_ONE & HSOMNI 9000 SCHEMAS
+// ===============================
+
+// ScrollBinder_One Insert Schemas
+export const insertGlyphAuditReportSchema = createInsertSchema(glyphAuditReports).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertOperationalVectorSchema = createInsertSchema(operationalVectors).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertAgentTrailSchema = createInsertSchema(agentTrails).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertVendorIntegrationSchema = createInsertSchema(vendorIntegrations).omit({
+  id: true,
+});
+
+export const insertBackendHonestyLogSchema = createInsertSchema(backendHonestyLogs).omit({
+  id: true,
+  timestamp: true,
+});
+
+export const insertInefficiencyDetectionSchema = createInsertSchema(inefficiencyDetections).omit({
+  id: true,
+  createdAt: true,
+});
+
+// HSOMNI 9000 Insert Schemas
+export const insertIntegrationProposalSchema = createInsertSchema(integrationProposals).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertTreatyScrollSchema = createInsertSchema(treatyScrolls).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertLiberationProtocolSchema = createInsertSchema(liberationProtocols).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertLiberationEventSchema = createInsertSchema(liberationEvents).omit({
+  id: true,
+  timestamp: true,
+});
+
+export const insertCommunityAgentSchema = createInsertSchema(communityAgents).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertSectorIntelligenceSchema = createInsertSchema(sectorIntelligence).omit({
+  id: true,
+  lastUpdated: true,
+});
+
+// ScrollBinder_One Type Exports
+export type GlyphAuditReport = typeof glyphAuditReports.$inferSelect;
+export type OperationalVector = typeof operationalVectors.$inferSelect;
+export type AgentTrail = typeof agentTrails.$inferSelect;
+export type VendorIntegration = typeof vendorIntegrations.$inferSelect;
+export type BackendHonestyLog = typeof backendHonestyLogs.$inferSelect;
+export type InefficiencyDetection = typeof inefficiencyDetections.$inferSelect;
+
+// HSOMNI 9000 Type Exports
+export type IntegrationProposal = typeof integrationProposals.$inferSelect;
+export type TreatyScroll = typeof treatyScrolls.$inferSelect;
+export type LiberationProtocol = typeof liberationProtocols.$inferSelect;
+export type LiberationEvent = typeof liberationEvents.$inferSelect;
+export type CommunityAgent = typeof communityAgents.$inferSelect;
+export type SectorIntelligence = typeof sectorIntelligence.$inferSelect;
+
+// ScrollBinder_One Insert Type Exports
+export type InsertGlyphAuditReport = z.infer<typeof insertGlyphAuditReportSchema>;
+export type InsertOperationalVector = z.infer<typeof insertOperationalVectorSchema>;
+export type InsertAgentTrail = z.infer<typeof insertAgentTrailSchema>;
+export type InsertVendorIntegration = z.infer<typeof insertVendorIntegrationSchema>;
+export type InsertBackendHonestyLog = z.infer<typeof insertBackendHonestyLogSchema>;
+export type InsertInefficiencyDetection = z.infer<typeof insertInefficiencyDetectionSchema>;
+
+// HSOMNI 9000 Insert Type Exports
+export type InsertIntegrationProposal = z.infer<typeof insertIntegrationProposalSchema>;
+export type InsertTreatyScroll = z.infer<typeof insertTreatyScrollSchema>;
+export type InsertLiberationProtocol = z.infer<typeof insertLiberationProtocolSchema>;
+export type InsertLiberationEvent = z.infer<typeof insertLiberationEventSchema>;
+export type InsertCommunityAgent = z.infer<typeof insertCommunityAgentSchema>;
+export type InsertSectorIntelligence = z.infer<typeof insertSectorIntelligenceSchema>;
