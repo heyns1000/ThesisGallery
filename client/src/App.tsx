@@ -46,6 +46,7 @@ import AdvancedPayrollDashboard from "@/pages/advanced-payroll-dashboard";
 import TeamOnboarding from "@/pages/team-onboarding";
 import ContactManagement from "@/pages/contact-management";
 import BanimalPlatform from "@/pages/banimal-platform";
+import BanimalConnector from "@/pages/banimal-connector";
 import SeedlingLanguageLearning from "@/pages/seedling-language-learning";
 import DataPipeline from "@/pages/data-pipeline";
 import EmailSystemPage from "@/pages/email-system";
@@ -123,6 +124,7 @@ function Router() {
       <Route path="/team-onboarding" component={TeamOnboarding} />
       <Route path="/contact-management" component={ContactManagement} />
       <Route path="/banimal-platform" component={BanimalPlatform} />
+      <Route path="/banimal-connector" component={BanimalConnector} />
       <Route path="/seedling-language-learning" component={SeedlingLanguageLearning} />
       <Route path="/data-pipeline" component={DataPipeline} />
       <Route path="/email-system" component={EmailSystemPage} />

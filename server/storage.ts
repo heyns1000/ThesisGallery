@@ -30,6 +30,10 @@ import {
   type InsertBanimalOrder,
   type BanimalCustomer,
   type InsertBanimalCustomer,
+  type BanimalConnection,
+  type InsertBanimalConnection,
+  type BanimalSyncLog,
+  type InsertBanimalSyncLog,
   type DataImport,
   type InsertDataImport,
   type CrateDanceEvent,
@@ -171,6 +175,18 @@ export interface IStorage {
   createBanimalCustomer(customer: InsertBanimalCustomer): Promise<BanimalCustomer>;
   updateBanimalCustomer(id: string, updates: Partial<BanimalCustomer>): Promise<BanimalCustomer | undefined>;
 
+  // Banimal connector methods
+  getBanimalConnections(): Promise<BanimalConnection[]>;
+  getBanimalConnection(id: string): Promise<BanimalConnection | undefined>;
+  createBanimalConnection(connection: InsertBanimalConnection): Promise<BanimalConnection>;
+  updateBanimalConnection(id: string, updates: Partial<BanimalConnection>): Promise<BanimalConnection | undefined>;
+  deleteBanimalConnection(id: string): Promise<boolean>;
+
+  getBanimalSyncLogs(filters?: { connectionId?: string; syncType?: string; status?: string }): Promise<BanimalSyncLog[]>;
+  getBanimalSyncLog(id: string): Promise<BanimalSyncLog | undefined>;
+  createBanimalSyncLog(log: InsertBanimalSyncLog): Promise<BanimalSyncLog>;
+  updateBanimalSyncLog(id: string, updates: Partial<BanimalSyncLog>): Promise<BanimalSyncLog | undefined>;
+
   // ===============================
   // EMAIL SYSTEM METHODS
   // ===============================
@@ -291,6 +307,8 @@ export class MemStorage implements IStorage {
   private banimalProducts: Map<string, BanimalProduct> = new Map();
   private banimalOrders: Map<string, BanimalOrder> = new Map();
   private banimalCustomers: Map<string, BanimalCustomer> = new Map();
+  private banimalConnections: Map<string, BanimalConnection> = new Map();
+  private banimalSyncLogs: Map<string, BanimalSyncLog> = new Map();
   private emailProviders: Map<string, EmailProvider> = new Map();
   private emailTemplates: Map<string, EmailTemplate> = new Map();
   private emailCampaigns: Map<string, EmailCampaign> = new Map();
@@ -1013,6 +1031,108 @@ export class MemStorage implements IStorage {
     
     const updated = { ...existing, ...updates, updatedAt: new Date() };
     this.banimalCustomers.set(id, updated);
+    return updated;
+  }
+
+  // Banimal connector methods
+  async getBanimalConnections(): Promise<BanimalConnection[]> {
+    return Array.from(this.banimalConnections.values()).sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }
+
+  async getBanimalConnection(id: string): Promise<BanimalConnection | undefined> {
+    return this.banimalConnections.get(id);
+  }
+
+  async createBanimalConnection(insertConnection: InsertBanimalConnection): Promise<BanimalConnection> {
+    const id = randomUUID();
+    const now = new Date();
+    const connection: BanimalConnection = {
+      ...insertConnection,
+      id,
+      createdAt: now,
+      updatedAt: now,
+      connectionName: insertConnection.connectionName || "Banimal WordPress API",
+      status: insertConnection.status || "disconnected",
+      totalSyncs: insertConnection.totalSyncs || 0,
+      successfulSyncs: insertConnection.successfulSyncs || 0,
+      failedSyncs: insertConnection.failedSyncs || 0,
+      autoSyncEnabled: insertConnection.autoSyncEnabled !== undefined ? insertConnection.autoSyncEnabled : false,
+      syncIntervalMinutes: insertConnection.syncIntervalMinutes || 60,
+      apiKey: insertConnection.apiKey || null,
+      lastConnectionTest: insertConnection.lastConnectionTest || null,
+      lastSuccessfulSync: insertConnection.lastSuccessfulSync || null,
+      metadata: insertConnection.metadata || null,
+    };
+    this.banimalConnections.set(id, connection);
+    return connection;
+  }
+
+  async updateBanimalConnection(id: string, updates: Partial<BanimalConnection>): Promise<BanimalConnection | undefined> {
+    const existing = this.banimalConnections.get(id);
+    if (!existing) return undefined;
+    
+    const updated = { ...existing, ...updates, updatedAt: new Date() };
+    this.banimalConnections.set(id, updated);
+    return updated;
+  }
+
+  async deleteBanimalConnection(id: string): Promise<boolean> {
+    return this.banimalConnections.delete(id);
+  }
+
+  async getBanimalSyncLogs(filters?: { connectionId?: string; syncType?: string; status?: string }): Promise<BanimalSyncLog[]> {
+    let logs = Array.from(this.banimalSyncLogs.values());
+
+    if (filters?.connectionId) {
+      logs = logs.filter(log => log.connectionId === filters.connectionId);
+    }
+    if (filters?.syncType) {
+      logs = logs.filter(log => log.syncType === filters.syncType);
+    }
+    if (filters?.status) {
+      logs = logs.filter(log => log.status === filters.status);
+    }
+
+    return logs.sort(
+      (a, b) => new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime()
+    );
+  }
+
+  async getBanimalSyncLog(id: string): Promise<BanimalSyncLog | undefined> {
+    return this.banimalSyncLogs.get(id);
+  }
+
+  async createBanimalSyncLog(insertLog: InsertBanimalSyncLog): Promise<BanimalSyncLog> {
+    const id = randomUUID();
+    const now = new Date();
+    const log: BanimalSyncLog = {
+      ...insertLog,
+      id,
+      startedAt: insertLog.startedAt || now,
+      recordsProcessed: insertLog.recordsProcessed || 0,
+      recordsSuccess: insertLog.recordsSuccess || 0,
+      recordsFailed: insertLog.recordsFailed || 0,
+      triggeredBy: insertLog.triggeredBy || "manual",
+      connectionId: insertLog.connectionId || null,
+      errorMessage: insertLog.errorMessage || null,
+      errorDetails: insertLog.errorDetails || null,
+      syncData: insertLog.syncData || null,
+      duration: insertLog.duration || null,
+      completedAt: insertLog.completedAt || null,
+      metadata: insertLog.metadata || null,
+    };
+    this.banimalSyncLogs.set(id, log);
+    return log;
+  }
+
+  async updateBanimalSyncLog(id: string, updates: Partial<BanimalSyncLog>): Promise<BanimalSyncLog | undefined> {
+    const existing = this.banimalSyncLogs.get(id);
+    if (!existing) return undefined;
+    
+    const updated = { ...existing, ...updates };
+    this.banimalSyncLogs.set(id, updated);
     return updated;
   }
 

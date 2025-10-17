@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
+import { z } from "zod";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
@@ -24,6 +25,8 @@ import {
   insertBanimalProductSchema,
   insertBanimalOrderSchema,
   insertBanimalCustomerSchema,
+  insertBanimalConnectionSchema,
+  insertBanimalSyncLogSchema,
   insertLanguageLearningSchema,
   insertSeedlingLanguageProgressSchema,
   insertLanguageLearningSessionSchema,
@@ -3952,6 +3955,372 @@ May this wisdom serve your journey well! 🌳✨`
     } catch (error) {
       console.error("Error processing vault payment:", error);
       res.status(500).json({ error: "Failed to process vault payment" });
+    }
+  });
+
+  // ===============================
+  // BANIMAL CONNECTOR ROUTES
+  // ===============================
+
+  // Connection Management
+  app.get('/api/banimal/connections', async (req, res) => {
+    try {
+      const connections = await storage.getBanimalConnections();
+      res.json(connections);
+    } catch (error) {
+      console.error('Error fetching Banimal connections:', error);
+      res.status(500).json({ error: 'Failed to fetch connections' });
+    }
+  });
+
+  app.get('/api/banimal/connections/:id', async (req, res) => {
+    try {
+      const connection = await storage.getBanimalConnection(req.params.id);
+      if (!connection) {
+        return res.status(404).json({ error: 'Connection not found' });
+      }
+      res.json(connection);
+    } catch (error) {
+      console.error('Error fetching Banimal connection:', error);
+      res.status(500).json({ error: 'Failed to fetch connection' });
+    }
+  });
+
+  app.post('/api/banimal/connections', async (req, res) => {
+    try {
+      const validated = insertBanimalConnectionSchema.parse(req.body);
+      const connection = await storage.createBanimalConnection(validated);
+      broadcast({ type: 'banimal_connection_created', data: connection });
+      res.json(connection);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: 'Validation failed', details: error.errors });
+      }
+      console.error('Error creating Banimal connection:', error);
+      res.status(500).json({ error: 'Failed to create connection' });
+    }
+  });
+
+  app.patch('/api/banimal/connections/:id', async (req, res) => {
+    try {
+      const validated = insertBanimalConnectionSchema.partial().parse(req.body);
+      const connection = await storage.updateBanimalConnection(req.params.id, validated);
+      if (!connection) {
+        return res.status(404).json({ error: 'Connection not found' });
+      }
+      broadcast({ type: 'banimal_connection_updated', data: connection });
+      res.json(connection);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: 'Validation failed', details: error.errors });
+      }
+      console.error('Error updating Banimal connection:', error);
+      res.status(500).json({ error: 'Failed to update connection' });
+    }
+  });
+
+  app.delete('/api/banimal/connections/:id', async (req, res) => {
+    try {
+      const deleted = await storage.deleteBanimalConnection(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ error: 'Connection not found' });
+      }
+      broadcast({ type: 'banimal_connection_deleted', data: { id: req.params.id } });
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error deleting Banimal connection:', error);
+      res.status(500).json({ error: 'Failed to delete connection' });
+    }
+  });
+
+  // Connection Testing
+  app.post('/api/banimal/connections/:id/test', async (req, res) => {
+    try {
+      const connection = await storage.getBanimalConnection(req.params.id);
+      if (!connection) {
+        return res.status(404).json({ error: 'Connection not found' });
+      }
+
+      // Test the WordPress API connection
+      const testUrl = `${connection.apiBaseUrl}/test`;
+      let status = 'connected';
+      let message = 'Connection successful';
+      
+      try {
+        const response = await fetch(testUrl, { 
+          method: 'GET',
+          headers: connection.apiKey ? { 'Authorization': `Bearer ${connection.apiKey}` } : {}
+        });
+        
+        if (!response.ok) {
+          status = 'error';
+          message = `Connection failed: ${response.statusText}`;
+        }
+      } catch (fetchError: any) {
+        status = 'error';
+        message = `Connection failed: ${fetchError.message}`;
+      }
+
+      // Update connection status
+      const updated = await storage.updateBanimalConnection(req.params.id, {
+        status,
+        lastConnectionTest: new Date()
+      });
+
+      broadcast({ type: 'banimal_connection_tested', data: { id: req.params.id, status, message } });
+      res.json({ status, message, connection: updated });
+    } catch (error) {
+      console.error('Error testing Banimal connection:', error);
+      res.status(500).json({ error: 'Failed to test connection' });
+    }
+  });
+
+  // Sync Logs
+  app.get('/api/banimal/sync-logs', async (req, res) => {
+    try {
+      const filters = {
+        connectionId: req.query.connectionId as string | undefined,
+        syncType: req.query.syncType as string | undefined,
+        status: req.query.status as string | undefined,
+      };
+      const logs = await storage.getBanimalSyncLogs(filters);
+      res.json(logs);
+    } catch (error) {
+      console.error('Error fetching Banimal sync logs:', error);
+      res.status(500).json({ error: 'Failed to fetch sync logs' });
+    }
+  });
+
+  app.get('/api/banimal/sync-logs/:id', async (req, res) => {
+    try {
+      const log = await storage.getBanimalSyncLog(req.params.id);
+      if (!log) {
+        return res.status(404).json({ error: 'Sync log not found' });
+      }
+      res.json(log);
+    } catch (error) {
+      console.error('Error fetching Banimal sync log:', error);
+      res.status(500).json({ error: 'Failed to fetch sync log' });
+    }
+  });
+
+  app.post('/api/banimal/sync-logs', async (req, res) => {
+    try {
+      const validated = insertBanimalSyncLogSchema.parse(req.body);
+      const log = await storage.createBanimalSyncLog(validated);
+      broadcast({ type: 'banimal_sync_log_created', data: log });
+      res.json(log);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: 'Validation failed', details: error.errors });
+      }
+      console.error('Error creating Banimal sync log:', error);
+      res.status(500).json({ error: 'Failed to create sync log' });
+    }
+  });
+
+  // Sync Operations
+  app.post('/api/banimal/sync/user-profile', async (req, res) => {
+    try {
+      const { connectionId, userId, userData } = req.body;
+      const connection = await storage.getBanimalConnection(connectionId);
+      
+      if (!connection) {
+        return res.status(404).json({ error: 'Connection not found' });
+      }
+
+      const startTime = Date.now();
+      const syncUrl = `${connection.apiBaseUrl}/update-user-profile`;
+      
+      let syncStatus = 'success';
+      let errorMessage = null;
+      
+      try {
+        const response = await fetch(syncUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(connection.apiKey ? { 'Authorization': `Bearer ${connection.apiKey}` } : {})
+          },
+          body: JSON.stringify({ user_id: userId, ...userData })
+        });
+
+        if (!response.ok) {
+          syncStatus = 'failed';
+          errorMessage = `Sync failed: ${response.statusText}`;
+        }
+      } catch (fetchError: any) {
+        syncStatus = 'failed';
+        errorMessage = `Sync failed: ${fetchError.message}`;
+      }
+
+      const duration = Date.now() - startTime;
+
+      // Log the sync
+      const log = await storage.createBanimalSyncLog({
+        connectionId,
+        syncType: 'user-profile',
+        direction: 'push',
+        status: syncStatus,
+        recordsProcessed: 1,
+        recordsSuccess: syncStatus === 'success' ? 1 : 0,
+        recordsFailed: syncStatus === 'failed' ? 1 : 0,
+        errorMessage,
+        syncData: { userId, userData },
+        duration,
+        triggeredBy: 'manual',
+        completedAt: new Date()
+      });
+
+      // Update connection stats
+      await storage.updateBanimalConnection(connectionId, {
+        totalSyncs: connection.totalSyncs + 1,
+        successfulSyncs: syncStatus === 'success' ? connection.successfulSyncs + 1 : connection.successfulSyncs,
+        failedSyncs: syncStatus === 'failed' ? connection.failedSyncs + 1 : connection.failedSyncs,
+        lastSuccessfulSync: syncStatus === 'success' ? new Date() : connection.lastSuccessfulSync
+      });
+
+      broadcast({ type: 'banimal_user_profile_synced', data: log });
+      res.json({ success: syncStatus === 'success', log });
+    } catch (error) {
+      console.error('Error syncing user profile:', error);
+      res.status(500).json({ error: 'Failed to sync user profile' });
+    }
+  });
+
+  app.post('/api/banimal/sync/user-product', async (req, res) => {
+    try {
+      const { connectionId, userId, productSku, productName } = req.body;
+      const connection = await storage.getBanimalConnection(connectionId);
+      
+      if (!connection) {
+        return res.status(404).json({ error: 'Connection not found' });
+      }
+
+      const startTime = Date.now();
+      const syncUrl = `${connection.apiBaseUrl}/sync-user-product`;
+      
+      let syncStatus = 'success';
+      let errorMessage = null;
+      
+      try {
+        const response = await fetch(syncUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(connection.apiKey ? { 'Authorization': `Bearer ${connection.apiKey}` } : {})
+          },
+          body: JSON.stringify({ user_id: userId, product_sku: productSku, product_name: productName })
+        });
+
+        if (!response.ok) {
+          syncStatus = 'failed';
+          errorMessage = `Sync failed: ${response.statusText}`;
+        }
+      } catch (fetchError: any) {
+        syncStatus = 'failed';
+        errorMessage = `Sync failed: ${fetchError.message}`;
+      }
+
+      const duration = Date.now() - startTime;
+
+      // Log the sync
+      const log = await storage.createBanimalSyncLog({
+        connectionId,
+        syncType: 'user-product',
+        direction: 'push',
+        status: syncStatus,
+        recordsProcessed: 1,
+        recordsSuccess: syncStatus === 'success' ? 1 : 0,
+        recordsFailed: syncStatus === 'failed' ? 1 : 0,
+        errorMessage,
+        syncData: { userId, productSku, productName },
+        duration,
+        triggeredBy: 'manual',
+        completedAt: new Date()
+      });
+
+      // Update connection stats
+      await storage.updateBanimalConnection(connectionId, {
+        totalSyncs: connection.totalSyncs + 1,
+        successfulSyncs: syncStatus === 'success' ? connection.successfulSyncs + 1 : connection.successfulSyncs,
+        failedSyncs: syncStatus === 'failed' ? connection.failedSyncs + 1 : connection.failedSyncs,
+        lastSuccessfulSync: syncStatus === 'success' ? new Date() : connection.lastSuccessfulSync
+      });
+
+      broadcast({ type: 'banimal_user_product_synced', data: log });
+      res.json({ success: syncStatus === 'success', log });
+    } catch (error) {
+      console.error('Error syncing user-product:', error);
+      res.status(500).json({ error: 'Failed to sync user-product' });
+    }
+  });
+
+  app.post('/api/banimal/sync/product', async (req, res) => {
+    try {
+      const { connectionId, productData } = req.body;
+      const connection = await storage.getBanimalConnection(connectionId);
+      
+      if (!connection) {
+        return res.status(404).json({ error: 'Connection not found' });
+      }
+
+      const startTime = Date.now();
+      const syncUrl = `${connection.apiBaseUrl}/create-or-update-product`;
+      
+      let syncStatus = 'success';
+      let errorMessage = null;
+      
+      try {
+        const response = await fetch(syncUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(connection.apiKey ? { 'Authorization': `Bearer ${connection.apiKey}` } : {})
+          },
+          body: JSON.stringify(productData)
+        });
+
+        if (!response.ok) {
+          syncStatus = 'failed';
+          errorMessage = `Sync failed: ${response.statusText}`;
+        }
+      } catch (fetchError: any) {
+        syncStatus = 'failed';
+        errorMessage = `Sync failed: ${fetchError.message}`;
+      }
+
+      const duration = Date.now() - startTime;
+
+      // Log the sync
+      const log = await storage.createBanimalSyncLog({
+        connectionId,
+        syncType: 'product-create',
+        direction: 'push',
+        status: syncStatus,
+        recordsProcessed: 1,
+        recordsSuccess: syncStatus === 'success' ? 1 : 0,
+        recordsFailed: syncStatus === 'failed' ? 1 : 0,
+        errorMessage,
+        syncData: { productData },
+        duration,
+        triggeredBy: 'manual',
+        completedAt: new Date()
+      });
+
+      // Update connection stats
+      await storage.updateBanimalConnection(connectionId, {
+        totalSyncs: connection.totalSyncs + 1,
+        successfulSyncs: syncStatus === 'success' ? connection.successfulSyncs + 1 : connection.successfulSyncs,
+        failedSyncs: syncStatus === 'failed' ? connection.failedSyncs + 1 : connection.failedSyncs,
+        lastSuccessfulSync: syncStatus === 'success' ? new Date() : connection.lastSuccessfulSync
+      });
+
+      broadcast({ type: 'banimal_product_synced', data: log });
+      res.json({ success: syncStatus === 'success', log });
+    } catch (error) {
+      console.error('Error syncing product:', error);
+      res.status(500).json({ error: 'Failed to sync product' });
     }
   });
 

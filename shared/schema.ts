@@ -1095,6 +1095,44 @@ export const banimalCustomers = pgTable("banimal_customers", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+// Banimal WordPress Connector Infrastructure
+export const banimalConnections = pgTable("banimal_connections", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  connectionName: text("connection_name").notNull().default("Banimal WordPress API"),
+  apiBaseUrl: text("api_base_url").notNull(), // https://www.banimal.co.za/wp-json/banimal/v1
+  apiKey: text("api_key"), // Optional API authentication
+  status: text("status").default("disconnected"), // connected, disconnected, error
+  lastConnectionTest: timestamp("last_connection_test"),
+  lastSuccessfulSync: timestamp("last_successful_sync"),
+  totalSyncs: integer("total_syncs").default(0),
+  successfulSyncs: integer("successful_syncs").default(0),
+  failedSyncs: integer("failed_syncs").default(0),
+  autoSyncEnabled: boolean("auto_sync_enabled").default(false),
+  syncIntervalMinutes: integer("sync_interval_minutes").default(60),
+  metadata: json("metadata"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const banimalSyncLogs = pgTable("banimal_sync_logs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  connectionId: varchar("connection_id").references(() => banimalConnections.id),
+  syncType: text("sync_type").notNull(), // user-profile, user-product, product-create, full-sync
+  direction: text("direction").notNull(), // push, pull, bidirectional
+  status: text("status").notNull(), // success, failed, partial
+  recordsProcessed: integer("records_processed").default(0),
+  recordsSuccess: integer("records_success").default(0),
+  recordsFailed: integer("records_failed").default(0),
+  errorMessage: text("error_message"),
+  errorDetails: json("error_details"),
+  syncData: json("sync_data"), // Snapshot of what was synced
+  duration: integer("duration"), // milliseconds
+  triggeredBy: text("triggered_by").default("manual"), // manual, automatic, scheduled
+  startedAt: timestamp("started_at").defaultNow().notNull(),
+  completedAt: timestamp("completed_at"),
+  metadata: json("metadata"),
+});
+
 // Data Processing and Import Tracking
 export const dataImports = pgTable("data_imports", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -1729,6 +1767,39 @@ export const insertBanimalCustomerSchema = createInsertSchema(banimalCustomers).
   metadata: true,
 });
 
+export const insertBanimalConnectionSchema = createInsertSchema(banimalConnections).pick({
+  connectionName: true,
+  apiBaseUrl: true,
+  apiKey: true,
+  status: true,
+  lastConnectionTest: true,
+  lastSuccessfulSync: true,
+  totalSyncs: true,
+  successfulSyncs: true,
+  failedSyncs: true,
+  autoSyncEnabled: true,
+  syncIntervalMinutes: true,
+  metadata: true,
+});
+
+export const insertBanimalSyncLogSchema = createInsertSchema(banimalSyncLogs).pick({
+  connectionId: true,
+  syncType: true,
+  direction: true,
+  status: true,
+  recordsProcessed: true,
+  recordsSuccess: true,
+  recordsFailed: true,
+  errorMessage: true,
+  errorDetails: true,
+  syncData: true,
+  duration: true,
+  triggeredBy: true,
+  startedAt: true,
+  completedAt: true,
+  metadata: true,
+});
+
 export const insertDataImportSchema = createInsertSchema(dataImports).pick({
   fileName: true,
   fileSize: true,
@@ -1794,6 +1865,12 @@ export type BanimalOrder = typeof banimalOrders.$inferSelect;
 
 export type InsertBanimalCustomer = z.infer<typeof insertBanimalCustomerSchema>;
 export type BanimalCustomer = typeof banimalCustomers.$inferSelect;
+
+export type InsertBanimalConnection = z.infer<typeof insertBanimalConnectionSchema>;
+export type BanimalConnection = typeof banimalConnections.$inferSelect;
+
+export type InsertBanimalSyncLog = z.infer<typeof insertBanimalSyncLogSchema>;
+export type BanimalSyncLog = typeof banimalSyncLogs.$inferSelect;
 
 export type InsertDataImport = z.infer<typeof insertDataImportSchema>;
 export type DataImport = typeof dataImports.$inferSelect;
