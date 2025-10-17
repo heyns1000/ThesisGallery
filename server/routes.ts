@@ -5644,5 +5644,274 @@ May this wisdom serve your journey well! 🌳✨`
     }
   });
 
+  // ===============================
+  // ORCHESTRATION API ROUTES
+  // CodeNest orchestration endpoints that tie together R2 storage, 
+  // HotStack deployments, and async job queue for full deployment flow
+  // ===============================
+
+  // POST /api/orchestrate/deploy - Upload files to R2 and create deployment job
+  app.post("/api/orchestrate/deploy", isAuthenticated, upload.single('file'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded" });
+      }
+
+      const { CloudflareService } = await import('./cloudflare-service');
+      const cloudflareService = new CloudflareService();
+
+      // Read file content
+      const fileContent = fs.readFileSync(req.file.path);
+      
+      // Generate unique object key for R2
+      const timestamp = Date.now();
+      const objectKey = `deployments/${timestamp}/${req.file.originalname}`;
+      const bucketName = req.body.bucketName || 'hotstack-bucket';
+
+      // Upload file to R2
+      const uploadResult = await cloudflareService.uploadFileToR2(
+        bucketName,
+        objectKey,
+        fileContent,
+        req.file.mimetype
+      );
+
+      if (!uploadResult.success) {
+        // Clean up local file
+        fs.unlinkSync(req.file.path);
+        return res.status(500).json({ 
+          error: "Failed to upload file to R2",
+          details: uploadResult.error 
+        });
+      }
+
+      // Create deployment job with R2 object key in metadata
+      const jobData = insertDeploymentJobSchema.parse({
+        jobType: "deploy",
+        status: "pending",
+        payload: {
+          fileName: req.file.originalname,
+          fileSize: req.file.size,
+          contentType: req.file.mimetype,
+          bucketName,
+          objectKey,
+          deploymentConfig: req.body.config ? JSON.parse(req.body.config) : {},
+        },
+        progress: 0,
+        metadata: {
+          createdBy: req.user?.claims?.sub,
+          createdAt: new Date().toISOString(),
+          r2Bucket: bucketName,
+          r2ObjectKey: objectKey,
+          r2Url: uploadResult.url,
+          originalFileName: req.file.originalname,
+          fileSize: req.file.size,
+        },
+      });
+
+      const [job] = await db.insert(deploymentJobs).values(jobData).returning();
+
+      // Clean up local file after successful upload
+      fs.unlinkSync(req.file.path);
+
+      // Broadcast orchestration_started event
+      broadcast({
+        type: "orchestration_started",
+        data: {
+          jobId: job.id,
+          jobType: "deploy",
+          fileName: req.file.originalname,
+          r2Url: uploadResult.url,
+          status: job.status,
+        },
+      });
+
+      res.status(201).json({
+        success: true,
+        jobId: job.id,
+        status: job.status,
+        r2Url: uploadResult.url,
+        message: "File uploaded to R2 and deployment job created successfully",
+      });
+    } catch (error) {
+      console.error("Error in orchestrate/deploy:", error);
+      
+      // Clean up local file if it exists
+      if (req.file?.path && fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+      
+      res.status(500).json({ 
+        error: "Failed to orchestrate deployment",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // POST /api/orchestrate/process - Process data with optional R2 storage
+  app.post("/api/orchestrate/process", isAuthenticated, async (req, res) => {
+    try {
+      const { data, uploadToR2, bucketName: requestBucketName } = req.body;
+
+      if (!data) {
+        return res.status(400).json({ error: "No data provided for processing" });
+      }
+
+      let r2Url: string | undefined;
+      let objectKey: string | undefined;
+
+      // Upload data to R2 if requested
+      if (uploadToR2) {
+        const { CloudflareService } = await import('./cloudflare-service');
+        const cloudflareService = new CloudflareService();
+
+        const timestamp = Date.now();
+        objectKey = `processing/${timestamp}/data.json`;
+        const bucketName = requestBucketName || 'hotstack-bucket';
+
+        const dataBuffer = Buffer.from(JSON.stringify(data, null, 2), 'utf-8');
+
+        const uploadResult = await cloudflareService.uploadFileToR2(
+          bucketName,
+          objectKey,
+          dataBuffer,
+          'application/json'
+        );
+
+        if (!uploadResult.success) {
+          return res.status(500).json({ 
+            error: "Failed to upload data to R2",
+            details: uploadResult.error 
+          });
+        }
+
+        r2Url = uploadResult.url;
+      }
+
+      // Create processing job
+      const jobData = insertDeploymentJobSchema.parse({
+        jobType: "process",
+        status: "pending",
+        payload: {
+          data,
+          totalRecords: Array.isArray(data) ? data.length : 1,
+          uploadedToR2: uploadToR2 || false,
+          bucketName: requestBucketName || 'hotstack-bucket',
+          objectKey,
+        },
+        progress: 0,
+        metadata: {
+          createdBy: req.user?.claims?.sub,
+          createdAt: new Date().toISOString(),
+          r2Bucket: uploadToR2 ? requestBucketName || 'hotstack-bucket' : undefined,
+          r2ObjectKey: objectKey,
+          r2Url,
+          dataSize: JSON.stringify(data).length,
+        },
+      });
+
+      const [job] = await db.insert(deploymentJobs).values(jobData).returning();
+
+      // Broadcast orchestration_started event
+      broadcast({
+        type: "orchestration_started",
+        data: {
+          jobId: job.id,
+          jobType: "process",
+          dataSize: JSON.stringify(data).length,
+          uploadedToR2: uploadToR2 || false,
+          r2Url,
+          status: job.status,
+        },
+      });
+
+      res.status(201).json({
+        success: true,
+        jobId: job.id,
+        status: job.status,
+        uploadedToR2: uploadToR2 || false,
+        r2Url,
+        message: "Data processing job created successfully",
+      });
+    } catch (error) {
+      console.error("Error in orchestrate/process:", error);
+      res.status(500).json({ 
+        error: "Failed to orchestrate data processing",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // POST /api/orchestrate/coordinate - Coordinate with ecosystem apps
+  app.post("/api/orchestrate/coordinate", isAuthenticated, async (req, res) => {
+    try {
+      const { 
+        syncType, 
+        targetSystems, 
+        data,
+        ecosystemAppIds 
+      } = req.body;
+
+      if (!syncType) {
+        return res.status(400).json({ error: "Sync type is required" });
+      }
+
+      // Prepare ecosystem coordination payload
+      const coordinationPayload = {
+        syncType,
+        targetSystems: targetSystems || [],
+        ecosystemAppIds: ecosystemAppIds || [],
+        data: data || {},
+        timestamp: new Date().toISOString(),
+      };
+
+      // Create sync job for ecosystem coordination
+      const jobData = insertDeploymentJobSchema.parse({
+        jobType: "sync",
+        status: "pending",
+        payload: coordinationPayload,
+        progress: 0,
+        metadata: {
+          createdBy: req.user?.claims?.sub,
+          createdAt: new Date().toISOString(),
+          syncType,
+          targetSystemsCount: targetSystems?.length || 0,
+          ecosystemAppsCount: ecosystemAppIds?.length || 0,
+          coordinationType: "ecosystem",
+        },
+      });
+
+      const [job] = await db.insert(deploymentJobs).values(jobData).returning();
+
+      // Broadcast orchestration_started event
+      broadcast({
+        type: "orchestration_started",
+        data: {
+          jobId: job.id,
+          jobType: "sync",
+          syncType,
+          targetSystemsCount: targetSystems?.length || 0,
+          ecosystemAppsCount: ecosystemAppIds?.length || 0,
+          status: job.status,
+        },
+      });
+
+      res.status(201).json({
+        success: true,
+        jobId: job.id,
+        status: job.status,
+        syncType,
+        targetSystems: targetSystems || [],
+        message: "Ecosystem coordination job created successfully",
+      });
+    } catch (error) {
+      console.error("Error in orchestrate/coordinate:", error);
+      res.status(500).json({ 
+        error: "Failed to orchestrate ecosystem coordination",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
   return httpServer;
 }
