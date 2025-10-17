@@ -2451,6 +2451,70 @@ export const ecosystemSyncLogs = pgTable("ecosystem_sync_logs", {
   metadata: json("metadata"),
 });
 
+// ===============================
+// HOTSTACK CLOUDFLARE INTEGRATION
+// ===============================
+
+export const hotstackWorkers = pgTable("hotstack_workers", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  workerId: text("worker_id").notNull().unique(), // Cloudflare Worker ID
+  name: text("name").notNull(),
+  scriptName: text("script_name").notNull(),
+  status: text("status").default("active"), // active, inactive, deploying, error
+  accountId: text("account_id").notNull(),
+  routes: json("routes"), // Worker routes
+  environment: text("environment").default("production"), // production, preview
+  createdOn: timestamp("created_on"),
+  modifiedOn: timestamp("modified_on"),
+  deploymentUrl: text("deployment_url"),
+  lastDeployedAt: timestamp("last_deployed_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+export const hotstackDeployments = pgTable("hotstack_deployments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  workerId: varchar("worker_id").references(() => hotstackWorkers.id),
+  deploymentId: text("deployment_id").notNull().unique(),
+  version: text("version"),
+  status: text("status").default("pending"), // pending, deploying, success, failed
+  buildLogs: text("build_logs"),
+  duration: integer("duration_ms"), // deployment duration in ms
+  triggeredBy: text("triggered_by"), // api, git-push, manual
+  commitHash: text("commit_hash"),
+  deployedAt: timestamp("deployed_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+export const hotstackR2Storage = pgTable("hotstack_r2_storage", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  bucketName: text("bucket_name").notNull().unique(),
+  accountId: text("account_id").notNull(),
+  objectCount: integer("object_count").default(0),
+  storageSize: integer("storage_size_bytes").default(0),
+  publicUrl: text("public_url"),
+  corsEnabled: boolean("cors_enabled").default(false),
+  status: text("status").default("active"), // active, inactive
+  lastSyncedAt: timestamp("last_synced_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
+export const hotstackStations = pgTable("hotstack_stations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  stationName: text("station_name").notNull(), // Cape Town, Johannesburg, Durban
+  location: text("location").notNull(),
+  region: text("region").notNull(), // Western Cape, Gauteng, KwaZulu-Natal
+  status: text("status").default("active"), // active, setup, connect
+  workersCount: integer("workers_count").default(0),
+  deploymentUrl: text("deployment_url"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  metadata: json("metadata"),
+});
+
 // Insert schemas for LoopPay system
 export const insertLoopPayLicenseSchema = createInsertSchema(loopPayLicenses).pick({
   licenseType: true,
@@ -2611,3 +2675,65 @@ export type EcosystemSyncLog = typeof ecosystemSyncLogs.$inferSelect;
 export type InsertEcosystemSystem = z.infer<typeof insertEcosystemSystemSchema>;
 export type InsertEcosystemApp = z.infer<typeof insertEcosystemAppSchema>;
 export type InsertEcosystemSyncLog = z.infer<typeof insertEcosystemSyncLogSchema>;
+
+// HotStack Insert schemas
+export const insertHotstackWorkerSchema = createInsertSchema(hotstackWorkers).pick({
+  workerId: true,
+  name: true,
+  scriptName: true,
+  status: true,
+  accountId: true,
+  routes: true,
+  environment: true,
+  createdOn: true,
+  modifiedOn: true,
+  deploymentUrl: true,
+  lastDeployedAt: true,
+  metadata: true,
+});
+
+export const insertHotstackDeploymentSchema = createInsertSchema(hotstackDeployments).pick({
+  workerId: true,
+  deploymentId: true,
+  version: true,
+  status: true,
+  buildLogs: true,
+  duration: true,
+  triggeredBy: true,
+  commitHash: true,
+  metadata: true,
+});
+
+export const insertHotstackR2StorageSchema = createInsertSchema(hotstackR2Storage).pick({
+  bucketName: true,
+  accountId: true,
+  objectCount: true,
+  storageSize: true,
+  publicUrl: true,
+  corsEnabled: true,
+  status: true,
+  lastSyncedAt: true,
+  metadata: true,
+});
+
+export const insertHotstackStationSchema = createInsertSchema(hotstackStations).pick({
+  stationName: true,
+  location: true,
+  region: true,
+  status: true,
+  workersCount: true,
+  deploymentUrl: true,
+  metadata: true,
+});
+
+// HotStack Type exports
+export type HotstackWorker = typeof hotstackWorkers.$inferSelect;
+export type HotstackDeployment = typeof hotstackDeployments.$inferSelect;
+export type HotstackR2Storage = typeof hotstackR2Storage.$inferSelect;
+export type HotstackStation = typeof hotstackStations.$inferSelect;
+
+// HotStack Insert types
+export type InsertHotstackWorker = z.infer<typeof insertHotstackWorkerSchema>;
+export type InsertHotstackDeployment = z.infer<typeof insertHotstackDeploymentSchema>;
+export type InsertHotstackR2Storage = z.infer<typeof insertHotstackR2StorageSchema>;
+export type InsertHotstackStation = z.infer<typeof insertHotstackStationSchema>;
