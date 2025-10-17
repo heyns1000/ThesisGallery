@@ -5,7 +5,7 @@ import { z } from "zod";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-import { eq, desc, and } from "drizzle-orm";
+import { eq, desc, and, sql } from "drizzle-orm";
 import { storage } from "./storage";
 import { db } from "./db";
 import { samFoxStudioService } from "./samfox-studio-service";
@@ -63,7 +63,12 @@ import {
   ecosystemSystems,
   ecosystemApps,
   ecosystemSyncLogs,
-  banimalConnections
+  banimalConnections,
+  // HotStack Schemas
+  hotstackWorkers,
+  hotstackDeployments,
+  hotstackR2Storage,
+  hotstackStations
 } from "@shared/schema";
 import { ContactProcessingAI, BanimalChatbot, CurrencyAI, HolidayAI, generateFaaReference } from "./ai-services";
 import { GeminiContactProcessor, GeminiBanimalChatbot, GeminiProductAI, GeminiMarketingAI } from "./gemini-ai";
@@ -4826,6 +4831,192 @@ May this wisdom serve your journey well! 🌳✨`
     } catch (error) {
       console.error('Error updating ecosystem sync log:', error);
       res.status(500).json({ error: 'Failed to update ecosystem sync log' });
+    }
+  });
+
+  // ===============================
+  // HOTSTACK CLOUDFLARE ROUTES
+  // ===============================
+
+  // GET /api/hotstack/test-connection - Test Cloudflare API connection
+  app.get("/api/hotstack/test-connection", isAuthenticated, async (req, res) => {
+    try {
+      const { CloudflareService } = await import('./cloudflare-service');
+      const cloudflareService = new CloudflareService();
+      
+      const result = await cloudflareService.testConnection();
+      res.status(result.success ? 200 : 400).json(result);
+    } catch (error) {
+      console.error('Error testing Cloudflare connection:', error);
+      res.status(500).json({ 
+        success: false,
+        message: 'Failed to test Cloudflare connection',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // POST /api/hotstack/sync/workers - Sync Cloudflare Workers to database
+  app.post("/api/hotstack/sync/workers", isAuthenticated, async (req, res) => {
+    try {
+      const { CloudflareService } = await import('./cloudflare-service');
+      const cloudflareService = new CloudflareService();
+      
+      broadcast({ type: 'hotstack_sync_started', data: { type: 'workers' } });
+      
+      const result = await cloudflareService.syncWorkersToDb();
+      
+      broadcast({ 
+        type: 'hotstack_sync_completed', 
+        data: { 
+          type: 'workers', 
+          synced: result.synced, 
+          errors: result.errors 
+        } 
+      });
+      
+      res.json({ 
+        success: true, 
+        message: `Synced ${result.synced} workers, ${result.errors} errors`,
+        ...result 
+      });
+    } catch (error) {
+      console.error('Error syncing workers:', error);
+      broadcast({ type: 'hotstack_sync_error', data: { type: 'workers', error: error instanceof Error ? error.message : 'Unknown error' } });
+      res.status(500).json({ 
+        success: false,
+        message: 'Failed to sync workers',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // POST /api/hotstack/sync/r2 - Sync R2 buckets to database
+  app.post("/api/hotstack/sync/r2", isAuthenticated, async (req, res) => {
+    try {
+      const { CloudflareService } = await import('./cloudflare-service');
+      const cloudflareService = new CloudflareService();
+      
+      broadcast({ type: 'hotstack_sync_started', data: { type: 'r2' } });
+      
+      const result = await cloudflareService.syncR2BucketsToDb();
+      
+      broadcast({ 
+        type: 'hotstack_sync_completed', 
+        data: { 
+          type: 'r2', 
+          synced: result.synced, 
+          errors: result.errors 
+        } 
+      });
+      
+      res.json({ 
+        success: true, 
+        message: `Synced ${result.synced} R2 buckets, ${result.errors} errors`,
+        ...result 
+      });
+    } catch (error) {
+      console.error('Error syncing R2 buckets:', error);
+      broadcast({ type: 'hotstack_sync_error', data: { type: 'r2', error: error instanceof Error ? error.message : 'Unknown error' } });
+      res.status(500).json({ 
+        success: false,
+        message: 'Failed to sync R2 buckets',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // GET /api/hotstack/workers - Get all workers
+  app.get("/api/hotstack/workers", isAuthenticated, async (req, res) => {
+    try {
+      const workers = await db.select().from(hotstackWorkers);
+      res.json(workers);
+    } catch (error) {
+      console.error('Error fetching workers:', error);
+      res.status(500).json({ 
+        error: 'Failed to fetch workers',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // GET /api/hotstack/deployments - Get deployment history
+  app.get("/api/hotstack/deployments", isAuthenticated, async (req, res) => {
+    try {
+      const limit = parseInt(req.query.limit as string) || 50;
+      const deployments = await db.select()
+        .from(hotstackDeployments)
+        .orderBy(desc(hotstackDeployments.deployedAt))
+        .limit(limit);
+      res.json(deployments);
+    } catch (error) {
+      console.error('Error fetching deployments:', error);
+      res.status(500).json({ 
+        error: 'Failed to fetch deployments',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // GET /api/hotstack/r2-storage - Get R2 storage stats
+  app.get("/api/hotstack/r2-storage", isAuthenticated, async (req, res) => {
+    try {
+      const storage = await db.select().from(hotstackR2Storage);
+      res.json(storage);
+    } catch (error) {
+      console.error('Error fetching R2 storage:', error);
+      res.status(500).json({ 
+        error: 'Failed to fetch R2 storage',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // GET /api/hotstack/stations - Get HotStack stations
+  app.get("/api/hotstack/stations", isAuthenticated, async (req, res) => {
+    try {
+      const stations = await db.select().from(hotstackStations);
+      res.json(stations);
+    } catch (error) {
+      console.error('Error fetching stations:', error);
+      res.status(500).json({ 
+        error: 'Failed to fetch stations',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // GET /api/hotstack/stats - Get HotStack dashboard stats
+  app.get("/api/hotstack/stats", isAuthenticated, async (req, res) => {
+    try {
+      const workersCount = await db.select({ count: sql<number>`count(*)` }).from(hotstackWorkers);
+      const deploymentsCount = await db.select({ count: sql<number>`count(*)` }).from(hotstackDeployments);
+      const r2StorageCount = await db.select({ count: sql<number>`count(*)` }).from(hotstackR2Storage);
+      const stationsCount = await db.select({ count: sql<number>`count(*)` }).from(hotstackStations);
+
+      const totalStorage = await db.select({
+        total: sql<number>`COALESCE(SUM(${hotstackR2Storage.storageSize}), 0)`
+      }).from(hotstackR2Storage);
+
+      const recentDeployments = await db.select()
+        .from(hotstackDeployments)
+        .orderBy(desc(hotstackDeployments.deployedAt))
+        .limit(5);
+
+      res.json({
+        totalWorkers: workersCount[0]?.count || 0,
+        totalDeployments: deploymentsCount[0]?.count || 0,
+        totalR2Buckets: r2StorageCount[0]?.count || 0,
+        totalStations: stationsCount[0]?.count || 0,
+        totalStorageBytes: totalStorage[0]?.total || 0,
+        recentDeployments,
+      });
+    } catch (error) {
+      console.error('Error fetching HotStack stats:', error);
+      res.status(500).json({ 
+        error: 'Failed to fetch HotStack stats',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
     }
   });
 
