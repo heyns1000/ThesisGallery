@@ -10,6 +10,7 @@ import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useInteractivity } from "@/lib/useInteractivity";
+import { OptimizedImage } from "@/components/OptimizedImage";
 
 interface SamFoxStudio {
   id: string;
@@ -279,7 +280,7 @@ function FileroomGallery() {
                     onClick={() => setPreviewAsset(item)}
                     data-testid={`digital-print-${item.id}`}
                   >
-                    <img 
+                    <OptimizedImage 
                       src={item.imageUrl} 
                       alt={item.title}
                       className="w-full h-full object-cover"
@@ -455,7 +456,7 @@ function FileroomGallery() {
                     data-testid={`creative-asset-${item.id}`}
                   >
                     <div className="aspect-video relative">
-                      <img 
+                      <OptimizedImage 
                         src={item.imageUrl} 
                         alt={item.title}
                         className="w-full h-full object-cover"
@@ -621,7 +622,7 @@ function FileroomGallery() {
               </Button>
             </div>
             <div className="mb-4">
-              <img 
+              <OptimizedImage 
                 src={previewAsset.imageUrl} 
                 alt={previewAsset.title}
                 className="w-full max-h-96 object-contain rounded-lg"

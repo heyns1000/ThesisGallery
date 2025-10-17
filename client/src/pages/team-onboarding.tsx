@@ -15,6 +15,7 @@ import { Progress } from "@/components/ui/progress";
 import { Users, Star, CheckCircle, Clock, Upload, User, Briefcase, Mail, Camera } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { OptimizedImage } from "@/components/OptimizedImage";
 
 // Professional portfolio image placeholders - using data URLs for demo
 const portfolioImage = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkZlYXR1cmVkIFByb2plY3Q8L3RleHQ+PC9zdmc+";
@@ -170,7 +171,7 @@ export default function TeamOnboardingPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <img 
+                  <OptimizedImage 
                     src={aboutImage} 
                     alt="Sacred Baobab Foundation" 
                     className="w-full h-40 object-cover rounded-lg"
@@ -365,7 +366,7 @@ export default function TeamOnboardingPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="aspect-square rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800">
-                    <img 
+                    <OptimizedImage 
                       src={profileImageFile ? URL.createObjectURL(profileImageFile) : profileImage} 
                       alt="Profile" 
                       className="w-full h-full object-cover"
@@ -403,7 +404,7 @@ export default function TeamOnboardingPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="aspect-square rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800">
-                    <img 
+                    <OptimizedImage 
                       src={aboutImageFile ? URL.createObjectURL(aboutImageFile) : aboutImage} 
                       alt="About" 
                       className="w-full h-full object-cover"
@@ -441,7 +442,7 @@ export default function TeamOnboardingPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="aspect-square rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800">
-                    <img 
+                    <OptimizedImage 
                       src={projectImageFile ? URL.createObjectURL(projectImageFile) : portfolioImage} 
                       alt="Project" 
                       className="w-full h-full object-cover"
@@ -539,7 +540,7 @@ export default function TeamOnboardingPage() {
                   </div>
                   <div className="flex justify-center">
                     <div className="w-32 h-32 rounded-full overflow-hidden">
-                      <img 
+                      <OptimizedImage 
                         src={profileImageFile ? URL.createObjectURL(profileImageFile) : profileImage} 
                         alt="Profile Preview" 
                         className="w-full h-full object-cover"

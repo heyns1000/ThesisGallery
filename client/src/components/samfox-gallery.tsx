@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { OptimizedImage } from "@/components/OptimizedImage";
 import type { Gallery, Document } from "@shared/schema";
 
 // SamFox Studio color palette and styling constants
@@ -93,7 +94,7 @@ export function SamFoxAssetCard({ item, onClick, variant = 'default' }: SamFoxAs
       >
         <div className="aspect-square rounded-lg overflow-hidden relative">
           {item.imageUrl ? (
-            <img 
+            <OptimizedImage
               src={item.imageUrl} 
               alt={item.title}
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
@@ -130,7 +131,7 @@ export function SamFoxAssetCard({ item, onClick, variant = 'default' }: SamFoxAs
       >
         <div className="aspect-square relative">
           {item.imageUrl ? (
-            <img 
+            <OptimizedImage 
               src={item.imageUrl} 
               alt={item.title}
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
@@ -177,7 +178,7 @@ export function SamFoxAssetCard({ item, onClick, variant = 'default' }: SamFoxAs
     >
       <div className="aspect-square relative">
         {item.imageUrl ? (
-          <img 
+          <OptimizedImage 
             src={item.imageUrl} 
             alt={item.title}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
@@ -330,7 +331,7 @@ export function SamFoxPreviewModal({ item, isOpen, onClose }: SamFoxPreviewModal
         <div className="space-y-4">
           <div className="relative rounded-lg overflow-hidden">
             {item.imageUrl ? (
-              <img 
+              <OptimizedImage 
                 src={item.imageUrl} 
                 alt={item.title}
                 className="w-full max-h-96 object-contain bg-black/5"
