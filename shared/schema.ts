@@ -49,6 +49,10 @@ export const galleries = pgTable("galleries", {
   imageUrl: text("image_url").notNull(),
   description: text("description"),
   tags: text("tags").array(),
+  brand: text("brand"), // Brand name (from 7,038+ brands)
+  sector: text("sector"), // Sector name (from 33 sectors)
+  category: text("category"), // Category/division grouping
+  division: text("division"), // Division organization
   uploadedAt: timestamp("uploaded_at").defaultNow().notNull(),
   metadata: json("metadata"),
 });

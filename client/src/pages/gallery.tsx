@@ -1,15 +1,15 @@
-import SamFoxGallery from "@/components/samfox-gallery";
+import EnhancedGallery from "@/components/portal/enhanced-gallery";
 import { getContent } from "@/lib/appData";
 
 export default function GalleryPage() {
   const content = getContent('gallery');
   return (
     <div className="p-6 space-y-12">
-      {/* Main SamFox Gallery */}
-      <SamFoxGallery 
+      {/* Enhanced Gallery with FruitfulPlanetChange Styling & Division Rendering */}
+      <EnhancedGallery 
         title={content.title}
-        showUpload={true}
-        showFilter={true}
+        showFilters={true}
+        defaultViewMode="grid"
       />
       
       {/* Enhanced Music Experience Section with SamFox Styling */}
