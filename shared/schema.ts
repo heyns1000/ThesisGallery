@@ -132,6 +132,31 @@ export const syncEvents = pgTable("sync_events", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// API Keys Registry - Centralized secret management
+export const apiKeys = pgTable("api_keys", {
+  id: serial("id").primaryKey(),
+  keyName: varchar("key_name", { length: 100 }).notNull().unique(),
+  keyType: varchar("key_type", { length: 50 }), // core, external, cross-app
+  appName: varchar("app_name", { length: 100 }), // Which app owns/uses this key
+  isConfigured: boolean("is_configured").default(false),
+  lastRotated: timestamp("last_rotated"),
+  nextRotation: timestamp("next_rotation"),
+  rotationInterval: integer("rotation_interval").default(90), // days
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Key Audit Logs - Track all key access and operations
+export const keyAuditLogs = pgTable("key_audit_logs", {
+  id: serial("id").primaryKey(),
+  keyName: varchar("key_name", { length: 100 }).notNull(),
+  action: varchar("action", { length: 50 }).notNull(), // access, rotation, validation, distribution
+  appName: varchar("app_name", { length: 100 }),
+  status: varchar("status", { length: 50 }), // success, failure, warning
+  message: text("message"),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Wildlife and ecosystem management
 export const wildlifeNodes = pgTable("wildlife_nodes", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -871,6 +896,16 @@ export const insertSyncEventSchema = createInsertSchema(syncEvents).omit({
   createdAt: true,
 });
 
+export const insertApiKeySchema = createInsertSchema(apiKeys).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertKeyAuditLogSchema = createInsertSchema(keyAuditLogs).omit({
+  id: true,
+  createdAt: true,
+});
+
 export const insertWildlifeNodeSchema = createInsertSchema(wildlifeNodes).pick({
   name: true,
   nodeType: true,
@@ -1543,6 +1578,12 @@ export type SelectAssetRegistry = typeof assetRegistry.$inferSelect;
 
 export type InsertSyncEvent = z.infer<typeof insertSyncEventSchema>;
 export type SelectSyncEvent = typeof syncEvents.$inferSelect;
+
+export type InsertApiKey = z.infer<typeof insertApiKeySchema>;
+export type SelectApiKey = typeof apiKeys.$inferSelect;
+
+export type InsertKeyAuditLog = z.infer<typeof insertKeyAuditLogSchema>;
+export type SelectKeyAuditLog = typeof keyAuditLogs.$inferSelect;
 
 export type InsertWildlifeNode = z.infer<typeof insertWildlifeNodeSchema>;
 export type WildlifeNode = typeof wildlifeNodes.$inferSelect;

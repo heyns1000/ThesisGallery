@@ -38,6 +38,10 @@ import {
   type InsertAssetRegistry,
   type SelectSyncEvent,
   type InsertSyncEvent,
+  type SelectApiKey,
+  type InsertApiKey,
+  type SelectKeyAuditLog,
+  type InsertKeyAuditLog,
   type DataImport,
   type InsertDataImport,
   type DeploymentJob,
@@ -168,7 +172,9 @@ import {
   repositories,
   fpcPayments,
   assetRegistry,
-  syncEvents
+  syncEvents,
+  apiKeys,
+  keyAuditLogs
 } from "@shared/schema";
 import { eq, and, like, desc, sql } from "drizzle-orm";
 
@@ -330,6 +336,19 @@ export interface IStorage {
   getPendingSyncEvents(): Promise<SelectSyncEvent[]>;
   createSyncEvent(event: InsertSyncEvent): Promise<SelectSyncEvent>;
   updateSyncEventStatus(id: number, status: string): Promise<SelectSyncEvent | undefined>;
+
+  // ===============================
+  // API KEY MANAGEMENT METHODS
+  // ===============================
+  
+  getApiKeys(): Promise<SelectApiKey[]>;
+  getApiKeyByName(name: string): Promise<SelectApiKey | undefined>;
+  createApiKey(key: InsertApiKey): Promise<SelectApiKey>;
+  updateApiKey(id: number, updates: Partial<InsertApiKey>): Promise<SelectApiKey | undefined>;
+
+  getKeyAuditLogs(): Promise<SelectKeyAuditLog[]>;
+  getKeyAuditLogsByKey(keyName: string): Promise<SelectKeyAuditLog[]>;
+  createKeyAuditLog(log: InsertKeyAuditLog): Promise<SelectKeyAuditLog>;
 
   // ===============================
   // EMAIL SYSTEM METHODS
@@ -3580,6 +3599,42 @@ export class MemStorage implements IStorage {
     }
     const [updated] = await db.update(syncEvents).set(updates).where(eq(syncEvents.id, id)).returning();
     return updated;
+  }
+
+  // ===============================
+  // API KEY MANAGEMENT METHODS
+  // ===============================
+  
+  async getApiKeys(): Promise<SelectApiKey[]> {
+    return await db.select().from(apiKeys).orderBy(apiKeys.keyName);
+  }
+
+  async getApiKeyByName(name: string): Promise<SelectApiKey | undefined> {
+    const [key] = await db.select().from(apiKeys).where(eq(apiKeys.keyName, name));
+    return key;
+  }
+
+  async createApiKey(key: InsertApiKey): Promise<SelectApiKey> {
+    const [created] = await db.insert(apiKeys).values(key).returning();
+    return created;
+  }
+
+  async updateApiKey(id: number, updates: Partial<InsertApiKey>): Promise<SelectApiKey | undefined> {
+    const [updated] = await db.update(apiKeys).set(updates).where(eq(apiKeys.id, id)).returning();
+    return updated;
+  }
+
+  async getKeyAuditLogs(): Promise<SelectKeyAuditLog[]> {
+    return await db.select().from(keyAuditLogs).orderBy(desc(keyAuditLogs.createdAt)).limit(100);
+  }
+
+  async getKeyAuditLogsByKey(keyName: string): Promise<SelectKeyAuditLog[]> {
+    return await db.select().from(keyAuditLogs).where(eq(keyAuditLogs.keyName, keyName)).orderBy(desc(keyAuditLogs.createdAt));
+  }
+
+  async createKeyAuditLog(log: InsertKeyAuditLog): Promise<SelectKeyAuditLog> {
+    const [created] = await db.insert(keyAuditLogs).values(log).returning();
+    return created;
   }
 }
 

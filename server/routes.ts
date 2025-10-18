@@ -6667,6 +6667,125 @@ May this wisdom serve your journey well! 🌳✨`
   });
 
   // ===============================
+  // API KEY MANAGEMENT ROUTES
+  // ===============================
+
+  const { keyVault } = await import("./keyVault");
+  const { insertKeyAuditLogSchema } = await import("@shared/schema");
+
+  // GET /api/keys/validate - Validate all environment keys
+  app.get("/api/keys/validate", isAuthenticated, async (req, res) => {
+    try {
+      const validation = keyVault.validateKeys();
+      res.json(validation);
+    } catch (error) {
+      console.error("Error validating keys:", error);
+      res.status(500).json({ error: "Failed to validate keys" });
+    }
+  });
+
+  // GET /api/keys/status - Get key configuration status
+  app.get("/api/keys/status", isAuthenticated, async (req, res) => {
+    try {
+      const keys = await storage.getApiKeys();
+      const validation = keyVault.validateKeys();
+      
+      const status = keys.map(key => ({
+        ...key,
+        maskedValue: keyVault.getMaskedKey(key.keyName),
+        currentlyConfigured: validation.configured.includes(key.keyName)
+      }));
+      
+      res.json({
+        keys: status,
+        summary: {
+          total: keys.length,
+          configured: validation.configured.length,
+          missing: validation.missing.length
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching key status:", error);
+      res.status(500).json({ error: "Failed to fetch key status" });
+    }
+  });
+
+  // GET /api/keys/bundle/:app - Get key bundle for specific app (SECURITY: Returns masked values only)
+  app.get("/api/keys/bundle/:app", isAuthenticated, async (req: any, res) => {
+    try {
+      const { app } = req.params;
+      const bundle = await keyVault.distributeKeys(app);
+      
+      // Convert Map to object with MASKED values only (SECURITY FIX)
+      const keysObject: Record<string, string> = {};
+      bundle.keys.forEach((value, keyName) => {
+        keysObject[keyName] = keyVault.getMaskedKey(keyName);
+      });
+      
+      // Log the distribution with user info
+      await storage.createKeyAuditLog({
+        keyName: `BUNDLE_${app.toUpperCase()}`,
+        action: 'distribution',
+        appName: app,
+        status: 'success',
+        message: `Key bundle requested for ${app}`,
+        metadata: { 
+          keyCount: bundle.keys.size,
+          requestedBy: req.user?.claims?.sub || "unknown"
+        }
+      });
+      
+      res.json({
+        appName: bundle.appName,
+        keys: keysObject,
+        expiresAt: bundle.expiresAt,
+        note: "This bundle contains masked values for security. Full secrets are never transmitted over HTTP."
+      });
+    } catch (error) {
+      console.error("Error distributing keys:", error);
+      res.status(500).json({ error: "Failed to distribute keys" });
+    }
+  });
+
+  // GET /api/keys/audit - Get key audit logs
+  app.get("/api/keys/audit", isAuthenticated, async (req, res) => {
+    try {
+      const logs = await storage.getKeyAuditLogs();
+      res.json(logs);
+    } catch (error) {
+      console.error("Error fetching audit logs:", error);
+      res.status(500).json({ error: "Failed to fetch audit logs" });
+    }
+  });
+
+  // GET /api/keys/audit/:keyName - Get audit logs for specific key
+  app.get("/api/keys/audit/:keyName", isAuthenticated, async (req, res) => {
+    try {
+      const { keyName } = req.params;
+      const logs = await storage.getKeyAuditLogsByKey(keyName);
+      res.json(logs);
+    } catch (error) {
+      console.error("Error fetching key audit logs:", error);
+      res.status(500).json({ error: "Failed to fetch key audit logs" });
+    }
+  });
+
+  // POST /api/keys/audit - Create audit log entry
+  app.post("/api/keys/audit", isAuthenticated, async (req, res) => {
+    try {
+      const validated = insertKeyAuditLogSchema.parse(req.body);
+      const log = await storage.createKeyAuditLog(validated);
+      res.json(log);
+    } catch (error) {
+      console.error("Error creating audit log:", error);
+      res.status(400).json({ 
+        error: "Failed to create audit log",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // ===============================
   // SAMFOX STUDIO API ROUTES
   // ===============================
 
@@ -8003,6 +8122,10 @@ May this wisdom serve your journey well! 🌳✨`
       res.status(500).json({ message: "Failed to fetch service status" });
     }
   });
+
+  // Initialize Key Vault Registry
+  const { initializeKeyRegistry } = await import("./initializeKeys");
+  await initializeKeyRegistry(storage);
 
   return httpServer;
 }
