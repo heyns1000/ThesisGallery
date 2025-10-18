@@ -206,6 +206,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Command Center metrics endpoint
+  app.get("/api/command-center/metrics", async (req, res) => {
+    try {
+      // Get active brands count from database
+      const brands = await storage.getBrands();
+      const activeBrands = brands.length;
+      
+      // Get active systems count from ecosystemSystems table
+      const activeSystems = await db
+        .select()
+        .from(ecosystemSystems)
+        .where(eq(ecosystemSystems.status, 'active'));
+      
+      const metrics = {
+        globalExpansionTargets: 271,
+        activeBrands,
+        aiMediaIntegration: 13,
+        diamondTierActive: true,
+        activeSystems: activeSystems.length,
+      };
+      
+      res.json(metrics);
+    } catch (error) {
+      console.error("Command center metrics error:", error);
+      res.status(500).json({ error: "Failed to fetch command center metrics" });
+    }
+  });
+
   // Initialize comprehensive sample data for the 1.8GB ecosystem showcase
   // Security: Admin-only endpoint in production
   app.post("/api/system/initialize-sample-data", isAuthenticated, async (req, res) => {
