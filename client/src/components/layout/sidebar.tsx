@@ -60,6 +60,7 @@ const navItems = [
   { href: "/looppay-gallery", label: "💳 LoopPay™ Sovereign Portal", icon: "fas fa-credit-card", id: "looppay-gallery" },
   { href: "/scrollbinder-one", label: "📜 ScrollBinder_One™ Audit", icon: "fas fa-scroll", id: "scrollbinder-one" },
   { href: "/hsomni-integration", label: "🚀 HSOMNI 9000 Integration", icon: "fas fa-rocket", id: "hsomni-integration" },
+  { href: "/hotstack-platform", label: "🔥 HotStack™ Platform", icon: "fas fa-bolt", id: "hotstack-platform" },
 ];
 
 export function Sidebar() {
