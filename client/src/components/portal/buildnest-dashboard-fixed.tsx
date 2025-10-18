@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Hammer, CheckCircle, Activity, Settings } from "lucide-react"
 
-export function BuildNestDashboardFixed() {
+export function BuildNestDashboard() {
   return (
     <div className="space-y-6 p-6 bg-gray-50 dark:bg-gray-900" data-testid="buildnest-dashboard-container">
       <Card className="border-2 border-blue-500/20 bg-gradient-to-r from-blue-500/5 to-cyan-500/5">
