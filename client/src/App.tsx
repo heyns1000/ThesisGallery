@@ -104,12 +104,15 @@ import OmniuniversalButtonValidator from "@/pages/omniuniversal-button-validator
 import PlanetChange from "@/pages/planet-change";
 import EcosystemCoordinator from "@/pages/ecosystem-coordinator";
 import MotionMediaSonic from "@/pages/motion-media-sonic";
+import CommandCenter from "@/pages/command-center";
 
 function Router() {
   return (
     <ErrorBoundary>
       <Switch>
-        <Route path="/" component={Dashboard} />
+        <Route path="/" component={CommandCenter} />
+        <Route path="/dashboard" component={Dashboard} />
+        <Route path="/command-center" component={CommandCenter} />
       <Route path="/documents" component={Documents} />
       <Route path="/gallery" component={GalleryPage} />
       <Route path="/conversations" component={Conversations} />
