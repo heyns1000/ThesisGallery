@@ -71,19 +71,14 @@ export const conversations = pgTable("conversations", {
 export const brands = pgTable("brands", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: text("name").notNull(),
-  description: text("description"), // Added from FruitfulPlanetChange
   category: text("category").notNull(), // core, mining, entertainment, etc.
-  sectorId: integer("sector_id"), // Added from FruitfulPlanetChange - references sectors table
-  integration: text("integration"), // Added from FruitfulPlanetChange - VaultMesh™, HotStack, FAA.ZONE™
-  status: text("status").notNull(), // protected, pending, active, synced, maintenance, offline
+  status: text("status").notNull(), // protected, pending, active, synced
   valuation: text("valuation"),
   trademarkStatus: text("trademark_status"),
   complianceScore: integer("compliance_score").default(100),
-  isCore: boolean("is_core").default(true), // Added from FruitfulPlanetChange
-  parentId: integer("parent_id"), // Added from FruitfulPlanetChange - for subnodes
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
-  metadata: jsonb("metadata"), // Upgraded from json to jsonb for better performance
+  metadata: json("metadata"),
 });
 
 export const complianceLogs = pgTable("compliance_logs", {

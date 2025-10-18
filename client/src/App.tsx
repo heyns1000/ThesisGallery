@@ -105,9 +105,6 @@ import PlanetChange from "@/pages/planet-change";
 import EcosystemCoordinator from "@/pages/ecosystem-coordinator";
 import MotionMediaSonic from "@/pages/motion-media-sonic";
 import CommandCenter from "@/pages/command-center";
-import BuildNestDashboard from "@/pages/buildnest-dashboard";
-import InternPortalNest from "@/pages/intern-portalnest";
-import HotStackPlatform from "@/pages/hotstack-platform";
 
 function Router() {
   return (
@@ -209,9 +206,6 @@ function Router() {
         <Route path="/planet-change" component={PlanetChange} />
         <Route path="/ecosystem-coordinator-page" component={EcosystemCoordinator} />
         <Route path="/motion-media-sonic" component={MotionMediaSonic} />
-        <Route path="/buildnest-dashboard" component={BuildNestDashboard} />
-        <Route path="/intern-portalnest" component={InternPortalNest} />
-        <Route path="/hotstack-platform" component={HotStackPlatform} />
         <Route component={NotFound} />
       </Switch>
     </ErrorBoundary>
