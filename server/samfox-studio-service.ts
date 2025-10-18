@@ -7,25 +7,25 @@
 import { db } from "./db";
 import { 
   samFoxStudio, 
-  collaborationWorkspaces, 
-  globalMasterLicenses, 
+  samFoxWorkspaces, 
+  samFoxMasterLicenses, 
   samFoxFileroom, 
-  treatyCollaboration,
+  samFoxTreatyCollaborations,
   brands
 } from "@shared/schema";
 import type { 
   InsertSamFoxStudio, 
-  InsertCollaborationWorkspace, 
-  InsertGlobalMasterLicense,
+  InsertSamFoxWorkspace, 
+  InsertSamFoxMasterLicense,
   InsertSamFoxFileroom,
-  InsertTreatyCollaboration,
+  InsertSamFoxTreatyCollaboration,
   SamFoxStudio,
-  CollaborationWorkspace,
-  GlobalMasterLicense,
+  SamFoxWorkspace,
+  SamFoxMasterLicense,
   SamFoxFileroom,
-  TreatyCollaboration
+  SamFoxTreatyCollaboration
 } from "@shared/schema";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, count } from "drizzle-orm";
 import { nanoid } from "nanoid";
 
 export class SamFoxStudioService {
@@ -60,7 +60,6 @@ export class SamFoxStudioService {
     // Create initial Global Master License
     await this.createMasterLicense({
       licenseKey: `SFS-MASTER-${nanoid(12)}`,
-      samFoxStudioId: studio.id,
       licenseType: "global-master",
       licenseMatrix: {
         scope: "global",
@@ -93,9 +92,9 @@ export class SamFoxStudioService {
   /**
    * Create Collaboration Workspace
    */
-  async createWorkspace(data: Omit<InsertCollaborationWorkspace, 'id'>): Promise<CollaborationWorkspace> {
+  async createWorkspace(data: Omit<InsertSamFoxWorkspace, 'id'>): Promise<SamFoxWorkspace> {
     const [workspace] = await db
-      .insert(collaborationWorkspaces)
+      .insert(samFoxWorkspaces)
       .values({
         ...data,
         metadata: {
@@ -112,22 +111,16 @@ export class SamFoxStudioService {
   /**
    * Get all collaboration workspaces
    */
-  async getWorkspaces(samFoxStudioId?: string): Promise<CollaborationWorkspace[]> {
-    const query = db.select().from(collaborationWorkspaces);
-    
-    if (samFoxStudioId) {
-      return await query.where(eq(collaborationWorkspaces.samFoxStudioId, samFoxStudioId));
-    }
-    
-    return await query.orderBy(desc(collaborationWorkspaces.createdAt));
+  async getWorkspaces(): Promise<SamFoxWorkspace[]> {
+    return await db.select().from(samFoxWorkspaces).orderBy(desc(samFoxWorkspaces.createdAt));
   }
 
   /**
    * Create Global Master License
    */
-  async createMasterLicense(data: Omit<InsertGlobalMasterLicense, 'id'>): Promise<GlobalMasterLicense> {
+  async createMasterLicense(data: Omit<InsertSamFoxMasterLicense, 'id'>): Promise<SamFoxMasterLicense> {
     const [license] = await db
-      .insert(globalMasterLicenses)
+      .insert(samFoxMasterLicenses)
       .values({
         ...data,
         metadata: {
@@ -145,14 +138,8 @@ export class SamFoxStudioService {
   /**
    * Get all master licenses
    */
-  async getMasterLicenses(samFoxStudioId?: string): Promise<GlobalMasterLicense[]> {
-    const query = db.select().from(globalMasterLicenses);
-    
-    if (samFoxStudioId) {
-      return await query.where(eq(globalMasterLicenses.samFoxStudioId, samFoxStudioId));
-    }
-    
-    return await query.orderBy(desc(globalMasterLicenses.issuedAt));
+  async getMasterLicenses(): Promise<SamFoxMasterLicense[]> {
+    return await db.select().from(samFoxMasterLicenses).orderBy(desc(samFoxMasterLicenses.issuedAt));
   }
 
   /**
@@ -163,9 +150,6 @@ export class SamFoxStudioService {
       .insert(samFoxFileroom)
       .values({
         ...data,
-        omniDropSynced: true,
-        autoFiled: true,
-        syncEngine: "FAA OmniDrop Memory Feed",
         metadata: {
           ...data.metadata,
           uploadTimestamp: new Date().toISOString(),
@@ -181,19 +165,11 @@ export class SamFoxStudioService {
   /**
    * Get fileroom contents
    */
-  async getFileroom(samFoxStudioId?: string, fileType?: string): Promise<SamFoxFileroom[]> {
+  async getFileroom(fileType?: string): Promise<SamFoxFileroom[]> {
     let query = db.select().from(samFoxFileroom);
     
-    const conditions = [];
-    if (samFoxStudioId) {
-      conditions.push(eq(samFoxFileroom.samFoxStudioId, samFoxStudioId));
-    }
     if (fileType) {
-      conditions.push(eq(samFoxFileroom.fileType, fileType));
-    }
-    
-    if (conditions.length > 0) {
-      query = query.where(and(...conditions));
+      query = query.where(eq(samFoxFileroom.type, fileType));
     }
     
     return await query.orderBy(desc(samFoxFileroom.createdAt));
@@ -202,15 +178,11 @@ export class SamFoxStudioService {
   /**
    * Create Treaty Collaboration
    */
-  async createTreaty(data: Omit<InsertTreatyCollaboration, 'id'>): Promise<TreatyCollaboration> {
-    const treatyId = `SFS-TREATY-${nanoid(8)}`;
-    
+  async createTreaty(data: Omit<InsertSamFoxTreatyCollaboration, 'id'>): Promise<SamFoxTreatyCollaboration> {
     const [treaty] = await db
-      .insert(treatyCollaboration)
+      .insert(samFoxTreatyCollaborations)
       .values({
         ...data,
-        treatyId,
-        faaClassTag: "✨ FAA-CLASS-BRND-321/SFS",
         metadata: {
           ...data.metadata,
           treatyInitialized: new Date().toISOString(),
@@ -226,19 +198,18 @@ export class SamFoxStudioService {
   /**
    * Sign/Activate Treaty
    */
-  async signTreaty(treatyId: string): Promise<TreatyCollaboration | null> {
+  async signTreaty(treatyId: string): Promise<SamFoxTreatyCollaboration | null> {
     const [treaty] = await db
-      .update(treatyCollaboration)
+      .update(samFoxTreatyCollaborations)
       .set({
-        status: "signed",
-        signedAt: new Date(),
+        status: "sealed",
         metadata: {
           treatySigned: new Date().toISOString(),
           covenantConfirmed: true,
           vaultMeshExpanded: true
         }
       })
-      .where(eq(treatyCollaboration.treatyId, treatyId))
+      .where(eq(samFoxTreatyCollaborations.treatyId, treatyId))
       .returning();
 
     return treaty || null;
@@ -247,14 +218,8 @@ export class SamFoxStudioService {
   /**
    * Get all treaties
    */
-  async getTreaties(samFoxStudioId?: string): Promise<TreatyCollaboration[]> {
-    const query = db.select().from(treatyCollaboration);
-    
-    if (samFoxStudioId) {
-      return await query.where(eq(treatyCollaboration.samFoxStudioId, samFoxStudioId));
-    }
-    
-    return await query.orderBy(desc(treatyCollaboration.createdAt));
+  async getTreaties(): Promise<SamFoxTreatyCollaboration[]> {
+    return await db.select().from(samFoxTreatyCollaborations).orderBy(desc(samFoxTreatyCollaborations.createdAt));
   }
 
   /**
@@ -266,20 +231,10 @@ export class SamFoxStudioService {
     pulseSync: string;
     lastSync: string;
   }> {
-    // Update sync timestamp for all SamFox Studio entities
-    await Promise.all([
-      db.update(samFoxStudio)
-        .set({ updatedAt: new Date() })
-        .where(eq(samFoxStudio.id, samFoxStudioId)),
-      
-      db.update(collaborationWorkspaces)
-        .set({ updatedAt: new Date() })
-        .where(eq(collaborationWorkspaces.samFoxStudioId, samFoxStudioId)),
-      
-      db.update(samFoxFileroom)
-        .set({ updatedAt: new Date() })
-        .where(eq(samFoxFileroom.samFoxStudioId, samFoxStudioId))
-    ]);
+    // Update sync timestamp for SamFox Studio
+    await db.update(samFoxStudio)
+      .set({ updatedAt: new Date() })
+      .where(eq(samFoxStudio.id, samFoxStudioId));
 
     return {
       vaultStatus: "Active",
@@ -300,31 +255,23 @@ export class SamFoxStudioService {
     activeTreaties: number;
     vaultSyncStatus: string;
   }> {
+    // Fetch all data - NEW schema tables don't have samFoxStudioId foreign key
     const [
       workspaces,
       licenses,
       files,
-      treaties,
-      activeTreaties
+      treaties
     ] = await Promise.all([
-      db.select().from(collaborationWorkspaces)
-        .where(eq(collaborationWorkspaces.samFoxStudioId, samFoxStudioId)),
-      
-      db.select().from(globalMasterLicenses)
-        .where(eq(globalMasterLicenses.samFoxStudioId, samFoxStudioId)),
-      
-      db.select().from(samFoxFileroom)
-        .where(eq(samFoxFileroom.samFoxStudioId, samFoxStudioId)),
-      
-      db.select().from(treatyCollaboration)
-        .where(eq(treatyCollaboration.samFoxStudioId, samFoxStudioId)),
-      
-      db.select().from(treatyCollaboration)
-        .where(and(
-          eq(treatyCollaboration.samFoxStudioId, samFoxStudioId),
-          eq(treatyCollaboration.status, "active")
-        ))
+      db.select().from(samFoxWorkspaces),
+      db.select().from(samFoxMasterLicenses),
+      db.select().from(samFoxFileroom),
+      db.select().from(samFoxTreatyCollaborations)
     ]);
+
+    // Count active/sealed treaties
+    const activeTreaties = treaties.filter(t => 
+      t.status === 'active' || t.status === 'sealed'
+    );
 
     return {
       totalWorkspaces: workspaces.length,
