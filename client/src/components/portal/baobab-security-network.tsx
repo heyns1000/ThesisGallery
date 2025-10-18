@@ -17,7 +17,8 @@ import {
   AlertOctagon,
   Info,
   Bell,
-  RefreshCw
+  RefreshCw,
+  Plus
 } from "lucide-react"
 
 interface SecurityNode {
