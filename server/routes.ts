@@ -12,6 +12,7 @@ import { samFoxStudioService } from "./samfox-studio-service";
 import { loopPayService } from "./loop-pay-service";
 import { ecosystemSyncService } from "./ecosystem-sync-service";
 import { EmailProcessor, type EmailParsingResult } from "./email-processor";
+import { assetRegistry } from "./assetRegistry";
 import { 
   insertDocumentSchema,
   insertGallerySchema,
@@ -67,6 +68,11 @@ import {
   // Sector Mapping Schemas
   insertSectorRelationshipSchema,
   updateSectorRelationshipSchema,
+  // Asset Registry & Sync Events
+  insertAssetRegistrySchema,
+  insertSyncEventSchema,
+  assetRegistry as assetRegistryTable,
+  syncEvents as syncEventsTable,
   // HotStack Schemas
   hotstackWorkers,
   hotstackDeployments,
@@ -6471,6 +6477,192 @@ May this wisdom serve your journey well! 🌳✨`
         error: "Failed to update Replit app",
         details: error instanceof Error ? error.message : "Unknown error"
       });
+    }
+  });
+
+  // ===============================
+  // ASSET REGISTRY & SYNC EVENTS API ROUTES
+  // ===============================
+
+  // GET /api/assets/manifest - Get current asset manifest
+  app.get("/api/assets/manifest", async (req, res) => {
+    try {
+      const manifest = await assetRegistry.loadManifest();
+      if (!manifest) {
+        return res.status(404).json({ error: "No manifest found. Run asset scan first." });
+      }
+      res.json(manifest);
+    } catch (error) {
+      console.error("Error loading asset manifest:", error);
+      res.status(500).json({ error: "Failed to load asset manifest" });
+    }
+  });
+
+  // GET /api/assets/registry - List all registered assets
+  app.get("/api/assets/registry", async (req, res) => {
+    try {
+      const assets = await storage.getAssetRegistry();
+      res.json(assets);
+    } catch (error) {
+      console.error("Error fetching asset registry:", error);
+      res.status(500).json({ error: "Failed to fetch asset registry" });
+    }
+  });
+
+  // GET /api/assets/category/:category - Get assets by category
+  app.get("/api/assets/category/:category", async (req, res) => {
+    try {
+      const { category } = req.params;
+      const assets = await storage.getAssetsByCategory(category);
+      res.json(assets);
+    } catch (error) {
+      console.error("Error fetching assets by category:", error);
+      res.status(500).json({ error: "Failed to fetch assets by category" });
+    }
+  });
+
+  // GET /api/assets/repository/:repo - Get assets by repository
+  app.get("/api/assets/repository/:repo", async (req, res) => {
+    try {
+      const { repo } = req.params;
+      const assets = await storage.getAssetsByRepository(repo);
+      res.json(assets);
+    } catch (error) {
+      console.error("Error fetching assets by repository:", error);
+      res.status(500).json({ error: "Failed to fetch assets by repository" });
+    }
+  });
+
+  // POST /api/assets/scan - Trigger asset scan and cataloging
+  app.post("/api/assets/scan", async (req, res) => {
+    try {
+      console.log("🔍 Starting asset scan...");
+      
+      // Generate manifest
+      const manifest = await assetRegistry.generateManifest();
+      
+      // Save manifest to file
+      await assetRegistry.saveManifest(manifest);
+      
+      // Store assets in database
+      let storedCount = 0;
+      for (const category of Object.values(manifest.assets)) {
+        for (const file of category.files) {
+          try {
+            await storage.upsertAsset(file.path, {
+              filename: file.filename,
+              filepath: file.path,
+              fileType: file.type,
+              fileSize: file.size,
+              fileHash: file.hash,
+              category: assetRegistry['categorizeFile'](file.filename),
+              cdnEnabled: file.cdnEnabled || false,
+              repositorySource: null,
+              metadata: null,
+            });
+            storedCount++;
+          } catch (error) {
+            // Log error but continue processing
+            console.error(`Error upserting asset ${file.filename}:`, error);
+          }
+        }
+      }
+      
+      console.log(`✅ Asset scan completed! Stored ${storedCount} assets.`);
+      
+      res.json({
+        success: true,
+        message: "Asset scan completed successfully",
+        manifest,
+        storedCount,
+      });
+    } catch (error) {
+      console.error("Error during asset scan:", error);
+      res.status(500).json({ 
+        error: "Failed to scan assets",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // GET /api/assets/stats - Get asset statistics
+  app.get("/api/assets/stats", async (req, res) => {
+    try {
+      const stats = await assetRegistry.getManifestStats();
+      if (!stats) {
+        return res.status(404).json({ error: "No manifest found. Run asset scan first." });
+      }
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching asset stats:", error);
+      res.status(500).json({ error: "Failed to fetch asset stats" });
+    }
+  });
+
+  // GET /api/sync/events - List sync events
+  app.get("/api/sync/events", async (req, res) => {
+    try {
+      const events = await storage.getSyncEvents();
+      res.json(events);
+    } catch (error) {
+      console.error("Error fetching sync events:", error);
+      res.status(500).json({ error: "Failed to fetch sync events" });
+    }
+  });
+
+  // POST /api/sync/events - Create sync event
+  app.post("/api/sync/events", async (req, res) => {
+    try {
+      const validated = insertSyncEventSchema.parse(req.body);
+      const event = await storage.createSyncEvent(validated);
+      
+      // Broadcast event to WebSocket clients
+      broadcast({ type: 'sync_event_created', data: event });
+      
+      res.json(event);
+    } catch (error) {
+      console.error("Error creating sync event:", error);
+      res.status(400).json({ 
+        error: "Failed to create sync event",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // GET /api/sync/pending - Get pending sync events
+  app.get("/api/sync/pending", async (req, res) => {
+    try {
+      const pendingEvents = await storage.getPendingSyncEvents();
+      res.json(pendingEvents);
+    } catch (error) {
+      console.error("Error fetching pending sync events:", error);
+      res.status(500).json({ error: "Failed to fetch pending sync events" });
+    }
+  });
+
+  // PATCH /api/sync/events/:id/status - Update sync event status
+  app.patch("/api/sync/events/:id/status", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { status } = req.body;
+      
+      if (!status) {
+        return res.status(400).json({ error: "Status is required" });
+      }
+      
+      const updatedEvent = await storage.updateSyncEventStatus(id, status);
+      
+      if (!updatedEvent) {
+        return res.status(404).json({ error: "Sync event not found" });
+      }
+      
+      // Broadcast update to WebSocket clients
+      broadcast({ type: 'sync_event_updated', data: updatedEvent });
+      
+      res.json(updatedEvent);
+    } catch (error) {
+      console.error("Error updating sync event status:", error);
+      res.status(500).json({ error: "Failed to update sync event status" });
     }
   });
 

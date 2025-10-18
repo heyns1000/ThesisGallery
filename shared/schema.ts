@@ -101,6 +101,37 @@ export const processingQueue = pgTable("processing_queue", {
   metadata: json("metadata"),
 });
 
+// Asset Registry - Catalog and manage 500+ files in attached_assets/
+export const assetRegistry = pgTable("asset_registry", {
+  id: serial("id").primaryKey(),
+  filename: varchar("filename", { length: 255 }).notNull(),
+  filepath: text("filepath").notNull().unique(),
+  fileType: varchar("file_type", { length: 50 }),
+  fileSize: integer("file_size"),
+  fileHash: varchar("file_hash", { length: 64 }),
+  category: varchar("category", { length: 50 }),
+  cdnEnabled: boolean("cdn_enabled").default(false),
+  cdnUrl: text("cdn_url"),
+  repositorySource: varchar("repository_source", { length: 100 }),
+  metadata: jsonb("metadata"),
+  lastScanned: timestamp("last_scanned").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Sync Events Queue - Cross-app synchronization and CDN delivery
+export const syncEvents = pgTable("sync_events", {
+  id: serial("id").primaryKey(),
+  eventType: varchar("event_type", { length: 50 }).notNull(), // asset_update, brand_change, etc.
+  source: varchar("source", { length: 100 }).notNull(),
+  target: text("target").array(), // Array of target apps
+  payload: jsonb("payload"),
+  priority: integer("priority").default(2), // 1=high, 2=medium, 3=low
+  status: varchar("status", { length: 50 }).default("pending"), // pending, processing, completed, failed
+  checksum: varchar("checksum", { length: 64 }),
+  processedAt: timestamp("processed_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Wildlife and ecosystem management
 export const wildlifeNodes = pgTable("wildlife_nodes", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -828,6 +859,18 @@ export const insertProcessingQueueSchema = createInsertSchema(processingQueue).p
   metadata: true,
 });
 
+export const insertAssetRegistrySchema = createInsertSchema(assetRegistry).omit({
+  id: true,
+  lastScanned: true,
+  createdAt: true,
+});
+
+export const insertSyncEventSchema = createInsertSchema(syncEvents).omit({
+  id: true,
+  processedAt: true,
+  createdAt: true,
+});
+
 export const insertWildlifeNodeSchema = createInsertSchema(wildlifeNodes).pick({
   name: true,
   nodeType: true,
@@ -1494,6 +1537,12 @@ export type ComplianceLog = typeof complianceLogs.$inferSelect;
 
 export type InsertProcessingQueue = z.infer<typeof insertProcessingQueueSchema>;
 export type ProcessingQueue = typeof processingQueue.$inferSelect;
+
+export type InsertAssetRegistry = z.infer<typeof insertAssetRegistrySchema>;
+export type SelectAssetRegistry = typeof assetRegistry.$inferSelect;
+
+export type InsertSyncEvent = z.infer<typeof insertSyncEventSchema>;
+export type SelectSyncEvent = typeof syncEvents.$inferSelect;
 
 export type InsertWildlifeNode = z.infer<typeof insertWildlifeNodeSchema>;
 export type WildlifeNode = typeof wildlifeNodes.$inferSelect;

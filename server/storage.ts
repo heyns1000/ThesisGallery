@@ -34,6 +34,10 @@ import {
   type InsertBanimalConnection,
   type BanimalSyncLog,
   type InsertBanimalSyncLog,
+  type SelectAssetRegistry,
+  type InsertAssetRegistry,
+  type SelectSyncEvent,
+  type InsertSyncEvent,
   type DataImport,
   type InsertDataImport,
   type DeploymentJob,
@@ -162,7 +166,9 @@ import {
   fpcSystemStatus,
   legalDocuments,
   repositories,
-  fpcPayments
+  fpcPayments,
+  assetRegistry,
+  syncEvents
 } from "@shared/schema";
 import { eq, and, like, desc, sql } from "drizzle-orm";
 
@@ -301,6 +307,29 @@ export interface IStorage {
   getBanimalSyncLog(id: string): Promise<BanimalSyncLog | undefined>;
   createBanimalSyncLog(log: InsertBanimalSyncLog): Promise<BanimalSyncLog>;
   updateBanimalSyncLog(id: string, updates: Partial<BanimalSyncLog>): Promise<BanimalSyncLog | undefined>;
+
+  // ===============================
+  // ASSET REGISTRY METHODS
+  // ===============================
+  
+  getAssetRegistry(): Promise<SelectAssetRegistry[]>;
+  getAssetById(id: number): Promise<SelectAssetRegistry | undefined>;
+  getAssetsByCategory(category: string): Promise<SelectAssetRegistry[]>;
+  getAssetsByRepository(repository: string): Promise<SelectAssetRegistry[]>;
+  createAsset(asset: InsertAssetRegistry): Promise<SelectAssetRegistry>;
+  upsertAsset(filepath: string, asset: InsertAssetRegistry): Promise<SelectAssetRegistry>;
+  updateAsset(id: number, updates: Partial<InsertAssetRegistry>): Promise<SelectAssetRegistry | undefined>;
+  deleteAsset(id: number): Promise<boolean>;
+
+  // ===============================
+  // SYNC EVENT METHODS
+  // ===============================
+  
+  getSyncEvents(): Promise<SelectSyncEvent[]>;
+  getSyncEventById(id: number): Promise<SelectSyncEvent | undefined>;
+  getPendingSyncEvents(): Promise<SelectSyncEvent[]>;
+  createSyncEvent(event: InsertSyncEvent): Promise<SelectSyncEvent>;
+  updateSyncEventStatus(id: number, status: string): Promise<SelectSyncEvent | undefined>;
 
   // ===============================
   // EMAIL SYSTEM METHODS
@@ -3458,6 +3487,99 @@ export class MemStorage implements IStorage {
     const fpcSectorList = await db.select().from(fpcSectors);
     const legacySectors = Array.from(this.sectors.values());
     return [...fpcSectorList, ...legacySectors];
+  }
+
+  // ===============================
+  // ASSET REGISTRY METHODS
+  // ===============================
+  
+  async getAssetRegistry(): Promise<SelectAssetRegistry[]> {
+    return await db.select().from(assetRegistry);
+  }
+
+  async getAssetById(id: number): Promise<SelectAssetRegistry | undefined> {
+    const [asset] = await db.select().from(assetRegistry).where(eq(assetRegistry.id, id));
+    return asset;
+  }
+
+  async getAssetsByCategory(category: string): Promise<SelectAssetRegistry[]> {
+    return await db.select().from(assetRegistry).where(eq(assetRegistry.category, category));
+  }
+
+  async getAssetsByRepository(repository: string): Promise<SelectAssetRegistry[]> {
+    return await db.select().from(assetRegistry).where(eq(assetRegistry.repositorySource, repository));
+  }
+
+  async createAsset(asset: InsertAssetRegistry): Promise<SelectAssetRegistry> {
+    const [created] = await db.insert(assetRegistry).values(asset).returning();
+    return created;
+  }
+
+  async upsertAsset(filepath: string, asset: InsertAssetRegistry): Promise<SelectAssetRegistry> {
+    // Check if asset with this filepath already exists
+    const existing = await db.select()
+      .from(assetRegistry)
+      .where(eq(assetRegistry.filepath, filepath))
+      .limit(1);
+    
+    if (existing.length > 0) {
+      // Update existing record
+      const [updated] = await db.update(assetRegistry)
+        .set({
+          ...asset,
+          lastScanned: new Date(),
+        })
+        .where(eq(assetRegistry.filepath, filepath))
+        .returning();
+      return updated;
+    } else {
+      // Insert new record
+      const [created] = await db.insert(assetRegistry)
+        .values(asset)
+        .returning();
+      return created;
+    }
+  }
+
+  async updateAsset(id: number, updates: Partial<InsertAssetRegistry>): Promise<SelectAssetRegistry | undefined> {
+    const [updated] = await db.update(assetRegistry).set(updates).where(eq(assetRegistry.id, id)).returning();
+    return updated;
+  }
+
+  async deleteAsset(id: number): Promise<boolean> {
+    const result = await db.delete(assetRegistry).where(eq(assetRegistry.id, id));
+    return true;
+  }
+
+  // ===============================
+  // SYNC EVENT METHODS
+  // ===============================
+  
+  async getSyncEvents(): Promise<SelectSyncEvent[]> {
+    return await db.select().from(syncEvents).orderBy(desc(syncEvents.createdAt));
+  }
+
+  async getSyncEventById(id: number): Promise<SelectSyncEvent | undefined> {
+    const [event] = await db.select().from(syncEvents).where(eq(syncEvents.id, id));
+    return event;
+  }
+
+  async getPendingSyncEvents(): Promise<SelectSyncEvent[]> {
+    return await db.select().from(syncEvents).where(eq(syncEvents.status, 'pending')).orderBy(syncEvents.priority);
+  }
+
+  async createSyncEvent(event: InsertSyncEvent): Promise<SelectSyncEvent> {
+    const [created] = await db.insert(syncEvents).values(event).returning();
+    return created;
+  }
+
+  async updateSyncEventStatus(id: number, status: string): Promise<SelectSyncEvent | undefined> {
+    const updates: any = { status };
+    if (status === 'completed' || status === 'failed') {
+      updates.processedAt = new Date();
+    }
+    const [updated] = await db.update(syncEvents).set(updates).where(eq(syncEvents.id, id)).returning();
+    return updated;
   }
 }
 
