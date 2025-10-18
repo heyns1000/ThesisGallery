@@ -13,7 +13,6 @@ import FruitfulMarketplaceMarketing from "@/pages/fruitful-marketplace-marketing
 import BanimalIntegration from "@/pages/banimal-integration"
 import MotionMediaSonic from "@/pages/motion-media-sonic"
 import OmnilevelInterstellar from "@/pages/omnilevel-interstellar"
-import BuildNestDashboard from "@/pages/buildnest-dashboard"
 import PlanetChange from "@/pages/planet-change"
 import OmnilevelPage from "@/pages/omnilevel"
 import OmniGridFAAZonePage from "@/pages/omnigrid-faa-zone"
@@ -230,6 +229,15 @@ function InternsPage() {
   )
 }
 
+function BuildNestDashboardPage() {
+  return (
+    <div className="p-8" data-testid="page-buildnest-dashboard">
+      <h1 className="text-2xl font-bold mb-4" data-testid="heading-buildnest-dashboard">🏗️ BuildNest Dashboard</h1>
+      <p className="text-muted-foreground" data-testid="text-description">Live Metrics - Coming soon</p>
+    </div>
+  )
+}
+
 interface PageRouterProps {
   activePage: string
 }
@@ -318,7 +326,7 @@ export function PageRouter({ activePage }: PageRouterProps) {
     case "omnigrid-faa-zone":
       return <OmniGridFAAZonePage />
     case "buildnest-dashboard":
-      return <BuildNestDashboard />
+      return <BuildNestDashboardPage />
     case "intern-portalnest":
       return <InternPortalNestPage />
     case "banimal-integration":
