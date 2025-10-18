@@ -16,6 +16,7 @@ type UserProfile = {
 const navItems = [
   { href: "/", label: "Dashboard", icon: "fas fa-tachometer-alt", id: "dashboard" },
   { href: "/baobab-tree", label: "🌳 Baobab Systems", icon: "fas fa-shield-alt", id: "baobab-tree" },
+  { href: "/bush-portal", label: "🎙️ Bush Portal", icon: "fas fa-podcast", id: "bush-portal" },
   { href: "/documents", label: "Documents & Articles", icon: "fas fa-file-alt", id: "documents" },
   { href: "/gallery", label: "Visual Gallery", icon: "fas fa-images", id: "gallery" },
   { href: "/conversations", label: "AI Conversations", icon: "fas fa-comments", id: "conversations" },

@@ -3845,6 +3845,49 @@ export type InsertCommunityAgent = z.infer<typeof insertCommunityAgentSchema>;
 export type InsertSectorIntelligence = z.infer<typeof insertSectorIntelligenceSchema>;
 
 // ===============================
+// BUSHPORTAL PODCAST MANAGEMENT SYSTEM
+// ===============================
+
+export const podcasts = pgTable("podcasts", {
+  id: serial("id").primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description"),
+  category: varchar("category", { length: 100 }),
+  duration: integer("duration"),
+  audioUrl: text("audio_url").notNull(),
+  thumbnailUrl: text("thumbnail_url"),
+  ecosystem: varchar("ecosystem", { length: 100 }),
+  tags: text("tags").array(),
+  playCount: integer("play_count").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const podcastCategories = pgTable("podcast_categories", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 100 }).notNull().unique(),
+  description: text("description"),
+  icon: varchar("icon", { length: 50 }),
+  ecosystem: varchar("ecosystem", { length: 100 }),
+});
+
+export const insertPodcastSchema = createInsertSchema(podcasts).omit({
+  id: true,
+  playCount: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertPodcastCategorySchema = createInsertSchema(podcastCategories).omit({
+  id: true,
+});
+
+export type Podcast = typeof podcasts.$inferSelect;
+export type InsertPodcast = z.infer<typeof insertPodcastSchema>;
+export type PodcastCategory = typeof podcastCategories.$inferSelect;
+export type InsertPodcastCategory = z.infer<typeof insertPodcastCategorySchema>;
+
+// ===============================
 // FRUITFULPLANETCHANGE ECOSYSTEM DATA CONSTANTS
 // ===============================
 // Comprehensive Fruitful Global Ecosystem Data - 7,038 Total Brands across 33 Sectors

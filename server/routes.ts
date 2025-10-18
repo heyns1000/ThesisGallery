@@ -79,7 +79,10 @@ import {
   hotstackR2Storage,
   hotstackStations,
   // Replit Apps
-  replitApps
+  replitApps,
+  // Podcast Schemas
+  insertPodcastSchema,
+  insertPodcastCategorySchema
 } from "@shared/schema";
 import { ContactProcessingAI, BanimalChatbot, CurrencyAI, HolidayAI, generateFaaReference } from "./ai-services";
 import { GeminiContactProcessor, GeminiBanimalChatbot, GeminiProductAI, GeminiMarketingAI } from "./gemini-ai";
@@ -109,6 +112,34 @@ const upload = multer({
   limits: {
     fileSize: 10 * 1024 * 1024, // 10MB limit
   },
+});
+
+// Configure secure multer for podcast uploads with file validation
+const podcastUpload = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => {
+      const dir = 'uploads/podcasts/';
+      if (!fs.existsSync(dir)){
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      cb(null, dir);
+    },
+    filename: (req, file, cb) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      cb(null, uniqueSuffix + path.extname(file.originalname));
+    }
+  }),
+  limits: { 
+    fileSize: 50 * 1024 * 1024 // 50MB limit for audio files
+  },
+  fileFilter: (req, file, cb) => {
+    const allowedMimes = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/m4a', 'audio/ogg', 'audio/x-m4a'];
+    if (allowedMimes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type. Only audio files (MP3, WAV, M4A, OGG) are allowed.'));
+    }
+  }
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -2532,6 +2563,173 @@ May this wisdom serve your journey well! 🌳✨`
     } catch (error) {
       console.error('AdMob performance analytics error:', error);
       res.status(500).json({ error: "Failed to fetch AdMob performance analytics" });
+    }
+  });
+
+  // ===============================
+  // BUSHPORTAL PODCAST ROUTES
+  // ===============================
+
+  app.get('/api/podcasts', async (req, res) => {
+    try {
+      const filters = {
+        category: req.query.category as string | undefined,
+        ecosystem: req.query.ecosystem as string | undefined,
+        search: req.query.search as string | undefined,
+      };
+      const podcasts = await storage.getPodcasts(filters);
+      res.json(podcasts);
+    } catch (error) {
+      console.error('Error fetching podcasts:', error);
+      res.status(500).json({ error: 'Failed to fetch podcasts' });
+    }
+  });
+
+  app.get('/api/podcasts/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const podcast = await storage.getPodcast(id);
+      if (!podcast) {
+        return res.status(404).json({ error: 'Podcast not found' });
+      }
+      res.json(podcast);
+    } catch (error) {
+      console.error('Error fetching podcast:', error);
+      res.status(500).json({ error: 'Failed to fetch podcast' });
+    }
+  });
+
+  app.post('/api/podcasts', podcastUpload.fields([
+    { name: 'audio', maxCount: 1 },
+    { name: 'thumbnail', maxCount: 1 }
+  ]), async (req, res) => {
+    try {
+      const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+      
+      if (!files || !files.audio || files.audio.length === 0) {
+        return res.status(400).json({ error: 'Audio file is required' });
+      }
+
+      const audioFile = files.audio[0];
+      const thumbnailFile = files.thumbnail?.[0];
+
+      const audioUrl = `/uploads/podcasts/${audioFile.filename}`;
+      const thumbnailUrl = thumbnailFile ? `/uploads/podcasts/${thumbnailFile.filename}` : null;
+
+      // Validate form data with Zod schema
+      const podcastData = insertPodcastSchema.parse({
+        title: req.body.title,
+        description: req.body.description || null,
+        category: req.body.category || null,
+        duration: req.body.duration ? parseInt(req.body.duration) : null,
+        audioUrl,
+        thumbnailUrl,
+        ecosystem: req.body.ecosystem || null,
+        tags: req.body.tags ? JSON.parse(req.body.tags) : null,
+      });
+
+      const podcast = await storage.createPodcast(podcastData);
+      broadcast({ type: 'podcast_created', data: podcast });
+      res.json(podcast);
+    } catch (error) {
+      console.error('Error creating podcast:', error);
+      
+      // Handle Zod validation errors
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ 
+          error: 'Validation failed', 
+          details: error.errors 
+        });
+      }
+      
+      // Handle multer errors
+      if (error instanceof multer.MulterError) {
+        return res.status(400).json({ 
+          error: 'File upload error', 
+          details: error.message 
+        });
+      }
+      
+      res.status(500).json({ error: 'Failed to create podcast' });
+    }
+  });
+
+  app.put('/api/podcasts/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updates = req.body;
+      const podcast = await storage.updatePodcast(id, updates);
+      if (!podcast) {
+        return res.status(404).json({ error: 'Podcast not found' });
+      }
+      broadcast({ type: 'podcast_updated', data: podcast });
+      res.json(podcast);
+    } catch (error) {
+      console.error('Error updating podcast:', error);
+      res.status(500).json({ error: 'Failed to update podcast' });
+    }
+  });
+
+  app.delete('/api/podcasts/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const deleted = await storage.deletePodcast(id);
+      if (!deleted) {
+        return res.status(404).json({ error: 'Podcast not found' });
+      }
+      broadcast({ type: 'podcast_deleted', data: { id } });
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error deleting podcast:', error);
+      res.status(500).json({ error: 'Failed to delete podcast' });
+    }
+  });
+
+  app.post('/api/podcasts/:id/play', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const podcast = await storage.incrementPodcastPlayCount(id);
+      if (!podcast) {
+        return res.status(404).json({ error: 'Podcast not found' });
+      }
+      res.json(podcast);
+    } catch (error) {
+      console.error('Error incrementing play count:', error);
+      res.status(500).json({ error: 'Failed to increment play count' });
+    }
+  });
+
+  app.get('/api/podcast-categories', async (req, res) => {
+    try {
+      const categories = await storage.getPodcastCategories();
+      res.json(categories);
+    } catch (error) {
+      console.error('Error fetching podcast categories:', error);
+      res.status(500).json({ error: 'Failed to fetch categories' });
+    }
+  });
+
+  app.post('/api/podcast-categories', async (req, res) => {
+    try {
+      const category = await storage.createPodcastCategory(req.body);
+      res.json(category);
+    } catch (error) {
+      console.error('Error creating podcast category:', error);
+      res.status(500).json({ error: 'Failed to create category' });
+    }
+  });
+
+  app.post('/api/upload/audio', upload.single('audio'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: 'No audio file uploaded' });
+      }
+      
+      const audioUrl = `/uploads/${req.file.filename}`;
+      res.json({ audioUrl, filename: req.file.filename });
+    } catch (error) {
+      console.error('Error uploading audio:', error);
+      res.status(500).json({ error: 'Failed to upload audio' });
     }
   });
 

@@ -143,7 +143,11 @@ import {
   type CommunityAgent,
   type InsertCommunityAgent,
   type SectorIntelligence,
-  type InsertSectorIntelligence
+  type InsertSectorIntelligence,
+  type Podcast,
+  type InsertPodcast,
+  type PodcastCategory,
+  type InsertPodcastCategory
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
@@ -174,7 +178,9 @@ import {
   assetRegistry,
   syncEvents,
   apiKeys,
-  keyAuditLogs
+  keyAuditLogs,
+  podcasts,
+  podcastCategories
 } from "@shared/schema";
 import { eq, and, like, desc, sql } from "drizzle-orm";
 
@@ -313,6 +319,21 @@ export interface IStorage {
   getBanimalSyncLog(id: string): Promise<BanimalSyncLog | undefined>;
   createBanimalSyncLog(log: InsertBanimalSyncLog): Promise<BanimalSyncLog>;
   updateBanimalSyncLog(id: string, updates: Partial<BanimalSyncLog>): Promise<BanimalSyncLog | undefined>;
+
+  // ===============================
+  // BUSHPORTAL PODCAST METHODS
+  // ===============================
+  
+  getPodcasts(filters?: { category?: string; ecosystem?: string; search?: string }): Promise<Podcast[]>;
+  getPodcast(id: number): Promise<Podcast | undefined>;
+  createPodcast(podcast: InsertPodcast): Promise<Podcast>;
+  updatePodcast(id: number, updates: Partial<Podcast>): Promise<Podcast | undefined>;
+  deletePodcast(id: number): Promise<boolean>;
+  incrementPodcastPlayCount(id: number): Promise<Podcast | undefined>;
+  
+  getPodcastCategories(): Promise<PodcastCategory[]>;
+  getPodcastCategory(id: number): Promise<PodcastCategory | undefined>;
+  createPodcastCategory(category: InsertPodcastCategory): Promise<PodcastCategory>;
 
   // ===============================
   // ASSET REGISTRY METHODS
@@ -854,6 +875,7 @@ export class MemStorage implements IStorage {
   private banimalCustomers: Map<string, BanimalCustomer> = new Map();
   private banimalConnections: Map<string, BanimalConnection> = new Map();
   private banimalSyncLogs: Map<string, BanimalSyncLog> = new Map();
+  // Podcasts now use database persistence instead of memory
   private emailProviders: Map<string, EmailProvider> = new Map();
   private emailTemplates: Map<string, EmailTemplate> = new Map();
   private emailCampaigns: Map<string, EmailCampaign> = new Map();
@@ -1898,6 +1920,81 @@ export class MemStorage implements IStorage {
     const updated = { ...existing, ...updates };
     this.banimalSyncLogs.set(id, updated);
     return updated;
+  }
+
+  // ===============================
+  // BUSHPORTAL PODCAST METHODS (DATABASE PERSISTENCE)
+  // ===============================
+
+  async getPodcasts(filters?: { category?: string; ecosystem?: string; search?: string }): Promise<Podcast[]> {
+    let query = db.select().from(podcasts);
+    
+    const conditions = [];
+    if (filters?.category) {
+      conditions.push(eq(podcasts.category, filters.category));
+    }
+    if (filters?.ecosystem) {
+      conditions.push(eq(podcasts.ecosystem, filters.ecosystem));
+    }
+    if (filters?.search) {
+      const searchPattern = `%${filters.search}%`;
+      conditions.push(
+        sql`(${podcasts.title} ILIKE ${searchPattern} OR ${podcasts.description} ILIKE ${searchPattern})`
+      );
+    }
+    
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions));
+    }
+    
+    return await query.orderBy(desc(podcasts.createdAt));
+  }
+
+  async getPodcast(id: number): Promise<Podcast | undefined> {
+    const [podcast] = await db.select().from(podcasts).where(eq(podcasts.id, id));
+    return podcast;
+  }
+
+  async createPodcast(insertPodcast: InsertPodcast): Promise<Podcast> {
+    const [podcast] = await db.insert(podcasts).values(insertPodcast).returning();
+    return podcast;
+  }
+
+  async updatePodcast(id: number, updates: Partial<Podcast>): Promise<Podcast | undefined> {
+    const [podcast] = await db
+      .update(podcasts)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(podcasts.id, id))
+      .returning();
+    return podcast;
+  }
+
+  async deletePodcast(id: number): Promise<boolean> {
+    const result = await db.delete(podcasts).where(eq(podcasts.id, id));
+    return true;
+  }
+
+  async incrementPodcastPlayCount(id: number): Promise<Podcast | undefined> {
+    const [podcast] = await db
+      .update(podcasts)
+      .set({ playCount: sql`${podcasts.playCount} + 1` })
+      .where(eq(podcasts.id, id))
+      .returning();
+    return podcast;
+  }
+
+  async getPodcastCategories(): Promise<PodcastCategory[]> {
+    return await db.select().from(podcastCategories);
+  }
+
+  async getPodcastCategory(id: number): Promise<PodcastCategory | undefined> {
+    const [category] = await db.select().from(podcastCategories).where(eq(podcastCategories.id, id));
+    return category;
+  }
+
+  async createPodcastCategory(insertCategory: InsertPodcastCategory): Promise<PodcastCategory> {
+    const [category] = await db.insert(podcastCategories).values(insertCategory).returning();
+    return category;
   }
 
   // ===============================
