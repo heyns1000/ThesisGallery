@@ -9,8 +9,8 @@ interface SectorDashboardIndicatorProps {
 }
 
 export function SectorDashboardIndicator({ sector, className = "" }: SectorDashboardIndicatorProps) {
-  const brandCount = sector.coreBrands || 0
-  const subnodeCount = sector.totalNodes || 0
+  const brandCount = sector.brandCount || 0
+  const subnodeCount = sector.subnodeCount || 0
   const totalElements = brandCount + subnodeCount
   
   // Determine dashboard status

@@ -1,404 +1,173 @@
-import { useState } from "react"
-import { useQuery } from "@tanstack/react-query"
-import { Menu, X } from "lucide-react"
-import { useTheme } from "@/hooks/use-theme"
-import { SystemStatus } from "@/components/portal/system-status"
-import type { Sector } from "@shared/schema"
-import { motion, AnimatePresence } from "framer-motion"
-import { PulseIndicator, RippleButton, SparkleEffect } from "@/components/ui/micro-interactions"
+import { Link, useLocation } from "wouter";
+import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
+import { LogOut, User } from "lucide-react";
+import { useAppContext } from "@/context/AppContext";
 
-interface SidebarProps {
-  activePage: string
-  onPageChange?: (page: string) => void
-  setActivePage?: (page: string) => void
-}
+type UserProfile = {
+  id: string;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  profileImageUrl?: string;
+};
 
-export function Sidebar({ activePage, onPageChange, setActivePage }: SidebarProps) {
-  const handlePageChange = (page: string) => {
-    if (onPageChange) onPageChange(page)
-    if (setActivePage) setActivePage(page)
-  }
-  const [isMobileOpen, setIsMobileOpen] = useState(false)
-  const { theme, toggleTheme, toggleHyperMode, isHyperMode } = useTheme()
+const navItems = [
+  { href: "/", label: "Dashboard", icon: "fas fa-tachometer-alt", id: "dashboard" },
+  { href: "/documents", label: "Documents & Articles", icon: "fas fa-file-alt", id: "documents" },
+  { href: "/gallery", label: "Visual Gallery", icon: "fas fa-images", id: "gallery" },
+  { href: "/conversations", label: "AI Conversations", icon: "fas fa-comments", id: "conversations" },
+  { href: "/brands", label: "Brand Management", icon: "fas fa-trademark", id: "brands" },
+  { href: "/compliance", label: "Compliance Monitor", icon: "fas fa-shield-alt", id: "compliance" },
+  { href: "/automation", label: "Automation Engine", icon: "fas fa-robot", id: "automation" },
+  { href: "/global-view", label: "🌍 Global View GPT", icon: "fas fa-globe", id: "global-view" },
+  { href: "/fruitful-america", label: "🇺🇸 Fruitful America™", icon: "fas fa-flag-usa", id: "fruitful-america" },
+  { href: "/wildlife-dashboard", label: "🌳 Wildlife Grid", icon: "fas fa-tree", id: "wildlife-dashboard" },
+  { href: "/payroll-dashboard", label: "🧬 Payroll OS", icon: "fas fa-calculator", id: "payroll-dashboard" },
+  { href: "/mining-dashboard", label: "⛏️ Mining Ecosystem", icon: "fas fa-pickaxe", id: "mining-dashboard" },
+  { href: "/housing-dashboard", label: "🏛️ Housing Sector", icon: "fas fa-home", id: "housing-dashboard" },
+  { href: "/faa-realestate-platform", label: "🏠 FAA Real Estate AI™", icon: "fas fa-chart-area", id: "faa-realestate-platform" },
+  { href: "/faa-global-industry-index", label: "🌍 FAA™ Global Industry Index", icon: "fas fa-globe", id: "faa-global-industry-index" },
+  { href: "/github-repository-browser", label: "📂 GitHub Repository Browser", icon: "fab fa-github", id: "github-repository-browser" },
+  { href: "/education-dashboard", label: "🧸 Education Sector", icon: "fas fa-graduation-cap", id: "education-dashboard" },
+  { href: "/ai-logic-dashboard", label: "🧠 AI & Logic Grid", icon: "fas fa-brain", id: "ai-logic-dashboard" },
+  { href: "/samfox-studio-platform", label: "🦁 SamFox Studio™", icon: "fas fa-copyright", id: "samfox-studio-platform" },
+  { href: "/admin-portal", label: "🦁 Admin Portal", icon: "fas fa-shield-alt", id: "admin-portal" },
+  { href: "/admin-settings", label: "⚙️ Admin Settings", icon: "fas fa-cog", id: "admin-settings" },
+  { href: "/pulse-grid-dashboard", label: "🍇 PulseGrid Trading", icon: "fas fa-chart-line", id: "pulse-grid-dashboard" },
+  { href: "/crate-dance-smart-grid", label: "🧩 Crate Dance Grid", icon: "fas fa-cubes", id: "crate-dance-smart-grid" },
+  { href: "/crate-dance-africa", label: "🎭 Crate Dance™ Africa", icon: "fas fa-music", id: "crate-dance-africa" },
+  { href: "/playing-with-the-seed", label: "🌱 Playing with the Seed", icon: "fas fa-seedling", id: "playing-with-the-seed" },
+  { href: "/seedling-language-learning", label: "💬 Seedling Languages", icon: "fas fa-heart", id: "seedling-language-learning" },
+  { href: "/data-pipeline", label: "🌳 Data Pipeline", icon: "fas fa-database", id: "data-pipeline" },
+  { href: "/email-system", label: "📧 Enterprise Email", icon: "fas fa-envelope", id: "email-system" },
+  { href: "/multi-channel-messaging", label: "💬 Multi-Channel Hub", icon: "fas fa-satellite-dish", id: "multi-channel-messaging" },
+  { href: "/faa-youth-education-brands", label: "🧸 FAA Youth & Education Brands", icon: "fas fa-graduation-cap", id: "faa-youth-education-brands" },
+  { href: "/fruitful-global-platform", label: "🍇 Fruitful Global Platform", icon: "fas fa-globe", id: "fruitful-global-platform" },
+  { href: "/faa-tesis-omni-render", label: "📜 FAA Tesis Omni Render", icon: "fas fa-file-alt", id: "faa-tesis-omni-render" },
+  { href: "/agriculture-biotech-platform", label: "🌾 Agriculture-Biotech Platform", icon: "fas fa-seedling", id: "agriculture-biotech-platform" },
+  { href: "/strategic-sell-scroll", label: "🌕 Strategic Sell Scroll", icon: "fas fa-moon", id: "strategic-sell-scroll" },
+  { href: "/eureka-cloudflow-dashboard", label: "🌊 Eureka Cloudflow", icon: "fas fa-cloud", id: "eureka-cloudflow-dashboard" },
+  { href: "/daily-summary-extractor", label: "📔 Daily Summary Extractor", icon: "fas fa-book", id: "daily-summary-extractor" },
+  { href: "/vault-payments", label: "💳 Vault Payments", icon: "fas fa-credit-card", id: "vault-payments" },
+  { href: "/team-onboarding", label: "👥 Team Onboarding", icon: "fas fa-user-plus", id: "team-onboarding" },
+  { href: "/contact-management", label: "📧 Contact Management", icon: "fas fa-address-book", id: "contact-management" },
+  { href: "/banimal-platform", label: "🐾 Banimal™ FAA Platform", icon: "fas fa-shopping-cart", id: "banimal-platform" },
+  { href: "/banimal-connector", label: "🔌 Banimal Connector", icon: "fas fa-plug", id: "banimal-connector" },
+  { href: "/ecosystem-manager", label: "🌐 Ecosystem Manager", icon: "fas fa-network-wired", id: "ecosystem-manager" },
+  { href: "/deployment-dashboard", label: "🚀 Deployment Dashboard", icon: "fas fa-server", id: "deployment-dashboard" },
+  { href: "/looppay-gallery", label: "💳 LoopPay™ Sovereign Portal", icon: "fas fa-credit-card", id: "looppay-gallery" },
+  { href: "/scrollbinder-one", label: "📜 ScrollBinder_One™ Audit", icon: "fas fa-scroll", id: "scrollbinder-one" },
+  { href: "/hsomni-integration", label: "🚀 HSOMNI 9000 Integration", icon: "fas fa-rocket", id: "hsomni-integration" },
+];
 
-  const { data: sectors = [] } = useQuery<Sector[]>({
-    queryKey: ["/api/sectors"],
-  })
+export function Sidebar() {
+  const [location] = useLocation();
+  const { user } = useAuth();
+  const { user: contextUser } = useAppContext();
 
-  const navItems = [
-    { id: "home", label: "Portal Home", icon: "🏠" },
-    { id: "fruitful-crate-dance", label: "Fruitful Crate Dance", icon: "🕺", badge: "6,005+ Brands" },
-    { id: "secure-sign", label: "SecureSign™ VIP", icon: "🔒", badge: "Legal Portal" },
-    { id: "brand-identity-manager", label: "Brand Identity Manager", icon: "🏢", badge: "6,005 Individual Sites" },
-    { id: "brands", label: "Brand Elements", icon: "🧩", badge: "6,005" },
-    { id: "sectors", label: "Sectors", icon: "🗂️", badge: `${sectors.length}` },
-    { id: "marketplace", label: "Marketplace", icon: "🛒" },
-    { id: "analytics", label: "Analytics", icon: "📊" },
-    { id: "integrations", label: "Integrations", icon: "🔌", badge: "Extensions" },
-    { id: "settings", label: "Settings", icon: "⚙️" },
-  ]
+  const handleLogout = () => {
+    window.location.href = "/api/logout";
+  };
 
-  const mainSections = [
-    { id: "global-dashboard", label: "📊 Global Dashboard", icon: "📈", badge: "Live Analytics" },
-    { id: "ecosystem-explorer", label: "🌐 Ecosystem Explorer", icon: "🗺️", badge: "45 Sectors" },
-    { id: "global-pulse", label: "Global Pulse", icon: "🌍", badge: "Analytics" },
-    { id: "seedwave-admin", label: "🦁 Seedwave™ Admin", icon: "⚙️", badge: "1,967 Brands" },
-  ]
-
-  const vaultmeshSections = [
-    { id: "vaultmesh-dashboard", label: "🌐 VaultMesh™ Dashboard", icon: "📊", badge: "Infrastructure" },
-    { id: "vaultmesh-about", label: "ℹ️ About VaultMesh™", icon: "📋", badge: "Core Info" },
-    { id: "vaultmesh-products", label: "📦 VaultMesh™ Products", icon: "🛠️", badge: "8 Solutions" },
-    { id: "vaultmesh-brands", label: "🎯 Brand Packages", icon: "📊", badge: "610 Brands" },
-    { id: "vaultmesh-checkout", label: "🔐 VaultMesh™ Checkout", icon: "💳", badge: "Enterprise" },
-    { id: "paypal-ecosystem", label: "💳 PayPal Ecosystem", icon: "💰", badge: "548 Containers" },
-  ]
-
-  const ecosystemItems = [
-    { id: "faa-quantum-nexus", label: "🚀 FAA Quantum Nexus™", icon: "⚡", badge: "AI Economic" },
-    { id: "fruitful-business-plan", label: "💼 Fruitful Business Plan", icon: "📊", badge: "R391M Strategy" },
-    { id: "samfox-creative-studio", label: "🎨 SamFox Creative Studio", icon: "✨", badge: "Digital Art" },
-    { id: "chatgpt-integration", label: "🦁 ChatGPT Lions", icon: "🧠", badge: "6 Soul-Injected" },
-    { id: "faa-intake-checklist", label: "🚀 FAA Intake Checklist", icon: "✅", badge: "Treaty Compliance" },
-    { id: "omniuniversal-button-validator", label: "🧬 Button Validator", icon: "🔘", badge: "UI/CAD/Scroll" },
-    { id: "fruitful-marketplace-marketing", label: "🛒 Fruitful™ Marketplace", icon: "🛍️", badge: "Live Store" },
-    { id: "fruitful-smart-toys", label: "🧸 Fruitful Smart Toys™", icon: "🎮", badge: "5 Products" },
-    { id: "hotstack-codenest", label: "🔥 HotStack + CodeNest", icon: "💻", badge: "Independent Repos" },
-    { id: "repository-hub", label: "🗃️ Repository Hub", icon: "📂", badge: "GitHub Integration" },
-    { id: "sector-onboarding", label: "🚀 Sector Onboarding", icon: "🎯", badge: "Guided Flow" },
-    { id: "sector-mapping", label: "🌐 Sector Relationship Map", icon: "🔗", badge: "Interactive Network" },
-    { id: "sector-relationship-mapping", label: "🔗 Interactive Sector Mapping", icon: "🌐", badge: "Network Graph" },
-    { id: "planet-change", label: "🌍 Fruitful.Planet.Change", icon: "🌱", badge: "Genesis Node" },
-    { id: "omnilevel", label: "🧠 Omnilevel AI Logic", icon: "🤖", badge: "31 Sectors" },
-    { id: "omnigrid-faa-zone", label: "🌐 OmniGrid™ FAA.zone™", icon: "🔋", badge: "PulseTrade™" },
-    { id: "buildnest-dashboard", label: "🏗️ BuildNest Dashboard", icon: "🖥️", badge: "Live Metrics" },
-    { id: "intern-portalnest", label: "🎓 PortalNest™ Interns", icon: "👨‍💻", badge: "AI Tracking" },
-    { id: "banimal-integration", label: "🍼 Banimal™ Global", icon: "💝", badge: "Charitable" },
-    { id: "motion-media-sonic", label: "🎬 Motion, Media & Sonic", icon: "🎵", badge: "Processing Studio" },
-    { id: "omnilevel-interstellar", label: "🚀 Omnilevel Interstellar", icon: "🌌", badge: "Quantum Space" },
-    { id: "baobab-security-network", label: "🌳 Baobab Security Network™", icon: "🛡️", badge: "Environmental AI" },
-    { id: "legal-hub", label: "📋 Legal Documentation Hub", icon: "📄", badge: "9 Documents" },
-    { id: "api-keys", label: "🔑 API Key Manager", icon: "🔐", badge: "8 Keys" },
-    { id: "payment-hub", label: "Payment Portal", icon: "💳", badge: "SSO" },
-  ]
-
-  const adminItems = [
-    { id: "interns", label: "Interns", icon: "👨‍🎓" },
-    { id: "compliance", label: "Compliance", icon: "🛡️" },
-  ]
-
-  const toggleMobile = () => setIsMobileOpen(!isMobileOpen)
+  const userProfile = user as UserProfile | undefined;
 
   return (
-    <>
-      {/* Mobile Menu Toggle */}
-      <button
-        onClick={toggleMobile}
-        className="fixed top-4 left-4 z-50 md:hidden bg-white dark:bg-dark-card p-2 rounded-lg shadow-lg border border-gray-200 dark:border-dark-border"
-        data-testid="button-mobile-toggle"
-      >
-        {isMobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-      </button>
-
-      {/* Sidebar */}
-      <aside className={`
-        sidebar fixed left-0 top-0 h-full w-80 p-6 overflow-y-auto z-40
-        transform transition-transform duration-300 ease-in-out
-        ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-        bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800
-      `} data-testid="sidebar-main">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8" data-testid="container-sidebar-header">
-          <div>
-            <h2 className="text-xl font-bold" data-testid="heading-sidebar-title">
-              <span className="text-cyan-500">Seedwave™</span> Portal
-              <div className="text-xs text-gray-500 font-normal">Powered by VaultMesh™</div>
-            </h2>
-          </div>
-          <div className="flex items-center gap-2">
-            {/* Theme Toggle */}
-            <button
-              onClick={toggleTheme}
-              className="w-12 h-6 bg-gray-300 dark:bg-cyan-500 rounded-full relative transition-colors"
-              data-testid="button-theme-toggle"
-            >
-              <div className={`
-                absolute w-5 h-5 bg-white rounded-full top-0.5 transition-transform
-                ${theme === 'dark' ? 'translate-x-6' : 'translate-x-0.5'}
-              `} />
-            </button>
-            {/* Hyper Mode Toggle */}
-            <button
-              onClick={toggleHyperMode}
-              className={`
-                px-2 py-1 text-xs font-bold border rounded transition-all
-                ${isHyperMode 
-                  ? 'bg-cyan-500 text-white border-cyan-500' 
-                  : 'text-cyan-500 border-cyan-500 hover:bg-cyan-500 hover:text-white'
-                }
-              `}
-              data-testid="button-hyper-mode-toggle"
-            >
-              {isHyperMode ? 'EXIT HYPER' : 'HYPER'}
-            </button>
+    <aside className="w-80 min-w-[20rem] bg-card border-r border-border flex flex-col h-screen relative z-10">
+      <div className="p-6">
+        <div className="gradient-border">
+          <div className="gradient-border-inner p-4 text-center">
+            <h1 className="text-xl font-bold text-primary">🌳 Fruitful Global</h1>
+            <p className="text-xs text-muted-foreground mt-1">Master Hub & Ecosystem Platform</p>
           </div>
         </div>
+        
+        {/* Welcome Message from AppContext */}
+        <div className="mt-4 p-3 bg-primary/10 rounded-lg border border-primary/20">
+          <p className="text-sm font-medium text-primary" data-testid="text-welcome-message">
+            Welcome, {contextUser.name}
+          </p>
+          <p className="text-xs text-muted-foreground mt-1">{contextUser.email}</p>
+        </div>
+      </div>
+
+      <nav className="flex-1 px-4 space-y-2 overflow-y-auto">
+        {navItems.map((item) => {
+          const isActive = location === item.href;
+          
+          return (
+            <Link key={item.id} href={item.href}>
+              <div 
+                className={cn(
+                  "flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors cursor-pointer",
+                  isActive 
+                    ? "bg-primary text-primary-foreground" 
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                )}
+                data-testid={`nav-link-${item.id}`}
+              >
+                <i className={`${item.icon} mr-3`}></i>
+                {item.label}
+              </div>
+            </Link>
+          );
+        })}
+      </nav>
+
+      <div className="p-4 space-y-3">
+        {/* User Info */}
+        {userProfile && (
+          <div className="bg-muted rounded-lg p-3">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                {userProfile.profileImageUrl ? (
+                  <img 
+                    src={userProfile.profileImageUrl} 
+                    alt="Profile" 
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
+                ) : (
+                  <User className="w-4 h-4 text-primary-foreground" />
+                )}
+              </div>
+              <div className="flex-1">
+                <p className="text-xs font-medium">
+                  {userProfile.firstName || userProfile.lastName 
+                    ? `${userProfile.firstName || ''} ${userProfile.lastName || ''}`.trim()
+                    : userProfile.email || 'User'
+                  }
+                </p>
+                {userProfile.email && (userProfile.firstName || userProfile.lastName) && (
+                  <p className="text-xs text-muted-foreground">{userProfile.email}</p>
+                )}
+              </div>
+            </div>
+            <Button 
+              onClick={handleLogout}
+              variant="outline" 
+              size="sm" 
+              className="w-full text-xs"
+              data-testid="button-logout"
+            >
+              <LogOut className="w-3 h-3 mr-1" />
+              Sign Out
+            </Button>
+          </div>
+        )}
 
         {/* System Status */}
-        <SystemStatus />
-
-        {/* Navigation */}
-        <motion.nav 
-          className="space-y-2 mb-8"
-          initial="hidden"
-          animate="visible"
-          variants={{
-            hidden: { opacity: 0 },
-            visible: {
-              opacity: 1,
-              transition: {
-                staggerChildren: 0.05
-              }
-            }
-          }}
-          data-testid="nav-main-items"
-        >
-          {navItems.map((item, index) => (
-            <motion.div
-              key={item.id}
-              variants={{
-                hidden: { opacity: 0, x: -20 },
-                visible: { 
-                  opacity: 1, 
-                  x: 0,
-                  transition: { delay: index * 0.05 }
-                }
-              }}
-              data-testid={`nav-item-${item.id}`}
-            >
-              <SparkleEffect trigger={activePage === item.id}>
-                <RippleButton
-                  onClick={() => {
-                    handlePageChange(item.id)
-                    setIsMobileOpen(false)
-                  }}
-                  className={`
-                    w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left
-                    ${activePage === item.id
-                      ? 'bg-cyan-500 bg-opacity-10 text-cyan-500'
-                      : 'hover:bg-gray-100 dark:hover:bg-gray-800'
-                    }
-                  `}
-                  variant={activePage === item.id ? "default" : "default"}
-                  data-testid={`button-nav-${item.id}`}
-                >
-                  <motion.span 
-                    className="text-lg"
-                    whileHover={{ scale: 1.2, rotate: 15 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                  >
-                    {item.icon}
-                  </motion.span>
-                  <span className="font-medium flex-1">{item.label}</span>
-                  {item.badge && (
-                    <motion.span 
-                      className="text-xs bg-cyan-500 text-white px-2 py-1 rounded-full flex items-center gap-1"
-                      whileHover={{ scale: 1.1 }}
-                      data-testid={`badge-nav-${item.id}`}
-                    >
-                      <PulseIndicator active={activePage === item.id} size="sm" color="blue" />
-                      {item.badge}
-                    </motion.span>
-                  )}
-                </RippleButton>
-              </SparkleEffect>
-            </motion.div>
-          ))}
-        </motion.nav>
-
-        {/* Main Sections */}
-        <div className="pt-6 border-t border-gray-200 dark:border-gray-800 mb-8" data-testid="section-main">
-          <h3 className="text-sm font-semibold text-gray-500 mb-3" data-testid="heading-main-sections">MAIN SECTIONS</h3>
-          <div className="space-y-2">
-            {mainSections.map((item, index) => (
-              <motion.div
-                key={item.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 + index * 0.1 }}
-                data-testid={`main-item-${item.id}`}
-              >
-                <SparkleEffect trigger={activePage === item.id}>
-                  <RippleButton
-                    onClick={() => {
-                      handlePageChange(item.id)
-                      setIsMobileOpen(false)
-                    }}
-                    className={`
-                      w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left
-                      ${activePage === item.id
-                        ? 'bg-cyan-500 bg-opacity-10 text-cyan-500'
-                        : 'hover:bg-gray-100 dark:hover:bg-gray-800'
-                      }
-                    `}
-                    variant={activePage === item.id ? "success" : "default"}
-                    data-testid={`button-main-${item.id}`}
-                  >
-                    <motion.span 
-                      className="text-lg"
-                      whileHover={{ scale: 1.3, rotate: -10 }}
-                      transition={{ type: "spring", stiffness: 400 }}
-                    >
-                      {item.icon}
-                    </motion.span>
-                    <span className="font-medium flex-1">{item.label}</span>
-                    {item.badge && (
-                      <motion.span 
-                        className="text-xs bg-cyan-500 text-white px-2 py-1 rounded-full flex items-center gap-1"
-                        whileHover={{ scale: 1.1, rotate: 5 }}
-                        data-testid={`badge-main-${item.id}`}
-                      >
-                        <PulseIndicator active={activePage === item.id} size="sm" color="green" />
-                        {item.badge}
-                      </motion.span>
-                    )}
-                  </RippleButton>
-                </SparkleEffect>
-              </motion.div>
-            ))}
+        <div className="bg-muted rounded-lg p-3">
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-muted-foreground">System Status</span>
+            <div className="flex items-center">
+              <div className="w-2 h-2 bg-accent rounded-full animate-pulse"></div>
+              <span className="text-xs text-accent ml-2">Online</span>
+            </div>
           </div>
+          <p className="text-xs text-muted-foreground mt-1">Atom-Level Verification™ Active</p>
         </div>
-
-        {/* VaultMesh™ Core Infrastructure */}
-        <div className="pt-6 border-t border-gray-200 dark:border-gray-800 mb-8" data-testid="section-vaultmesh">
-          <h3 className="text-sm font-semibold text-gray-500 mb-3" data-testid="heading-vaultmesh-core">VAULTMESH™ CORE</h3>
-          <div className="space-y-2">
-            {vaultmeshSections.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => {
-                  handlePageChange(item.id)
-                  setIsMobileOpen(false)
-                }}
-                className={`
-                  w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left
-                  ${activePage === item.id
-                    ? 'bg-blue-500 bg-opacity-10 text-blue-500'
-                    : 'hover:bg-gray-100 dark:hover:bg-gray-800'
-                  }
-                `}
-                data-testid={`button-vaultmesh-${item.id}`}
-              >
-                <span className="text-lg">{item.icon}</span>
-                <span className="font-medium flex-1">{item.label}</span>
-                {item.badge && (
-                  <span className="text-xs bg-blue-500 text-white px-2 py-1 rounded-full" data-testid={`badge-vaultmesh-${item.id}`}>
-                    {item.badge}
-                  </span>
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Ecosystem Projects */}
-        <div className="pt-6 border-t border-gray-200 dark:border-gray-800 mb-8" data-testid="section-ecosystem">
-          <h3 className="text-sm font-semibold text-gray-500 mb-3" data-testid="heading-ecosystem-projects">ECOSYSTEM PROJECTS</h3>
-          <div className="space-y-2">
-            {ecosystemItems.map((item, index) => (
-              <motion.div
-                key={item.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4 + index * 0.05 }}
-                data-testid={`ecosystem-item-${item.id}`}
-              >
-                <SparkleEffect trigger={activePage === item.id}>
-                  <RippleButton
-                    onClick={() => {
-                      handlePageChange(item.id)
-                      setIsMobileOpen(false)
-                    }}
-                    className={`
-                      w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left
-                      ${activePage === item.id
-                        ? 'bg-orange-500 bg-opacity-10 text-orange-500'
-                        : 'hover:bg-gray-100 dark:hover:bg-gray-800'
-                      }
-                      ${item.id === 'samfox-creative-studio' ? 'ring-2 ring-rose-400 ring-opacity-50' : ''}
-                      ${item.id === 'faa-quantum-nexus' ? 'ring-2 ring-blue-400 ring-opacity-50' : ''}
-                    `}
-                    variant={activePage === item.id ? "success" : "default"}
-                    data-testid={`button-ecosystem-${item.id}`}
-                  >
-                    <motion.span 
-                      className="text-lg"
-                      whileHover={{ scale: 1.2, rotate: item.id === 'samfox-creative-studio' ? 360 : item.id === 'faa-quantum-nexus' ? 180 : -10 }}
-                      transition={{ type: "spring", stiffness: 400 }}
-                    >
-                      {item.icon}
-                    </motion.span>
-                    <span className="font-medium flex-1">{item.label}</span>
-                    {item.badge && (
-                      <motion.span 
-                        className={`text-xs px-2 py-1 rounded-full ${
-                          item.id === 'samfox-creative-studio' 
-                            ? 'bg-gradient-to-r from-rose-500 to-purple-500 text-white' 
-                            : item.id === 'faa-quantum-nexus'
-                            ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white'
-                            : 'bg-orange-500 text-white'
-                        }`}
-                        whileHover={{ scale: 1.1, rotate: 5 }}
-                        data-testid={`badge-ecosystem-${item.id}`}
-                      >
-                        <PulseIndicator active={activePage === item.id} size="sm" color="purple" />
-                        {item.badge}
-                      </motion.span>
-                    )}
-                  </RippleButton>
-                </SparkleEffect>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-
-        {/* Admin Section */}
-        <div className="pt-6 border-t border-gray-200 dark:border-gray-800" data-testid="section-admin">
-          <h3 className="text-sm font-semibold text-gray-500 mb-3" data-testid="heading-admin-portals">ADMIN PORTALS</h3>
-          <div className="space-y-2">
-            {adminItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => {
-                  handlePageChange(item.id)
-                  setIsMobileOpen(false)
-                }}
-                className={`
-                  w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left
-                  ${activePage === item.id
-                    ? 'bg-cyan-500 bg-opacity-10 text-cyan-500'
-                    : 'hover:bg-gray-100 dark:hover:bg-gray-800'
-                  }
-                `}
-                data-testid={`button-admin-${item.id}`}
-              >
-                <span className="text-lg">{item.icon}</span>
-                <span className="font-medium">{item.label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-      </aside>
-
-      {/* Mobile Overlay */}
-      {isMobileOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
-          onClick={() => setIsMobileOpen(false)}
-          data-testid="overlay-mobile"
-        />
-      )}
-    </>
-  )
+      </div>
+    </aside>
+  );
 }

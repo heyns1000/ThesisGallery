@@ -47,7 +47,7 @@ export function SectorNavigationCard({ sector, className = "" }: SectorNavigatio
             transition={{ type: "spring", stiffness: 400 }}
             data-testid={`sector-emoji-${sector.id}`}
           >
-            {sector.glyph || '🏢'}
+            {sector.emoji}
           </motion.div>
           <motion.div
             className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
@@ -58,12 +58,12 @@ export function SectorNavigationCard({ sector, className = "" }: SectorNavigatio
         </div>
 
         <h3 className="text-xl font-bold mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" data-testid={`sector-name-${sector.id}`}>
-          {sector.sectorName}
+          {sector.name}
         </h3>
         
-        {sector.region && (
+        {sector.description && (
           <p className="text-gray-600 dark:text-gray-400 text-sm mb-3 line-clamp-2" data-testid={`sector-description-${sector.id}`}>
-            {sector.region}{sector.tier ? ` - Tier ${sector.tier}` : ''}
+            {sector.description}
           </p>
         )}
         
@@ -74,17 +74,17 @@ export function SectorNavigationCard({ sector, className = "" }: SectorNavigatio
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            {sector.coreBrands && sector.coreBrands > 0 && (
+            {sector.brandCount && sector.brandCount > 0 && (
               <Badge variant="secondary" className="text-xs" data-testid={`sector-brand-count-${sector.id}`}>
-                {sector.coreBrands} brands
+                {sector.brandCount} brands
               </Badge>
             )}
-            {sector.totalNodes && sector.totalNodes > 0 && (
+            {sector.subnodeCount && sector.subnodeCount > 0 && (
               <Badge variant="outline" className="text-xs" data-testid={`sector-subnode-count-${sector.id}`}>
-                {sector.totalNodes} nodes
+                {sector.subnodeCount} subnodes
               </Badge>
             )}
-            {(!sector.coreBrands || sector.coreBrands === 0) && (
+            {(!sector.brandCount || sector.brandCount === 0) && (
               <Badge variant="destructive" className="text-xs opacity-60" data-testid={`sector-ready-badge-${sector.id}`}>
                 Dashboard Ready
               </Badge>
@@ -96,7 +96,7 @@ export function SectorNavigationCard({ sector, className = "" }: SectorNavigatio
             whileHover={{ x: 5 }}
             data-testid={`sector-explore-link-${sector.id}`}
           >
-            <span className="mr-1">{sector.coreBrands && sector.coreBrands > 0 ? 'Explore' : 'Access'}</span>
+            <span className="mr-1">{sector.brandCount && sector.brandCount > 0 ? 'Explore' : 'Access'}</span>
             <ChevronRight className="w-4 h-4" />
           </motion.div>
         </div>

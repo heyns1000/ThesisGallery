@@ -13,7 +13,7 @@ export default function SectorsPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
   const [showStats, setShowStats] = useState(true)
-  const [expandedSector, setExpandedSector] = useState<string | null>(null)
+  const [expandedSector, setExpandedSector] = useState<number | null>(null)
 
   const { data: sectors = [], isLoading: sectorsLoading } = useQuery<Sector[]>({
     queryKey: ["/api/sectors"],
@@ -25,30 +25,34 @@ export default function SectorsPage() {
 
   // Filter sectors based on search
   const filteredSectors = sectors.filter(sector =>
-    sector.sectorName?.toLowerCase().includes(searchQuery.toLowerCase())
+    sector.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    sector.description?.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
-  // Calculate sector statistics - using sector's own stats
+  // Calculate sector statistics
   const sectorStats = sectors.map(sector => {
+    const sectorBrands = brands.filter(brand => brand.sectorId === sector.id)
+    const activeBrands = sectorBrands.filter(brand => brand.status === "active")
+    const integrations = Array.from(new Set(sectorBrands.map(brand => brand.integration)))
+    
     return {
       ...sector,
-      totalBrands: sector.coreBrands || 0,
-      activeBrands: sector.coreBrands || 0,
-      integrations: sector.totalNodes || 0,
-      brands: [] // No direct brand relationship in schema
+      totalBrands: sectorBrands.length,
+      activeBrands: activeBrands.length,
+      integrations: integrations.length,
+      brands: sectorBrands
     }
   })
 
   const totalBrands = brands.length
   const totalActiveBrands = brands.filter(b => b.status === "active").length
-  const totalCoreBrands = sectors.reduce((sum, s) => sum + (s.coreBrands || 0), 0)
+  const totalIntegrations = Array.from(new Set(brands.map(b => b.integration))).length
 
-  const toggleSectorExpansion = (sectorId: string) => {
+  const toggleSectorExpansion = (sectorId: number) => {
     setExpandedSector(expandedSector === sectorId ? null : sectorId)
   }
 
   const getSectorIcon = (sectorName: string) => {
-    if (!sectorName) return '🏢'
     if (sectorName.includes('Agriculture')) return '🌱'
     if (sectorName.includes('Technology')) return '💻'
     if (sectorName.includes('Healthcare')) return '🏥'
@@ -122,8 +126,8 @@ export default function SectorsPage() {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">Core Brands</p>
-                  <p className="text-2xl font-bold" data-testid="stat-integrations">{totalCoreBrands}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">Integrations</p>
+                  <p className="text-2xl font-bold" data-testid="stat-integrations">{totalIntegrations}</p>
                 </div>
                 <Users className="h-8 w-8 text-orange-500" />
               </div>
@@ -230,18 +234,18 @@ export default function SectorsPage() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center text-white text-2xl">
-                          {sector.glyph || getSectorIcon(sector.sectorName || '')}
+                          {sector.emoji || getSectorIcon(sector.name)}
                         </div>
                         <div>
                           <CardTitle className="text-lg group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" data-testid={`text-sector-name-${sector.id}`}>
-                            {sector.sectorName}
+                            {sector.name}
                           </CardTitle>
                           <div className="flex items-center gap-2 mt-1">
                             <Badge variant="secondary" className="text-xs" data-testid={`badge-brands-${sector.id}`}>
                               {stats?.totalBrands || 0} brands
                             </Badge>
                             <Badge variant="outline" className="text-xs" data-testid={`badge-integrations-${sector.id}`}>
-                              {stats?.integrations || 0} nodes
+                              {stats?.integrations || 0} integrations
                             </Badge>
                           </div>
                         </div>
@@ -258,64 +262,64 @@ export default function SectorsPage() {
                   </CardHeader>
                   
                   <CardContent className="space-y-4">
-                    {/* Sector Information */}
-                    {sector.region && (
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="text-xs">
-                          {sector.region}
-                        </Badge>
-                        {sector.tier && (
-                          <Badge variant="secondary" className="text-xs">
-                            Tier {sector.tier}
-                          </Badge>
-                        )}
-                      </div>
+                    {sector.description && (
+                      <p className="text-gray-600 dark:text-gray-300 text-sm line-clamp-2" data-testid={`text-description-${sector.id}`}>
+                        {sector.description}
+                      </p>
                     )}
 
                     {/* Progress Bar */}
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
-                        <span className="text-gray-600 dark:text-gray-300">Sector Activity</span>
-                        <span className="font-medium" data-testid={`text-completion-${sector.id}`}>{sector.isActive ? '100' : '0'}%</span>
+                        <span className="text-gray-600 dark:text-gray-300">Brand Completion</span>
+                        <span className="font-medium" data-testid={`text-completion-${sector.id}`}>{completionPercentage}%</span>
                       </div>
-                      <Progress value={sector.isActive ? 100 : 0} className="h-2" data-testid={`progress-completion-${sector.id}`} />
+                      <Progress value={completionPercentage} className="h-2" data-testid={`progress-completion-${sector.id}`} />
                     </div>
 
                     {/* Statistics */}
                     <div className="grid grid-cols-2 gap-4 text-center">
                       <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded-lg" data-testid={`stat-total-${sector.id}`}>
                         <p className="text-lg font-bold text-blue-600">{stats?.totalBrands || 0}</p>
-                        <p className="text-xs text-gray-500">Core Brands</p>
+                        <p className="text-xs text-gray-500">Total Brands</p>
                       </div>
                       <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded-lg" data-testid={`stat-active-${sector.id}`}>
-                        <p className="text-lg font-bold text-green-600">{stats?.integrations || 0}</p>
-                        <p className="text-xs text-gray-500">Total Nodes</p>
+                        <p className="text-lg font-bold text-green-600">{stats?.activeBrands || 0}</p>
+                        <p className="text-xs text-gray-500">Active</p>
                       </div>
                     </div>
 
-                    {/* Expanded Details */}
-                    {expandedSector === sector.id && (
+                    {/* Expanded Brand List */}
+                    {expandedSector === sector.id && stats?.brands && (
                       <div className="mt-4 border-t pt-4" data-testid={`expanded-brands-${sector.id}`}>
-                        <h4 className="font-medium mb-3 text-sm">Sector Details:</h4>
-                        <div className="space-y-2">
-                          {sector.monthlyFee && (
-                            <div className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-800 rounded">
-                              <span className="text-sm text-gray-600 dark:text-gray-400">Monthly Fee</span>
-                              <span className="text-sm font-medium">{sector.monthlyFee}</span>
+                        <h4 className="font-medium mb-3 text-sm">Brands in this sector:</h4>
+                        <div className="space-y-2 max-h-40 overflow-y-auto">
+                          {stats.brands.slice(0, 10).map((brand) => (
+                            <div key={brand.id} className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded" data-testid={`brand-item-${brand.id}`}>
+                              <div className="flex items-center gap-2">
+                                <div className="w-6 h-6 bg-gradient-to-r from-blue-400 to-purple-400 rounded text-white text-xs flex items-center justify-center">
+                                  {brand.name.substring(0, 1)}
+                                </div>
+                                <span className="text-sm font-medium">{brand.name}</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Badge variant="outline" className="text-xs">
+                                  {brand.integration}
+                                </Badge>
+                                <Badge 
+                                  variant={brand.status === "active" ? "default" : "secondary"} 
+                                  className="text-xs capitalize"
+                                >
+                                  {brand.status}
+                                </Badge>
+                              </div>
                             </div>
+                          ))}
+                          {stats.brands.length > 10 && (
+                            <p className="text-xs text-gray-500 text-center py-2">
+                              +{stats.brands.length - 10} more brands
+                            </p>
                           )}
-                          {sector.annualFee && (
-                            <div className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-800 rounded">
-                              <span className="text-sm text-gray-600 dark:text-gray-400">Annual Fee</span>
-                              <span className="text-sm font-medium">{sector.annualFee}</span>
-                            </div>
-                          )}
-                          <div className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-800 rounded">
-                            <span className="text-sm text-gray-600 dark:text-gray-400">Status</span>
-                            <Badge variant={sector.isActive ? "default" : "secondary"} className="text-xs">
-                              {sector.isActive ? 'Active' : 'Inactive'}
-                            </Badge>
-                          </div>
                         </div>
                       </div>
                     )}
