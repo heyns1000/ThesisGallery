@@ -68,7 +68,7 @@ export function BushPortalHub() {
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-white mb-2 flex items-center gap-3">
+            <h1 className="text-4xl font-bold text-white mb-2 flex items-center gap-3" data-testid="text-bush-portal-title">
               <span className="text-5xl">🎙️</span>
               <span className="bg-gradient-to-r from-[#00D4D4] to-purple-500 bg-clip-text text-transparent">
                 Bush Portal
